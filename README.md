@@ -13,3 +13,24 @@ abapOpenChecks
 - RECEIVEING
 - use icon_* constants
 - MESSAGEs should be defined in SE91
+- Last statement is CLEAR local variable in method/form
+- Constants only used once
+- Same constants defined multiple places in program
+
+
+
+check indentation, eg. 
+
+```
+IF foo = bar
+    AND moo = boo.
+    MOVE ...
+  
+IF foo = bar
+AND moo = boo.
+    MOVE ...
+	
+IF foo = bar
+		    AND moo = boo.
+    MOVE ...
+```
