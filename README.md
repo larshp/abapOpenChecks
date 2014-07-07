@@ -8,7 +8,7 @@ abapOpenChecks
 - check for db statements
 - line length
 - check for use of pretty printer
-- functional writing syle for calling methods
+- functional writing syle for calling methods, CALL METHOD for dynamic only
 - use of sy-ucomm
 - RECEIVEING
 - use icon_* constants
@@ -16,6 +16,8 @@ abapOpenChecks
 - Last statement is CLEAR local variable in method/form
 - Constants only used once
 - Same constants defined multiple places in program
+- type C without LENGTH
+- 7 bit chars(latin) only in source
 
 
 
