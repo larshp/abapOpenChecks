@@ -18,6 +18,7 @@ abapOpenChecks
 - Same constants defined multiple places in program
 - type C without LENGTH
 - 7 bit chars(latin) only in source
+- quantity + uom / amount + currency in same structure
 
 
 
