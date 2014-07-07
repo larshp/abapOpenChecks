@@ -12,3 +12,4 @@ abapOpenChecks
 - use of sy-ucomm
 - RECEIVEING
 - use icon_* constants
+- MESSAGEs should be defined in SE91
