@@ -19,6 +19,7 @@ abapOpenChecks
 - type C without LENGTH
 - 7 bit chars(latin) only in source
 - quantity + uom / amount + currency in same structure
+- spaces that are tabs, eg when copying signature
 
 
 
