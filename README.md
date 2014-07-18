@@ -20,10 +20,16 @@ abapOpenChecks
 - 7 bit chars(latin) only in source
 - quantity + uom / amount + currency in same structure
 - spaces that are tabs, eg when copying signature
+- empty IF statement
+- EXIT outside of loop
+- comment spell checking
+- 
 
 
+Clearance program
 
-check indentation, eg. 
+
+Check indentation, eg. 
 
 ```
 IF foo = bar
