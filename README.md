@@ -23,7 +23,7 @@ abapOpenChecks
 - empty IF statement
 - EXIT outside of loop
 - comment spell checking
-- 
+- late read of sy-tabix in LOOP
 
 
 Clearance program
