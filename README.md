@@ -26,6 +26,8 @@ abapOpenChecks
 - late read of sy-tabix in LOOP
 - always specify JOIN type in SELECT
 - always specify SORT order
+- CHECK used outside of loops
+
 
 Clearance program
 
