@@ -24,6 +24,7 @@ abapOpenChecks
 - EXIT outside of loop
 - comment spell checking
 - late read of sy-tabix in LOOP
+- always specify JOIN type in SELECT
 
 
 Clearance program
