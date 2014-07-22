@@ -27,6 +27,7 @@ abapOpenChecks
 - always specify JOIN type in SELECT
 - always specify SORT order
 - CHECK used outside of loops
+- IF can be changed to CASE
 
 
 Clearance program
