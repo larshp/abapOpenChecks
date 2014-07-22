@@ -33,6 +33,8 @@ abapOpenChecks
 
 Clearance program
 
+Inactive objects list
+
 
 Check indentation, eg. 
 
