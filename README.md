@@ -28,6 +28,7 @@ abapOpenChecks
 - always specify SORT order
 - CHECK used outside of loops
 - IF can be changed to CASE
+- indexes active and exists in db for Z and Y tables
 
 
 Clearance program
