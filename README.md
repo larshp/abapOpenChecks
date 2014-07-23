@@ -16,7 +16,7 @@ abapOpenChecks
 - Last statement is CLEAR local variable in method/form
 - Constants only used once
 - Same constants defined multiple places in program
-- type C without LENGTH
+- type C without LENGTH, no implicit typing, always specify "TYPE c"
 - 7 bit chars(latin) only in source
 - quantity + uom / amount + currency in same structure
 - spaces that are tabs, eg when copying signature
