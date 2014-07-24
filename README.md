@@ -29,6 +29,8 @@ abapOpenChecks
 - CHECK used outside of loops
 - IF can be changed to CASE
 - indexes active and exists in db for Z and Y tables
+- REFRESH is obsolete
+- pseudo comments vs pragmas, ABAP\_SLIN\_PRAGMAS
 
 
 Clearance program
