@@ -32,6 +32,7 @@ abapOpenChecks
 - REFRESH is obsolete
 - pseudo comments vs pragmas, ABAP\_SLIN\_PRAGMAS
 - identical code blocks
+- OpenSQL LIKE wildcards * vs %
 
 
 Clearance program
