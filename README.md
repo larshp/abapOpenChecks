@@ -33,6 +33,7 @@ abapOpenChecks
 - pseudo comments vs pragmas, ABAP\_SLIN\_PRAGMAS
 - identical code blocks
 - OpenSQL LIKE wildcards * vs %
+- max one statement per line
 
 
 Clearance program
