@@ -34,6 +34,7 @@ abapOpenChecks
 - identical code blocks
 - OpenSQL LIKE wildcards * vs %
 - max one statement per line
+- TRY without CATCH
 
 
 Clearance program
