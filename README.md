@@ -35,6 +35,7 @@ abapOpenChecks
 - OpenSQL LIKE wildcards * vs %
 - max one statement per line
 - TRY without CATCH
+- all branches of IF/CASE ends with same code
 
 
 Clearance program
