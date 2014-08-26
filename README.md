@@ -36,6 +36,7 @@ abapOpenChecks
 - max one statement per line
 - TRY without CATCH
 - all branches of IF/CASE ends with same code
+- clear directly after definition of local variable
 
 
 Clearance program
