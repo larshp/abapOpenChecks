@@ -3,7 +3,7 @@ abapOpenChecks
 
 - downwards compatability, eg. NEW
 - magic/intelligent naming standards
-- IF inside IF
+- IF inside IF(remove comments, then regex?)
 - DATA defintions in top of FORM/method (ordering vs field symbols)
 - check for db statements
 - line length
