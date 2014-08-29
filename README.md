@@ -40,6 +40,8 @@ Categories: Pretty Code, Reduce Code, Obsolete Code, Explicit Code
 - TRY without CATCH
 - all branches of IF/CASE ends with same code
 - clear directly after definition of local variable
+- no DATA definitions in MODULE
+- comments on single lines starting with " that can be replaced with *
 
 
 Common static class to ensure good performance
