@@ -5,7 +5,6 @@ Categories: Pretty Code, Reduce Code, Obsolete Code, Explicit Code
 
 - downwards compatability, eg. NEW
 - magic/intelligent naming standards
-- IF inside IF(remove comments, then regex?)
 - DATA defintions in top of FORM/method (ordering vs field symbols)
 - check for db statements
 - line length
@@ -24,7 +23,6 @@ Categories: Pretty Code, Reduce Code, Obsolete Code, Explicit Code
 - quantity + uom / amount + currency in same structure
 - spaces that are tabs, eg when copying signature
 - empty IF statement/branch
-- EXIT outside of LOOP
 - comment spell checking
 - late read of sy-tabix in LOOP
 - always specify JOIN type in SELECT(INNER, OUTER, LEFT)
@@ -74,8 +72,27 @@ AND moo = boo.
 IF foo = bar
 		    AND moo = boo.
     MOVE ...
-```
 
   IF foo = bar
 AND moo = boo.
+```
 
+
+### CHECK_01 - IF in IF
+todo: attributes
+```
+IF condition1.
+  IF condition2.
+    ...
+  ENDIF.
+ENDIF.
+```
+Can be reducded to
+```
+IF ( condition1 ) AND ( condition2 ).
+  ...
+ENDIF.
+```
+
+### CHECK_02 - EXIT outside of LOOP
+It is recommended only EXIT inside LOOPs, use RETURN to return to calling program.
