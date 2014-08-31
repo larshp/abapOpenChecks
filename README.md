@@ -77,7 +77,6 @@ AND moo = boo.
 
 
 ### CHECK_01 - IF in IF
-todo: attributes
 ```
 IF condition1.
   IF condition2.
