@@ -33,7 +33,6 @@ abapOpenChecks
 - identical code blocks
 - OpenSQL LIKE wildcards * vs %
 - max one statement per line
-- TRY without CATCH
 - all branches of IF/CASE ends with same code
 - clear directly after definition of local variable
 - no DATA definitions in MODULE
@@ -92,4 +91,7 @@ ENDIF.
 ```
 
 ### CHECK_02 - EXIT outside of loop
-It is recommended only EXIT inside loops, use RETURN instead
+Only use EXIT inside loops, use RETURN to end current processing block
+
+### CHECK_03 - TRY without CATCH
+Remove TRY block, or implement CATCH case
