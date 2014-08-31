@@ -30,7 +30,7 @@ ENDCLASS.
 CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
 
-METHOD CHECK.
+METHOD check.
 
   DATA: lv_after_start TYPE string,
         lv_line        TYPE token_row,
@@ -76,18 +76,18 @@ METHOD CHECK.
         CONTINUE. " current loop
       ENDIF.
 
-      lv_after_start = zcl_aoc_super=>statement_keyword(
+      lv_after_start = statement_keyword(
           iv_number     = <ls_structure>-stmnt_from + 1
           it_statements = it_statements
           it_tokens     = it_tokens ).
 
-      lv_before_end = zcl_aoc_super=>statement_keyword(
+      lv_before_end = statement_keyword(
           iv_number     = <ls_structure>-stmnt_to - 1
           it_statements = it_statements
           it_tokens     = it_tokens ).
 
       IF lv_after_start = 'IF' AND lv_before_end = 'ENDIF'.
-        lv_line = zcl_aoc_super=>statement_row(
+        lv_line = statement_row(
             iv_number     = <ls_structure>-stmnt_from
             it_statements = it_statements
             it_tokens     = it_tokens ).
