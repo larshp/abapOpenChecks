@@ -46,7 +46,7 @@
  <TLINETAB>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE>foobar, class documentation</TDLINE>
+   <TDLINE>See https://github.com/larshp/abapOpenChecks</TDLINE>
   </TLINE>
  </TLINETAB>
 </abapGit>

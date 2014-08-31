@@ -46,7 +46,55 @@
  <TLINETAB>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE>lorem ipsummum</TDLINE>
+   <TDLINE>For constructs</TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>*</TDFORMAT>
+   <TDLINE></TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>M1</TDFORMAT>
+   <TDLINE>IF condition1.</TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>M1</TDFORMAT>
+   <TDLINE>  IF condition2.</TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>M1</TDFORMAT>
+   <TDLINE>    ...</TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>M1</TDFORMAT>
+   <TDLINE>  ENDIF.</TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>M1</TDFORMAT>
+   <TDLINE>ENDIF.</TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>*</TDFORMAT>
+   <TDLINE></TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>*</TDFORMAT>
+   <TDLINE>This can be reduced to</TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>*</TDFORMAT>
+   <TDLINE></TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>M1</TDFORMAT>
+   <TDLINE>IF ( condition1 ) AND ( condition2 ).</TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>M1</TDFORMAT>
+   <TDLINE>  ...</TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>M1</TDFORMAT>
+   <TDLINE>ENDIF.</TDLINE>
   </TLINE>
  </TLINETAB>
 </abapGit>
