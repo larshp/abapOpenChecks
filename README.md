@@ -1,8 +1,6 @@
 abapOpenChecks
 ==============
 
-Categories: Pretty Code, Reduce Code, Obsolete Code, Explicit Code
-
 - downwards compatability, eg. NEW
 - magic/intelligent naming standards
 - DATA defintions in top of FORM/method (ordering vs field symbols)
@@ -94,5 +92,5 @@ IF ( condition1 ) AND ( condition2 ).
 ENDIF.
 ```
 
-### CHECK_02 - EXIT outside of LOOP
-It is recommended only EXIT inside LOOPs, use RETURN instead
+### CHECK_02 - EXIT outside of loop
+It is recommended only EXIT inside loops, use RETURN instead
