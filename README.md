@@ -42,10 +42,18 @@ Categories: Pretty Code, Reduce Code, Obsolete Code, Explicit Code
 - clear directly after definition of local variable
 - no DATA definitions in MODULE
 - comments on single lines starting with " that can be replaced with *
+- CASE without OTHERS
 
 
 Common static class to ensure good performance
 One class per check, grouping similar
+
+Design goals
+try and see if it works out
+performance not high priority
+unit test'able
+only english
+
 
 Clearance program
 
