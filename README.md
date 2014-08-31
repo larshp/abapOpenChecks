@@ -95,4 +95,4 @@ ENDIF.
 ```
 
 ### CHECK_02 - EXIT outside of LOOP
-It is recommended only EXIT inside LOOPs, use RETURN to return to calling program.
+It is recommended only EXIT inside LOOPs, use RETURN instead
