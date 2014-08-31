@@ -43,4 +43,10 @@
   <WITHIN_PACKAGE></WITHIN_PACKAGE>
  </VSEOCLASS>
  <TEXTPOOL_TABLE/>
+ <TLINETAB>
+  <TLINE>
+   <TDFORMAT>*</TDFORMAT>
+   <TDLINE>foobar, class documentation</TDLINE>
+  </TLINE>
+ </TLINETAB>
 </abapGit>

@@ -56,4 +56,10 @@
    <LENGTH>14 </LENGTH>
   </TEXTPOOL>
  </TEXTPOOL_TABLE>
+ <TLINETAB>
+  <TLINE>
+   <TDFORMAT>*</TDFORMAT>
+   <TDLINE>lorem ipsumm</TDLINE>
+  </TLINE>
+ </TLINETAB>
 </abapGit>
