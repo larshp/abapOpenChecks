@@ -40,6 +40,8 @@ abapOpenChecks
 - CASE without OTHERS
 - 'X' or '' that can be replaced with abap\_true or abap\_false
 - IS INITIAL or NOT IS INITIAL that can be replaced with abap\_true or abap\_false
+- space dot, WRITE 'foo' .
+- space colon, WRITE : 'foo'.
 
 
 Common static class to ensure good performance
