@@ -42,6 +42,8 @@ abapOpenChecks
 - IS INITIAL or NOT IS INITIAL that can be replaced with abap\_true or abap\_false
 - space dot, WRITE 'foo' .
 - space colon, WRITE : 'foo'.
+- no guard for division by zero
+- show number of codelines scanned
 
 
 Common static class to ensure good performance
