@@ -40,13 +40,11 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
 METHOD check.
 
-  DATA: lv_keyword TYPE string,
-        lv_line    TYPE token_row,
+  DATA: lv_line    TYPE token_row,
         lv_index   LIKE sy-tabix.
 
   FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                 <ls_structure> LIKE LINE OF it_structures,
-                 <ls_statement> LIKE LINE OF it_statements.
+                 <ls_structure> LIKE LINE OF it_structures.
 
 
   LOOP AT it_levels ASSIGNING <ls_level>.
@@ -116,7 +114,7 @@ METHOD get_message_text.
     WHEN '001'.
       p_text = 'TRY without CATCH'.                         "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 2.
+      ASSERT 1 = 1 + 1.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
@@ -165,7 +163,7 @@ ENDMETHOD.
 
 METHOD put_attributes.
 
-  IMPORT mv_errty = mv_errty FROM DATA BUFFER p_attributes.
+  IMPORT mv_errty = mv_errty FROM DATA BUFFER p_attributes. "#EC CI_USE_WANTED
 
 ENDMETHOD.
 ENDCLASS.

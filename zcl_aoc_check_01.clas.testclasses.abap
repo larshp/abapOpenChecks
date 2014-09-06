@@ -11,9 +11,9 @@ CLASS lcl_test DEFINITION FOR TESTING
   PRIVATE SECTION.
 * ================
 
-    DATA: lt_code   TYPE string_table,
-          ls_result TYPE scirest_ad,
-          lo_check  TYPE REF TO zcl_aoc_check_01.
+    DATA: mt_code   TYPE string_table,
+          ms_result TYPE scirest_ad,
+          mo_check  TYPE REF TO zcl_aoc_check_01.
 
     METHODS: setup,
              test001_01 FOR TESTING,
@@ -35,11 +35,11 @@ CLASS lcl_test IMPLEMENTATION.
 * ==============================
 
   DEFINE _code.
-    append &1 to lt_code.
+    append &1 to mt_code.
   END-OF-DEFINITION.
 
   METHOD setup.
-    CREATE OBJECT lo_check.
+    CREATE OBJECT mo_check.
   ENDMETHOD.                    "setup
 
   METHOD test001_01.
@@ -51,11 +51,11 @@ CLASS lcl_test IMPLEMENTATION.
     _code '  ENDIF.           '.
     _code 'ENDIF.             '.
 
-    ls_result = zcl_aoc_unit_test=>check( it_code  = lt_code
-                                          io_check = lo_check ).
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
-                                        act = ls_result-code ).
+                                        act = ms_result-code ).
 
   ENDMETHOD.                    "test1
 
@@ -66,10 +66,10 @@ CLASS lcl_test IMPLEMENTATION.
     _code '  WRITE: ''foo''.  '.
     _code 'ENDIF.             '.
 
-    ls_result = zcl_aoc_unit_test=>check( it_code  = lt_code
-                                          io_check = lo_check ).
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
 
-    cl_abap_unit_assert=>assert_initial( ls_result ).
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.                    "test2
 
@@ -83,10 +83,10 @@ CLASS lcl_test IMPLEMENTATION.
     _code '  ENDIF.           '.
     _code 'ENDIF.             '.
 
-    ls_result = zcl_aoc_unit_test=>check( it_code  = lt_code
-                                          io_check = lo_check ).
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
 
-    cl_abap_unit_assert=>assert_initial( ls_result ).
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.                    "test001_03
 
@@ -100,10 +100,10 @@ CLASS lcl_test IMPLEMENTATION.
     _code '  WRITE: ''bar''.  '.
     _code 'ENDIF.             '.
 
-    ls_result = zcl_aoc_unit_test=>check( it_code  = lt_code
-                                          io_check = lo_check ).
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
 
-    cl_abap_unit_assert=>assert_initial( ls_result ).
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.                    "test001_04
 
@@ -117,10 +117,10 @@ CLASS lcl_test IMPLEMENTATION.
     _code '  ENDIF.           '.
     _code 'ENDIF.             '.
 
-    ls_result = zcl_aoc_unit_test=>check( it_code  = lt_code
-                                          io_check = lo_check ).
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
 
-    cl_abap_unit_assert=>assert_initial( ls_result ).
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.                    "test001_05
 
@@ -135,10 +135,10 @@ CLASS lcl_test IMPLEMENTATION.
     _code '  ENDIF.           '.
     _code 'ENDIF.             '.
 
-    ls_result = zcl_aoc_unit_test=>check( it_code  = lt_code
-                                          io_check = lo_check ).
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
 
-    cl_abap_unit_assert=>assert_initial( ls_result ).
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.                    "test001_06
 
@@ -154,11 +154,11 @@ CLASS lcl_test IMPLEMENTATION.
     _code '  WRITE: ''foo''.    '.
     _code 'ENDIF.               '.
 
-    ls_result = zcl_aoc_unit_test=>check( it_code  = lt_code
-                                          io_check = lo_check ).
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
-                                        act = ls_result-code ).
+                                        act = ms_result-code ).
 
   ENDMETHOD.                    "test001_07
 

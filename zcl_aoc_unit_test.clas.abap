@@ -38,7 +38,7 @@ private section.
 *"* private components of class ZCL_AOC_UNIT_TEST
 *"* do not include other source files here!!!
 
-  class-data MS_RESULT type SCIREST_AD .
+  class-data GS_RESULT type SCIREST_AD .
 ENDCLASS.
 
 
@@ -62,7 +62,7 @@ METHOD check.
        WITH ANALYSIS
        WITH COMMENTS.
 
-  CLEAR ms_result.
+  CLEAR GS_RESULT.
   SET HANDLER handler FOR io_check.
 
   io_check->set_source( iv_name = '----------------------------------------'
@@ -74,7 +74,7 @@ METHOD check.
       it_levels     = lt_levels
       it_structures = lt_structures ).
 
-  rs_result = ms_result.
+  rs_result = GS_RESULT.
 
 ENDMETHOD.
 
@@ -82,12 +82,12 @@ ENDMETHOD.
 METHOD handler.
 
 * assume only one result
-  ms_result-sobjname = p_sub_obj_name.
-  ms_result-sobjtype = p_sub_obj_type.
-  ms_result-line     = p_line.
-  ms_result-col      = p_column.
-  ms_result-kind     = p_kind.
-  ms_result-code     = p_code.
+  GS_RESULT-sobjname = p_sub_obj_name.
+  GS_RESULT-sobjtype = p_sub_obj_type.
+  GS_RESULT-line     = p_line.
+  GS_RESULT-col      = p_column.
+  GS_RESULT-kind     = p_kind.
+  GS_RESULT-code     = p_code.
 
 ENDMETHOD.
 ENDCLASS.

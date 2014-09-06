@@ -74,6 +74,7 @@ METHOD check.
           OR stmnt_type = scan_struc_stmnt_type-do )
           AND stmnt_from <= lv_index
           AND stmnt_to >= lv_index.
+        EXIT. " current loop
       ENDLOOP.
       IF sy-subrc <> 0.
         lv_line = statement_row(
@@ -125,7 +126,7 @@ METHOD get_message_text.
     WHEN '001'.
       p_text = 'EXIT outside loop, use RETURN instead'.     "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 2.
+      ASSERT 1 = 1 + 1.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
@@ -174,7 +175,7 @@ ENDMETHOD.
 
 METHOD put_attributes.
 
-  IMPORT mv_errty = mv_errty FROM DATA BUFFER p_attributes.
+  IMPORT mv_errty = mv_errty FROM DATA BUFFER p_attributes. "#EC CI_USE_WANTED
 
 ENDMETHOD.
 ENDCLASS.

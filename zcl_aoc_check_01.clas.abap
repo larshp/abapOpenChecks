@@ -67,6 +67,7 @@ METHOD check.
           WHERE stmnt_from >= <ls_structure>-stmnt_from
           AND stmnt_to <= <ls_structure>-stmnt_to
           AND ( stmnt_type = scan_struc_stmnt_type-elseif OR stmnt_type = scan_struc_stmnt_type-else ).
+        EXIT.
       ENDLOOP.
       IF sy-subrc = 0.
         CONTINUE. " current loop
@@ -143,7 +144,7 @@ METHOD get_message_text.
     WHEN '001'.
       p_text = 'IF in IF, can easily be reduced'.           "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 2.
+      ASSERT 1 = 1 + 1.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
@@ -192,7 +193,7 @@ ENDMETHOD.
 
 METHOD put_attributes.
 
-  IMPORT mv_errty = mv_errty FROM DATA BUFFER p_attributes.
+  IMPORT mv_errty = mv_errty FROM DATA BUFFER p_attributes. "#EC CI_USE_WANTED
 
 ENDMETHOD.
 ENDCLASS.
