@@ -5,7 +5,6 @@ abapOpenChecks
 - magic/intelligent naming standards
 - DATA defintions in top of FORM/method (ordering vs field symbols)
 - check for db statements
-- line length
 - check for use of pretty printer
 - functional writing syle for calling methods, CALL METHOD for dynamic only
 - RECEIVEING
@@ -45,6 +44,10 @@ abapOpenChecks
 - no guard for division by zero
 - show number of codelines scanned
 - only show errors that are part of whats been changed in open transport
+- Use new operators, =, <>, <, >, <=, >=, instead
+- IS REQUESTED is obsolete
+- IF lx_exception IS INITIAL
+- Unit test assert not in test class, or assert in test class
 
 
 Common static class to ensure good performance
@@ -102,3 +105,6 @@ Only use EXIT inside loops, use RETURN to end current processing block
 
 ### CHECK_03 - TRY without CATCH
 Remove TRY block, or implement CATCH case
+
+### CHECK_04 - Line length
+Check line length, default = max 90 characters
