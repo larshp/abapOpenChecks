@@ -65,6 +65,9 @@ METHOD check.
   CLEAR ms_result.
   SET HANDLER handler FOR io_check.
 
+  io_check->set_source( iv_name = '----------------------------------------'
+                        it_code = it_code ).
+
   io_check->check(
       it_tokens     = lt_tokens
       it_statements = lt_statements

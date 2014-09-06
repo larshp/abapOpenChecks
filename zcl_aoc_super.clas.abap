@@ -14,6 +14,10 @@ public section.
       !IT_STATEMENTS type SSTMNT_TAB
       !IT_LEVELS type SLEVEL_TAB
       !IT_STRUCTURES type SSTRUC_TAB .
+  methods SET_SOURCE
+    importing
+      !IV_NAME type LEVEL_NAME
+      !IT_CODE type STRING_TABLE .
 
   methods RUN
     redefinition .
@@ -38,9 +42,24 @@ protected section.
   class-methods DOCUMENTATION
     importing
       !IV_NAME type SEOCLSNAME .
-private section.
+  methods GET_SOURCE
+    importing
+      !IV_NAME type LEVEL_NAME
+    returning
+      value(RT_CODE) type STRING_TABLE .
+PRIVATE SECTION.
 *"* private components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
+
+  TYPES:
+    BEGIN OF st_source,
+           name TYPE level_name,
+           code TYPE string_table,
+         END OF st_source .
+  TYPES:
+    tt_source TYPE SORTED TABLE OF st_source WITH UNIQUE KEY name .
+
+  DATA mt_source TYPE tt_source .
 ENDCLASS.
 
 
@@ -74,7 +93,35 @@ METHOD documentation.
 ENDMETHOD.
 
 
+METHOD get_source.
+
+  DATA: ls_source LIKE LINE OF mt_source.
+
+  FIELD-SYMBOLS: <ls_source> LIKE LINE OF mt_source.
+
+
+  IF iv_name(1) = '_'.
+    RETURN.
+  ENDIF.
+
+  READ TABLE mt_source ASSIGNING <ls_source> WITH KEY name = iv_name.
+  IF sy-subrc = 0.
+    rt_code = <ls_source>-code.
+  ELSE.
+    READ REPORT iv_name INTO rt_code.
+    ASSERT sy-subrc = 0.
+
+    ls_source-name = iv_name.
+    ls_source-code = rt_code.
+    INSERT ls_source INTO TABLE mt_source.
+  ENDIF.
+
+ENDMETHOD.
+
+
 METHOD run.
+
+  CLEAR mt_source[].  " limit memory use
 
   CHECK program_name IS NOT INITIAL.
   IF ref_scan IS INITIAL.
@@ -85,6 +132,21 @@ METHOD run.
          it_statements = ref_scan->statements
          it_levels     = ref_scan->levels
          it_structures = ref_scan->structures ).
+
+ENDMETHOD.
+
+
+METHOD set_source.
+
+* used for unit testing
+
+  DATA: ls_source LIKE LINE OF mt_source.
+
+
+  ls_source-name = iv_name.
+  ls_source-code = it_code.
+
+  INSERT ls_source INTO TABLE mt_source.
 
 ENDMETHOD.
 
