@@ -44,6 +44,7 @@ abapOpenChecks
 - space colon, WRITE : 'foo'.
 - no guard for division by zero
 - show number of codelines scanned
+- only show errors that are part of whats been changed in open transport
 
 
 Common static class to ensure good performance
