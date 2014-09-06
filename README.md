@@ -16,7 +16,6 @@ abapOpenChecks
 - Constants only used once
 - Same constants defined multiple places in program
 - type C without LENGTH, no implicit typing, always specify "TYPE c"
-- 7 bit chars(latin) only in source
 - quantity + uom / amount + currency in same structure
 - spaces that are tabs, eg when copying signature
 - empty IF statement/branch
@@ -108,3 +107,6 @@ Remove TRY block, or implement CATCH case
 
 ### CHECK_04 - Line length
 Check line length, default = max 90 characters
+
+### CHECK_05 - 7 bit ASCII
+Error if source code contains non 7 bit ASCII characters
