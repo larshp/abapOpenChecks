@@ -100,7 +100,7 @@ METHOD get_source.
   FIELD-SYMBOLS: <ls_source> LIKE LINE OF mt_source.
 
 
-  IF iv_name(1) = '_'.
+  IF iv_name(1) = '_' OR iv_name = 'FILL_ATT'.
     RETURN.
   ENDIF.
 
