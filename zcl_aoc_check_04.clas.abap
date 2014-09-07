@@ -50,7 +50,7 @@ METHOD check.
 
   LOOP AT it_levels ASSIGNING <ls_level>.
 * skip class definitions, they are auto generated(in most cases)
-    IF strlen( <ls_level>-name ) = 32 AND <ls_level>-name+29(3) = '=CU'.
+    IF strlen( <ls_level>-name ) = 32 AND <ls_level>-name+30(2) = 'CU'.
       CONTINUE. " current loop
     ENDIF.
 
