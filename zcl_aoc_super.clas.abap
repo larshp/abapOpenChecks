@@ -108,7 +108,7 @@ METHOD get_source.
   IF sy-subrc = 0.
     rt_code = <ls_source>-code.
   ELSE.
-    READ REPORT iv_name INTO rt_code.
+    READ REPORT iv_name INTO rt_code.                  "#EC CI_READ_REP
     ASSERT sy-subrc = 0.
 
     ls_source-name = iv_name.
@@ -127,6 +127,9 @@ METHOD run.
   IF ref_scan IS INITIAL.
     CHECK get( ) = abap_true.
   ENDIF.
+
+  set_source( iv_name = ref_include->trdir-name
+              it_code = ref_include->lines ).
 
   check( it_tokens     = ref_scan->tokens
          it_statements = ref_scan->statements
