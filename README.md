@@ -47,6 +47,8 @@ abapOpenChecks
 - IS REQUESTED is obsolete
 - IF lx_exception IS INITIAL
 - Unit test assert not in test class, or assert in test class
+- double spaces, CONCATENATE  foo bar INTO result.
+- no empty newlines when using COLON operator
 
 
 Common static class to ensure good performance
@@ -107,6 +109,7 @@ Remove TRY block, or implement CATCH case
 
 ### CHECK_04 - Line length
 Check line length, default = max 90 characters
+Only 72(?) characters shown in short dumps and in 2 column program compare
 
 ### CHECK_05 - 7 bit ASCII
 Error if source code contains non 7 bit ASCII characters
