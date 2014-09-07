@@ -5,7 +5,6 @@ abapOpenChecks
 - magic/intelligent naming standards
 - DATA defintions in top of FORM/method (ordering vs field symbols)
 - check for db statements
-- check for use of pretty printer
 - functional writing syle for calling methods, CALL METHOD for dynamic only
 - RECEIVEING
 - use of sy-ucomm, unless fcode in selection screen
@@ -49,6 +48,8 @@ abapOpenChecks
 - Unit test assert not in test class, or assert in test class
 - double spaces, CONCATENATE  foo bar INTO result.
 - no empty newlines when using COLON operator
+- macro naming standard
+- check program headers exists
 
 
 Common static class to ensure good performance
@@ -58,7 +59,7 @@ Design goals
 try and see if it works out
 performance not high priority
 unit test'able
-only english
+only english supported
 
 
 Clearance program
@@ -113,3 +114,6 @@ Only 72(?) characters shown in short dumps and in 2 column program compare
 
 ### CHECK_05 - 7 bit ASCII
 Error if source code contains non 7 bit ASCII characters
+
+### CHECK_06 - Check for use of pretty printer
+check for use of pretty printer
