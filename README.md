@@ -50,6 +50,8 @@ abapOpenChecks
 - no empty newlines when using COLON operator
 - macro naming standard
 - check program headers exists
+- commented code(Standard check doesnt work very well)
+- no update of standard SAP tables
 
 
 Common static class to ensure good performance
