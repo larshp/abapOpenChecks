@@ -52,7 +52,7 @@ abapOpenChecks
 - check program headers exists
 - commented code(Standard check doesnt work very well)
 - no update of standard SAP tables
-- unused parameter in class method(dynamic references?)
+- unused parameter in class method(dynamic references? redefined method, interfaces?)
 
 
 Common static class to ensure good performance
