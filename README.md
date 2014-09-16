@@ -53,6 +53,7 @@ abapOpenChecks
 - commented code(Standard check doesnt work very well)
 - no update of standard SAP tables
 - unused parameter in class method(dynamic references? redefined method, interfaces?)
+- number of sequential blank lines
 
 
 Common static class to ensure good performance
