@@ -47,6 +47,9 @@ protected section.
       !IV_NAME type LEVEL_NAME
     returning
       value(RT_CODE) type STRING_TABLE .
+
+  methods GET_INCLUDE
+    redefinition .
 PRIVATE SECTION.
 *"* private components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
@@ -89,6 +92,18 @@ METHOD documentation.
       id         = 'CL'
       langu      = 'E'
       object     = lv_object.
+
+ENDMETHOD.
+
+
+METHOD get_include.
+
+  IF ref_scan IS BOUND.
+* not bound during unit testing
+    p_result = super->get_include(
+        p_ref_scan = p_ref_scan
+        p_level    = p_level ).
+  ENDIF.
 
 ENDMETHOD.
 
