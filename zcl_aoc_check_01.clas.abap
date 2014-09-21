@@ -43,73 +43,67 @@ METHOD check.
   DATA: lv_after_start TYPE string,
         lv_line        TYPE token_row,
         lv_count       TYPE i,
+        lv_include     TYPE program,
         lv_before_end  TYPE string.
 
   FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures,
-                 <ls_level>     LIKE LINE OF it_levels.
+                 <ls_token>     LIKE LINE OF it_tokens,
+                 <ls_statement> LIKE LINE OF it_statements.
 
 
-  LOOP AT it_levels ASSIGNING <ls_level>.
+  LOOP AT it_structures ASSIGNING <ls_structure>
+      WHERE stmnt_type = scan_struc_stmnt_type-if.
 
-* only run for lowest level
-    READ TABLE it_levels WITH KEY level = sy-tabix TRANSPORTING NO FIELDS.
+* continue if it contains ELSEIF or ELSE
+    LOOP AT it_structures TRANSPORTING NO FIELDS
+        WHERE stmnt_from >= <ls_structure>-stmnt_from
+        AND stmnt_to <= <ls_structure>-stmnt_to
+        AND ( stmnt_type = scan_struc_stmnt_type-elseif OR stmnt_type = scan_struc_stmnt_type-else ).
+      EXIT.
+    ENDLOOP.
     IF sy-subrc = 0.
       CONTINUE. " current loop
     ENDIF.
 
-    LOOP AT it_structures ASSIGNING <ls_structure>
-        WHERE stmnt_type = scan_struc_stmnt_type-if
-        AND stmnt_from >= <ls_level>-from
-        AND stmnt_to <= <ls_level>-to.
-
-* continue if it contains ELSEIF or ELSE
-      LOOP AT it_structures TRANSPORTING NO FIELDS
-          WHERE stmnt_from >= <ls_structure>-stmnt_from
-          AND stmnt_to <= <ls_structure>-stmnt_to
-          AND ( stmnt_type = scan_struc_stmnt_type-elseif OR stmnt_type = scan_struc_stmnt_type-else ).
-        EXIT.
-      ENDLOOP.
-      IF sy-subrc = 0.
-        CONTINUE. " current loop
-      ENDIF.
-
 * check that it only contains one IF
-      lv_count = 0.
-      LOOP AT it_structures TRANSPORTING NO FIELDS
-          WHERE stmnt_from > <ls_structure>-stmnt_from
-          AND stmnt_to < <ls_structure>-stmnt_to
-          AND stmnt_type = scan_struc_stmnt_type-if.
-        lv_count = lv_count + 1.
-      ENDLOOP.
-      IF lv_count <> 1.
-        CONTINUE. " current loop
-      ENDIF.
-
-      lv_after_start = statement_keyword(
-          iv_number     = <ls_structure>-stmnt_from + 1
-          it_statements = it_statements
-          it_tokens     = it_tokens ).
-
-      lv_before_end = statement_keyword(
-          iv_number     = <ls_structure>-stmnt_to - 1
-          it_statements = it_statements
-          it_tokens     = it_tokens ).
-
-      IF lv_after_start = 'IF' AND lv_before_end = 'ENDIF'.
-        lv_line = statement_row(
-            iv_number     = <ls_structure>-stmnt_from
-            it_statements = it_statements
-            it_tokens     = it_tokens ).
-
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_level>-name
-                p_line = lv_line
-                p_kind = mv_errty
-                p_test = c_my_name
-                p_code = '001' ).
-      ENDIF.
-
+    lv_count = 0.
+    LOOP AT it_structures TRANSPORTING NO FIELDS
+        WHERE stmnt_from > <ls_structure>-stmnt_from
+        AND stmnt_to < <ls_structure>-stmnt_to
+        AND stmnt_type = scan_struc_stmnt_type-if.
+      lv_count = lv_count + 1.
     ENDLOOP.
+    IF lv_count <> 1.
+      CONTINUE. " current loop
+    ENDIF.
+
+    lv_after_start = statement_keyword(
+        iv_number     = <ls_structure>-stmnt_from + 1
+        it_statements = it_statements
+        it_tokens     = it_tokens ).
+
+    lv_before_end = statement_keyword(
+        iv_number     = <ls_structure>-stmnt_to - 1
+        it_statements = it_statements
+        it_tokens     = it_tokens ).
+
+    IF lv_after_start = 'IF' AND lv_before_end = 'ENDIF'.
+      READ TABLE it_statements ASSIGNING <ls_statement> INDEX <ls_structure>-stmnt_from.
+      ASSERT sy-subrc = 0.
+
+      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      ASSERT sy-subrc = 0.
+
+      lv_include = get_include( p_level = <ls_statement>-level ).
+
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = lv_include
+              p_line = <ls_token>-row
+              p_kind = mv_errty
+              p_test = c_my_name
+              p_code = '001' ).
+    ENDIF.
+
   ENDLOOP.
 
 ENDMETHOD.

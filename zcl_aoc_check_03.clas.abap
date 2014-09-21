@@ -41,44 +41,38 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 METHOD check.
 
   DATA: lv_line    TYPE token_row,
+        lv_include TYPE program,
         lv_index   LIKE sy-tabix.
 
-  FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                 <ls_structure> LIKE LINE OF it_structures.
+  FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures,
+                 <ls_statement> LIKE LINE OF it_statements,
+                 <ls_token>     LIKE LINE OF it_tokens.
 
 
-  LOOP AT it_levels ASSIGNING <ls_level>.
+  LOOP AT it_structures ASSIGNING <ls_structure>
+      WHERE stmnt_type = scan_struc_stmnt_type-try.
+    lv_index = sy-tabix.
 
-* only run for lowest level
-    READ TABLE it_levels WITH KEY level = sy-tabix TRANSPORTING NO FIELDS.
-    IF sy-subrc = 0.
-      CONTINUE. " current loop
+    READ TABLE it_structures
+      WITH KEY stmnt_type = scan_struc_stmnt_type-catch back = lv_index
+      TRANSPORTING NO FIELDS.
+    IF sy-subrc <> 0.
+
+      READ TABLE it_statements ASSIGNING <ls_statement> INDEX <ls_structure>-stmnt_from.
+      ASSERT sy-subrc = 0.
+
+      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      ASSERT sy-subrc = 0.
+
+      lv_include = get_include( p_level = <ls_statement>-level ).
+
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = lv_include
+              p_line = <ls_token>-row
+              p_kind = mv_errty
+              p_test = c_my_name
+              p_code = '001' ).
     ENDIF.
-
-    LOOP AT it_structures ASSIGNING <ls_structure>
-        WHERE stmnt_type = scan_struc_stmnt_type-try
-        AND stmnt_from >= <ls_level>-from
-        AND stmnt_to <= <ls_level>-to.
-      lv_index = sy-tabix.
-
-      READ TABLE it_structures
-        WITH KEY stmnt_type = scan_struc_stmnt_type-catch back = lv_index
-        TRANSPORTING NO FIELDS.
-      IF sy-subrc <> 0.
-        lv_line = statement_row(
-            iv_number     = <ls_structure>-stmnt_from
-            it_statements = it_statements
-            it_tokens     = it_tokens ).
-
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_level>-name
-                p_line = lv_line
-                p_kind = mv_errty
-                p_test = c_my_name
-                p_code = '001' ).
-      ENDIF.
-
-    ENDLOOP.
 
   ENDLOOP.
 

@@ -42,55 +42,47 @@ METHOD check.
 
   DATA: lv_keyword TYPE string,
         lv_line    TYPE token_row,
+        lv_include TYPE program,
         lv_index   LIKE sy-tabix.
 
-  FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                 <ls_statement> LIKE LINE OF it_statements.
+  FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements.
 
 
-  LOOP AT it_levels ASSIGNING <ls_level>.
+  LOOP AT it_statements ASSIGNING <ls_statement>.
+    lv_index = sy-tabix.
 
-* only run for lowest level
-    READ TABLE it_levels WITH KEY level = sy-tabix TRANSPORTING NO FIELDS.
-    IF sy-subrc = 0.
+    lv_keyword = statement_keyword(
+        iv_number     = lv_index
+        it_statements = it_statements
+        it_tokens     = it_tokens ).
+
+    IF lv_keyword <> 'EXIT'.
       CONTINUE. " current loop
     ENDIF.
 
-    LOOP AT it_statements ASSIGNING <ls_statement> FROM <ls_level>-from TO <ls_level>-to.
-      lv_index = sy-tabix.
-
-      lv_keyword = statement_keyword(
-          iv_number     = lv_index
-          it_statements = it_statements
-          it_tokens     = it_tokens ).
-
-      IF lv_keyword <> 'EXIT'.
-        CONTINUE. " current loop
-      ENDIF.
-
-      LOOP AT it_structures TRANSPORTING NO FIELDS
-          WHERE ( stmnt_type = scan_struc_stmnt_type-loop
-          OR stmnt_type = scan_struc_stmnt_type-while
-          OR stmnt_type = scan_struc_stmnt_type-do )
-          AND stmnt_from <= lv_index
-          AND stmnt_to >= lv_index.
-        EXIT. " current loop
-      ENDLOOP.
-      IF sy-subrc <> 0.
-        lv_line = statement_row(
-          iv_number     = lv_index
-          it_statements = it_statements
-          it_tokens     = it_tokens ).
-
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_level>-name
-                p_line = lv_line
-                p_kind = mv_errty
-                p_test = c_my_name
-                p_code = '001' ).
-      ENDIF.
-
+    LOOP AT it_structures TRANSPORTING NO FIELDS
+        WHERE ( stmnt_type = scan_struc_stmnt_type-loop
+        OR stmnt_type = scan_struc_stmnt_type-while
+        OR stmnt_type = scan_struc_stmnt_type-do )
+        AND stmnt_from <= lv_index
+        AND stmnt_to >= lv_index.
+      EXIT. " current loop
     ENDLOOP.
+    IF sy-subrc <> 0.
+      lv_line = statement_row(
+        iv_number     = lv_index
+        it_statements = it_statements
+        it_tokens     = it_tokens ).
+
+      lv_include = get_include( p_level = <ls_statement>-level ).
+
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = lv_include
+              p_line = lv_line
+              p_kind = mv_errty
+              p_test = c_my_name
+              p_code = '001' ).
+    ENDIF.
 
   ENDLOOP.
 
