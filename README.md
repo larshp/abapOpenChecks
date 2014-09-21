@@ -45,3 +45,6 @@ Error if source code contains non 7 bit ASCII characters
 
 ### CHECK_06 - Check for use of pretty printer
 check for use of pretty printer
+
+### CHECK_07 - functional writing style for CALL METHOD
+functional writing style for CALL METHOD
