@@ -117,7 +117,8 @@ METHOD get_source.
 
   IF iv_name(1) = '_'
       OR iv_name = 'FILL_ATT'
-      OR iv_name = 'FILL_ATT_RB'.
+      OR iv_name = 'FILL_ATT_RB'
+      OR iv_name = 'DEL'.
     RETURN.
   ENDIF.
 
