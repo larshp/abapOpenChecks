@@ -32,7 +32,7 @@ METHOD constructor.
   super->constructor( ).
   description = 'abapOpenChecks'.                           "#EC NOTEXT
   category    = 'CL_CI_CATEGORY_TOP'.
-  position    = '900'.
+  position    = '980'.
 
 ENDMETHOD.
 
