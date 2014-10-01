@@ -75,9 +75,15 @@ METHOD check.
     ENDIF.
 
     lv_token = lv_token + 1.
-
     READ TABLE it_tokens ASSIGNING <ls_token> INDEX lv_token.
     IF sy-subrc <> 0 OR <ls_token>-str <> 'METHOD'.
+      CONTINUE. " current loop
+    ENDIF.
+
+    lv_token = lv_token + 1.
+    READ TABLE it_tokens ASSIGNING <ls_token> INDEX lv_token.
+    IF sy-subrc <> 0 OR <ls_token>-str CP '*>(*'.
+* allow dynamic CALL METHOD
       CONTINUE. " current loop
     ENDIF.
 
