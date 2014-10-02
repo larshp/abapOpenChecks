@@ -54,7 +54,7 @@ METHOD check.
       CONTINUE. " current loop
     ENDIF.
 
-    lt_code = get_source( <ls_level>-name ).
+    lt_code = get_source( <ls_level> ).
     LOOP AT lt_code ASSIGNING <lv_code>.
       lv_line = sy-tabix.
       IF strlen( <lv_code> ) > mv_maxlength.

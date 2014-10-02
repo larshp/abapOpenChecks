@@ -44,7 +44,7 @@ protected section.
       !IV_NAME type SEOCLSNAME .
   methods GET_SOURCE
     importing
-      !IV_NAME type LEVEL_NAME
+      !IS_LEVEL type SLEVEL
     returning
       value(RT_CODE) type STRING_TABLE .
 
@@ -115,21 +115,18 @@ METHOD get_source.
   FIELD-SYMBOLS: <ls_source> LIKE LINE OF mt_source.
 
 
-  IF iv_name(1) = '_'
-      OR iv_name = 'FILL_ATT'
-      OR iv_name = 'FILL_ATT_RB'
-      OR iv_name = 'DEL'.
+  IF is_level-type = scan_level_type-macro_define.
     RETURN.
   ENDIF.
 
-  READ TABLE mt_source ASSIGNING <ls_source> WITH KEY name = iv_name.
+  READ TABLE mt_source ASSIGNING <ls_source> WITH KEY name = is_level-name.
   IF sy-subrc = 0.
     rt_code = <ls_source>-code.
   ELSE.
-    READ REPORT iv_name INTO rt_code.                  "#EC CI_READ_REP
+    READ REPORT is_level-name INTO rt_code.            "#EC CI_READ_REP
     ASSERT sy-subrc = 0.
 
-    ls_source-name = iv_name.
+    ls_source-name = is_level-name.
     ls_source-code = rt_code.
     INSERT ls_source INTO TABLE mt_source.
   ENDIF.

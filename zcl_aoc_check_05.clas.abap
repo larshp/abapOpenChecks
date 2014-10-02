@@ -57,7 +57,7 @@ METHOD check.
   lo_obj = cl_abap_conv_out_ce=>create( encoding = '4102' ).
 
   LOOP AT it_levels ASSIGNING <ls_level>.
-    lt_code = get_source( <ls_level>-name ).
+    lt_code = get_source( <ls_level> ).
     LOOP AT lt_code ASSIGNING <lv_code>.
       lv_line = sy-tabix.
 

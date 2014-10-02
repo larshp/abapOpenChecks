@@ -66,7 +66,7 @@ METHOD check.
       CONTINUE. " current loop
     ENDIF.
 
-    lt_code = get_source( <ls_level>-name ).
+    lt_code = get_source( <ls_level> ).
 
 * only run for lowest level
     READ TABLE it_levels WITH KEY level = sy-tabix TRANSPORTING NO FIELDS.
