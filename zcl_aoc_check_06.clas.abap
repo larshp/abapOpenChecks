@@ -86,7 +86,7 @@ METHOD check.
 
 * check first token in statement, this is always a keyword
       READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-      ASSERT sy-subrc = 0.
+      CHECK sy-subrc = 0.
 
       IF <ls_token>-row = 0.
 * in case of macros

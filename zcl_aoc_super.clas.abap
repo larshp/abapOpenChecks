@@ -181,10 +181,12 @@ METHOD statement_keyword.
   READ TABLE it_statements ASSIGNING <ls_statement> INDEX iv_number.
   ASSERT sy-subrc = 0.
 
-  READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-  ASSERT sy-subrc = 0.
+  IF <ls_statement>-from <= <ls_statement>-to.
+    READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+    ASSERT sy-subrc = 0.
 
-  rv_result = <ls_token>-str.
+    rv_result = <ls_token>-str.
+  ENDIF.
 
 ENDMETHOD.
 
