@@ -79,6 +79,11 @@ METHOD check.
         AND type <> scan_stmnt_type-macro_call.
       lv_statement = sy-tabix.
 
+      IF <ls_statement>-type = scan_stmnt_type-empty.
+* it messes up if there are empty statements, remove the empty statement
+        EXIT.
+      ENDIF.
+
 * check first token in statement, this is always a keyword
       READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       CHECK sy-subrc = 0.

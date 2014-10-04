@@ -18,7 +18,8 @@ CLASS lcl_test DEFINITION FOR TESTING
     METHODS: setup,
              test001_01 FOR TESTING,
              test001_02 FOR TESTING,
-             test001_03 FOR TESTING.
+             test001_03 FOR TESTING,
+             test001_04 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -76,5 +77,22 @@ CLASS lcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.                    "test001_03
+
+  METHOD test001_04.
+* ===========
+
+    _code 'DATA: lv_a TYPE i,    '.
+    _code '      lv_b TYPE i.    '.
+    _code '                      '.
+    _code 'WRITE: / ''foobar''.  '.
+    _code '.                     '.
+    _code 'lv_a = lv_b.          '.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Test
