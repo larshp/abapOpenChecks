@@ -60,7 +60,8 @@ METHOD check.
 
     IF <ls_statement>-level = lv_prev_level AND <ls_token_from>-row = lv_prev_row.
       READ TABLE it_levels ASSIGNING <ls_level> INDEX <ls_statement>-level.
-      IF sy-subrc = 0 AND <ls_level>-type = scan_level_type-macro_define.
+      IF sy-subrc = 0 AND ( <ls_level>-type = scan_level_type-macro_define
+          OR <ls_level>-type = scan_level_type-macro_trmac ).
         CONTINUE.
       ENDIF.
 

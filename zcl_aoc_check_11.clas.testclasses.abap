@@ -77,7 +77,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_03
 
   METHOD test001_04.
 * ===========
@@ -91,7 +91,7 @@ CLASS lcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_04
 
   METHOD test001_05.
 * ===========
@@ -106,7 +106,7 @@ CLASS lcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_05
 
   METHOD test001_06.
 * ===========
@@ -120,6 +120,6 @@ CLASS lcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_06
 
 ENDCLASS.       "lcl_Test
