@@ -47,6 +47,9 @@ METHOD check.
 
   FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
                  <ls_token>     LIKE LINE OF it_tokens,
+                 <ls_token1>    LIKE LINE OF it_tokens,
+                 <ls_token2>    LIKE LINE OF it_tokens,
+                 <ls_token3>    LIKE LINE OF it_tokens,
                  <ls_statement> LIKE LINE OF it_statements.
 
 
@@ -55,9 +58,36 @@ METHOD check.
       OR type = scan_stmnt_type-method_direct.
     lv_statement = sy-tabix.
 
+    lv_token = <ls_statement>-from.
+    READ TABLE it_tokens ASSIGNING <ls_token1> INDEX lv_token.
+    IF sy-subrc <> 0.
+      CONTINUE. " current loop
+    ENDIF.
+    lv_token = lv_token + 1.
+    READ TABLE it_tokens ASSIGNING <ls_token2> INDEX lv_token.
+    IF sy-subrc <> 0.
+      CONTINUE. " current loop
+    ENDIF.
+    lv_token = lv_token + 1.
+    READ TABLE it_tokens ASSIGNING <ls_token3> INDEX lv_token.
+    IF sy-subrc <> 0.
+      CONTINUE. " current loop
+    ENDIF.
+
+    IF <ls_token3>-str CP '*>(*'.
+* allow dynamic calls
+      CONTINUE.
+    ENDIF.
+
     LOOP AT it_tokens ASSIGNING <ls_token>
         FROM <ls_statement>-from TO <ls_statement>-to
-        WHERE str = 'RECEIVING'.
+        WHERE str = 'RECEIVING'
+        AND type = scan_token_type-identifier.
+
+      IF <ls_token1>-str = 'CALL' OR <ls_token2>-str = 'BADI'.
+        EXIT.
+      ENDIF.
+
       lv_include = get_include( p_level = <ls_statement>-level ).
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
@@ -67,30 +97,14 @@ METHOD check.
               p_code         = '002' ).
     ENDLOOP.
 
-    lv_token = <ls_statement>-from.
-
-    READ TABLE it_tokens ASSIGNING <ls_token> INDEX lv_token.
-    IF sy-subrc <> 0 OR <ls_token>-str <> 'CALL'.
-      CONTINUE. " current loop
-    ENDIF.
-
-    lv_token = lv_token + 1.
-    READ TABLE it_tokens ASSIGNING <ls_token> INDEX lv_token.
-    IF sy-subrc <> 0 OR <ls_token>-str <> 'METHOD'.
-      CONTINUE. " current loop
-    ENDIF.
-
-    lv_token = lv_token + 1.
-    READ TABLE it_tokens ASSIGNING <ls_token> INDEX lv_token.
-    IF sy-subrc <> 0 OR <ls_token>-str CP '*>(*'.
-* allow dynamic CALL METHOD
+    IF  <ls_token1>-str <> 'CALL' OR  <ls_token2>-str <> 'METHOD'.
       CONTINUE. " current loop
     ENDIF.
 
     lv_include = get_include( p_level = <ls_statement>-level ).
     inform( p_sub_obj_type = c_type_include
             p_sub_obj_name = lv_include
-            p_line         = <ls_token>-row
+            p_line         = <ls_token1>-row
             p_kind         = mv_errty
             p_test         = c_my_name
             p_code         = '001' ).
