@@ -48,9 +48,13 @@ METHOD check.
                  <lv_code>  LIKE LINE OF lt_code.
 
 
-  LOOP AT it_levels ASSIGNING <ls_level>.
+  LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
 * skip class definitions, they are auto generated(in most cases)
-    IF strlen( <ls_level>-name ) = 32 AND <ls_level>-name+30(2) = 'CU'.
+    IF strlen( <ls_level>-name ) = 32
+        AND ( <ls_level>-name+30(2) = 'CU'
+        OR <ls_level>-name+30(2) = 'CO'
+        OR <ls_level>-name+30(2) = 'CI'
+        OR <ls_level>-name+30(2) = 'CP' ).
       CONTINUE. " current loop
     ENDIF.
 

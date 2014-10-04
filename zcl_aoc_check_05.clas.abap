@@ -56,7 +56,7 @@ METHOD check.
 * convert to UTF-16BE
   lo_obj = cl_abap_conv_out_ce=>create( encoding = '4102' ).
 
-  LOOP AT it_levels ASSIGNING <ls_level>.
+  LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program..
     lt_code = get_source( <ls_level> ).
     LOOP AT lt_code ASSIGNING <lv_code>.
       lv_line = sy-tabix.

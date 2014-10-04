@@ -98,6 +98,11 @@ ENDMETHOD.
 
 METHOD get_include.
 
+  IF p_level = 0.
+* in case INCLUDE doesnt exist in the system
+    RETURN.
+  ENDIF.
+
   IF ref_scan IS BOUND.
 * not bound during unit testing
     p_result = super->get_include(
@@ -115,7 +120,8 @@ METHOD get_source.
   FIELD-SYMBOLS: <ls_source> LIKE LINE OF mt_source.
 
 
-  IF is_level-type = scan_level_type-macro_define.
+  IF is_level-type = scan_level_type-macro_define
+      OR is_level-type = scan_level_type-macro_trmac.
     RETURN.
   ENDIF.
 

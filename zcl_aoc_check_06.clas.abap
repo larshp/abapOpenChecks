@@ -57,22 +57,17 @@ METHOD check.
 
 * todo, this is too simple
 
-  LOOP AT it_levels ASSIGNING <ls_level>.
+  LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
 * skip class definitions, they are auto generated(in most cases)
     IF strlen( <ls_level>-name ) = 32
         AND ( <ls_level>-name+30(2) = 'CU'
         OR <ls_level>-name+30(2) = 'CO'
-        OR <ls_level>-name+30(2) = 'CI' ).
+        OR <ls_level>-name+30(2) = 'CI'
+        OR <ls_level>-name+30(2) = 'CP' ).
       CONTINUE. " current loop
     ENDIF.
 
     lt_code = get_source( <ls_level> ).
-
-* only run for lowest level
-    READ TABLE it_levels WITH KEY level = sy-tabix TRANSPORTING NO FIELDS.
-    IF sy-subrc = 0.
-      CONTINUE. " current loop
-    ENDIF.
 
     LOOP AT it_statements ASSIGNING <ls_statement>
         FROM <ls_level>-from TO <ls_level>-to
@@ -101,6 +96,10 @@ METHOD check.
 * ASSERT sy-subrc = 0.
 
       lv_offset = <ls_token>-col.
+      IF strlen( <lv_code> ) < lv_offset + <ls_token>-len1.
+* it breaks for INCLUDEs
+        EXIT.
+      ENDIF.
       lv_code = <lv_code>+lv_offset(<ls_token>-len1).
       lv_lower = lv_code.
       lv_upper = lv_code.
