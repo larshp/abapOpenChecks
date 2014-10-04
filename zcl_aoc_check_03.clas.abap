@@ -40,8 +40,8 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
 METHOD check.
 
-  DATA: lv_line    TYPE token_row,
-        lv_include TYPE program,
+  DATA: lv_include TYPE program,
+        lv_found   TYPE abap_bool,
         lv_index   LIKE sy-tabix.
 
   FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures,
@@ -53,10 +53,23 @@ METHOD check.
       WHERE stmnt_type = scan_struc_stmnt_type-try.
     lv_index = sy-tabix.
 
+    lv_found = abap_false.
+
     READ TABLE it_structures
       WITH KEY stmnt_type = scan_struc_stmnt_type-catch back = lv_index
       TRANSPORTING NO FIELDS.
-    IF sy-subrc <> 0.
+    IF sy-subrc = 0.
+      lv_found = abap_true.
+    ENDIF.
+
+    READ TABLE it_structures
+      WITH KEY stmnt_type = scan_struc_stmnt_type-cleanup back = lv_index
+      TRANSPORTING NO FIELDS.
+    IF sy-subrc = 0.
+      lv_found = abap_true.
+    ENDIF.
+
+    IF lv_found = abap_false.
 
       READ TABLE it_statements ASSIGNING <ls_statement> INDEX <ls_structure>-stmnt_from.
       ASSERT sy-subrc = 0.

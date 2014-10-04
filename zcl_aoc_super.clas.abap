@@ -145,7 +145,10 @@ ENDMETHOD.
 METHOD inform.
 
 * skip standard code, todo: namespaces
-  IF p_sub_obj_name(1) <> 'Z' AND p_sub_obj_name(1) <> 'Y'.
+  IF p_sub_obj_name(1) <> 'Z'
+      AND p_sub_obj_name(1) <> 'Y'
+      AND p_sub_obj_name <> ''
+      AND p_sub_obj_name <> '----------------------------------------'.
     RETURN.
   ENDIF.
 

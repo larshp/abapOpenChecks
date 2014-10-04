@@ -41,7 +41,6 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 METHOD check.
 
   DATA: lv_after_start TYPE string,
-        lv_line        TYPE token_row,
         lv_count       TYPE i,
         lv_include     TYPE program,
         lv_before_end  TYPE string.
@@ -58,7 +57,8 @@ METHOD check.
     LOOP AT it_structures TRANSPORTING NO FIELDS
         WHERE stmnt_from >= <ls_structure>-stmnt_from
         AND stmnt_to <= <ls_structure>-stmnt_to
-        AND ( stmnt_type = scan_struc_stmnt_type-elseif OR stmnt_type = scan_struc_stmnt_type-else ).
+        AND ( stmnt_type = scan_struc_stmnt_type-elseif
+        OR stmnt_type = scan_struc_stmnt_type-else ).
       EXIT.
     ENDLOOP.
     IF sy-subrc = 0.

@@ -41,12 +41,9 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
 METHOD check.
 
   DATA: lv_token     LIKE sy-tabix,
-        lv_include   TYPE sobj_name,
-        lv_statement LIKE sy-tabix,
-        lv_line      TYPE token_row.
+        lv_include   TYPE sobj_name.
 
-  FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                 <ls_token>     LIKE LINE OF it_tokens,
+  FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
                  <ls_token1>    LIKE LINE OF it_tokens,
                  <ls_token2>    LIKE LINE OF it_tokens,
                  <ls_token3>    LIKE LINE OF it_tokens,
@@ -56,7 +53,6 @@ METHOD check.
   LOOP AT it_statements ASSIGNING <ls_statement>
       WHERE type = scan_stmnt_type-standard
       OR type = scan_stmnt_type-method_direct.
-    lv_statement = sy-tabix.
 
     lv_token = <ls_statement>-from.
     READ TABLE it_tokens ASSIGNING <ls_token1> INDEX lv_token.
