@@ -43,6 +43,7 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
 METHOD check.
 
   DATA: lt_code      TYPE string_table,
+        lv_level     TYPE stmnt_levl,
         lv_statement TYPE i,
         lv_error     TYPE abap_bool,
         lv_code      TYPE string,
@@ -58,6 +59,8 @@ METHOD check.
 * todo, this is too simple
 
   LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    lv_level = sy-tabix.
+
 * skip class definitions, they are auto generated(in most cases)
     IF strlen( <ls_level>-name ) = 32
         AND ( <ls_level>-name+30(2) = 'CU'
@@ -70,13 +73,13 @@ METHOD check.
     lt_code = get_source( <ls_level> ).
 
     LOOP AT it_statements ASSIGNING <ls_statement>
-        FROM <ls_level>-from TO <ls_level>-to
         WHERE type <> scan_stmnt_type-comment
         AND type <> scan_stmnt_type-comment_in_stmnt
         AND type <> scan_stmnt_type-compute_direct
         AND type <> scan_stmnt_type-method_direct
         AND type <> scan_stmnt_type-trmac_call
-        AND type <> scan_stmnt_type-macro_call.
+        AND type <> scan_stmnt_type-macro_call
+        AND level = lv_level.
       lv_statement = sy-tabix.
 
       IF <ls_statement>-type = scan_stmnt_type-empty.
@@ -86,25 +89,12 @@ METHOD check.
 
 * check first token in statement, this is always a keyword
       READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-      CHECK sy-subrc = 0.
-
-      IF <ls_token>-row = 0.
-* in case of macros
-        CONTINUE. " current loop
-      ENDIF.
+      CHECK sy-subrc = 0 AND <ls_token>-type = scan_token_type-identifier.
 
       READ TABLE lt_code ASSIGNING <lv_code> INDEX <ls_token>-row.
-      IF sy-subrc <> 0.
-        CONTINUE.
-      ENDIF.
-* todo, how to handle INCLUDE
-* ASSERT sy-subrc = 0.
+      ASSERT sy-subrc = 0.
 
       lv_offset = <ls_token>-col.
-      IF strlen( <lv_code> ) < lv_offset + <ls_token>-len1.
-* it breaks for INCLUDEs
-        EXIT.
-      ENDIF.
       lv_code = <lv_code>+lv_offset(<ls_token>-len1).
       lv_lower = lv_code.
       lv_upper = lv_code.
