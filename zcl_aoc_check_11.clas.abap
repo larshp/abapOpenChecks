@@ -65,6 +65,10 @@ METHOD check.
       ENDIF.
 
       lv_include = get_include( p_level = <ls_statement>-level ).
+      IF lv_include+30(2) = 'CU'      " class public include
+          OR lv_include+30(2) = 'CI'. " class private include
+        CONTINUE. " current loop
+      ENDIF.
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
               p_line         = <ls_token_from>-row
