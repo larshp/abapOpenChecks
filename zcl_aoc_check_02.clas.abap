@@ -63,7 +63,8 @@ METHOD check.
     LOOP AT it_structures TRANSPORTING NO FIELDS
         WHERE ( stmnt_type = scan_struc_stmnt_type-loop
         OR stmnt_type = scan_struc_stmnt_type-while
-        OR stmnt_type = scan_struc_stmnt_type-do )
+        OR stmnt_type = scan_struc_stmnt_type-do
+        OR stmnt_type = scan_struc_stmnt_type-select )
         AND stmnt_from <= lv_index
         AND stmnt_to >= lv_index.
       EXIT. " current loop
