@@ -165,8 +165,9 @@ METHOD inform.
       p_param_3      = p_param_3
       p_param_4      = p_param_4
       p_inclspec     = p_inclspec
-      p_detail       = p_detail
-      p_checksum_1   = p_checksum_1 ).
+*      p_detail       = p_detail    does not exist in 730
+*      p_checksum_1   = p_checksum_1
+      ).
 
 ENDMETHOD.
 
