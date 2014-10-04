@@ -57,6 +57,10 @@ METHOD check.
         OR <ls_level>-name+30(2) = 'CP' ).
       CONTINUE. " current loop
     ENDIF.
+    IF <ls_level>-name(8) = '/1BCWDY/'.
+* todo, web dynpro
+      RETURN.
+    ENDIF.
 
     lt_code = get_source( <ls_level> ).
     LOOP AT lt_code ASSIGNING <lv_code>.
