@@ -62,7 +62,7 @@ METHOD check.
        WITH ANALYSIS
        WITH COMMENTS.
 
-  CLEAR GS_RESULT.
+  CLEAR gs_result.
   SET HANDLER handler FOR io_check.
 
   io_check->set_source( iv_name = '----------------------------------------'
@@ -74,7 +74,7 @@ METHOD check.
       it_levels     = lt_levels
       it_structures = lt_structures ).
 
-  rs_result = GS_RESULT.
+  rs_result = gs_result.
 
 ENDMETHOD.
 

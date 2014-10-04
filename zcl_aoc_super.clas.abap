@@ -5,9 +5,9 @@ class ZCL_AOC_SUPER definition
   create public .
 
 public section.
+
 *"* public components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
-
   methods CHECK
     importing
       !IT_TOKENS type STOKESX_TAB
@@ -22,9 +22,9 @@ public section.
   methods RUN
     redefinition .
 protected section.
+
 *"* protected components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
-
   class-methods STATEMENT_KEYWORD
     importing
       !IV_NUMBER type STMNT_NR
@@ -49,6 +49,8 @@ protected section.
       value(RT_CODE) type STRING_TABLE .
 
   methods GET_INCLUDE
+    redefinition .
+  methods INFORM
     redefinition .
 PRIVATE SECTION.
 *"* private components of class ZCL_AOC_SUPER
@@ -136,6 +138,35 @@ METHOD get_source.
     ls_source-code = rt_code.
     INSERT ls_source INTO TABLE mt_source.
   ENDIF.
+
+ENDMETHOD.
+
+
+METHOD inform.
+
+* skip standard code, todo: namespaces
+  IF p_sub_obj_name(1) <> 'Z' AND p_sub_obj_name(1) <> 'Y'.
+    RETURN.
+  ENDIF.
+
+  super->inform(
+      p_sub_obj_type = p_sub_obj_type
+      p_sub_obj_name = p_sub_obj_name
+      p_position     = p_position
+      p_line         = p_line
+      p_column       = p_column
+      p_errcnt       = p_errcnt
+      p_kind         = p_kind
+      p_test         = p_test
+      p_code         = p_code
+      p_suppress     = p_suppress
+      p_param_1      = p_param_1
+      p_param_2      = p_param_2
+      p_param_3      = p_param_3
+      p_param_4      = p_param_4
+      p_inclspec     = p_inclspec
+      p_detail       = p_detail
+      p_checksum_1   = p_checksum_1 ).
 
 ENDMETHOD.
 
