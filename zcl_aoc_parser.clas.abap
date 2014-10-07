@@ -28,35 +28,62 @@ private section.
 *"* do not include other source files here!!!
 
   class-data GT_SYNTAX type SYNTAX_TT .
-  class-data GT_STACK type STRING_TABLE .
-  class-data GV_INDEX type I .
+  class-data GT_TOKENS type STRING_TABLE .
 
-  type-pools ABAP .
   class-methods RULE
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_INDEX type I
     returning
-      value(RV_MATCH) type ABAP_BOOL .
+      value(RS_RESULT) type ST_RETURN .
   class-methods RULE_ALTERNATIVE
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_INDEX type I
     returning
-      value(RV_MATCH) type ABAP_BOOL .
+      value(RS_RETURN) type ST_RETURN .
   class-methods RULE_NONTERMINAL
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_INDEX type I
     returning
-      value(RV_MATCH) type ABAP_BOOL .
+      value(RS_RETURN) type ST_RETURN .
+  class-methods RULE_ITERATION
+    importing
+      !II_RULE type ref to IF_IXML_NODE
+      !IV_INDEX type I
+    returning
+      value(RS_RETURN) type ST_RETURN .
+  class-methods RULE_OPTION
+    importing
+      !II_RULE type ref to IF_IXML_NODE
+      !IV_INDEX type I
+    returning
+      value(RS_RETURN) type ST_RETURN .
+  class-methods RULE_PERMUTATION
+    importing
+      !II_RULE type ref to IF_IXML_NODE
+      !IV_INDEX type I
+    returning
+      value(RS_RETURN) type ST_RETURN .
   class-methods RULE_SEQUENCE
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_INDEX type I
     returning
-      value(RV_MATCH) type ABAP_BOOL .
+      value(RS_RETURN) type ST_RETURN .
+  class-methods RULE_ROLE
+    importing
+      !II_RULE type ref to IF_IXML_NODE
+      !IV_INDEX type I
+    returning
+      value(RS_RETURN) type ST_RETURN .
   class-methods RULE_TERMINAL
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_INDEX type I
     returning
-      value(RV_MATCH) type ABAP_BOOL .
+      value(RS_RETURN) type ST_RETURN .
   class-methods XML_GET
     importing
       !IV_RULENAME type STRING
@@ -84,7 +111,7 @@ ENDMETHOD.
 METHOD parse.
 
   DATA: lv_rulename TYPE string,
-        lv_match    TYPE abap_bool.
+        ls_return   TYPE st_return.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
                  <ls_token>     LIKE LINE OF it_tokens.
@@ -94,22 +121,29 @@ METHOD parse.
 
   LOOP AT it_statements ASSIGNING <ls_statement>.
 
-    CLEAR gt_stack.
+    CLEAR gt_tokens.
     LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
-      APPEND <ls_token>-str TO gt_stack.
+      APPEND <ls_token>-str TO gt_tokens.
     ENDLOOP.
 
-    gv_index = 1.
-    READ TABLE gt_stack INDEX gv_index INTO lv_rulename.
+    READ TABLE gt_tokens INDEX 1 INTO lv_rulename.
 
     li_rule = xml_get( lv_rulename ).
 
-    rv_match = zcl_aoc_parser=>rule( li_rule ).
-    IF rv_match = abap_false.
+    ls_return = zcl_aoc_parser=>rule( ii_rule  = li_rule
+                                      iv_index = 1 ).
+    IF ls_return-match = abap_false.
+      rv_match = abap_false.
+      RETURN.
+    ENDIF.
+    IF ls_return-match = abap_true AND ls_return-index - 1 <> lines( gt_tokens ).
+      rv_match = abap_false.
       RETURN.
     ENDIF.
 
   ENDLOOP.
+
+  rv_match = abap_true.
 
 ENDMETHOD.
 
@@ -140,13 +174,29 @@ METHOD rule.
   lv_name = ii_rule->get_name( ).
   CASE lv_name.
     WHEN 'Sequence'.
-      rv_match = rule_sequence( ii_rule ).
+      rs_result = rule_sequence( ii_rule  = ii_rule
+                                 iv_index = iv_index ).
     WHEN 'Alternative'.
-      rv_match = rule_alternative( ii_rule  ).
+      rs_result = rule_alternative( ii_rule  = ii_rule
+                                    iv_index = iv_index ).
     WHEN 'Nonterminal'.
-      rv_match = rule_nonterminal( ii_rule ).
+      rs_result = rule_nonterminal( ii_rule  = ii_rule
+                                    iv_index = iv_index ).
     WHEN 'Terminal'.
-      rv_match = rule_terminal( ii_rule ).
+      rs_result = rule_terminal( ii_rule  = ii_rule
+                                 iv_index = iv_index ).
+    WHEN 'Role'.
+      rs_result = rule_role( ii_rule  = ii_rule
+                             iv_index = iv_index ).
+    WHEN 'Option'.
+      rs_result = rule_option( ii_rule  = ii_rule
+                               iv_index = iv_index ).
+    WHEN 'Permutation'.
+      rs_result = rule_permutation( ii_rule  = ii_rule
+                                    iv_index = iv_index ).
+    WHEN 'Iteration'.
+      rs_result = rule_iteration( ii_rule  = ii_rule
+                                  iv_index = iv_index ).
     WHEN OTHERS.
       BREAK-POINT.
   ENDCASE.
@@ -157,15 +207,49 @@ ENDMETHOD.
 METHOD rule_alternative.
 
   DATA: li_children TYPE REF TO if_ixml_node_list,
-        li_child    TYPE REF TO if_ixml_node.
+        li_child    TYPE REF TO if_ixml_node,
+        lv_best     TYPE i.
 
 
   li_children = ii_rule->get_children( ).
+
   DO li_children->get_length( ) TIMES.
     li_child = li_children->get_item( sy-index - 1 ).
     li_child = li_child->get_first_child( ). " get rid of <Alt> tag
-* todo, match
-    rule( li_child ).
+    rs_return = rule( ii_rule  = li_child
+                      iv_index = iv_index ).
+    IF rs_return-match = abap_true AND rs_return-index > lv_best.
+      lv_best = rs_return-index.
+    ENDIF.
+  ENDDO.
+
+  IF lv_best IS INITIAL.
+    rs_return-match = abap_false.
+    rs_return-index = iv_index.
+  ELSE.
+    rs_return-match = abap_true.
+    rs_return-index = lv_best.
+  ENDIF.
+
+ENDMETHOD.
+
+
+METHOD rule_iteration.
+
+  DATA: li_child    TYPE REF TO if_ixml_node,
+        lv_index    TYPE i.
+
+
+  li_child = ii_rule->get_first_child( ).
+
+  lv_index = iv_index.
+  DO.
+    rs_return = rule( ii_rule  = li_child
+                      iv_index = lv_index ).
+    IF rs_return-index = lv_index.
+      EXIT. " current loop
+    ENDIF.
+    lv_index = rs_return-index.
   ENDDO.
 
 ENDMETHOD.
@@ -174,13 +258,84 @@ ENDMETHOD.
 METHOD rule_nonterminal.
 
   DATA: lv_rulename TYPE string,
-        li_rule TYPE REF TO if_ixml_node.
+        li_rule     TYPE REF TO if_ixml_node.
 
 
   lv_rulename = ii_rule->get_value( ).
 
   li_rule = xml_get( lv_rulename ).
-  rv_match = rule( li_rule ).
+  rs_return = rule( ii_rule  = li_rule
+                    iv_index = iv_index ).
+
+ENDMETHOD.
+
+
+METHOD rule_option.
+
+  DATA: li_child TYPE REF TO if_ixml_node.
+
+
+  li_child = ii_rule->get_first_child( ).
+
+  rs_return = rule( ii_rule  = li_child
+                    iv_index = iv_index ).
+  IF rs_return-match = abap_false.
+    rs_return-match = abap_true.
+    rs_return-index = iv_index.
+  ENDIF.
+
+ENDMETHOD.
+
+
+METHOD rule_permutation.
+
+  DATA: li_children TYPE REF TO if_ixml_node_list,
+        li_child    TYPE REF TO if_ixml_node,
+        lt_per      TYPE TABLE OF REF TO if_ixml_node,
+        lv_index    TYPE i,
+        ls_return   TYPE st_return.
+
+
+  li_children = ii_rule->get_children( ).
+  DO li_children->get_length( ) TIMES.
+    li_child = li_children->get_item( sy-index - 1 ).
+    li_child = li_child->get_first_child( ). " get rid of <Per> tag
+    APPEND li_child TO lt_per.
+  ENDDO.
+
+  lv_index = iv_index.
+
+* todo, do multiple times
+  LOOP AT lt_per INTO li_child.
+    ls_return = rule( ii_rule  = li_child
+                      iv_index = lv_index ).
+    IF ls_return-match = abap_true.
+      lv_index = ls_return-index.
+    ENDIF.
+  ENDLOOP.
+
+  rs_return-match = abap_true.
+  rs_return-index = lv_index.
+
+ENDMETHOD.
+
+
+METHOD rule_role.
+
+  DATA: lv_role  TYPE string,
+        lv_stack TYPE string.
+
+
+  lv_role = ii_rule->get_value( ).
+
+  READ TABLE gt_tokens INDEX iv_index INTO lv_stack.
+  IF sy-subrc = 0.
+    rs_return-match = abap_true.
+    rs_return-index = iv_index + 1.
+  ELSE.
+    rs_return-match = abap_false.
+    rs_return-index = iv_index.
+  ENDIF.
 
 ENDMETHOD.
 
@@ -193,10 +348,15 @@ METHOD rule_sequence.
 
   li_children = ii_rule->get_children( ).
 
+  rs_return-index = iv_index.
+
   DO li_children->get_length( ) TIMES.
     li_child = li_children->get_item( sy-index - 1 ).
-* todo, match
-    rule( li_child ).
+    rs_return = rule( ii_rule  = li_child
+                      iv_index = rs_return-index ).
+    IF rs_return = abap_false.
+      RETURN.
+    ENDIF.
   ENDDO.
 
 ENDMETHOD.
@@ -210,11 +370,13 @@ METHOD rule_terminal.
 
   lv_terminal = ii_rule->get_value( ).
 
-  READ TABLE gt_stack INDEX gv_index INTO lv_stack.
+  READ TABLE gt_tokens INDEX iv_index INTO lv_stack.
   IF lv_stack = lv_terminal.
-    rv_match = abap_true.
+    rs_return-match = abap_true.
+    rs_return-index = iv_index + 1.
   ELSE.
-    rv_match = abap_false.
+    rs_return-match = abap_false.
+    rs_return-index = iv_index.
   ENDIF.
 
 ENDMETHOD.
@@ -230,7 +392,13 @@ METHOD xml_get.
     BREAK-POINT.
   ENDIF.
 
+  REPLACE REGEX '<Terminal>([A-Z]*)</Terminal><Terminal>#NWS_MINUS_NWS#</Terminal><Terminal>([A-Z]*)</Terminal>'
+    IN <ls_syntax>-description
+    WITH '<Terminal>$1-$2</Terminal>' IGNORING CASE.
+
   ri_rule = xml_parse( <ls_syntax>-description ).
+
+* todo, better caching
 
 ENDMETHOD.
 
