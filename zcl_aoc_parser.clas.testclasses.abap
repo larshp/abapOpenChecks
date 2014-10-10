@@ -43,7 +43,8 @@ CLASS lcl_test DEFINITION FOR TESTING
              call_method3    FOR TESTING,
              call_method4    FOR TESTING,
              call_method5    FOR TESTING,
-             data1           ,"FOR TESTING, todo: IterationOption
+             call_method6    FOR TESTING,
+             data1           ,"FOR TESTING, todo: iterationoption
              write1          FOR TESTING,
              write2          FOR TESTING,
              write3          FOR TESTING,
@@ -53,6 +54,7 @@ CLASS lcl_test DEFINITION FOR TESTING
              compute2        FOR TESTING,
              if1             FOR TESTING,
              if2             FOR TESTING,
+             if3             FOR TESTING,
              wait1           FOR TESTING,
              wait2           FOR TESTING,
              code1           FOR TESTING,
@@ -61,7 +63,16 @@ CLASS lcl_test DEFINITION FOR TESTING
              call_function1  FOR TESTING,
              concatenate1    FOR TESTING,
              create_object1  FOR TESTING,
-             create_object2  FOR TESTING.
+             create_object2  FOR TESTING,
+             non_code1       FOR TESTING,
+             non_code2       FOR TESTING,
+             non_code3       FOR TESTING,
+             non_code4       FOR TESTING,
+             non_code5       FOR TESTING,
+             non_code6       FOR TESTING,
+             non_code7       FOR TESTING,
+             non_code8       FOR TESTING,
+             non_code9       FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -533,6 +544,21 @@ CLASS lcl_test IMPLEMENTATION.
 
   ENDMETHOD.                    "call_method5
 
+  METHOD call_method6.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+
+    _code 'go_grid->check_changed_data( ).'.
+
+    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_true
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "call_method6
+
   METHOD data1.
 
     DATA: lt_code  TYPE string_table,
@@ -683,6 +709,23 @@ CLASS lcl_test IMPLEMENTATION.
 
   ENDMETHOD.                    "if2
 
+  METHOD if3.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+
+    _code 'IF gt_table[] IS NOT INITIAL.  '.
+    _code '  PERFORM something.           '.
+    _code 'ENDIF.                         '.
+
+    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_true
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "if3
+
   METHOD wait1.
 
     DATA: lt_code  TYPE string_table,
@@ -825,5 +868,131 @@ CLASS lcl_test IMPLEMENTATION.
                                         act = lv_match ).
 
   ENDMETHOD.                    "create_object2
+
+  METHOD non_code1.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code 'update loop foobar.'.
+
+    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_false
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "non_code1
+
+  METHOD non_code2.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code 'missing.'.
+
+    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_false
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "non_code2
+
+  METHOD non_code3.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code 'item.'.
+
+    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_false
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "non_code3
+
+  METHOD non_code4.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code '11.111.'.
+
+    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_false
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "non_code4
+
+  METHOD non_code5.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code 'expected.'.
+
+    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_false
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "non_code5
+
+  METHOD non_code6.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code 'IF something is something then do.'.
+
+    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_false
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "non_code6
+
+  METHOD non_code7.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code 'attachment.'.
+
+    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_false
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "non_code7
+
+  METHOD non_code8.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code '12345679.'.
+
+    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_false
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "non_code8
+
+  METHOD non_code9.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code 'Call 911.'.
+
+    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_false
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "non_code9
 
 ENDCLASS.       "lcl_Test

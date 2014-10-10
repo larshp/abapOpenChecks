@@ -119,7 +119,7 @@ METHOD parse.
 
   DATA: li_rule TYPE REF TO if_ixml_node.
 
-  LOOP AT it_statements ASSIGNING <ls_statement>.
+  LOOP AT it_statements ASSIGNING <ls_statement> WHERE terminator = '.'.
 
     CLEAR gt_tokens.
     LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
@@ -128,6 +128,7 @@ METHOD parse.
 
     READ TABLE gt_tokens INDEX 1 INTO lv_rulename.
 
+* todo, always start with rule = START?
     li_rule = xml_get( lv_rulename ).
 
     ls_return = zcl_aoc_parser=>rule( ii_rule  = li_rule
@@ -143,7 +144,11 @@ METHOD parse.
 
   ENDLOOP.
 
-  rv_match = abap_true.
+  IF sy-subrc = 0.
+    rv_match = abap_true.
+  ELSE.
+    rv_match = abap_false.
+  ENDIF.
 
 ENDMETHOD.
 
@@ -198,6 +203,8 @@ METHOD rule.
     WHEN 'Iteration'.
       rs_return = rule_iteration( ii_rule  = ii_rule
                                   iv_index = iv_index ).
+    WHEN 'Optionlist'.
+* todo
     WHEN OTHERS.
       BREAK-POINT.
   ENDCASE.
@@ -253,7 +260,11 @@ METHOD rule_iteration.
     lv_index = rs_return-index.
   ENDDO.
 
-  rs_return-match = abap_true.
+  IF rs_return-index <> iv_index.
+    rs_return-match = abap_true.
+  ELSE.
+    rs_return-match = abap_false.
+  ENDIF.
 
 ENDMETHOD.
 
@@ -353,19 +364,19 @@ METHOD rule_role.
   ENDIF.
 
   CASE lv_role.
-    WHEN 'FieldId'
-        OR 'FieldIdW'
+    WHEN 'FieldId'.
+      FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_stack.           "#EC NOTEXT
+      IF sy-subrc <> 0.
+        FIND REGEX '^''.*''$' IN lv_stack.
+      ENDIF.
+    WHEN 'FieldIdW'
         OR 'FieldDefId'
         OR 'ItabFieldId'
         OR 'FieldListId'
         OR 'MethodDefId'
         OR 'TypeId'
         OR 'FieldCompId'.
-      FIND REGEX '^[a-zA-Z0-9_]+$' IN lv_stack.             "#EC NOTEXT
-      IF sy-subrc <> 0.
-* todo, this is only relevant in some cases?
-        FIND REGEX '^''.*''$' IN lv_stack.
-      ENDIF.
+      FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_stack.           "#EC NOTEXT
     WHEN 'ClassrefFieldId'.
       FIND REGEX '^[a-zA-Z0-9_]+$' IN lv_stack.             "#EC NOTEXT
     WHEN 'FunctionId'.
@@ -381,6 +392,34 @@ METHOD rule_role.
     WHEN 'FormParamId'.
 * todo
     WHEN 'SwitchId'.
+* todo
+    WHEN 'SelOptId'.
+* todo
+    WHEN 'LdbNodeId'.
+* todo
+    WHEN 'ClassexcrefFieldId'.
+* todo
+    WHEN 'ClassexcTypeId'.
+* todo
+    WHEN 'FieldSymbolDefId'.
+* todo
+    WHEN 'MacroId'.
+* todo
+    WHEN 'FieldGroupId'.
+* todo
+    WHEN 'ComponentId'.
+* todo
+    WHEN 'MessageNumber'.
+* todo
+    WHEN 'ProgramId'.
+* todo
+    WHEN 'MacroDefId'.
+* todo
+    WHEN 'FormId'.
+* todo
+    WHEN 'ProgramDefId'.
+* todo
+    WHEN 'BlockDefId'.
 * todo
     WHEN OTHERS.
       BREAK-POINT.
@@ -413,6 +452,7 @@ METHOD rule_sequence.
     rs_return = rule( ii_rule  = li_child
                       iv_index = rs_return-index ).
     IF rs_return-match = abap_false.
+      rs_return-index = iv_index.
       RETURN.
     ENDIF.
   ENDDO.
@@ -442,16 +482,20 @@ ENDMETHOD.
 
 METHOD xml_get.
 
+  DATA: lv_rulename TYPE ssyntaxstructure-rulename.
+
   FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF gt_syntax.
 
 
-  READ TABLE gt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = iv_rulename.
+  lv_rulename = iv_rulename. " type conversion
+  READ TABLE gt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = lv_rulename.
   IF sy-subrc <> 0.
     READ TABLE gt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = 'COMPUTE'.
   ENDIF.
 
 
-  REPLACE REGEX '<Terminal>([A-Z]*)</Terminal><Terminal>#NWS_MINUS_NWS#</Terminal><Terminal>([A-Z]*)</Terminal>'
+  REPLACE REGEX '<Terminal>([A-Z]*)</Terminal>' &&
+    '<Terminal>#NWS_MINUS_NWS#</Terminal><Terminal>([A-Z]*)</Terminal>'
     IN <ls_syntax>-description
     WITH '<Terminal>$1-$2</Terminal>' IGNORING CASE.
 
@@ -517,6 +561,7 @@ METHOD xml_parse.
   li_istream->close( ).
 
   li_view = li_xml_doc->find_from_name( depth = 0 name = 'View' ). "#EC NOTEXT
+* todo, get Obsolete view instead?
 
   ri_rule = li_view->get_first_child( ).
 
