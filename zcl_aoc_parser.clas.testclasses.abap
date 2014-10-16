@@ -13,7 +13,7 @@ CLASS lcl_test DEFINITION FOR TESTING
   PRIVATE SECTION.
 * ================
 
-    METHODS: back            ,"FOR TESTING,
+    METHODS: back            FOR TESTING,
              suppress_dialog ,"FOR TESTING,
              suppress_foobar ,"FOR TESTING,
              tables          ,"FOR TESTING,
@@ -28,7 +28,7 @@ CLASS lcl_test DEFINITION FOR TESTING
              sort1           ,"FOR TESTING,
              sort2           ,"FOR TESTING,
              sort3           ,"FOR TESTING,
-             sort4           ,"FOR TESTING, todo: permutation
+             sort4           ,"FOR TESTING,
              sort5           ,"FOR TESTING,
              sort6           ,"FOR TESTING,
              sort7           ,"FOR TESTING,
@@ -37,13 +37,13 @@ CLASS lcl_test DEFINITION FOR TESTING
              sort10          ,"FOR TESTING,
              loop1           ,"FOR TESTING,
              collect1        ,"FOR TESTING,
-             call_screen     ,"FOR TESTING, todo: Optionlist
+             call_screen     ,"FOR TESTING,
              call_method1    ,"FOR TESTING,
              call_method2    ,"FOR TESTING,
              call_method3    ,"FOR TESTING,
              call_method4    ,"FOR TESTING,
-             call_method5    ,"FOR TESTING, todo: dump?
-             call_method6    ,"FOR TESTING, todo: dump?
+             call_method5    ,"FOR TESTING, "todo: wrong starting point
+             call_method6    ,"FOR TESTING, "todo: wrong starting point
              data1           ,"FOR TESTING,
              write1          ,"FOR TESTING,
              write2          ,"FOR TESTING, todo: LocationId
@@ -59,9 +59,9 @@ CLASS lcl_test DEFINITION FOR TESTING
              wait2           ,"FOR TESTING,
              code1           ,"FOR TESTING,
              methods1        ,"FOR TESTING,
-             read_table1     FOR TESTING, " todo: permutation
+             read_table1     ,"FOR TESTING,
              call_function1  ,"FOR TESTING,
-             concatenate1    ,"FOR TESTING, todo: Optionlist
+             concatenate1    ,"FOR TESTING,
              create_object1  ,"FOR TESTING,
              create_object2  ,"FOR TESTING,
              non_code1       ,"FOR TESTING,
@@ -72,11 +72,11 @@ CLASS lcl_test DEFINITION FOR TESTING
              non_code6       ,"FOR TESTING, todo: SwitchId
              non_code7       ,"FOR TESTING,
              non_code8       ,"FOR TESTING,
-             non_code9       ,"FOR TESTING, todo: Optionlist
+             non_code9       ,"FOR TESTING,
              perform1        ,"FOR TESTING,
              perform2        ,"FOR TESTING,
              try1            ,"FOR TESTING,
-             select1         ."FOR TESTING. todo: Optionlist
+             select1         ."FOR TESTING. "todo: infinite loop?
 
 ENDCLASS.       "lcl_Test
 

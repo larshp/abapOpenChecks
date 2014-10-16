@@ -16,8 +16,9 @@ CLASS lcl_node IMPLEMENTATION.
 
     mv_type  = iv_type.
     mv_value = iv_value.
-    mv_key   = sv_key.
-    sv_key   = sv_key + 1.
+    mv_key   = gv_key.
+
+    gv_key   = gv_key + 1.
   ENDMETHOD.                    "constructor
 
   METHOD edge.

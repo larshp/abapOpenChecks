@@ -11,9 +11,9 @@ public section.
   class-methods MATCH
     importing
       !IT_CODE type STRING_TABLE
+      !IV_DEBUG type ABAP_BOOL default ABAP_TRUE
     returning
       value(RV_MATCH) type ABAP_BOOL .
-  class-methods CLASS_CONSTRUCTOR .
 protected section.
 *"* protected components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
@@ -23,25 +23,35 @@ private section.
 
   class-data GT_TOKENS type STRING_TABLE .
   class-data GV_END_RULE type STRING .
-
   type-pools ABAP .
+  class-data GV_DEBUG type ABAP_BOOL .
+
   class-methods WALK
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
       value(RV_MATCH) type ABAP_BOOL .
+  class-methods PERMUTE
+    importing
+      !IV_COUNT type I
+    exporting
+      !ET_PERM type TT_PERM .
   class-methods GRAPH_TO_TEXT
     importing
       !IO_NODE type ref to LCL_NODE
     returning
       value(RV_TEXT) type STRING .
-  class-methods GRAPH_BUILD
+  class-methods GRAPH_DOWNLOAD
     importing
       !IV_RULENAME type STRING
+      !IO_START type ref to LCL_NODE .
+  class-methods GRAPH_BUILD
     exporting
       !EO_START type ref to LCL_NODE
-      !EO_END type ref to LCL_NODE .
+      !EO_END type ref to LCL_NODE
+    changing
+      !CV_RULENAME type STRING .
   class-methods BUILD_PERMUTATION
     importing
       !II_RULE type ref to IF_IXML_NODE
@@ -58,6 +68,11 @@ private section.
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
   class-methods BUILD_TERMINAL
+    importing
+      !II_RULE type ref to IF_IXML_NODE
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD_OPTIONLIST
     importing
       !II_RULE type ref to IF_IXML_NODE
       !IO_BEFORE type ref to LCL_NODE
@@ -118,10 +133,10 @@ private section.
     returning
       value(RV_MATCH) type ABAP_BOOL .
   class-methods XML_GET
-    importing
-      !IV_RULENAME type STRING
-    returning
-      value(RI_RULE) type ref to IF_IXML_NODE .
+    exporting
+      !EI_RULE type ref to IF_IXML_NODE
+    changing
+      !CV_RULENAME type STRING .
   class-methods XML_PARSE
     importing
       !IV_XML type STRING
@@ -193,6 +208,11 @@ METHOD build.
           ii_rule   = ii_rule
           io_before = io_before
           io_after  = io_after ).
+    WHEN 'Optionlist'.
+      build_optionlist(
+          ii_rule   = ii_rule
+          io_before = io_before
+          io_after  = io_after ).
     WHEN OTHERS.
       BREAK-POINT.
   ENDCASE.
@@ -230,13 +250,13 @@ METHOD build_iteration.
 
   CREATE OBJECT lo_dummy1
     EXPORTING
-      iv_type  = c_dummy
-      iv_value = 'Iteration'.
+      iv_type  = gc_dummy
+      iv_value = 'Iteration'.                               "#EC NOTEXT
 
   CREATE OBJECT lo_dummy2
     EXPORTING
-      iv_type  = c_dummy
-      iv_value = 'Iteration'.
+      iv_type  = gc_dummy
+      iv_value = 'Iteration'.                               "#EC NOTEXT
 
   io_before->edge( lo_dummy1 ).
   lo_dummy2->edge( io_after ).
@@ -260,7 +280,7 @@ METHOD build_nonterminal.
 
   CREATE OBJECT lo_node
     EXPORTING
-      iv_type  = c_nonterminal
+      iv_type  = gc_nonterminal
       iv_value = lv_rulename.
 
   io_before->edge( lo_node ).
@@ -271,15 +291,10 @@ ENDMETHOD.
 
 METHOD build_option.
 
-  DATA: li_child TYPE REF TO if_ixml_node,
-        lo_dummy TYPE REF TO lcl_node.
+  DATA: li_child TYPE REF TO if_ixml_node.
 
 
   li_child = ii_rule->get_first_child( ).
-
-*create object lo_dummy
-*exporting
-*iv_type = c_dummy.
 
   io_before->edge( io_after ).
 
@@ -291,11 +306,83 @@ METHOD build_option.
 ENDMETHOD.
 
 
+METHOD build_optionlist.
+
+  DATA: li_children     TYPE REF TO if_ixml_node_list,
+        li_append       TYPE REF TO if_ixml_node_list,
+        li_child        TYPE REF TO if_ixml_node,
+        lv_last         TYPE abap_bool,
+        lo_before       TYPE REF TO lcl_node,
+        lo_after        TYPE REF TO lcl_node,
+        lo_seq_before   TYPE REF TO lcl_node,
+        lo_seq_after    TYPE REF TO lcl_node,
+        lt_opt          TYPE TABLE OF REF TO if_ixml_node_list,
+        li_opt          LIKE LINE OF lt_opt.
+
+
+  li_children = ii_rule->get_children( ).
+  DO li_children->get_length( ) TIMES.
+    li_child = li_children->get_item( sy-index - 1 ).
+    li_append = li_child->get_children( ). " get rid of <Opt> tag
+    APPEND li_append TO lt_opt.
+  ENDDO.
+
+  lo_before = io_before.
+
+  LOOP AT lt_opt INTO li_opt.
+    IF sy-tabix = lines( lt_opt ).
+      lo_after = io_after.
+    ELSE.
+      CREATE OBJECT lo_after
+        EXPORTING
+          iv_type  = gc_dummy
+          iv_value = 'Optionlist'.
+    ENDIF.
+    lo_before->edge( lo_after ).
+
+    lv_last = abap_false.
+
+    lo_seq_before = lo_before.
+
+    DO li_opt->get_length( ) TIMES.
+      IF li_opt->get_length( ) = sy-index.
+        lv_last = abap_true.
+      ENDIF.
+
+      CREATE OBJECT lo_seq_after
+        EXPORTING
+          iv_type  = gc_dummy
+          iv_value = 'Optionlist Seq'.
+
+      li_child = li_opt->get_item( sy-index - 1 ).
+      build( ii_rule   = li_child
+             io_before = lo_seq_before
+             io_after  = lo_seq_after ).
+
+      IF lv_last = abap_true.
+        lo_seq_after->edge( lo_after ).
+      ELSE.
+        lo_seq_before = lo_seq_after.
+      ENDIF.
+
+    ENDDO.
+
+    lo_before = lo_after.
+  ENDLOOP.
+
+ENDMETHOD.
+
+
 METHOD build_permutation.
 
   DATA: li_children TYPE REF TO if_ixml_node_list,
         li_append   TYPE REF TO if_ixml_node_list,
         li_child    TYPE REF TO if_ixml_node,
+        lt_perm     TYPE tt_perm,
+        lv_index    TYPE i,
+        lo_before   TYPE REF TO lcl_node,
+        lo_after    TYPE REF TO lcl_node,
+        lt_index    TYPE TABLE OF i,
         lt_per      TYPE TABLE OF REF TO if_ixml_node_list.
 
 
@@ -306,17 +393,57 @@ METHOD build_permutation.
     APPEND li_append TO lt_per.
   ENDDO.
 
-* todo, hmm
+* todo, hmm, too slow?
 
-  LOOP AT lt_per INTO li_children.
-    DO li_children->get_length( ) TIMES.
-      li_child = li_children->get_item( sy-index - 1 ).
+* only max items in permutation and then options around each?
+* graph will be a lot smaller
+  permute( EXPORTING iv_count = lines( lt_per )
+           IMPORTING et_perm  = lt_perm ).
 
-      build( ii_rule   = li_child
-             io_before = io_before
-             io_after  = io_after ).
-    ENDDO.
+  LOOP AT lt_perm INTO lt_index.
+
+    lo_before = io_before.
+
+    LOOP AT lt_index INTO lv_index.
+      IF sy-tabix = lines( lt_index ).
+        lo_after = io_after.
+      ELSE.
+        CREATE OBJECT lo_after
+          EXPORTING
+            iv_type  = gc_dummy
+            iv_value = 'Permutation'.
+      ENDIF.
+
+      READ TABLE lt_per INDEX lv_index INTO li_children.
+      IF sy-subrc <> 0.
+        BREAK-POINT.
+      ENDIF.
+
+      DO li_children->get_length( ) TIMES.
+
+        li_child = li_children->get_item( sy-index - 1 ).
+        build( ii_rule   = li_child
+               io_before = lo_before
+               io_after  = lo_after ).
+
+      ENDDO.
+
+      lo_before = lo_after.
+
+    ENDLOOP.
   ENDLOOP.
+
+* old stuff, doesnt work
+
+*  LOOP AT lt_per INTO li_children.
+*    DO li_children->get_length( ) TIMES.
+*      li_child = li_children->get_item( sy-index - 1 ).
+*
+*      build( ii_rule   = li_child
+*             io_before = io_before
+*             io_after  = io_after ).
+*    ENDDO.
+*  ENDLOOP.
 
 ENDMETHOD.
 
@@ -332,7 +459,7 @@ METHOD build_role.
 
   CREATE OBJECT lo_node
     EXPORTING
-      iv_type  = c_role
+      iv_type  = gc_role
       iv_value = lv_value.
 
   io_before->edge( lo_node ).
@@ -359,8 +486,8 @@ METHOD build_sequence.
     ELSE.
       CREATE OBJECT lo_after
         EXPORTING
-          iv_type  = c_dummy
-          iv_value = 'Sequence'.
+          iv_type  = gc_dummy
+          iv_value = 'Sequence'.                            "#EC NOTEXT
     ENDIF.
     li_child = li_children->get_item( sy-index - 1 ).
     build( ii_rule   = li_child
@@ -383,7 +510,7 @@ METHOD build_terminal.
 
   CREATE OBJECT lo_node
     EXPORTING
-      iv_type  = c_terminal
+      iv_type  = gc_terminal
       iv_value = lv_value.
 
   io_before->edge( lo_node ).
@@ -392,37 +519,47 @@ METHOD build_terminal.
 ENDMETHOD.
 
 
-METHOD class_constructor.
-
-
-ENDMETHOD.
-
-
 METHOD graph_build.
 
-  DATA: li_rule    TYPE REF TO if_ixml_node,
-        lv_text    TYPE string,
-        lv_desktop TYPE string,
-        lt_data    TYPE TABLE OF string.
+  DATA: li_rule TYPE REF TO if_ixml_node.
 
 
-  li_rule = xml_get( iv_rulename ).
+  xml_get(
+    IMPORTING
+      ei_rule     = li_rule
+    CHANGING
+      cv_rulename = cv_rulename ).
 
   CREATE OBJECT eo_start
     EXPORTING
-      iv_type  = c_start
-      iv_value = iv_rulename.
+      iv_type  = gc_start
+      iv_value = cv_rulename.
 
   CREATE OBJECT eo_end
     EXPORTING
-      iv_type  = c_end
-      iv_value = iv_rulename.
+      iv_type  = gc_end
+      iv_value = cv_rulename.
 
   build( ii_rule   = li_rule
          io_before = eo_start
          io_after  = eo_end ).
 
-*****************************
+  IF gv_debug = abap_true.
+    graph_download(
+        iv_rulename = cv_rulename
+        io_start    = eo_start ).
+  ENDIF.
+
+ENDMETHOD.
+
+
+METHOD graph_download.
+
+  DATA: lv_text     TYPE string,
+        lv_desktop  TYPE string,
+        lv_filename TYPE string,
+        lt_data     TYPE TABLE OF string.
+
 
   cl_gui_frontend_services=>get_desktop_directory(
     CHANGING
@@ -431,22 +568,24 @@ METHOD graph_build.
       cntl_error           = 1
       error_no_gui         = 2
       not_supported_by_gui = 3
-      OTHERS               = 4
-         ).
+      OTHERS               = 4 ).
   IF sy-subrc <> 0.
+    BREAK-POINT.
     MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
                WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
   ENDIF.
 
   cl_gui_cfw=>flush( ).
 
-  lv_text = graph_to_text( eo_start ).
+  lv_text = graph_to_text( io_start ).
   CLEAR lt_data.
   APPEND lv_text TO lt_data.
 
+  lv_filename = lv_desktop && '\graphviz\' && iv_rulename && '.txt'. "#EC NOTEXT
+
   cl_gui_frontend_services=>gui_download(
     EXPORTING
-      filename                  = lv_desktop && '\graphviz\' && iv_rulename && '.txt'
+      filename                  = lv_filename
     CHANGING
       data_tab                  = lt_data
     EXCEPTIONS
@@ -476,6 +615,7 @@ METHOD graph_build.
       OTHERS                    = 24
          ).
   IF sy-subrc <> 0.
+    BREAK-POINT.
     MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
                WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
   ENDIF.
@@ -483,14 +623,15 @@ METHOD graph_build.
 ENDMETHOD.
 
 
-METHOD GRAPH_TO_TEXT.
+METHOD graph_to_text.
 
   DATA: lt_nodes TYPE TABLE OF REF TO lcl_node,
         lv_label TYPE string,
-        lo_node TYPE REF TO lcl_node,
-        lv_node TYPE string,
-        lo_edge TYPE REF TO lcl_node,
-        lv_edge TYPE string.
+        lo_node  TYPE REF TO lcl_node,
+        lv_node  TYPE string,
+        lo_edge  TYPE REF TO lcl_node,
+        lv_edge  TYPE string.
+
 
   DEFINE _out.
     rv_text = rv_text && &1 && cl_abap_char_utilities=>cr_lf.
@@ -498,14 +639,17 @@ METHOD GRAPH_TO_TEXT.
 
   APPEND io_node TO lt_nodes.
 
-  _out 'digraph {'.
+  _out 'digraph {'.                                         "#EC NOTEXT
   LOOP AT lt_nodes INTO lo_node.
     lv_label = 'Type\n' && lo_node->mv_type && '|' &&
-               'Value\n' && lo_node->mv_value.
-    lv_node = 'node' && lo_node->mv_key && ' [label = "' && lv_label && '" shape = "record"];'.
+               'Value\n' && lo_node->mv_value.              "#EC NOTEXT
+    lv_node = 'node' && lo_node->mv_key &&
+              ' [label = "' && lv_label &&
+              '" shape = "record"];'.                       "#EC NOTEXT
     _out lv_node.
     LOOP AT lo_node->mt_edges INTO lo_edge.
-      lv_edge = 'node' && lo_node->mv_key && ' -> node' && lo_edge->mv_key && ';'.
+      lv_edge = 'node' && lo_node->mv_key &&
+                ' -> node' && lo_edge->mv_key && ';'.       "#EC NOTEXT
       _out lv_edge.
       READ TABLE lt_nodes FROM lo_edge TRANSPORTING NO FIELDS.
       IF sy-subrc <> 0.
@@ -530,10 +674,12 @@ METHOD match.
        WITH ANALYSIS
        WITH COMMENTS.
 
+  gv_debug = iv_debug.
+
   rv_match = parse( it_tokens     = lt_tokens
                     it_statements = lt_statements ).
 
-* todo, reduce graph, clone graph, and cache?
+* todo, reduce graph, clone graph, cache, shared memory?
 
 ENDMETHOD.
 
@@ -558,10 +704,10 @@ METHOD parse.
 
 * todo, always start with rule = START?
 
-    gv_end_rule = lv_rulename.
+    graph_build( IMPORTING eo_start = lo_start
+                 CHANGING cv_rulename = lv_rulename ).
 
-    GRAPH_BUILD( EXPORTING iv_rulename = lv_rulename
-                 IMPORTING eo_start = lo_start ).
+    gv_end_rule = lv_rulename.
 
     rv_match = walk( io_node  = lo_start
                      iv_index = 1 ).
@@ -580,22 +726,62 @@ METHOD parse.
 ENDMETHOD.
 
 
+METHOD permute.
+
+  DATA: lv_length TYPE i,
+        lv_value  TYPE i,
+        lt_perm   LIKE LINE OF et_perm,
+        lt_new    LIKE LINE OF et_perm.
+
+
+  DO iv_count TIMES.
+    CLEAR lt_perm.
+    APPEND sy-index TO lt_perm.
+    APPEND lt_perm TO et_perm.
+  ENDDO.
+
+  DO iv_count - 1 TIMES.
+    lv_length = sy-index + 1.
+
+    LOOP AT et_perm INTO lt_perm.
+
+      IF lines( lt_perm ) <> lv_length - 1.
+        CONTINUE.
+      ENDIF.
+
+      DO iv_count TIMES.
+        lt_new = lt_perm.
+
+        lv_value = sy-index.
+        READ TABLE lt_new FROM lv_value TRANSPORTING NO FIELDS.
+        IF sy-subrc <> 0.
+          APPEND lv_value TO lt_new.
+          APPEND lt_new TO et_perm.
+        ENDIF.
+      ENDDO.
+    ENDLOOP.
+
+  ENDDO.
+
+ENDMETHOD.
+
+
 METHOD walk.
 
   CASE io_node->mv_type.
-    WHEN c_dummy OR  c_start.
+    WHEN gc_dummy OR gc_start.
       rv_match = walk_node( io_node = io_node
                             iv_index = iv_index ).
-    WHEN c_end.
+    WHEN gc_end.
       rv_match = walk_end( io_node = io_node
                            iv_index = iv_index ).
-    WHEN c_role.
+    WHEN gc_role.
       rv_match = walk_role( io_node = io_node
                             iv_index = iv_index ).
-    WHEN c_terminal.
+    WHEN gc_terminal.
       rv_match = walk_terminal( io_node = io_node
                                 iv_index = iv_index ).
-    WHEN c_nonterminal.
+    WHEN gc_nonterminal.
       rv_match = walk_nonterminal( io_node = io_node
                                    iv_index = iv_index ).
   ENDCASE.
@@ -635,17 +821,19 @@ ENDMETHOD.
 
 METHOD walk_nonterminal.
 
-  DATA: lo_start TYPE REF TO lcl_node,
-        lo_end   TYPE REF TO lcl_node,
-        lo_node  TYPE REF TO lcl_node.
+  DATA: lv_rulename TYPE string,
+        lo_start    TYPE REF TO lcl_node,
+        lo_end      TYPE REF TO lcl_node,
+        lo_node     TYPE REF TO lcl_node.
 
 
+  lv_rulename = io_node->mv_value.
   graph_build(
-    EXPORTING
-      iv_rulename = io_node->mv_value
     IMPORTING
       eo_start    = lo_start
-      eo_end      = lo_end ).
+      eo_end      = lo_end
+    CHANGING
+      cv_rulename = lv_rulename ).
 
   IF NOT lo_start IS BOUND.
     BREAK-POINT.
@@ -745,8 +933,7 @@ ENDMETHOD.
 
 METHOD walk_terminal.
 
-  DATA: lv_terminal TYPE string,
-        lv_token    TYPE string.
+  DATA: lv_token TYPE string.
 
 
   READ TABLE gt_tokens INDEX iv_index INTO lv_token.
@@ -760,7 +947,7 @@ METHOD walk_terminal.
     RETURN.
   ENDIF.
 
-  rv_match = walk_node( io_node = io_node
+  rv_match = walk_node( io_node  = io_node
                         iv_index = iv_index + 1 ).
 
 ENDMETHOD.
@@ -779,10 +966,12 @@ METHOD xml_get.
     SELECT * FROM ssyntaxstructure INTO TABLE lt_syntax.    "#EC *
   ENDIF.
 
-  lv_rulename = iv_rulename. " type conversion
+  lv_rulename = cv_rulename. " type conversion
   READ TABLE lt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = lv_rulename.
   IF sy-subrc <> 0.
-    READ TABLE lt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = 'COMPUTE'.
+* todo, this is wrong,
+    READ TABLE lt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = 'START'.
+    cv_rulename = <ls_syntax>-rulename.
   ENDIF.
 
 
@@ -792,7 +981,8 @@ METHOD xml_get.
     WITH '<Terminal>$1-$2</Terminal>' IGNORING CASE.
 
 
-  REPLACE ALL OCCURRENCES OF REGEX '<Role>MethodId</Role><Terminal>#NWS_LPAREN#</Terminal>'
+  REPLACE ALL OCCURRENCES OF REGEX
+    '<Role>MethodId</Role><Terminal>#NWS_LPAREN#</Terminal>'
     IN <ls_syntax>-description
     WITH '<Role>MethodId(</Role>' IGNORING CASE.
 * todo #RPAREN_NWS# ?
@@ -825,7 +1015,7 @@ METHOD xml_get.
       IN <ls_syntax>-description
       WITH '' IGNORING CASE.
 
-  ri_rule = xml_parse( <ls_syntax>-description ).
+  ei_rule = xml_parse( <ls_syntax>-description ).
 
 * todo, better caching
 
@@ -863,7 +1053,7 @@ METHOD xml_parse.
 * todo, get Obsolete view instead?
 
   li_attr = li_view->get_attributes( ).
-  li_type = li_attr->get_named_item( 'type' ).
+  li_type = li_attr->get_named_item( 'type' ).              "#EC NOTEXT
   lv_type = li_type->get_value( ).
   IF lv_type = 'Private'.
     RETURN.
