@@ -162,7 +162,7 @@ METHOD parse.
     RETURN.
   ENDIF.
 
-  IF zcl_aoc_parser=>parse_str( it_commented ) = abap_true.
+  IF zcl_aoc_parser=>match( it_commented ) = abap_true.
     inform( p_sub_obj_type = c_type_include
             p_sub_obj_name = is_level-name
             p_line         = iv_line

@@ -13,66 +13,70 @@ CLASS lcl_test DEFINITION FOR TESTING
   PRIVATE SECTION.
 * ================
 
-    METHODS: back            FOR TESTING,
-             suppress_dialog FOR TESTING,
-             suppress_foobar FOR TESTING,
-             tables          FOR TESTING,
-             tables_neg      FOR TESTING,
-             divide          FOR TESTING,
-             divide_neg      FOR TESTING,
-             condense1       FOR TESTING,
-             condense2       FOR TESTING,
-             newline1        FOR TESTING,
-             newline2        FOR TESTING,
-             newline3        FOR TESTING,
-             sort1           FOR TESTING,
-             sort2           FOR TESTING,
-             sort3           FOR TESTING,
-             sort4           FOR TESTING,
-             sort5           FOR TESTING,
-             sort6           FOR TESTING,
-             sort7           FOR TESTING,
-             sort8           FOR TESTING,
-             sort9           FOR TESTING,
-             sort10          FOR TESTING,
-             loop1           FOR TESTING,
-             collect1        FOR TESTING,
-             call_screen     FOR TESTING,
-             call_method1    FOR TESTING,
-             call_method2    FOR TESTING,
-             call_method3    FOR TESTING,
-             call_method4    FOR TESTING,
-             call_method5    FOR TESTING,
-             call_method6    FOR TESTING,
-             data1           ,"FOR TESTING, todo: iterationoption
-             write1          FOR TESTING,
-             write2          FOR TESTING,
-             write3          FOR TESTING,
-             replace1        FOR TESTING,
-             replace2        FOR TESTING,
-             compute1        FOR TESTING,
-             compute2        FOR TESTING,
-             if1             FOR TESTING,
-             if2             FOR TESTING,
-             if3             FOR TESTING,
-             wait1           FOR TESTING,
-             wait2           FOR TESTING,
-             code1           FOR TESTING,
-             methods1        FOR TESTING,
-             read_table1     FOR TESTING,
-             call_function1  FOR TESTING,
-             concatenate1    FOR TESTING,
-             create_object1  FOR TESTING,
-             create_object2  FOR TESTING,
-             non_code1       FOR TESTING,
-             non_code2       FOR TESTING,
-             non_code3       FOR TESTING,
-             non_code4       FOR TESTING,
-             non_code5       FOR TESTING,
-             non_code6       FOR TESTING,
-             non_code7       FOR TESTING,
-             non_code8       FOR TESTING,
-             non_code9       FOR TESTING.
+    METHODS: back            ,"FOR TESTING,
+             suppress_dialog ,"FOR TESTING,
+             suppress_foobar ,"FOR TESTING,
+             tables          ,"FOR TESTING,
+             tables_neg      ,"FOR TESTING,
+             divide          ,"FOR TESTING,
+             divide_neg      ,"FOR TESTING,
+             condense1       ,"FOR TESTING,
+             condense2       ,"FOR TESTING,
+             newline1        ,"FOR TESTING,
+             newline2        ,"FOR TESTING,
+             newline3        ,"FOR TESTING,
+             sort1           ,"FOR TESTING,
+             sort2           ,"FOR TESTING,
+             sort3           ,"FOR TESTING,
+             sort4           ,"FOR TESTING, todo: permutation
+             sort5           ,"FOR TESTING,
+             sort6           ,"FOR TESTING,
+             sort7           ,"FOR TESTING,
+             sort8           ,"FOR TESTING,
+             sort9           ,"FOR TESTING,
+             sort10          ,"FOR TESTING,
+             loop1           ,"FOR TESTING,
+             collect1        ,"FOR TESTING,
+             call_screen     ,"FOR TESTING, todo: Optionlist
+             call_method1    ,"FOR TESTING,
+             call_method2    ,"FOR TESTING,
+             call_method3    ,"FOR TESTING,
+             call_method4    ,"FOR TESTING,
+             call_method5    ,"FOR TESTING, todo: dump?
+             call_method6    ,"FOR TESTING, todo: dump?
+             data1           ,"FOR TESTING,
+             write1          ,"FOR TESTING,
+             write2          ,"FOR TESTING, todo: LocationId
+             write3          ,"FOR TESTING,
+             replace1        ,"FOR TESTING,
+             replace2        ,"FOR TESTING,
+             compute1        ,"FOR TESTING,
+             compute2        ,"FOR TESTING,
+             if1             ,"FOR TESTING,
+             if2             ,"FOR TESTING,
+             if3             ,"FOR TESTING, todo: SwitchId
+             wait1           ,"FOR TESTING,
+             wait2           ,"FOR TESTING,
+             code1           ,"FOR TESTING,
+             methods1        ,"FOR TESTING,
+             read_table1     FOR TESTING, " todo: permutation
+             call_function1  ,"FOR TESTING,
+             concatenate1    ,"FOR TESTING, todo: Optionlist
+             create_object1  ,"FOR TESTING,
+             create_object2  ,"FOR TESTING,
+             non_code1       ,"FOR TESTING,
+             non_code2       ,"FOR TESTING,
+             non_code3       ,"FOR TESTING,
+             non_code4       ,"FOR TESTING,
+             non_code5       ,"FOR TESTING,
+             non_code6       ,"FOR TESTING, todo: SwitchId
+             non_code7       ,"FOR TESTING,
+             non_code8       ,"FOR TESTING,
+             non_code9       ,"FOR TESTING, todo: Optionlist
+             perform1        ,"FOR TESTING,
+             perform2        ,"FOR TESTING,
+             try1            ,"FOR TESTING,
+             select1         ."FOR TESTING. todo: Optionlist
 
 ENDCLASS.       "lcl_Test
 
@@ -93,7 +97,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'BACK.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -109,7 +113,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'SUPPRESS DIALOG.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -125,7 +129,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'SUPPRESS FOOBAR.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_false
                                         act = lv_match ).
@@ -141,7 +145,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'TABLES usr02.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -157,7 +161,7 @@ CLASS lcl_test IMPLEMENTATION.
 * colon and commas missing,
     _code 'TABLES usr02 usr01.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_false
                                         act = lv_match ).
@@ -173,7 +177,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'DIVIDE lv_foo BY 2.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -189,7 +193,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'DIVIDE lv_foo BAR 2.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_false
                                         act = lv_match ).
@@ -205,7 +209,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'CONDENSE lv_bar.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -221,7 +225,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'CONDENSE lv_bar NO-GAPS.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -236,7 +240,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'NEW-LINE.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -251,7 +255,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'NEW-LINE SCROLLING.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -266,7 +270,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'NEW-LINE NO-SCROLLING.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -281,7 +285,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'SORT lt_foo.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -296,7 +300,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'SORT lt_foo DESCENDING.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -311,7 +315,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'SORT lt_foo AS TEXT.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -326,7 +330,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'SORT lt_foo ASCENDING AS TEXT.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -341,7 +345,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'SORT lt_foo BY bar.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -356,7 +360,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'SORT lt_foo BY bar DESCENDING.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -371,7 +375,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'SORT lt_foo AS TEXT BY bar DESCENDING.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -386,7 +390,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'SORT lt_foo BY foo bar.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -401,7 +405,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'SORT lt_foo BY foo AS TEXT DESCENDING.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -416,7 +420,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'SORT lt_foo BY foo DESCENDING AS TEXT.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -431,7 +435,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'LOOP AT lt_data.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -446,7 +450,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'COLLECT ls_wa INTO lt_tab.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -461,7 +465,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'CALL SCREEN 2000.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -476,7 +480,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'CALL METHOD cl_foo=>bar( ).'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -491,7 +495,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'CALL METHOD lo_foo->bar( ).'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -506,7 +510,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'CALL METHOD lo_foo->bar( 2 ).'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -521,7 +525,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'CALL METHOD lo_foo->bar( 2 + 2 ).'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -537,7 +541,7 @@ CLASS lcl_test IMPLEMENTATION.
     _code 'io_xml->table_add( it_table = lt_men                '.
     _code '                   iv_name = ''RSMPE_MEN_TABLE'' ). '.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -552,7 +556,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'go_grid->check_changed_data( ).'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -567,7 +571,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'DATA lv_bar TYPE c.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -582,7 +586,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'WRITE ''fobar''.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -597,7 +601,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'WRITE ''fobar'' TO lv_var.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -612,7 +616,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'WRITE lv_var.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -627,7 +631,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'REPLACE SECTION OFFSET off LENGTH len OF dobj WITH new IN BYTE MODE.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -642,7 +646,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'REPLACE ALL OCCURRENCES OF SUBSTRING var IN var WITH new.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -657,7 +661,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'COMPUTE lv_foo = lv_bar.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -672,7 +676,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'lv_foo = lv_bar.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -687,7 +691,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'IF lv_foo = lv_bar.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -702,7 +706,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'IF lv_foo = lv_bar AND lv_moo = lv_boo.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -719,7 +723,7 @@ CLASS lcl_test IMPLEMENTATION.
     _code '  PERFORM something.           '.
     _code 'ENDIF.                         '.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -733,7 +737,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'WAIT UNTIL lv_foo = lv_bar AND lv_moo = lv_boo.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -747,7 +751,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'WAIT UP TO 1 SECONDS.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -763,7 +767,7 @@ CLASS lcl_test IMPLEMENTATION.
     _code 'DO get_length( ) TIMES.'.
     _code '  li_child = li_children->get_item( sy-index - 1 ).'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -777,7 +781,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'METHODS constructor IMPORTING iv_text TYPE string.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -791,7 +795,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'READ TABLE lt_lines INTO ls_line INDEX 1.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -815,7 +819,7 @@ CLASS lcl_test IMPLEMENTATION.
     _code '    object   = 4            '.
     _code '    OTHERS   = 5.           '.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -829,7 +833,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'CONCATENATE ''FOOBAR'' sy-uname INTO lv_name.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -843,7 +847,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'CREATE OBJECT lo_xml.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -862,7 +866,7 @@ CLASS lcl_test IMPLEMENTATION.
     _code '    class_not_existing = 1          '.
     _code '    OTHERS             = 2.         '.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_true
                                         act = lv_match ).
@@ -876,7 +880,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'update loop foobar.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_false
                                         act = lv_match ).
@@ -890,7 +894,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'missing.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_false
                                         act = lv_match ).
@@ -904,7 +908,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'item.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_false
                                         act = lv_match ).
@@ -918,7 +922,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code '11.111.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_false
                                         act = lv_match ).
@@ -932,7 +936,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'expected.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_false
                                         act = lv_match ).
@@ -946,7 +950,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'IF something is something then do.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_false
                                         act = lv_match ).
@@ -960,7 +964,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'attachment.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_false
                                         act = lv_match ).
@@ -974,7 +978,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code '12345679.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_false
                                         act = lv_match ).
@@ -988,11 +992,69 @@ CLASS lcl_test IMPLEMENTATION.
 
     _code 'Call 911.'.
 
-    lv_match = zcl_aoc_parser=>parse_str( lt_code ).
+    lv_match = zcl_aoc_parser=>match( lt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = abap_false
                                         act = lv_match ).
 
   ENDMETHOD.                    "non_code9
+
+  METHOD perform1.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code 'PERFORM something.'.
+
+    lv_match = zcl_aoc_parser=>match( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_true
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "perform1
+
+  METHOD perform2.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code 'PERFORM something USING lv_bar.'.
+
+    lv_match = zcl_aoc_parser=>match( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_true
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "perform2
+
+  METHOD try1.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code 'TRY.'.
+    _code '  lv_foo = lv_bar.'.
+    _code 'ENDTRY.'.
+
+    lv_match = zcl_aoc_parser=>match( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_true
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "try1
+
+  METHOD select1.
+
+    DATA: lt_code  TYPE string_table,
+          lv_match TYPE abap_bool.
+
+    _code 'SELECT * FROM ssyntaxstructure INTO TABLE gt_syntax.'.
+
+    lv_match = zcl_aoc_parser=>match( lt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = abap_true
+                                        act = lv_match ).
+
+  ENDMETHOD.                    "try1
 
 ENDCLASS.       "lcl_Test

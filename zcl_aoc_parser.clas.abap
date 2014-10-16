@@ -8,15 +8,9 @@ public section.
 *"* do not include other source files here!!!
 
   type-pools ABAP .
-  class-methods PARSE_STR
+  class-methods MATCH
     importing
       !IT_CODE type STRING_TABLE
-    returning
-      value(RV_MATCH) type ABAP_BOOL .
-  class-methods PARSE
-    importing
-      !IT_TOKENS type STOKESX_TAB
-      !IT_STATEMENTS type SSTMNT_TAB
     returning
       value(RV_MATCH) type ABAP_BOOL .
   class-methods CLASS_CONSTRUCTOR .
@@ -27,63 +21,102 @@ private section.
 *"* private components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
 
-  class-data GT_SYNTAX type SYNTAX_TT .
   class-data GT_TOKENS type STRING_TABLE .
+  class-data GV_END_RULE type STRING .
 
-  class-methods RULE
+  type-pools ABAP .
+  class-methods WALK
     importing
-      !II_RULE type ref to IF_IXML_NODE
+      !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RS_RETURN) type ST_RETURN .
-  class-methods RULE_ALTERNATIVE
+      value(RV_MATCH) type ABAP_BOOL .
+  class-methods GRAPH_TO_TEXT
+    importing
+      !IO_NODE type ref to LCL_NODE
+    returning
+      value(RV_TEXT) type STRING .
+  class-methods GRAPH_BUILD
+    importing
+      !IV_RULENAME type STRING
+    exporting
+      !EO_START type ref to LCL_NODE
+      !EO_END type ref to LCL_NODE .
+  class-methods BUILD_PERMUTATION
     importing
       !II_RULE type ref to IF_IXML_NODE
-      !IV_INDEX type I
-    returning
-      value(RS_RETURN) type ST_RETURN .
-  class-methods RULE_NONTERMINAL
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD_ROLE
     importing
       !II_RULE type ref to IF_IXML_NODE
-      !IV_INDEX type I
-    returning
-      value(RS_RETURN) type ST_RETURN .
-  class-methods RULE_ITERATION
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD_SEQUENCE
     importing
       !II_RULE type ref to IF_IXML_NODE
-      !IV_INDEX type I
-    returning
-      value(RS_RETURN) type ST_RETURN .
-  class-methods RULE_OPTION
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD_TERMINAL
     importing
       !II_RULE type ref to IF_IXML_NODE
-      !IV_INDEX type I
-    returning
-      value(RS_RETURN) type ST_RETURN .
-  class-methods RULE_PERMUTATION
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD_OPTION
     importing
       !II_RULE type ref to IF_IXML_NODE
-      !IV_INDEX type I
-    returning
-      value(RS_RETURN) type ST_RETURN .
-  class-methods RULE_SEQUENCE
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD_NONTERMINAL
     importing
       !II_RULE type ref to IF_IXML_NODE
-      !IV_INDEX type I
-    returning
-      value(RS_RETURN) type ST_RETURN .
-  class-methods RULE_ROLE
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD_ITERATION
     importing
       !II_RULE type ref to IF_IXML_NODE
-      !IV_INDEX type I
-    returning
-      value(RS_RETURN) type ST_RETURN .
-  class-methods RULE_TERMINAL
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD_ALTERNATIVE
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD
+    importing
+      !II_RULE type ref to IF_IXML_NODE
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods WALK_END
+    importing
+      !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RS_RETURN) type ST_RETURN .
+      value(RV_MATCH) type ABAP_BOOL .
+  class-methods WALK_NODE
+    importing
+      !IO_NODE type ref to LCL_NODE
+      !IV_INDEX type I
+    returning
+      value(RV_MATCH) type ABAP_BOOL .
+  class-methods WALK_NONTERMINAL
+    importing
+      !IO_NODE type ref to LCL_NODE
+      !IV_INDEX type I
+    returning
+      value(RV_MATCH) type ABAP_BOOL .
+  class-methods WALK_ROLE
+    importing
+      !IO_NODE type ref to LCL_NODE
+      !IV_INDEX type I
+    returning
+      value(RV_MATCH) type ABAP_BOOL .
+  class-methods WALK_TERMINAL
+    importing
+      !IO_NODE type ref to LCL_NODE
+      !IV_INDEX type I
+    returning
+      value(RV_MATCH) type ABAP_BOOL .
   class-methods XML_GET
     importing
       !IV_RULENAME type STRING
@@ -94,6 +127,12 @@ private section.
       !IV_XML type STRING
     returning
       value(RI_RULE) type ref to IF_IXML_NODE .
+  class-methods PARSE
+    importing
+      !IT_TOKENS type STOKESX_TAB
+      !IT_STATEMENTS type SSTMNT_TAB
+    returning
+      value(RV_MATCH) type ABAP_BOOL .
 ENDCLASS.
 
 
@@ -101,59 +140,385 @@ ENDCLASS.
 CLASS ZCL_AOC_PARSER IMPLEMENTATION.
 
 
-METHOD class_constructor.
+METHOD build.
 
-  SELECT * FROM ssyntaxstructure INTO TABLE gt_syntax.      "#EC *
+  DATA: lv_name TYPE string.
+
+
+  IF NOT ii_rule IS BOUND.
+    io_before->edge( io_after ).
+    RETURN.
+  ENDIF.
+
+  lv_name = ii_rule->get_name( ).
+
+  CASE lv_name.
+    WHEN 'Sequence'.
+      build_sequence(
+          ii_rule   = ii_rule
+          io_before = io_before
+          io_after  = io_after ).
+    WHEN 'Alternative'.
+      build_alternative(
+          ii_rule   = ii_rule
+          io_before = io_before
+          io_after  = io_after ).
+    WHEN 'Nonterminal'.
+      build_nonterminal(
+          ii_rule   = ii_rule
+          io_before = io_before
+          io_after  = io_after ).
+    WHEN 'Terminal'.
+      build_terminal(
+          ii_rule   = ii_rule
+          io_before = io_before
+          io_after  = io_after ).
+    WHEN 'Role'.
+      build_role(
+          ii_rule   = ii_rule
+          io_before = io_before
+          io_after  = io_after ).
+    WHEN 'Option'.
+      build_option(
+          ii_rule   = ii_rule
+          io_before = io_before
+          io_after  = io_after ).
+    WHEN 'Permutation'.
+      build_permutation(
+          ii_rule   = ii_rule
+          io_before = io_before
+          io_after  = io_after ).
+    WHEN 'Iteration'.
+      build_iteration(
+          ii_rule   = ii_rule
+          io_before = io_before
+          io_after  = io_after ).
+    WHEN OTHERS.
+      BREAK-POINT.
+  ENDCASE.
 
 ENDMETHOD.
 
 
-METHOD parse.
+METHOD build_alternative.
+
+  DATA: li_children TYPE REF TO if_ixml_node_list,
+        li_child    TYPE REF TO if_ixml_node.
+
+
+  li_children = ii_rule->get_children( ).
+
+  DO li_children->get_length( ) TIMES.
+    li_child = li_children->get_item( sy-index - 1 ).
+    li_child = li_child->get_first_child( ). " get rid of <Alt> tag
+    build( ii_rule   = li_child
+           io_before = io_before
+           io_after  = io_after ).
+  ENDDO.
+
+ENDMETHOD.
+
+
+METHOD build_iteration.
+
+  DATA: li_child  TYPE REF TO if_ixml_node,
+        lo_dummy1 TYPE REF TO lcl_node,
+        lo_dummy2 TYPE REF TO lcl_node.
+
+
+  li_child = ii_rule->get_first_child( ).
+
+  CREATE OBJECT lo_dummy1
+    EXPORTING
+      iv_type  = c_dummy
+      iv_value = 'Iteration'.
+
+  CREATE OBJECT lo_dummy2
+    EXPORTING
+      iv_type  = c_dummy
+      iv_value = 'Iteration'.
+
+  io_before->edge( lo_dummy1 ).
+  lo_dummy2->edge( io_after ).
+  lo_dummy2->edge( lo_dummy1 ).
+
+  zcl_aoc_parser=>build(
+      ii_rule   = li_child
+      io_before = lo_dummy1
+      io_after  = lo_dummy2 ).
+
+ENDMETHOD.
+
+
+METHOD build_nonterminal.
 
   DATA: lv_rulename TYPE string,
-        ls_return   TYPE st_return.
-
-  FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                 <ls_token>     LIKE LINE OF it_tokens.
+        lo_node     TYPE REF TO lcl_node.
 
 
-  DATA: li_rule TYPE REF TO if_ixml_node.
+  lv_rulename = ii_rule->get_value( ).
 
-  LOOP AT it_statements ASSIGNING <ls_statement> WHERE terminator = '.'.
+  CREATE OBJECT lo_node
+    EXPORTING
+      iv_type  = c_nonterminal
+      iv_value = lv_rulename.
 
-    CLEAR gt_tokens.
-    LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
-      APPEND <ls_token>-str TO gt_tokens.
-    ENDLOOP.
+  io_before->edge( lo_node ).
+  lo_node->edge( io_after ).
 
-    READ TABLE gt_tokens INDEX 1 INTO lv_rulename.
+ENDMETHOD.
 
-* todo, always start with rule = START?
-    li_rule = xml_get( lv_rulename ).
 
-    ls_return = zcl_aoc_parser=>rule( ii_rule  = li_rule
-                                      iv_index = 1 ).
-    IF ls_return-match = abap_false.
-      rv_match = abap_false.
-      RETURN.
-    ENDIF.
-    IF ls_return-match = abap_true AND ls_return-index - 1 <> lines( gt_tokens ).
-      rv_match = abap_false.
-      RETURN.
-    ENDIF.
+METHOD build_option.
 
+  DATA: li_child TYPE REF TO if_ixml_node,
+        lo_dummy TYPE REF TO lcl_node.
+
+
+  li_child = ii_rule->get_first_child( ).
+
+*create object lo_dummy
+*exporting
+*iv_type = c_dummy.
+
+  io_before->edge( io_after ).
+
+  zcl_aoc_parser=>build(
+      ii_rule   = li_child
+      io_before = io_before
+      io_after  = io_after ).
+
+ENDMETHOD.
+
+
+METHOD build_permutation.
+
+  DATA: li_children TYPE REF TO if_ixml_node_list,
+        li_append   TYPE REF TO if_ixml_node_list,
+        li_child    TYPE REF TO if_ixml_node,
+        lt_per      TYPE TABLE OF REF TO if_ixml_node_list.
+
+
+  li_children = ii_rule->get_children( ).
+  DO li_children->get_length( ) TIMES.
+    li_child = li_children->get_item( sy-index - 1 ).
+    li_append = li_child->get_children( ). " get rid of <Per> tag
+    APPEND li_append TO lt_per.
+  ENDDO.
+
+* todo, hmm
+
+  LOOP AT lt_per INTO li_children.
+    DO li_children->get_length( ) TIMES.
+      li_child = li_children->get_item( sy-index - 1 ).
+
+      build( ii_rule   = li_child
+             io_before = io_before
+             io_after  = io_after ).
+    ENDDO.
   ENDLOOP.
 
-  IF sy-subrc = 0.
-    rv_match = abap_true.
-  ELSE.
-    rv_match = abap_false.
+ENDMETHOD.
+
+
+METHOD build_role.
+
+  DATA: lo_node  TYPE REF TO lcl_node,
+        lv_value TYPE string.
+
+
+  lv_value = ii_rule->get_value( ).
+
+
+  CREATE OBJECT lo_node
+    EXPORTING
+      iv_type  = c_role
+      iv_value = lv_value.
+
+  io_before->edge( lo_node ).
+  lo_node->edge( io_after ).
+
+ENDMETHOD.
+
+
+METHOD build_sequence.
+
+  DATA: lo_before   TYPE REF TO lcl_node,
+        lo_after    TYPE REF TO lcl_node,
+        li_children TYPE REF TO if_ixml_node_list,
+        li_child    TYPE REF TO if_ixml_node.
+
+
+  li_children = ii_rule->get_children( ).
+
+  lo_before = io_before.
+
+  DO li_children->get_length( ) TIMES.
+    IF sy-index = li_children->get_length( ).
+      lo_after = io_after.
+    ELSE.
+      CREATE OBJECT lo_after
+        EXPORTING
+          iv_type  = c_dummy
+          iv_value = 'Sequence'.
+    ENDIF.
+    li_child = li_children->get_item( sy-index - 1 ).
+    build( ii_rule   = li_child
+           io_before = lo_before
+           io_after  = lo_after ).
+    lo_before = lo_after.
+  ENDDO.
+
+ENDMETHOD.
+
+
+METHOD build_terminal.
+
+  DATA: lo_node  TYPE REF TO lcl_node,
+        lv_value TYPE string.
+
+
+  lv_value = ii_rule->get_value( ).
+
+
+  CREATE OBJECT lo_node
+    EXPORTING
+      iv_type  = c_terminal
+      iv_value = lv_value.
+
+  io_before->edge( lo_node ).
+  lo_node->edge( io_after ).
+
+ENDMETHOD.
+
+
+METHOD class_constructor.
+
+
+ENDMETHOD.
+
+
+METHOD graph_build.
+
+  DATA: li_rule    TYPE REF TO if_ixml_node,
+        lv_text    TYPE string,
+        lv_desktop TYPE string,
+        lt_data    TYPE TABLE OF string.
+
+
+  li_rule = xml_get( iv_rulename ).
+
+  CREATE OBJECT eo_start
+    EXPORTING
+      iv_type  = c_start
+      iv_value = iv_rulename.
+
+  CREATE OBJECT eo_end
+    EXPORTING
+      iv_type  = c_end
+      iv_value = iv_rulename.
+
+  build( ii_rule   = li_rule
+         io_before = eo_start
+         io_after  = eo_end ).
+
+*****************************
+
+  cl_gui_frontend_services=>get_desktop_directory(
+    CHANGING
+      desktop_directory    = lv_desktop
+    EXCEPTIONS
+      cntl_error           = 1
+      error_no_gui         = 2
+      not_supported_by_gui = 3
+      OTHERS               = 4
+         ).
+  IF sy-subrc <> 0.
+    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+               WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+  ENDIF.
+
+  cl_gui_cfw=>flush( ).
+
+  lv_text = graph_to_text( eo_start ).
+  CLEAR lt_data.
+  APPEND lv_text TO lt_data.
+
+  cl_gui_frontend_services=>gui_download(
+    EXPORTING
+      filename                  = lv_desktop && '\graphviz\' && iv_rulename && '.txt'
+    CHANGING
+      data_tab                  = lt_data
+    EXCEPTIONS
+      file_write_error          = 1
+      no_batch                  = 2
+      gui_refuse_filetransfer   = 3
+      invalid_type              = 4
+      no_authority              = 5
+      unknown_error             = 6
+      header_not_allowed        = 7
+      separator_not_allowed     = 8
+      filesize_not_allowed      = 9
+      header_too_long           = 10
+      dp_error_create           = 11
+      dp_error_send             = 12
+      dp_error_write            = 13
+      unknown_dp_error          = 14
+      access_denied             = 15
+      dp_out_of_memory          = 16
+      disk_full                 = 17
+      dp_timeout                = 18
+      file_not_found            = 19
+      dataprovider_exception    = 20
+      control_flush_error       = 21
+      not_supported_by_gui      = 22
+      error_no_gui              = 23
+      OTHERS                    = 24
+         ).
+  IF sy-subrc <> 0.
+    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+               WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
   ENDIF.
 
 ENDMETHOD.
 
 
-METHOD parse_str.
+METHOD GRAPH_TO_TEXT.
+
+  DATA: lt_nodes TYPE TABLE OF REF TO lcl_node,
+        lv_label TYPE string,
+        lo_node TYPE REF TO lcl_node,
+        lv_node TYPE string,
+        lo_edge TYPE REF TO lcl_node,
+        lv_edge TYPE string.
+
+  DEFINE _out.
+    rv_text = rv_text && &1 && cl_abap_char_utilities=>cr_lf.
+  END-OF-DEFINITION.
+
+  APPEND io_node TO lt_nodes.
+
+  _out 'digraph {'.
+  LOOP AT lt_nodes INTO lo_node.
+    lv_label = 'Type\n' && lo_node->mv_type && '|' &&
+               'Value\n' && lo_node->mv_value.
+    lv_node = 'node' && lo_node->mv_key && ' [label = "' && lv_label && '" shape = "record"];'.
+    _out lv_node.
+    LOOP AT lo_node->mt_edges INTO lo_edge.
+      lv_edge = 'node' && lo_node->mv_key && ' -> node' && lo_edge->mv_key && ';'.
+      _out lv_edge.
+      READ TABLE lt_nodes FROM lo_edge TRANSPORTING NO FIELDS.
+      IF sy-subrc <> 0.
+        APPEND lo_edge TO lt_nodes.
+      ENDIF.
+    ENDLOOP.
+  ENDLOOP.
+  _out '}'.
+
+ENDMETHOD.
+
+
+METHOD match.
 
   DATA: lt_tokens     TYPE stokesx_tab,
         lt_statements TYPE sstmnt_tab.
@@ -168,202 +533,147 @@ METHOD parse_str.
   rv_match = parse( it_tokens     = lt_tokens
                     it_statements = lt_statements ).
 
+* todo, reduce graph, clone graph, and cache?
+
 ENDMETHOD.
 
 
-METHOD rule.
+METHOD parse.
 
-  DATA: lv_name TYPE string.
+  DATA: lv_rulename TYPE string,
+        lo_start TYPE REF TO lcl_node.
+
+  FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
+                 <ls_token>     LIKE LINE OF it_tokens.
 
 
-  lv_name = ii_rule->get_name( ).
+  LOOP AT it_statements ASSIGNING <ls_statement> WHERE terminator = '.'.
 
-  CASE lv_name.
-    WHEN 'Sequence'.
-      rs_return = rule_sequence( ii_rule  = ii_rule
-                                 iv_index = iv_index ).
-    WHEN 'Alternative'.
-      rs_return = rule_alternative( ii_rule  = ii_rule
-                                    iv_index = iv_index ).
-    WHEN 'Nonterminal'.
-      rs_return = rule_nonterminal( ii_rule  = ii_rule
-                                    iv_index = iv_index ).
-    WHEN 'Terminal'.
-      rs_return = rule_terminal( ii_rule  = ii_rule
-                                 iv_index = iv_index ).
-    WHEN 'Role'.
-      rs_return = rule_role( ii_rule  = ii_rule
-                             iv_index = iv_index ).
-    WHEN 'Option'.
-      rs_return = rule_option( ii_rule  = ii_rule
-                               iv_index = iv_index ).
-    WHEN 'Permutation'.
-      rs_return = rule_permutation( ii_rule  = ii_rule
-                                    iv_index = iv_index ).
-    WHEN 'Iteration'.
-      rs_return = rule_iteration( ii_rule  = ii_rule
-                                  iv_index = iv_index ).
-    WHEN 'Optionlist'.
-* todo
-    WHEN OTHERS.
-      BREAK-POINT.
+    CLEAR gt_tokens.
+    LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
+      APPEND <ls_token>-str TO gt_tokens.
+    ENDLOOP.
+
+    READ TABLE gt_tokens INDEX 1 INTO lv_rulename.
+
+* todo, always start with rule = START?
+
+    gv_end_rule = lv_rulename.
+
+    GRAPH_BUILD( EXPORTING iv_rulename = lv_rulename
+                 IMPORTING eo_start = lo_start ).
+
+    rv_match = walk( io_node  = lo_start
+                     iv_index = 1 ).
+    IF rv_match = abap_false.
+      RETURN.
+    ENDIF.
+
+  ENDLOOP.
+
+  IF sy-subrc = 0.
+    rv_match = abap_true.
+  ELSE.
+    rv_match = abap_false.
+  ENDIF.
+
+ENDMETHOD.
+
+
+METHOD walk.
+
+  CASE io_node->mv_type.
+    WHEN c_dummy OR  c_start.
+      rv_match = walk_node( io_node = io_node
+                            iv_index = iv_index ).
+    WHEN c_end.
+      rv_match = walk_end( io_node = io_node
+                           iv_index = iv_index ).
+    WHEN c_role.
+      rv_match = walk_role( io_node = io_node
+                            iv_index = iv_index ).
+    WHEN c_terminal.
+      rv_match = walk_terminal( io_node = io_node
+                                iv_index = iv_index ).
+    WHEN c_nonterminal.
+      rv_match = walk_nonterminal( io_node = io_node
+                                   iv_index = iv_index ).
   ENDCASE.
 
 ENDMETHOD.
 
 
-METHOD rule_alternative.
+METHOD walk_end.
 
-  DATA: li_children TYPE REF TO if_ixml_node_list,
-        li_child    TYPE REF TO if_ixml_node,
-        lv_best     TYPE i.
-
-
-  li_children = ii_rule->get_children( ).
-
-  DO li_children->get_length( ) TIMES.
-    li_child = li_children->get_item( sy-index - 1 ).
-    li_child = li_child->get_first_child( ). " get rid of <Alt> tag
-    rs_return = rule( ii_rule  = li_child
-                      iv_index = iv_index ).
-    IF rs_return-match = abap_true AND rs_return-index > lv_best.
-      lv_best = rs_return-index.
-    ENDIF.
-  ENDDO.
-
-  IF lv_best IS INITIAL.
-    rs_return-match = abap_false.
-    rs_return-index = iv_index.
-  ELSE.
-    rs_return-match = abap_true.
-    rs_return-index = lv_best.
-  ENDIF.
-
-ENDMETHOD.
-
-
-METHOD rule_iteration.
-
-  DATA: li_child    TYPE REF TO if_ixml_node,
-        lv_index    TYPE i.
-
-
-  li_child = ii_rule->get_first_child( ).
-
-  lv_index = iv_index.
-  DO.
-    rs_return = rule( ii_rule  = li_child
-                      iv_index = lv_index ).
-    IF rs_return-index = lv_index.
-      EXIT. " current loop
-    ENDIF.
-    lv_index = rs_return-index.
-  ENDDO.
-
-  IF rs_return-index <> iv_index.
-    rs_return-match = abap_true.
-  ELSE.
-    rs_return-match = abap_false.
-  ENDIF.
-
-ENDMETHOD.
-
-
-METHOD rule_nonterminal.
-
-  DATA: lv_rulename TYPE string,
-        li_rule     TYPE REF TO if_ixml_node.
-
-
-  lv_rulename = ii_rule->get_value( ).
-
-  li_rule = xml_get( lv_rulename ).
-  rs_return = rule( ii_rule  = li_rule
-                    iv_index = iv_index ).
-
-ENDMETHOD.
-
-
-METHOD rule_option.
-
-  DATA: li_child TYPE REF TO if_ixml_node.
-
-
-  li_child = ii_rule->get_first_child( ).
-
-  rs_return = rule( ii_rule  = li_child
-                    iv_index = iv_index ).
-  IF rs_return-match = abap_false.
-    rs_return-match = abap_true.
-    rs_return-index = iv_index.
-  ENDIF.
-
-ENDMETHOD.
-
-
-METHOD rule_permutation.
-
-  DATA: li_children TYPE REF TO if_ixml_node_list,
-        li_append   TYPE REF TO if_ixml_node_list,
-        li_child    TYPE REF TO if_ixml_node,
-        lt_per      TYPE TABLE OF REF TO if_ixml_node_list,
-        lv_index    TYPE i,
-        lv_loop     TYPE i,
-        ls_return   TYPE st_return.
-
-
-  li_children = ii_rule->get_children( ).
-  DO li_children->get_length( ) TIMES.
-    li_child = li_children->get_item( sy-index - 1 ).
-    li_append = li_child->get_children( ). " get rid of <Per> tag
-    APPEND li_append TO lt_per.
-  ENDDO.
-
-  lv_index = iv_index.
-
-  LOOP AT lt_per INTO li_children.
-    lv_loop = sy-tabix.
-
-    DO li_children->get_length( ) TIMES.
-      li_child = li_children->get_item( sy-index - 1 ).
-      ls_return = rule( ii_rule  = li_child
-                        iv_index = lv_index ).
-      IF ls_return-match = abap_false.
-        lv_index = iv_index.
-        EXIT. " current loop.
-      ELSE.
-        lv_index = ls_return-index.
-      ENDIF.
-    ENDDO.
-
-    IF ls_return-match = abap_true.
-      DELETE lt_per INDEX lv_loop.
-    ENDIF.
-
-  ENDLOOP.
-
-  rs_return-match = abap_true.
-  rs_return-index = lv_index.
-
-ENDMETHOD.
-
-
-METHOD rule_role.
-
-  DATA: lv_role  TYPE string,
-        lv_stack TYPE string.
-
-
-  lv_role = ii_rule->get_value( ).
-
-  READ TABLE gt_tokens INDEX iv_index INTO lv_stack.
-  IF sy-subrc <> 0.
-    rs_return-match = abap_false.
-    rs_return-index = iv_index.
+  IF iv_index = lines( gt_tokens ) + 1
+      AND io_node->mv_value = gv_end_rule.
+    rv_match = abap_true.
     RETURN.
   ENDIF.
 
-  CASE lv_role.
+  rv_match = walk_node( io_node  = io_node
+                        iv_index = iv_index ).
+
+ENDMETHOD.
+
+
+METHOD walk_node.
+
+  DATA: lo_node TYPE REF TO lcl_node.
+
+
+  LOOP AT io_node->mt_edges INTO lo_node.
+    rv_match = walk( io_node  = lo_node
+                     iv_index = iv_index ).
+    IF rv_match = abap_true.
+      RETURN.
+    ENDIF.
+  ENDLOOP.
+
+ENDMETHOD.
+
+
+METHOD walk_nonterminal.
+
+  DATA: lo_start TYPE REF TO lcl_node,
+        lo_end   TYPE REF TO lcl_node,
+        lo_node  TYPE REF TO lcl_node.
+
+
+  graph_build(
+    EXPORTING
+      iv_rulename = io_node->mv_value
+    IMPORTING
+      eo_start    = lo_start
+      eo_end      = lo_end ).
+
+  IF NOT lo_start IS BOUND.
+    BREAK-POINT.
+  ENDIF.
+
+* add edges from io_node to end of nonterminal graph
+  LOOP AT io_node->mt_edges INTO lo_node.
+    lo_end->edge( lo_node ).
+  ENDLOOP.
+
+  rv_match = walk_node( io_node  = lo_start
+                        iv_index = iv_index ).
+
+ENDMETHOD.
+
+
+METHOD walk_role.
+
+  DATA: lv_stack TYPE string.
+
+
+  READ TABLE gt_tokens INDEX iv_index INTO lv_stack.
+  IF sy-subrc <> 0.
+    rv_match = abap_false.
+    RETURN.
+  ENDIF.
+
+  CASE io_node->mv_value.
     WHEN 'FieldId'.
       FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_stack.           "#EC NOTEXT
       IF sy-subrc <> 0.
@@ -375,6 +685,8 @@ METHOD rule_role.
         OR 'FieldListId'
         OR 'MethodDefId'
         OR 'TypeId'
+        OR 'FormParamId'
+        OR 'FormId'
         OR 'FieldCompId'.
       FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_stack.           "#EC NOTEXT
     WHEN 'ClassrefFieldId'.
@@ -388,146 +700,130 @@ METHOD rule_role.
 * hmm, chained, todo?
       FIND REGEX '^[a-zA-Z0-9_\=\->]+\($' IN lv_stack.      "#EC NOTEXT
     WHEN 'LocationId'.
-* todo
-    WHEN 'FormParamId'.
-* todo
+      BREAK-POINT.
     WHEN 'SwitchId'.
-* todo
+      BREAK-POINT.
     WHEN 'SelOptId'.
-* todo
+      BREAK-POINT.
     WHEN 'LdbNodeId'.
-* todo
+      BREAK-POINT.
     WHEN 'ClassexcrefFieldId'.
-* todo
+      BREAK-POINT.
     WHEN 'ClassexcTypeId'.
-* todo
+      BREAK-POINT.
     WHEN 'FieldSymbolDefId'.
-* todo
+      BREAK-POINT.
     WHEN 'MacroId'.
-* todo
+      BREAK-POINT.
     WHEN 'FieldGroupId'.
-* todo
+      BREAK-POINT.
     WHEN 'ComponentId'.
-* todo
+      FIND REGEX '^\*$' IN lv_stack.
     WHEN 'MessageNumber'.
-* todo
+      BREAK-POINT.
     WHEN 'ProgramId'.
-* todo
+      BREAK-POINT.
     WHEN 'MacroDefId'.
-* todo
-    WHEN 'FormId'.
-* todo
+      BREAK-POINT.
     WHEN 'ProgramDefId'.
-* todo
+      BREAK-POINT.
     WHEN 'BlockDefId'.
-* todo
+      BREAK-POINT.
     WHEN OTHERS.
       BREAK-POINT.
   ENDCASE.
 
   IF sy-subrc = 0.
-    rs_return-match = abap_true.
-    rs_return-index = iv_index + 1.
+    rv_match = walk_node( io_node = io_node
+                          iv_index = iv_index + 1 ).
   ELSE.
-    rs_return-match = abap_false.
-    rs_return-index = iv_index.
+    rv_match = abap_false.
   ENDIF.
 
-
 ENDMETHOD.
 
 
-METHOD rule_sequence.
-
-  DATA: li_children TYPE REF TO if_ixml_node_list,
-        li_child    TYPE REF TO if_ixml_node.
-
-
-  li_children = ii_rule->get_children( ).
-
-  rs_return-index = iv_index.
-
-  DO li_children->get_length( ) TIMES.
-    li_child = li_children->get_item( sy-index - 1 ).
-    rs_return = rule( ii_rule  = li_child
-                      iv_index = rs_return-index ).
-    IF rs_return-match = abap_false.
-      rs_return-index = iv_index.
-      RETURN.
-    ENDIF.
-  ENDDO.
-
-ENDMETHOD.
-
-
-METHOD rule_terminal.
+METHOD walk_terminal.
 
   DATA: lv_terminal TYPE string,
-        lv_stack    TYPE string.
+        lv_token    TYPE string.
 
 
-  lv_terminal = ii_rule->get_value( ).
-
-  READ TABLE gt_tokens INDEX iv_index INTO lv_stack.
-  IF lv_stack = lv_terminal.
-    rs_return-match = abap_true.
-    rs_return-index = iv_index + 1.
-  ELSE.
-    rs_return-match = abap_false.
-    rs_return-index = iv_index.
+  READ TABLE gt_tokens INDEX iv_index INTO lv_token.
+  IF sy-subrc <> 0.
+    rv_match = abap_false.
+    RETURN.
   ENDIF.
+
+  IF lv_token <> io_node->mv_value.
+    rv_match = abap_false.
+    RETURN.
+  ENDIF.
+
+  rv_match = walk_node( io_node = io_node
+                        iv_index = iv_index + 1 ).
 
 ENDMETHOD.
 
 
 METHOD xml_get.
 
+  STATICS: lt_syntax TYPE syntax_tt.
+
   DATA: lv_rulename TYPE ssyntaxstructure-rulename.
 
-  FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF gt_syntax.
+  FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF lt_syntax.
 
+
+  IF lt_syntax[] IS INITIAL.
+    SELECT * FROM ssyntaxstructure INTO TABLE lt_syntax.    "#EC *
+  ENDIF.
 
   lv_rulename = iv_rulename. " type conversion
-  READ TABLE gt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = lv_rulename.
+  READ TABLE lt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = lv_rulename.
   IF sy-subrc <> 0.
-    READ TABLE gt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = 'COMPUTE'.
+    READ TABLE lt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = 'COMPUTE'.
   ENDIF.
 
 
-  REPLACE REGEX '<Terminal>([A-Z]*)</Terminal>' &&
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>([A-Z]*)</Terminal>' &&
     '<Terminal>#NWS_MINUS_NWS#</Terminal><Terminal>([A-Z]*)</Terminal>'
     IN <ls_syntax>-description
     WITH '<Terminal>$1-$2</Terminal>' IGNORING CASE.
 
 
-  REPLACE REGEX '<Role>MethodId</Role><Terminal>#NWS_LPAREN#</Terminal>'
+  REPLACE ALL OCCURRENCES OF REGEX '<Role>MethodId</Role><Terminal>#NWS_LPAREN#</Terminal>'
     IN <ls_syntax>-description
     WITH '<Role>MethodId(</Role>' IGNORING CASE.
 * todo #RPAREN_NWS# ?
 
 
-  REPLACE REGEX '<Terminal>#LPAREN#</Terminal>'
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#LPAREN#</Terminal>'
     IN <ls_syntax>-description
     WITH '<Terminal>(</Terminal>' IGNORING CASE.
-  REPLACE REGEX '<Terminal>#RPAREN#</Terminal>'
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#RPAREN#</Terminal>'
     IN <ls_syntax>-description
     WITH '<Terminal>)</Terminal>' IGNORING CASE.
 
 
-  REPLACE REGEX '<Terminal>#PLUS#</Terminal>'
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#PLUS#</Terminal>'
     IN <ls_syntax>-description
     WITH '<Terminal>+</Terminal>' IGNORING CASE.
-  REPLACE REGEX '<Terminal>#MINUS#</Terminal>'
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#MINUS#</Terminal>'
     IN <ls_syntax>-description
     WITH '<Terminal>-</Terminal>' IGNORING CASE.
-  REPLACE REGEX '<Terminal>#ASTERISK#</Terminal>'
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#ASTERISK#</Terminal>'
     IN <ls_syntax>-description
     WITH '<Terminal>*</Terminal>' IGNORING CASE.
-  REPLACE REGEX '<Terminal>#SLASH#</Terminal>'
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#SLASH#</Terminal>'
     IN <ls_syntax>-description
     WITH '<Terminal>/</Terminal>' IGNORING CASE.
 
 * #ASTERISK_NWS# ?
+
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>%_SORTMODE</Terminal>'
+      IN <ls_syntax>-description
+      WITH '' IGNORING CASE.
 
   ri_rule = xml_parse( <ls_syntax>-description ).
 
@@ -540,7 +836,10 @@ METHOD xml_parse.
 
   DATA: li_ixml           TYPE REF TO if_ixml,
         li_xml_doc        TYPE REF TO if_ixml_document,
+        li_type           TYPE REF TO if_ixml_node,
         li_view           TYPE REF TO if_ixml_element,
+        li_attr           TYPE REF TO if_ixml_named_node_map,
+        lv_type           TYPE string,
         li_stream_factory TYPE REF TO if_ixml_stream_factory,
         li_istream        TYPE REF TO if_ixml_istream,
         li_parser         TYPE REF TO if_ixml_parser.
@@ -562,6 +861,13 @@ METHOD xml_parse.
 
   li_view = li_xml_doc->find_from_name( depth = 0 name = 'View' ). "#EC NOTEXT
 * todo, get Obsolete view instead?
+
+  li_attr = li_view->get_attributes( ).
+  li_type = li_attr->get_named_item( 'type' ).
+  lv_type = li_type->get_value( ).
+  IF lv_type = 'Private'.
+    RETURN.
+  ENDIF.
 
   ri_rule = li_view->get_first_child( ).
 
