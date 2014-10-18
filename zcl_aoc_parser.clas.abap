@@ -8,11 +8,10 @@ public section.
 *"* do not include other source files here!!!
 
   type-pools ABAP .
-  class-methods MATCH
+  class-methods RUN
     importing
       !IT_CODE type STRING_TABLE
       !IV_DEBUG type ABAP_BOOL default ABAP_FALSE
-      !IV_REDUCE type ABAP_BOOL default ABAP_TRUE
     returning
       value(RV_MATCH) type ABAP_BOOL .
 protected section.
@@ -24,8 +23,8 @@ private section.
 
   class-data GT_TOKENS type STRING_TABLE .
   class-data GV_END_RULE type STRING .
+  type-pools ABAP .
   class-data GV_DEBUG type ABAP_BOOL .
-  class-data GV_REDUCE type ABAP_BOOL .
 
   class-methods XML_DOWNLOAD
     importing
@@ -38,35 +37,22 @@ private section.
       !IV_INDEX type I
     returning
       value(RV_MATCH) type ABAP_BOOL .
-  class-methods PERMUTE
-    importing
-      !IV_COUNT type I
-    exporting
-      !ET_PERM type TT_PERM .
   class-methods GRAPH_TO_TEXT
     importing
       !IO_NODE type ref to LCL_NODE
     returning
       value(RV_TEXT) type STRING .
-  class-methods GRAPH_REDUCE
-    importing
-      !IO_START type ref to LCL_NODE .
   class-methods GRAPH_DOWNLOAD
     importing
       !IV_RULENAME type STRING
       !IO_START type ref to LCL_NODE .
   class-methods GRAPH_BUILD
+    importing
+      !IV_RULENAME type STRING
     exporting
       !EO_START type ref to LCL_NODE
-      !EO_END type ref to LCL_NODE
-    changing
-      !CV_RULENAME type STRING .
-  class-methods BUILD_SEQUENCE
-    importing
-      !II_RULE type ref to IF_IXML_NODE
-      !IO_BEFORE type ref to LCL_NODE
-      !IO_AFTER type ref to LCL_NODE .
-  class-methods BUILD_TERMINAL
+      !EO_END type ref to LCL_NODE .
+  class-methods BUILD_PERMUTATION
     importing
       !II_RULE type ref to IF_IXML_NODE
       !IO_BEFORE type ref to LCL_NODE
@@ -76,7 +62,12 @@ private section.
       !II_RULE type ref to IF_IXML_NODE
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
-  class-methods BUILD_PERMUTATION
+  class-methods BUILD_SEQUENCE
+    importing
+      !II_RULE type ref to IF_IXML_NODE
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD_TERMINAL
     importing
       !II_RULE type ref to IF_IXML_NODE
       !IO_BEFORE type ref to LCL_NODE
@@ -142,10 +133,10 @@ private section.
     returning
       value(RV_MATCH) type ABAP_BOOL .
   class-methods XML_GET
-    exporting
-      !EI_RULE type ref to IF_IXML_NODE
-    changing
-      !CV_RULENAME type STRING .
+    importing
+      !IV_RULENAME type STRING
+    returning
+      value(RI_RULE) type ref to IF_IXML_NODE .
   class-methods XML_PARSE
     importing
       !IV_RULENAME type STRING
@@ -233,16 +224,24 @@ ENDMETHOD.
 METHOD build_alternative.
 
   DATA: li_children TYPE REF TO if_ixml_node_list,
+        lo_dummy    TYPE REF TO lcl_node,
         li_child    TYPE REF TO if_ixml_node.
 
 
+  CREATE OBJECT lo_dummy
+    EXPORTING
+      iv_type  = gc_dummy
+      iv_value = 'Alternative'.                             "#EC NOTEXT
+
   li_children = ii_rule->get_children( ).
+
+  io_before->edge( lo_dummy ).
 
   DO li_children->get_length( ) TIMES.
     li_child = li_children->get_item( sy-index - 1 ).
     li_child = li_child->get_first_child( ). " get rid of <Alt> tag
     build( ii_rule   = li_child
-           io_before = io_before
+           io_before = lo_dummy
            io_after  = io_after ).
   ENDDO.
 
@@ -261,12 +260,12 @@ METHOD build_iteration.
   CREATE OBJECT lo_dummy1
     EXPORTING
       iv_type  = gc_dummy
-      iv_value = 'Iteration'.                               "#EC NOTEXT
+      iv_value = 'IterationStart'.                          "#EC NOTEXT
 
   CREATE OBJECT lo_dummy2
     EXPORTING
       iv_type  = gc_dummy
-      iv_value = 'Iteration'.                               "#EC NOTEXT
+      iv_value = 'IterationEnd'.                            "#EC NOTEXT
 
   io_before->edge( lo_dummy1 ).
   lo_dummy2->edge( io_after ).
@@ -301,16 +300,23 @@ ENDMETHOD.
 
 METHOD build_option.
 
-  DATA: li_child TYPE REF TO if_ixml_node.
+  DATA: li_child TYPE REF TO if_ixml_node,
+        lo_dummy TYPE REF TO lcl_node.
 
+
+  CREATE OBJECT lo_dummy
+    EXPORTING
+      iv_type  = gc_dummy
+      iv_value = 'Option'.                                  "#EC NOTEXT
 
   li_child = ii_rule->get_first_child( ).
 
-  io_before->edge( io_after ).
+  io_before->edge( lo_dummy ).
+  lo_dummy->edge( io_after ).
 
   zcl_aoc_parser=>build(
       ii_rule   = li_child
-      io_before = io_before
+      io_before = lo_dummy
       io_after  = io_after ).
 
 ENDMETHOD.
@@ -558,33 +564,25 @@ METHOD graph_build.
   DATA: li_rule TYPE REF TO if_ixml_node.
 
 
-  xml_get(
-    IMPORTING
-      ei_rule     = li_rule
-    CHANGING
-      cv_rulename = cv_rulename ).
+  li_rule = xml_get( iv_rulename ).
 
   CREATE OBJECT eo_start
     EXPORTING
       iv_type  = gc_start
-      iv_value = cv_rulename.
+      iv_value = iv_rulename.
 
   CREATE OBJECT eo_end
     EXPORTING
       iv_type  = gc_end
-      iv_value = cv_rulename.
+      iv_value = iv_rulename.
 
   build( ii_rule   = li_rule
          io_before = eo_start
          io_after  = eo_end ).
 
-  IF gv_reduce = abap_true.
-    graph_reduce( eo_start ).
-  ENDIF.
-
   IF gv_debug = abap_true.
     graph_download(
-        iv_rulename = cv_rulename
+        iv_rulename = iv_rulename
         io_start    = eo_start ).
   ENDIF.
 
@@ -608,7 +606,6 @@ METHOD graph_download.
       not_supported_by_gui = 3
       OTHERS               = 4 ).
   IF sy-subrc <> 0.
-    BREAK-POINT.
     MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
                WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
   ENDIF.
@@ -650,20 +647,11 @@ METHOD graph_download.
       control_flush_error       = 21
       not_supported_by_gui      = 22
       error_no_gui              = 23
-      OTHERS                    = 24
-         ).
+      OTHERS                    = 24 ).
   IF sy-subrc <> 0.
-    BREAK-POINT.
     MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
                WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
   ENDIF.
-
-ENDMETHOD.
-
-
-METHOD graph_reduce.
-
-* todo
 
 ENDMETHOD.
 
@@ -677,7 +665,8 @@ METHOD graph_to_text.
         lo_node  TYPE REF TO lcl_node,
         lv_node  TYPE string,
         lo_edge  TYPE REF TO lcl_node,
-        lv_edge  TYPE string.
+        lv_edge  TYPE string,
+        lv_value TYPE string.
 
 
   DEFINE _out.
@@ -688,8 +677,14 @@ METHOD graph_to_text.
 
   _out 'digraph {'.                                         "#EC NOTEXT
   LOOP AT lt_nodes INTO lo_node.
+    lv_value = lo_node->mv_value.
+
+* escape some characters
+    REPLACE ALL OCCURRENCES OF '>' IN lv_value WITH '\>'.
+    REPLACE ALL OCCURRENCES OF '<' IN lv_value WITH '\<'.
+
     lv_label = 'Type\n' && lo_node->mv_type && '|' &&
-               'Value\n' && lo_node->mv_value.              "#EC NOTEXT
+               'Value\n' && lv_value.                       "#EC NOTEXT
     lv_node = 'node' && lo_node->mv_key &&
               ' [label = "' && lv_label &&
               '" shape = "record"];'.                       "#EC NOTEXT
@@ -709,33 +704,9 @@ METHOD graph_to_text.
 ENDMETHOD.
 
 
-METHOD match.
-
-  DATA: lt_tokens     TYPE stokesx_tab,
-        lt_statements TYPE sstmnt_tab.
-
-
-  SCAN ABAP-SOURCE it_code
-       TOKENS          INTO lt_tokens
-       STATEMENTS      INTO lt_statements
-       WITH ANALYSIS
-       WITH COMMENTS.
-
-  gv_debug = iv_debug.
-  gv_reduce = iv_reduce.
-
-  rv_match = parse( it_tokens     = lt_tokens
-                    it_statements = lt_statements ).
-
-* todo, clone graph, cache, shared memory?
-
-ENDMETHOD.
-
-
 METHOD parse.
 
-  DATA: lv_rulename TYPE string,
-        lo_start TYPE REF TO lcl_node.
+  DATA: lo_start TYPE REF TO lcl_node.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
                  <ls_token>     LIKE LINE OF it_tokens.
@@ -747,13 +718,13 @@ METHOD parse.
     LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
       APPEND <ls_token>-str TO gt_tokens.
     ENDLOOP.
+    APPEND '.' TO gt_tokens.
 
-    READ TABLE gt_tokens INDEX 1 INTO lv_rulename.
+* set start+end rule
+    gv_end_rule = 'START'.
 
-    graph_build( IMPORTING eo_start = lo_start
-                 CHANGING cv_rulename = lv_rulename ).
-
-    gv_end_rule = lv_rulename.
+    graph_build( EXPORTING iv_rulename = gv_end_rule
+                 IMPORTING eo_start = lo_start ).
 
     rv_match = walk( io_node  = lo_start
                      iv_index = 1 ).
@@ -772,48 +743,24 @@ METHOD parse.
 ENDMETHOD.
 
 
-METHOD permute.
+METHOD run.
 
-  DATA: lv_length TYPE i,
-        lv_value  TYPE i,
-        lt_perm   LIKE LINE OF et_perm,
-        lt_new    LIKE LINE OF et_perm.
+  DATA: lt_tokens     TYPE stokesx_tab,
+        lt_statements TYPE sstmnt_tab.
 
 
-  DO iv_count TIMES.
-    CLEAR lt_perm.
-    APPEND sy-index TO lt_perm.
-    APPEND lt_perm TO et_perm.
-  ENDDO.
+  SCAN ABAP-SOURCE it_code
+       TOKENS          INTO lt_tokens
+       STATEMENTS      INTO lt_statements
+       WITH ANALYSIS
+       WITH COMMENTS.
 
-  DO iv_count - 1 TIMES.
-    lv_length = sy-index + 1.
+  gv_debug = iv_debug.
 
-    LOOP AT et_perm INTO lt_perm.
+  rv_match = parse( it_tokens     = lt_tokens
+                    it_statements = lt_statements ).
 
-      IF lines( lt_perm ) <> lv_length - 1.
-        CONTINUE.
-      ENDIF.
-
-      DO iv_count TIMES.
-        lt_new = lt_perm.
-
-        lv_value = sy-index.
-        READ TABLE lt_new FROM lv_value TRANSPORTING NO FIELDS.
-        IF sy-subrc <> 0.
-          APPEND lv_value TO lt_new.
-          APPEND lt_new TO et_perm.
-        ENDIF.
-      ENDDO.
-    ENDLOOP.
-
-  ENDDO.
-
-  LOOP AT et_perm INTO lt_perm.
-    IF lines( lt_perm ) <> iv_count.
-      DELETE et_perm INDEX sy-tabix.
-    ENDIF.
-  ENDLOOP.
+* todo, clone graph, cache, shared memory?
 
 ENDMETHOD.
 
@@ -880,16 +827,22 @@ METHOD walk_nonterminal.
 
 
   lv_rulename = io_node->mv_value.
+
+  IF lv_rulename = 'MACRO'.
+* macro call makes everything valid ABAP code
+    rv_match = abap_false.
+    RETURN.
+  ENDIF.
+
   graph_build(
+    EXPORTING
+      iv_rulename = lv_rulename
     IMPORTING
       eo_start    = lo_start
-      eo_end      = lo_end
-    CHANGING
-      cv_rulename = lv_rulename ).
+      eo_end      = lo_end ).
 
-  IF NOT lo_start IS BOUND.
-    BREAK-POINT.
-  ENDIF.
+  ASSERT lo_start IS BOUND.
+  ASSERT lo_end IS BOUND.
 
 * add edges from io_node to end of nonterminal graph
   LOOP AT io_node->mt_edges INTO lo_node.
@@ -928,6 +881,7 @@ METHOD walk_role.
         OR 'TypeId'
         OR 'FormParamId'
         OR 'FormId'
+        OR 'ClasstypeDefId'
         OR 'SwitchId'
         OR 'FieldCompId'.
       FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_stack.           "#EC NOTEXT
@@ -937,10 +891,10 @@ METHOD walk_role.
       FIND REGEX '^''.*''$' IN lv_stack.
     WHEN 'ScreenId'.
       FIND REGEX '^[0-9]+$' IN lv_stack.
-    WHEN 'MethodId('
-        OR 'MethodId'.
-* hmm, chained, todo?
+    WHEN 'MethodId('.
       FIND REGEX '^[a-zA-Z0-9_\=\->]+\($' IN lv_stack.      "#EC NOTEXT
+    WHEN 'MethodId'.
+      FIND REGEX '^[a-zA-Z0-9_\=\->]+\(?$' IN lv_stack.     "#EC NOTEXT
     WHEN 'LocationId'.
       FIND REGEX '^/?[0-9]*["("0-9")"]*$' IN lv_stack.
     WHEN 'SelOptId'.
@@ -1023,7 +977,6 @@ METHOD xml_download.
       not_supported_by_gui = 3
       OTHERS               = 4 ).
   IF sy-subrc <> 0.
-    BREAK-POINT.
     MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
                WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
   ENDIF.
@@ -1074,10 +1027,8 @@ METHOD xml_download.
       control_flush_error       = 21
       not_supported_by_gui      = 22
       error_no_gui              = 23
-      OTHERS                    = 24
-         ).
+      OTHERS                    = 24 ).
   IF sy-subrc <> 0.
-    BREAK-POINT.
     MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
                WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
   ENDIF.
@@ -1098,14 +1049,9 @@ METHOD xml_get.
     SELECT * FROM ssyntaxstructure INTO TABLE lt_syntax.    "#EC *
   ENDIF.
 
-  lv_rulename = cv_rulename. " type conversion
+  lv_rulename = iv_rulename. " type conversion
   READ TABLE lt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = lv_rulename.
-  IF sy-subrc <> 0.
-* todo, this is wrong,
-* todo, always start with rule = START?
-    READ TABLE lt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = 'COMPUTE'.
-    cv_rulename = <ls_syntax>-rulename.
-  ENDIF.
+  ASSERT sy-subrc = 0.
 
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>([A-Z]*)</Terminal>' &&
     '<Terminal>#NWS_MINUS_NWS#</Terminal><Terminal>([A-Z]*)</Terminal>'
@@ -1147,7 +1093,32 @@ METHOD xml_get.
       IN <ls_syntax>-description
       WITH '' IGNORING CASE.
 
-  ei_rule = xml_parse( iv_rulename = cv_rulename
+* comparison operators
+  REPLACE ALL OCCURRENCES OF REGEX
+    '<Terminal>#LT_NWS#</Terminal><Terminal>#NWS_GT#</Terminal>'
+    IN <ls_syntax>-description
+    WITH '<Terminal>&lt;&gt;</Terminal>' IGNORING CASE.
+  REPLACE ALL OCCURRENCES OF REGEX
+    '<Terminal>#GT_NWS#</Terminal><Terminal>#NWS_LT#</Terminal>'
+    IN <ls_syntax>-description
+    WITH '<Terminal>&gt;&lt;</Terminal>' IGNORING CASE.
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#LT#</Terminal>'
+    IN <ls_syntax>-description
+    WITH '<Terminal>&lt;</Terminal>' IGNORING CASE.
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#LT_NWS#</Terminal><Terminal>=</Terminal>'
+    IN <ls_syntax>-description
+    WITH '<Terminal>&lt;=</Terminal>' IGNORING CASE.
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>=</Terminal><Terminal>#NWS_LT#</Terminal>'
+    IN <ls_syntax>-description
+    WITH '<Terminal>=&lt;</Terminal>' IGNORING CASE.
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#GT#</Terminal>'
+    IN <ls_syntax>-description
+    WITH '<Terminal>&gt;</Terminal>' IGNORING CASE.
+  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#GT_NWS#</Terminal><Terminal>=</Terminal>'
+    IN <ls_syntax>-description
+    WITH '<Terminal>&gt;=</Terminal>' IGNORING CASE.
+
+  ri_rule = xml_parse( iv_rulename = iv_rulename
                        iv_xml      = <ls_syntax>-description ).
 
 ENDMETHOD.
@@ -1174,9 +1145,7 @@ METHOD xml_parse.
   li_parser = li_ixml->create_parser( stream_factory = li_stream_factory
                                       istream        = li_istream
                                       document       = li_xml_doc ).
-  IF li_parser->parse( ) <> 0.
-    BREAK-POINT.
-  ENDIF.
+  ASSERT li_parser->parse( ) = 0.
 
   li_istream->close( ).
 

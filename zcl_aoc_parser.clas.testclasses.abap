@@ -9,6 +9,7 @@ CLASS lcl_test DEFINITION FOR TESTING
     FINAL.
 
 * todo, colon test, separator
+* todo, chained method call
 
   PRIVATE SECTION.
 * ================
@@ -48,8 +49,8 @@ CLASS lcl_test DEFINITION FOR TESTING
              call_method2    FOR TESTING,
              call_method3    FOR TESTING,
              call_method4    FOR TESTING,
-             call_method5    ,"FOR TESTING, "todo: wrong starting point
-             call_method6    ,"FOR TESTING, "todo: wrong starting point
+             call_method5    FOR TESTING,
+             call_method6    FOR TESTING,
              data1           FOR TESTING,
              write1          FOR TESTING,
              write2          FOR TESTING,
@@ -60,10 +61,13 @@ CLASS lcl_test DEFINITION FOR TESTING
              compute2        FOR TESTING,
              if1             FOR TESTING,
              if2             FOR TESTING,
-             if3             ,"FOR TESTING, todo: fails
+             if3             ,"FOR TESTING, "todo: fails due to []
+             if4             FOR TESTING,
              wait1           FOR TESTING,
              wait2           FOR TESTING,
              code1           FOR TESTING,
+             code2           FOR TESTING,
+             code3           FOR TESTING,
              methods1        FOR TESTING,
              read_table1     FOR TESTING,
              call_function1  FOR TESTING,
@@ -446,6 +450,14 @@ CLASS lcl_test IMPLEMENTATION.
 
   ENDMETHOD.                    "if3
 
+  METHOD if4.
+
+    _code 'IF sy-subrc <> 0.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "if4
+
   METHOD wait1.
 
     _code 'WAIT UNTIL lv_foo = lv_bar AND lv_moo = lv_boo.'.
@@ -471,6 +483,36 @@ CLASS lcl_test IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "code1
+
+  METHOD code2.
+
+    _code 'CLASS lcl_node IMPLEMENTATION.'.
+    _code '  METHOD constructor.'.
+    _code '    ASSERT NOT iv_value IS INITIAL.'.
+    _code '    mv_type  = iv_type.'.
+    _code '    mv_value = iv_value.'.
+    _code '    mv_key   = gv_key.'.
+    _code '    gv_key   = gv_key + 1.'.
+    _code '  ENDMETHOD.'.
+    _code 'ENDCLASS.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "code2
+
+  METHOD code3.
+
+    _code 'DO iv_count TIMES.'.
+    _code 'lt_new = lt_perm.'.
+    _code 'lv_value = sy-index.'.
+    _code 'READ TABLE lt_new FROM lv_value TRANSPORTING NO FIELDS.'.
+    _code 'APPEND lv_value TO lt_new.'.
+    _code 'APPEND lt_new TO et_perm.'.
+    _code 'ENDDO.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "code3
 
   METHOD methods1.
 

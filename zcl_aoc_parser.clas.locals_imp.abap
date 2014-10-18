@@ -10,9 +10,7 @@
 CLASS lcl_node IMPLEMENTATION.
 
   METHOD constructor.
-    IF iv_value IS INITIAL.
-      BREAK-POINT.
-    ENDIF.
+    ASSERT NOT iv_value IS INITIAL.
 
     mv_type  = iv_type.
     mv_value = iv_value.

@@ -6,8 +6,6 @@ TYPES: syntax_tt TYPE STANDARD TABLE OF ssyntaxstructure.
 
 TYPES: ty_node_type TYPE c LENGTH 1.
 
-TYPES: tt_perm TYPE STANDARD TABLE OF swfxst_integer_t.
-
 CONSTANTS: gc_dummy       TYPE ty_node_type VALUE 'D',
            gc_start       TYPE ty_node_type VALUE 'S',
            gc_end         TYPE ty_node_type VALUE 'E',
