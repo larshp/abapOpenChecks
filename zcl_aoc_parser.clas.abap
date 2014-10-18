@@ -11,7 +11,8 @@ public section.
   class-methods MATCH
     importing
       !IT_CODE type STRING_TABLE
-      !IV_DEBUG type ABAP_BOOL default ABAP_TRUE
+      !IV_DEBUG type ABAP_BOOL default ABAP_FALSE
+      !IV_REDUCE type ABAP_BOOL default ABAP_TRUE
     returning
       value(RV_MATCH) type ABAP_BOOL .
 protected section.
@@ -23,9 +24,14 @@ private section.
 
   class-data GT_TOKENS type STRING_TABLE .
   class-data GV_END_RULE type STRING .
-  type-pools ABAP .
   class-data GV_DEBUG type ABAP_BOOL .
+  class-data GV_REDUCE type ABAP_BOOL .
 
+  class-methods XML_DOWNLOAD
+    importing
+      !IV_RULENAME type STRING
+      !II_XML type ref to IF_IXML
+      !II_XML_DOC type ref to IF_IXML_DOCUMENT .
   class-methods WALK
     importing
       !IO_NODE type ref to LCL_NODE
@@ -42,6 +48,9 @@ private section.
       !IO_NODE type ref to LCL_NODE
     returning
       value(RV_TEXT) type STRING .
+  class-methods GRAPH_REDUCE
+    importing
+      !IO_START type ref to LCL_NODE .
   class-methods GRAPH_DOWNLOAD
     importing
       !IV_RULENAME type STRING
@@ -52,7 +61,12 @@ private section.
       !EO_END type ref to LCL_NODE
     changing
       !CV_RULENAME type STRING .
-  class-methods BUILD_PERMUTATION
+  class-methods BUILD_SEQUENCE
+    importing
+      !II_RULE type ref to IF_IXML_NODE
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD_TERMINAL
     importing
       !II_RULE type ref to IF_IXML_NODE
       !IO_BEFORE type ref to LCL_NODE
@@ -62,12 +76,7 @@ private section.
       !II_RULE type ref to IF_IXML_NODE
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
-  class-methods BUILD_SEQUENCE
-    importing
-      !II_RULE type ref to IF_IXML_NODE
-      !IO_BEFORE type ref to LCL_NODE
-      !IO_AFTER type ref to LCL_NODE .
-  class-methods BUILD_TERMINAL
+  class-methods BUILD_PERMUTATION
     importing
       !II_RULE type ref to IF_IXML_NODE
       !IO_BEFORE type ref to LCL_NODE
@@ -139,6 +148,7 @@ private section.
       !CV_RULENAME type STRING .
   class-methods XML_PARSE
     importing
+      !IV_RULENAME type STRING
       !IV_XML type STRING
     returning
       value(RI_RULE) type ref to IF_IXML_NODE .
@@ -336,7 +346,7 @@ METHOD build_optionlist.
       CREATE OBJECT lo_after
         EXPORTING
           iv_type  = gc_dummy
-          iv_value = 'Optionlist'.
+          iv_value = 'Optionlist'.                          "#EC NOTEXT
     ENDIF.
     lo_before->edge( lo_after ).
 
@@ -352,7 +362,7 @@ METHOD build_optionlist.
       CREATE OBJECT lo_seq_after
         EXPORTING
           iv_type  = gc_dummy
-          iv_value = 'Optionlist Seq'.
+          iv_value = 'Optionlist Seq'.                      "#EC NOTEXT
 
       li_child = li_opt->get_item( sy-index - 1 ).
       build( ii_rule   = li_child
@@ -375,16 +385,28 @@ ENDMETHOD.
 
 METHOD build_permutation.
 
-  DATA: li_children TYPE REF TO if_ixml_node_list,
-        li_append   TYPE REF TO if_ixml_node_list,
-        li_child    TYPE REF TO if_ixml_node,
-        lt_perm     TYPE tt_perm,
-        lv_index    TYPE i,
-        lo_before   TYPE REF TO lcl_node,
-        lo_after    TYPE REF TO lcl_node,
-        lt_index    TYPE TABLE OF i,
-        lt_per      TYPE TABLE OF REF TO if_ixml_node_list.
+  TYPES: BEGIN OF st_pair,
+           before TYPE REF TO lcl_node,
+           after TYPE REF TO lcl_node,
+         END OF st_pair.
 
+  DATA: li_children   TYPE REF TO if_ixml_node_list,
+        li_append     TYPE REF TO if_ixml_node_list,
+        li_child      TYPE REF TO if_ixml_node,
+        lv_index      TYPE i,
+        lo_before     TYPE REF TO lcl_node,
+        lv_name       TYPE string,
+        lo_after      TYPE REF TO lcl_node,
+        lo_seq_before TYPE REF TO lcl_node,
+        lo_seq_after  TYPE REF TO lcl_node,
+        lt_pair       TYPE TABLE OF st_pair,
+        lt_per        TYPE TABLE OF REF TO if_ixml_node_list.
+
+  FIELD-SYMBOLS: <ls_pair> LIKE LINE OF lt_pair,
+                 <ls_to>   LIKE LINE OF lt_pair.
+
+
+* good enough, but allows statements like ASCENDING ASCENDING
 
   li_children = ii_rule->get_children( ).
   DO li_children->get_length( ) TIMES.
@@ -393,57 +415,69 @@ METHOD build_permutation.
     APPEND li_append TO lt_per.
   ENDDO.
 
-* todo, hmm, too slow?
+  io_before->edge( io_after ).
 
-* only max items in permutation and then options around each?
-* graph will be a lot smaller
-  permute( EXPORTING iv_count = lines( lt_per )
-           IMPORTING et_perm  = lt_perm ).
+  LOOP AT lt_per INTO li_children.
 
-  LOOP AT lt_perm INTO lt_index.
+    CREATE OBJECT lo_before
+      EXPORTING
+        iv_type  = gc_dummy
+        iv_value = 'PerBefore'.
+    io_before->edge( lo_before ).
 
-    lo_before = io_before.
+    CREATE OBJECT lo_after
+      EXPORTING
+        iv_type  = gc_dummy
+        iv_value = 'PerAfter'.
+    lo_after->edge( io_after ).
 
-    LOOP AT lt_index INTO lv_index.
-      IF sy-tabix = lines( lt_index ).
-        lo_after = io_after.
+    APPEND INITIAL LINE TO lt_pair ASSIGNING <ls_pair>.
+    <ls_pair>-before = lo_before.
+    <ls_pair>-after  = lo_after.
+
+    DO li_children->get_length( ) TIMES.
+      lv_index = sy-index.
+
+      li_child = li_children->get_item( sy-index - 1 ).
+
+* permutations are always treated at optional, so make sure its not possible
+* to cycle in the graph without meeting terminals
+      IF li_children->get_length( ) = 1.
+        lv_name = li_child->get_name( ).
+        IF lv_name = 'Option'.
+          li_child = li_child->get_first_child( ).
+        ENDIF.
+      ENDIF.
+
+* handle un<Sequence>d permutations
+      IF lv_index = 1.
+        lo_seq_before = lo_before.
       ELSE.
-        CREATE OBJECT lo_after
-          EXPORTING
-            iv_type  = gc_dummy
-            iv_value = 'Permutation'.
+        lo_seq_before = lo_seq_after.
       ENDIF.
 
-      READ TABLE lt_per INDEX lv_index INTO li_children.
-      IF sy-subrc <> 0.
-        BREAK-POINT.
+      CREATE OBJECT lo_seq_after
+        EXPORTING
+          iv_type  = gc_dummy
+          iv_value = 'PerSeq'.
+
+      build( ii_rule   = li_child
+             io_before = lo_seq_before
+             io_after  = lo_seq_after ).
+
+      IF lv_index = li_children->get_length( ).
+        lo_seq_after->edge( lo_after ).
       ENDIF.
 
-      DO li_children->get_length( ) TIMES.
+    ENDDO.
 
-        li_child = li_children->get_item( sy-index - 1 ).
-        build( ii_rule   = li_child
-               io_before = lo_before
-               io_after  = lo_after ).
-
-      ENDDO.
-
-      lo_before = lo_after.
-
-    ENDLOOP.
   ENDLOOP.
 
-* old stuff, doesnt work
-
-*  LOOP AT lt_per INTO li_children.
-*    DO li_children->get_length( ) TIMES.
-*      li_child = li_children->get_item( sy-index - 1 ).
-*
-*      build( ii_rule   = li_child
-*             io_before = io_before
-*             io_after  = io_after ).
-*    ENDDO.
-*  ENDLOOP.
+  LOOP AT lt_pair ASSIGNING <ls_pair>.
+    LOOP AT lt_pair ASSIGNING <ls_to> WHERE before <> <ls_pair>-before.
+      <ls_pair>-after->edge( <ls_to>-before ).
+    ENDLOOP.
+  ENDLOOP.
 
 ENDMETHOD.
 
@@ -544,6 +578,10 @@ METHOD graph_build.
          io_before = eo_start
          io_after  = eo_end ).
 
+  IF gv_reduce = abap_true.
+    graph_reduce( eo_start ).
+  ENDIF.
+
   IF gv_debug = abap_true.
     graph_download(
         iv_rulename = cv_rulename
@@ -623,7 +661,16 @@ METHOD graph_download.
 ENDMETHOD.
 
 
+METHOD graph_reduce.
+
+* todo
+
+ENDMETHOD.
+
+
 METHOD graph_to_text.
+
+* see http://www.graphviz.org/
 
   DATA: lt_nodes TYPE TABLE OF REF TO lcl_node,
         lv_label TYPE string,
@@ -675,11 +722,12 @@ METHOD match.
        WITH COMMENTS.
 
   gv_debug = iv_debug.
+  gv_reduce = iv_reduce.
 
   rv_match = parse( it_tokens     = lt_tokens
                     it_statements = lt_statements ).
 
-* todo, reduce graph, clone graph, cache, shared memory?
+* todo, clone graph, cache, shared memory?
 
 ENDMETHOD.
 
@@ -701,8 +749,6 @@ METHOD parse.
     ENDLOOP.
 
     READ TABLE gt_tokens INDEX 1 INTO lv_rulename.
-
-* todo, always start with rule = START?
 
     graph_build( IMPORTING eo_start = lo_start
                  CHANGING cv_rulename = lv_rulename ).
@@ -762,6 +808,12 @@ METHOD permute.
     ENDLOOP.
 
   ENDDO.
+
+  LOOP AT et_perm INTO lt_perm.
+    IF lines( lt_perm ) <> iv_count.
+      DELETE et_perm INDEX sy-tabix.
+    ENDIF.
+  ENDLOOP.
 
 ENDMETHOD.
 
@@ -872,9 +924,11 @@ METHOD walk_role.
         OR 'ItabFieldId'
         OR 'FieldListId'
         OR 'MethodDefId'
+        OR 'MacroId'
         OR 'TypeId'
         OR 'FormParamId'
         OR 'FormId'
+        OR 'SwitchId'
         OR 'FieldCompId'.
       FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_stack.           "#EC NOTEXT
     WHEN 'ClassrefFieldId'.
@@ -888,9 +942,7 @@ METHOD walk_role.
 * hmm, chained, todo?
       FIND REGEX '^[a-zA-Z0-9_\=\->]+\($' IN lv_stack.      "#EC NOTEXT
     WHEN 'LocationId'.
-      BREAK-POINT.
-    WHEN 'SwitchId'.
-      BREAK-POINT.
+      FIND REGEX '^/?[0-9]*["("0-9")"]*$' IN lv_stack.
     WHEN 'SelOptId'.
       BREAK-POINT.
     WHEN 'LdbNodeId'.
@@ -900,8 +952,6 @@ METHOD walk_role.
     WHEN 'ClassexcTypeId'.
       BREAK-POINT.
     WHEN 'FieldSymbolDefId'.
-      BREAK-POINT.
-    WHEN 'MacroId'.
       BREAK-POINT.
     WHEN 'FieldGroupId'.
       BREAK-POINT.
@@ -953,6 +1003,88 @@ METHOD walk_terminal.
 ENDMETHOD.
 
 
+METHOD xml_download.
+
+  DATA: lv_desktop       TYPE string,
+        lv_filename      TYPE string,
+        lv_xml           TYPE string,
+        lt_data          TYPE TABLE OF string,
+        li_ostream       TYPE REF TO if_ixml_ostream,
+        li_renderer      TYPE REF TO if_ixml_renderer,
+        li_streamfactory TYPE REF TO if_ixml_stream_factory.
+
+
+  cl_gui_frontend_services=>get_desktop_directory(
+    CHANGING
+      desktop_directory    = lv_desktop
+    EXCEPTIONS
+      cntl_error           = 1
+      error_no_gui         = 2
+      not_supported_by_gui = 3
+      OTHERS               = 4 ).
+  IF sy-subrc <> 0.
+    BREAK-POINT.
+    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+               WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+  ENDIF.
+
+  cl_gui_cfw=>flush( ).
+
+  li_streamfactory = ii_xml->create_stream_factory( ).
+  li_ostream = li_streamfactory->create_ostream_cstring( lv_xml ).
+  li_renderer = ii_xml->create_renderer( ostream  = li_ostream
+                                         document = ii_xml_doc ).
+  li_renderer->set_normalizing( ).
+  li_renderer->render( ).
+
+* make sure newlines work in notepad
+  REPLACE ALL OCCURRENCES OF cl_abap_char_utilities=>newline
+    IN lv_xml WITH cl_abap_char_utilities=>cr_lf.
+
+  APPEND lv_xml TO lt_data.
+
+  lv_filename = lv_desktop && '\graphviz\' && iv_rulename && '.xml'. "#EC NOTEXT
+
+  cl_gui_frontend_services=>gui_download(
+    EXPORTING
+      filename                  = lv_filename
+    CHANGING
+      data_tab                  = lt_data
+    EXCEPTIONS
+      file_write_error          = 1
+      no_batch                  = 2
+      gui_refuse_filetransfer   = 3
+      invalid_type              = 4
+      no_authority              = 5
+      unknown_error             = 6
+      header_not_allowed        = 7
+      separator_not_allowed     = 8
+      filesize_not_allowed      = 9
+      header_too_long           = 10
+      dp_error_create           = 11
+      dp_error_send             = 12
+      dp_error_write            = 13
+      unknown_dp_error          = 14
+      access_denied             = 15
+      dp_out_of_memory          = 16
+      disk_full                 = 17
+      dp_timeout                = 18
+      file_not_found            = 19
+      dataprovider_exception    = 20
+      control_flush_error       = 21
+      not_supported_by_gui      = 22
+      error_no_gui              = 23
+      OTHERS                    = 24
+         ).
+  IF sy-subrc <> 0.
+    BREAK-POINT.
+    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+               WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+  ENDIF.
+
+ENDMETHOD.
+
+
 METHOD xml_get.
 
   STATICS: lt_syntax TYPE syntax_tt.
@@ -970,10 +1102,10 @@ METHOD xml_get.
   READ TABLE lt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = lv_rulename.
   IF sy-subrc <> 0.
 * todo, this is wrong,
-    READ TABLE lt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = 'START'.
+* todo, always start with rule = START?
+    READ TABLE lt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = 'COMPUTE'.
     cv_rulename = <ls_syntax>-rulename.
   ENDIF.
-
 
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>([A-Z]*)</Terminal>' &&
     '<Terminal>#NWS_MINUS_NWS#</Terminal><Terminal>([A-Z]*)</Terminal>'
@@ -1015,9 +1147,8 @@ METHOD xml_get.
       IN <ls_syntax>-description
       WITH '' IGNORING CASE.
 
-  ei_rule = xml_parse( <ls_syntax>-description ).
-
-* todo, better caching
+  ei_rule = xml_parse( iv_rulename = cv_rulename
+                       iv_xml      = <ls_syntax>-description ).
 
 ENDMETHOD.
 
@@ -1048,6 +1179,13 @@ METHOD xml_parse.
   ENDIF.
 
   li_istream->close( ).
+
+  IF gv_debug = abap_true.
+    xml_download(
+        iv_rulename = iv_rulename
+        ii_xml      = li_ixml
+        ii_xml_doc  = li_xml_doc ).
+  ENDIF.
 
   li_view = li_xml_doc->find_from_name( depth = 0 name = 'View' ). "#EC NOTEXT
 * todo, get Obsolete view instead?
