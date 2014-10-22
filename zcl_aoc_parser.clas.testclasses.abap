@@ -20,81 +20,84 @@ CLASS lcl_test DEFINITION FOR TESTING
 
     METHODS: setup.
 
-    METHODS: back            FOR TESTING,
-             suppress_dialog FOR TESTING,
-             suppress_foobar FOR TESTING,
-             tables          FOR TESTING,
-             tables_neg      FOR TESTING,
-             divide          FOR TESTING,
-             divide_neg      FOR TESTING,
-             condense1       FOR TESTING,
-             condense2       FOR TESTING,
-             newline1        FOR TESTING,
-             newline2        FOR TESTING,
-             newline3        FOR TESTING,
-             sort1           FOR TESTING,
-             sort2           FOR TESTING,
-             sort3           FOR TESTING,
-             sort4           FOR TESTING,
-             sort5           FOR TESTING,
-             sort6           FOR TESTING,
-             sort7           FOR TESTING,
-             sort8           FOR TESTING,
-             sort9           FOR TESTING,
-             sort10          FOR TESTING,
-             loop1           FOR TESTING,
-             collect1        FOR TESTING,
-             call_screen     FOR TESTING,
-             call_method1    FOR TESTING,
-             call_method2    FOR TESTING,
-             call_method3    FOR TESTING,
-             call_method4    FOR TESTING,
-             call_method5    FOR TESTING,
-             call_method6    FOR TESTING,
-             data1           FOR TESTING,
-             write1          FOR TESTING,
-             write2          FOR TESTING,
-             write3          FOR TESTING,
-             replace1        FOR TESTING,
-             replace2        FOR TESTING,
-             compute1        FOR TESTING,
-             compute2        FOR TESTING,
-             if1             FOR TESTING,
-             if2             FOR TESTING,
-             if3             ,"FOR TESTING, "todo: fails due to []
-             if4             FOR TESTING,
-             wait1           FOR TESTING,
-             wait2           FOR TESTING,
-             code1           FOR TESTING,
-             code2           FOR TESTING,
-             code3           FOR TESTING,
-             methods1        FOR TESTING,
-             read_table1     FOR TESTING,
-             call_function1  FOR TESTING,
-             concatenate1    FOR TESTING,
-             create_object1  FOR TESTING,
-             create_object2  FOR TESTING,
-             non_code1       FOR TESTING,
-             non_code2       FOR TESTING,
-             non_code3       FOR TESTING,
-             non_code4       FOR TESTING,
-             non_code5       FOR TESTING,
-             non_code6       FOR TESTING,
-             non_code7       FOR TESTING,
-             non_code8       FOR TESTING,
-             non_code9       FOR TESTING,
-             perform1        FOR TESTING,
-             perform2        FOR TESTING,
-             try1            FOR TESTING,
-             select1         FOR TESTING,
-             uline1          FOR TESTING,
-             uline2          FOR TESTING,
-             uline3          FOR TESTING,
-             uline4          FOR TESTING,
-             uline5          FOR TESTING,
-             uline6          FOR TESTING,
-             uline7          FOR TESTING,
-             uline8          FOR TESTING.
+    METHODS: back            ,"FOR TESTING,
+             suppress_dialog ,"FOR TESTING,
+             suppress_foobar ,"FOR TESTING,
+             tables          ,"FOR TESTING,
+             tables_neg      ,"FOR TESTING,
+             divide          ,"FOR TESTING,
+             divide_neg      ,"FOR TESTING,
+             condense1       ,"FOR TESTING,
+             condense2       ,"FOR TESTING,
+             newline1        ,"FOR TESTING,
+             newline2        ,"FOR TESTING,
+             newline3        ,"FOR TESTING,
+             sort1           ,"FOR TESTING,
+             sort2           ,"FOR TESTING,
+             sort3           ,"FOR TESTING,
+             sort4           ,"FOR TESTING,
+             sort5           ,"FOR TESTING,
+             sort6           ,"FOR TESTING,
+             sort7           ,"FOR TESTING,
+             sort8           ,"FOR TESTING,
+             sort9           ,"FOR TESTING,
+             sort10          ,"FOR TESTING,
+             loop1           ,"FOR TESTING,
+             collect1        ,"FOR TESTING,
+             call_screen     ,"FOR TESTING,
+             call_method1    ,"FOR TESTING,
+             call_method2    ,"FOR TESTING,
+             call_method3    ,"FOR TESTING,
+             call_method4    ,"FOR TESTING,
+             call_method5    ,"FOR TESTING,
+             call_method6    ,"FOR TESTING,
+             data1           ,"FOR TESTING,
+             write1          ,"FOR TESTING,
+             write2          ,"FOR TESTING,
+             write3          ,"FOR TESTING,
+             replace1        ,"FOR TESTING,
+             replace2        ,"FOR TESTING,
+             compute1        ,"FOR TESTING,
+             compute2        ,"FOR TESTING,
+             if1             ,"FOR TESTING,
+             if2             ,"FOR TESTING,
+             if3             ,"FOR TESTING,
+             if4             ,"FOR TESTING,
+             wait1           ,"FOR TESTING,
+             wait2           ,"FOR TESTING,
+             code1           ,"FOR TESTING,
+             code2           ,"FOR TESTING,
+             code3           ,"FOR TESTING,
+             methods1        ,"FOR TESTING,
+             read_table1     ,"FOR TESTING,
+             call_function1  ,"FOR TESTING,
+             concatenate1    ,"FOR TESTING,
+             create_object1  ,"FOR TESTING,
+             create_object2  ,"FOR TESTING,
+             non_code1       ,"FOR TESTING,
+             non_code2       ,"FOR TESTING,
+             non_code3       ,"FOR TESTING,
+             non_code4       ,"FOR TESTING,
+             non_code5       ,"FOR TESTING,
+             non_code6       ,"FOR TESTING,
+             non_code7       ,"FOR TESTING,
+             non_code8       ,"FOR TESTING,
+             non_code9       ,"FOR TESTING,
+             perform1        ,"FOR TESTING,
+             perform2        ,"FOR TESTING,
+             try1            ,"FOR TESTING,
+             select1         ,"FOR TESTING,
+             uline1          ,"FOR TESTING,
+             uline2          ,"FOR TESTING,
+             uline3          ,"FOR TESTING,
+             uline4          ,"FOR TESTING,
+             uline5          ,"FOR TESTING,
+             uline6          ,"FOR TESTING,
+             uline7          ,"FOR TESTING,
+             uline8          ,"FOR TESTING,
+             selection_scr1  ,"FOR TESTING,
+             selection_scr2  ,"FOR TESTING,
+             constant1       FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -746,5 +749,29 @@ CLASS lcl_test IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "uline8
+
+  METHOD selection_scr1.
+
+    _code 'SELECTION-SCREEN FUNCTION KEY 1.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "selection1
+
+  METHOD selection_scr2.
+
+    _code 'SELECTION-SCREEN BEGIN OF BLOCK a1 WITH FRAME TITLE text-001.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "selection_scr2
+
+  METHOD constant1.
+
+    _code 'CONSTANTS gc_var TYPE i VALUE 7.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "constant1
 
 ENDCLASS.       "lcl_Test

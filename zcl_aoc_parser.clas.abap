@@ -868,7 +868,7 @@ METHOD walk_role.
 
   CASE io_node->mv_value.
     WHEN 'FieldId'.
-      FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_stack.           "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\-]+["\[\]"]*$' IN lv_stack.  "#EC NOTEXT
       IF sy-subrc <> 0.
         FIND REGEX '^''.*''$' IN lv_stack.
       ENDIF.
@@ -883,6 +883,7 @@ METHOD walk_role.
         OR 'FormId'
         OR 'ClasstypeDefId'
         OR 'SwitchId'
+        OR 'BlockDefId'
         OR 'FieldCompId'.
       FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_stack.           "#EC NOTEXT
     WHEN 'ClassrefFieldId'.
@@ -919,8 +920,6 @@ METHOD walk_role.
       BREAK-POINT.
     WHEN 'ProgramDefId'.
       BREAK-POINT.
-    WHEN 'BlockDefId'.
-      BREAK-POINT.
     WHEN OTHERS.
       BREAK-POINT.
   ENDCASE.
@@ -940,14 +939,26 @@ METHOD walk_terminal.
   DATA: lv_token TYPE string.
 
 
+  rv_match = abap_true.
+
   READ TABLE gt_tokens INDEX iv_index INTO lv_token.
   IF sy-subrc <> 0.
     rv_match = abap_false.
-    RETURN.
   ENDIF.
 
-  IF lv_token <> io_node->mv_value.
-    rv_match = abap_false.
+  CASE io_node->mv_value.
+    WHEN '#ILITERAL#'.
+      FIND REGEX '^[0-9]+$' IN lv_token.
+      IF sy-subrc <> 0.
+        rv_match = abap_false.
+      ENDIF.
+    WHEN OTHERS.
+      IF lv_token <> io_node->mv_value.
+        rv_match = abap_false.
+      ENDIF.
+  ENDCASE.
+
+  IF rv_match = abap_false.
     RETURN.
   ENDIF.
 
