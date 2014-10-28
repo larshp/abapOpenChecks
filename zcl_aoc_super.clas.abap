@@ -82,18 +82,12 @@ ENDMETHOD.
 
 METHOD documentation.
 
-  DATA: lv_object TYPE dokhl-object.
+  DATA: lv_url TYPE string VALUE 'https://github.com/larshp/abapOpenChecks/wiki/'.
 
 
-  lv_object = iv_name.
+  CONCATENATE lv_url iv_name INTO lv_url.
 
-  CALL FUNCTION 'DOCU_CALL'
-    EXPORTING
-      displ      = abap_true
-      displ_mode = 2
-      id         = 'CL'
-      langu      = 'E'
-      object     = lv_object.
+  cl_gui_frontend_services=>execute( document = lv_url ).
 
 ENDMETHOD.
 
