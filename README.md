@@ -13,7 +13,7 @@ Open source checks for SAP Code Inspector / ABAP Test Cockpit (SCI/ATC)
 **Design goals**
 - try and see if it works out
 - performance not high priority
-- unit testable without creating new objects in customer cystem
+- unit testable without creating new objects in customer system
 - only english supported
 
 For description of checks see the [wiki page](https://github.com/larshp/abapOpenChecks/wiki)
