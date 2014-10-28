@@ -29,6 +29,10 @@ CLASS ZCL_AOC_CATEGORY IMPLEMENTATION.
 
 METHOD constructor.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   super->constructor( ).
   description = 'abapOpenChecks'.                           "#EC NOTEXT
   category    = 'CL_CI_CATEGORY_TOP'.

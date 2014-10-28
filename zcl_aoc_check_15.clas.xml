@@ -46,15 +46,15 @@
  <TLINETAB>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE>IS REQUESTED is obsolete</TDLINE>
+   <TDLINE>abapOpenChecks</TDLINE>
   </TLINE>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE></TDLINE>
+   <TDLINE>https://github.com/larshp/abapOpenChecks</TDLINE>
   </TLINE>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE>use IS SUPPLIED instead</TDLINE>
+   <TDLINE>MIT License</TDLINE>
   </TLINE>
  </TLINETAB>
 </abapGit>

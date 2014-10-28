@@ -40,6 +40,10 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
 
 METHOD check.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   DATA: lv_include    TYPE program,
         lv_prev_row   TYPE token_row,
         lv_prev_level TYPE stmnt_levl.

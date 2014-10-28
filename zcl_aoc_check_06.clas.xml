@@ -46,27 +46,15 @@
  <TLINETAB>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE>Check pretty printer use</TDLINE>
+   <TDLINE>abapOpenChecks</TDLINE>
   </TLINE>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE></TDLINE>
+   <TDLINE>https://github.com/larshp/abapOpenChecks</TDLINE>
   </TLINE>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE>Use pretty printer according to standards.</TDLINE>
-  </TLINE>
-  <TLINE>
-   <TDFORMAT>*</TDFORMAT>
-   <TDLINE></TDLINE>
-  </TLINE>
-  <TLINE>
-   <TDFORMAT>*</TDFORMAT>
-   <TDLINE>Syntax highlighting is not possible when reading short dumps</TDLINE>
-  </TLINE>
-  <TLINE>
-   <TDFORMAT>*</TDFORMAT>
-   <TDLINE>or change history of source code.</TDLINE>
+   <TDLINE>MIT License</TDLINE>
   </TLINE>
  </TLINETAB>
 </abapGit>

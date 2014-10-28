@@ -745,6 +745,10 @@ ENDMETHOD.
 
 METHOD run.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   DATA: lt_tokens     TYPE stokesx_tab,
         lt_statements TYPE sstmnt_tab.
 

@@ -40,6 +40,10 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
 
 METHOD check.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   DATA: lv_include TYPE sobj_name.
 
   FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,

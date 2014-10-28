@@ -43,4 +43,18 @@
   <WITHIN_PACKAGE></WITHIN_PACKAGE>
  </VSEOCLASS>
  <TEXTPOOL_TABLE/>
+ <TLINETAB>
+  <TLINE>
+   <TDFORMAT>*</TDFORMAT>
+   <TDLINE>abapOpenChecks</TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>*</TDFORMAT>
+   <TDLINE>https://github.com/larshp/abapOpenChecks</TDLINE>
+  </TLINE>
+  <TLINE>
+   <TDFORMAT>*</TDFORMAT>
+   <TDLINE>MIT License</TDLINE>
+  </TLINE>
+ </TLINETAB>
 </abapGit>

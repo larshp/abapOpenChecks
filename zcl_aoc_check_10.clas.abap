@@ -40,6 +40,10 @@ CLASS ZCL_AOC_CHECK_10 IMPLEMENTATION.
 
 METHOD check.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   DATA: lv_include TYPE program.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,

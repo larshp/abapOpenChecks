@@ -46,27 +46,15 @@
  <TLINETAB>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE>Line length</TDLINE>
+   <TDLINE>abapOpenChecks</TDLINE>
   </TLINE>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE></TDLINE>
+   <TDLINE>https://github.com/larshp/abapOpenChecks</TDLINE>
   </TLINE>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE>The number of lines shown in a short dump or the debugger is</TDLINE>
-  </TLINE>
-  <TLINE>
-   <TDFORMAT>*</TDFORMAT>
-   <TDLINE>limited. Traditionally code length is kept to around 80 characters.</TDLINE>
-  </TLINE>
-  <TLINE>
-   <TDFORMAT>*</TDFORMAT>
-   <TDLINE>In short dumps only 72(?) characters are shown and when using the</TDLINE>
-  </TLINE>
-  <TLINE>
-   <TDFORMAT>*</TDFORMAT>
-   <TDLINE>2 column code comparison tool</TDLINE>
+   <TDLINE>MIT License</TDLINE>
   </TLINE>
  </TLINETAB>
 </abapGit>

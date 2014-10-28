@@ -46,15 +46,15 @@
  <TLINETAB>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE>Specify SORT order</TDLINE>
+   <TDLINE>abapOpenChecks</TDLINE>
   </TLINE>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE></TDLINE>
+   <TDLINE>https://github.com/larshp/abapOpenChecks</TDLINE>
   </TLINE>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE>Add DESCENDING or ASCENDING after each field</TDLINE>
+   <TDLINE>MIT License</TDLINE>
   </TLINE>
  </TLINETAB>
 </abapGit>

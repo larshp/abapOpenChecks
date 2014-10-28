@@ -40,6 +40,10 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
 
 METHOD check.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   DATA: lv_token     LIKE sy-tabix,
         lv_include   TYPE sobj_name.
 

@@ -177,6 +177,10 @@ ENDMETHOD.
 
 METHOD run.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   CLEAR mt_source[].  " limit memory use
 
   CHECK program_name IS NOT INITIAL.

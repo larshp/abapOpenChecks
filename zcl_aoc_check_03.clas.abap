@@ -40,6 +40,10 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
 METHOD check.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   DATA: lv_include TYPE program,
         lv_found   TYPE abap_bool,
         lv_index   LIKE sy-tabix.

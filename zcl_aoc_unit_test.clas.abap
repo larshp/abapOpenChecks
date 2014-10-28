@@ -48,6 +48,10 @@ CLASS ZCL_AOC_UNIT_TEST IMPLEMENTATION.
 
 METHOD check.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   DATA: lt_tokens     TYPE stokesx_tab,
         lt_statements TYPE sstmnt_tab,
         lt_levels     TYPE slevel_tab,

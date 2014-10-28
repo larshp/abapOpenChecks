@@ -40,6 +40,10 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
 METHOD check.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   DATA: lv_after_start TYPE string,
         lv_count       TYPE i,
         lv_include     TYPE program,

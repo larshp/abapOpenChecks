@@ -46,27 +46,15 @@
  <TLINETAB>
   <TLINE>
    <TDFORMAT>*</TDFORMAT>
-   <TDLINE>Sequential blank lines</TDLINE>
+   <TDLINE>abapOpenChecks</TDLINE>
   </TLINE>
   <TLINE>
-   <TDFORMAT></TDFORMAT>
-   <TDLINE></TDLINE>
+   <TDFORMAT>*</TDFORMAT>
+   <TDLINE>https://github.com/larshp/abapOpenChecks</TDLINE>
   </TLINE>
   <TLINE>
-   <TDFORMAT></TDFORMAT>
-   <TDLINE></TDLINE>
-  </TLINE>
-  <TLINE>
-   <TDFORMAT></TDFORMAT>
-   <TDLINE></TDLINE>
-  </TLINE>
-  <TLINE>
-   <TDFORMAT></TDFORMAT>
-   <TDLINE></TDLINE>
-  </TLINE>
-  <TLINE>
-   <TDFORMAT></TDFORMAT>
-   <TDLINE></TDLINE>
+   <TDFORMAT>*</TDFORMAT>
+   <TDLINE>MIT License</TDLINE>
   </TLINE>
  </TLINETAB>
 </abapGit>
