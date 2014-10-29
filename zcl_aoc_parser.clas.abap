@@ -881,6 +881,7 @@ METHOD walk_role.
         OR 'ItabFieldId'
         OR 'FieldListId'
         OR 'MethodDefId'
+        OR 'LdbNodeId'
         OR 'MacroId'
         OR 'TypeId'
         OR 'FormParamId'
@@ -888,6 +889,8 @@ METHOD walk_role.
         OR 'ClasstypeDefId'
         OR 'SwitchId'
         OR 'BlockDefId'
+        OR 'ClassexcTypeId'
+        OR 'ClassexcrefFieldId'
         OR 'FieldCompId'.
       FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_stack.           "#EC NOTEXT
     WHEN 'ClassrefFieldId'.
@@ -903,15 +906,10 @@ METHOD walk_role.
     WHEN 'LocationId'.
       FIND REGEX '^/?[0-9]*["("0-9")"]*$' IN lv_stack.
     WHEN 'SelOptId'.
-      BREAK-POINT.
-    WHEN 'LdbNodeId'.
-      BREAK-POINT.
-    WHEN 'ClassexcrefFieldId'.
-      BREAK-POINT.
-    WHEN 'ClassexcTypeId'.
-      BREAK-POINT.
+      rv_match = abap_false.
+      RETURN.
     WHEN 'FieldSymbolDefId'.
-      BREAK-POINT.
+      FIND REGEX '^<[a-zA-Z0-9_\-]+>$' IN lv_stack.
     WHEN 'FieldGroupId'.
       BREAK-POINT.
     WHEN 'ComponentId'.
