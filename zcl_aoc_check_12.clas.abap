@@ -11,21 +11,11 @@ public section.
 
   methods CHECK
     redefinition .
-  methods GET_ATTRIBUTES
-    redefinition .
   methods GET_MESSAGE_TEXT
-    redefinition .
-  methods IF_CI_TEST~DISPLAY_DOCUMENTATION
-    redefinition .
-  methods IF_CI_TEST~QUERY_ATTRIBUTES
-    redefinition .
-  methods PUT_ATTRIBUTES
     redefinition .
 protected section.
 *"* protected components of class ZCL_AOC_CHECK_12
 *"* do not include other source files here!!!
-
-  data MV_ERRTY type SCI_ERRTY .
 private section.
 *"* private components of class ZCL_AOC_CHECK_12
 *"* do not include other source files here!!!
@@ -118,15 +108,6 @@ METHOD constructor .
 ENDMETHOD.                    "CONSTRUCTOR
 
 
-METHOD get_attributes.
-
-  EXPORT
-    mv_errty = mv_errty
-    TO DATA BUFFER p_attributes.
-
-ENDMETHOD.
-
-
 METHOD get_message_text.
 
   CASE p_code.
@@ -137,55 +118,4 @@ METHOD get_message_text.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
-
-
-METHOD if_ci_test~display_documentation.
-
-  documentation( c_my_name ).
-
-ENDMETHOD.
-
-
-METHOD if_ci_test~query_attributes.
-
-  DATA: lv_ok         TYPE abap_bool,
-        lv_message    TYPE c LENGTH 72,
-        lt_attributes TYPE sci_atttab,
-        ls_attribute  LIKE LINE OF lt_attributes.
-
-  DEFINE fill_att.
-    clear ls_attribute.
-    get reference of &1 into ls_attribute-ref.
-    ls_attribute-text = &2.
-    ls_attribute-kind = &3.
-    append ls_attribute to lt_attributes.
-  END-OF-DEFINITION.
-
-
-  fill_att mv_errty 'Error Type' ''.                        "#EC NOTEXT
-
-  WHILE lv_ok = abap_false.
-    cl_ci_query_attributes=>generic(
-                          p_name       = c_my_name
-                          p_title      = 'Options'
-                          p_attributes = lt_attributes
-                          p_message    = lv_message
-                          p_display    = p_display ).       "#EC NOTEXT
-    IF mv_errty = c_error OR mv_errty = c_warning OR mv_errty = c_note.
-      lv_ok = abap_true.
-    ELSE.
-      lv_message = 'Fill attributes'.                       "#EC NOTEXT
-    ENDIF.
-  ENDWHILE.
-
-ENDMETHOD.
-
-
-METHOD put_attributes.
-
-  IMPORT
-    mv_errty = mv_errty
-    FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
-
-ENDMETHOD.
 ENDCLASS.

@@ -22,11 +22,21 @@ public section.
       !IV_NAME type LEVEL_NAME
       !IT_CODE type STRING_TABLE .
 
+  methods GET_ATTRIBUTES
+    redefinition .
+  methods IF_CI_TEST~QUERY_ATTRIBUTES
+    redefinition .
+  methods PUT_ATTRIBUTES
+    redefinition .
   methods RUN
+    redefinition .
+  methods IF_CI_TEST~DISPLAY_DOCUMENTATION
     redefinition .
 protected section.
 *"* protected components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
+
+  data MV_ERRTY type SCI_ERRTY .
 
   class-methods STATEMENT_KEYWORD
     importing
@@ -42,9 +52,6 @@ protected section.
       !IT_TOKENS type STOKESX_TAB
     returning
       value(RV_RESULT) type TOKEN_ROW .
-  class-methods DOCUMENTATION
-    importing
-      !IV_NAME type SEOCLSNAME .
   methods GET_SOURCE
     importing
       !IS_LEVEL type SLEVEL
@@ -55,19 +62,19 @@ protected section.
     redefinition .
   methods INFORM
     redefinition .
-PRIVATE SECTION.
+private section.
 *"* private components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
 
-  TYPES:
+  types:
     BEGIN OF st_source,
            name TYPE level_name,
            code TYPE string_table,
          END OF st_source .
-  TYPES:
+  types:
     tt_source TYPE SORTED TABLE OF st_source WITH UNIQUE KEY name .
 
-  DATA mt_source TYPE tt_source .
+  data MT_SOURCE type TT_SOURCE .
 ENDCLASS.
 
 
@@ -83,14 +90,9 @@ METHOD check.
 ENDMETHOD.
 
 
-METHOD documentation.
+METHOD get_attributes.
 
-  DATA: lv_url TYPE string VALUE 'https://github.com/larshp/abapOpenChecks/wiki/'.
-
-
-  CONCATENATE lv_url iv_name INTO lv_url.
-
-  cl_gui_frontend_services=>execute( document = lv_url ).
+  EXPORT mv_errty = mv_errty TO DATA BUFFER p_attributes.
 
 ENDMETHOD.
 
@@ -139,6 +141,52 @@ METHOD get_source.
 ENDMETHOD.
 
 
+METHOD if_ci_test~display_documentation.
+
+  DATA: lv_url TYPE string VALUE 'https://github.com/larshp/abapOpenChecks/wiki/'.
+
+
+  CONCATENATE lv_url myname INTO lv_url.
+
+  cl_gui_frontend_services=>execute( document = lv_url ).
+
+ENDMETHOD.
+
+
+METHOD if_ci_test~query_attributes.
+
+  DATA: lv_ok         TYPE abap_bool,
+        lv_message    TYPE c LENGTH 72,
+        lt_attributes TYPE sci_atttab,
+        ls_attribute  LIKE LINE OF lt_attributes.
+
+  DEFINE fill_att.
+    get reference of &1 into ls_attribute-ref.
+    ls_attribute-text = &2.
+    ls_attribute-kind = &3.
+    append ls_attribute to lt_attributes.
+  END-OF-DEFINITION.
+
+
+  fill_att mv_errty 'Error Type' ''.                        "#EC NOTEXT
+
+  WHILE lv_ok = abap_false.
+    cl_ci_query_attributes=>generic(
+                          p_name       = myname
+                          p_title      = 'Options'
+                          p_attributes = lt_attributes
+                          p_message    = lv_message
+                          p_display    = p_display ).       "#EC NOTEXT
+    IF mv_errty = c_error OR mv_errty = c_warning OR mv_errty = c_note.
+      lv_ok = abap_true.
+    ELSE.
+      lv_message = 'Fill attributes'.                       "#EC NOTEXT
+    ENDIF.
+  ENDWHILE.
+
+ENDMETHOD.
+
+
 METHOD inform.
 
 * skip standard code, todo: namespaces
@@ -167,6 +215,15 @@ METHOD inform.
       p_inclspec     = p_inclspec
 * parameters p_detail and p_checksum_1 does not exist in 730
       ).
+
+ENDMETHOD.
+
+
+METHOD put_attributes.
+
+  IMPORT
+    mv_errty = mv_errty
+    FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
 
 ENDMETHOD.
 

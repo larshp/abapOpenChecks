@@ -15,8 +15,6 @@ public section.
     redefinition .
   methods GET_MESSAGE_TEXT
     redefinition .
-  methods IF_CI_TEST~DISPLAY_DOCUMENTATION
-    redefinition .
   methods IF_CI_TEST~QUERY_ATTRIBUTES
     redefinition .
   methods PUT_ATTRIBUTES
@@ -25,7 +23,6 @@ protected section.
 *"* protected components of class ZCL_AOC_CHECK_13
 *"* do not include other source files here!!!
 
-  data MV_ERRTY type SCI_ERRTY .
   data MV_LINES type LINESTOTAL .
 private section.
 *"* private components of class ZCL_AOC_CHECK_13
@@ -115,13 +112,6 @@ METHOD get_message_text.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
-
-
-METHOD if_ci_test~display_documentation.
-
-  documentation( c_my_name ).
-
-ENDMETHOD.
 
 
 METHOD if_ci_test~query_attributes.
