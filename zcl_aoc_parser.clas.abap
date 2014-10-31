@@ -214,8 +214,6 @@ METHOD build.
           ii_rule   = ii_rule
           io_before = io_before
           io_after  = io_after ).
-    WHEN OTHERS.
-      BREAK-POINT.
   ENDCASE.
 
 ENDMETHOD.
@@ -890,6 +888,10 @@ METHOD walk_role.
         OR 'SwitchId'
         OR 'BlockDefId'
         OR 'ClassexcTypeId'
+        OR 'FieldGroupId'
+        OR 'ProgramId'
+        OR 'ProgramDefId'
+        OR 'MacroDefId'
         OR 'ClassexcrefFieldId'
         OR 'FieldCompId'.
       FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_stack.           "#EC NOTEXT
@@ -909,21 +911,11 @@ METHOD walk_role.
       rv_match = abap_false.
       RETURN.
     WHEN 'FieldSymbolDefId'.
-      FIND REGEX '^<[a-zA-Z0-9_\-]+>$' IN lv_stack.
-    WHEN 'FieldGroupId'.
-      BREAK-POINT.
+      FIND REGEX '^<[a-zA-Z0-9_\-]+>$' IN lv_stack.         "#EC NOTEXT
     WHEN 'ComponentId'.
       FIND REGEX '^\*$' IN lv_stack.
     WHEN 'MessageNumber'.
-      BREAK-POINT.
-    WHEN 'ProgramId'.
-      BREAK-POINT.
-    WHEN 'MacroDefId'.
-      BREAK-POINT.
-    WHEN 'ProgramDefId'.
-      BREAK-POINT.
-    WHEN OTHERS.
-      BREAK-POINT.
+      FIND REGEX '^.[0-9][0-9][0-9]$' IN lv_stack.
   ENDCASE.
 
   IF sy-subrc = 0.
@@ -1051,19 +1043,19 @@ ENDMETHOD.
 
 METHOD xml_get.
 
-  STATICS: lt_syntax TYPE syntax_tt.
+  STATICS: st_syntax TYPE syntax_tt.
 
   DATA: lv_rulename TYPE ssyntaxstructure-rulename.
 
-  FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF lt_syntax.
+  FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF st_syntax.
 
 
-  IF lt_syntax[] IS INITIAL.
-    SELECT * FROM ssyntaxstructure INTO TABLE lt_syntax.    "#EC *
+  IF st_syntax[] IS INITIAL.
+    SELECT * FROM ssyntaxstructure INTO TABLE st_syntax.    "#EC *
   ENDIF.
 
   lv_rulename = iv_rulename. " type conversion
-  READ TABLE lt_syntax ASSIGNING <ls_syntax> WITH KEY rulename = lv_rulename.
+  READ TABLE st_syntax ASSIGNING <ls_syntax> WITH KEY rulename = lv_rulename.
   ASSERT sy-subrc = 0.
 
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>([A-Z]*)</Terminal>' &&

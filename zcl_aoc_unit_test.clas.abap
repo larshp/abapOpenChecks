@@ -55,7 +55,7 @@ METHOD check.
   DATA: lt_tokens     TYPE stokesx_tab,
         lt_statements TYPE sstmnt_tab,
         lt_levels     TYPE slevel_tab,
-        lt_structures TYPE sstruc_tab.
+        lt_structures TYPE zcl_aoc_super=>tt_structures.
 
 
   SCAN ABAP-SOURCE it_code

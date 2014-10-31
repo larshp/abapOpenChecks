@@ -40,8 +40,14 @@ CLASS lcl_test IMPLEMENTATION.
   METHOD test001_01.
 * ===========
 
-* ------>------- walk the line ------------>--------------------------->
-    _code '                                                                                        WRITE ''foo''. '.
+    DATA: lv_code TYPE string.
+
+
+    CONCATENATE '                                               '
+      '                                         WRITE ''foo''. '
+      INTO lv_code RESPECTING BLANKS.
+
+    _code lv_code.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
                                           io_check = mo_check ).

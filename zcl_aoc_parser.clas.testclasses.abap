@@ -104,7 +104,8 @@ CLASS lcl_test DEFINITION FOR TESTING
              check2          FOR TESTING,
              get1            FOR TESTING,
              field_symbol1   FOR TESTING,
-             raise1          FOR TESTING.
+             raise1          FOR TESTING,
+             message1        for testing.
 
 ENDCLASS.       "lcl_Test
 
@@ -843,5 +844,13 @@ CLASS lcl_test IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "raise1
+
+  METHOD message1.
+
+    _code 'MESSAGE A500 WITH ''foobar''.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Test

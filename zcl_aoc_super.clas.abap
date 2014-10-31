@@ -5,15 +5,18 @@ class ZCL_AOC_SUPER definition
   create public .
 
 public section.
-
 *"* public components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
+
+  types:
+    TT_STRUCTURES type standard table of SSTRUC .
+
   methods CHECK
     importing
       !IT_TOKENS type STOKESX_TAB
       !IT_STATEMENTS type SSTMNT_TAB
       !IT_LEVELS type SLEVEL_TAB
-      !IT_STRUCTURES type SSTRUC_TAB .
+      !IT_STRUCTURES type TT_STRUCTURES .
   methods SET_SOURCE
     importing
       !IV_NAME type LEVEL_NAME
@@ -22,9 +25,9 @@ public section.
   methods RUN
     redefinition .
 protected section.
-
 *"* protected components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
+
   class-methods STATEMENT_KEYWORD
     importing
       !IV_NUMBER type STMNT_NR
@@ -162,8 +165,7 @@ METHOD inform.
       p_param_3      = p_param_3
       p_param_4      = p_param_4
       p_inclspec     = p_inclspec
-*      p_detail       = p_detail    does not exist in 730
-*      p_checksum_1   = p_checksum_1
+* parameters p_detail and p_checksum_1 does not exist in 730
       ).
 
 ENDMETHOD.

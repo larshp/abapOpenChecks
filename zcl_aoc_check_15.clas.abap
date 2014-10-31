@@ -56,7 +56,8 @@ METHOD check.
     CLEAR lv_statement.
 
     LOOP AT it_tokens ASSIGNING <ls_token>
-      FROM <ls_statement>-from TO <ls_statement>-to.
+        FROM <ls_statement>-from TO <ls_statement>-to
+        WHERE type = scan_token_type-identifier.
       IF lv_statement IS INITIAL.
         lv_statement = <ls_token>-str.
       ELSE.
