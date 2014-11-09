@@ -34,8 +34,13 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lt_not       TYPE TABLE OF string,
+  TYPES: BEGIN OF st_name,
+           name TYPE string,
+         END OF st_name.
+
+  DATA: lt_not       TYPE SORTED TABLE OF st_name WITH UNIQUE KEY name,
         lv_statement TYPE string,
+        ls_name      TYPE st_name,
         lv_name      TYPE string.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
@@ -67,9 +72,11 @@ METHOD check.
       lv_name = <ls_token>-str.
 
       IF lv_statement CP '* LINE OF *' OR lv_statement CP '* TYPE ANY'.
-        DELETE TABLE lt_not FROM lv_name.
+        DELETE TABLE lt_not WITH TABLE KEY name = lv_name.
       ELSE.
-        APPEND lv_name TO lt_not.
+        CLEAR ls_name.
+        ls_name-name = lv_name.
+        INSERT ls_name INTO TABLE lt_not.
       ENDIF.
     ENDIF.
 
@@ -95,7 +102,7 @@ METHOD check.
 * todo, also show error if looping at table with simple types
 * todo, report error where the variable is defined instead of used
     IF sy-subrc = 0.
-      READ TABLE lt_not FROM lv_name TRANSPORTING NO FIELDS.
+      READ TABLE lt_not WITH KEY name = lv_name TRANSPORTING NO FIELDS.
       IF sy-subrc = 0.
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = get_include( p_level = <ls_statement>-level )
