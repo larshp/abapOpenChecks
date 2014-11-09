@@ -66,7 +66,7 @@ METHOD check.
       ASSERT sy-subrc = 0.
       lv_name = <ls_token>-str.
 
-      IF lv_statement CP '* LINE OF *'.
+      IF lv_statement CP '* LINE OF *' OR lv_statement CP '* TYPE ANY'.
         DELETE TABLE lt_not FROM lv_name.
       ELSE.
         APPEND lv_name TO lt_not.

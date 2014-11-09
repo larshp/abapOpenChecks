@@ -16,21 +16,22 @@ CLASS lcl_test DEFINITION FOR TESTING
           mo_check  TYPE REF TO zcl_aoc_check_19.
 
     METHODS: setup,
-             test001_01 FOR TESTING,
-             test001_02 FOR TESTING,
-             test001_03 FOR TESTING,
-             test001_04 FOR TESTING,
-             test001_05 FOR TESTING,
-             test001_06 FOR TESTING,
-             test001_07 FOR TESTING,
-             test001_08 FOR TESTING,
-             test001_09 FOR TESTING,
-             test001_10 FOR TESTING,
-             test001_11 FOR TESTING,
-             test001_12 FOR TESTING,
-             test001_13 FOR TESTING,
-             test001_14 FOR TESTING,
-             test001_15 FOR TESTING.
+             test001_01 ,"FOR TESTING,
+             test001_02 ,"FOR TESTING,
+             test001_03 ,"FOR TESTING,
+             test001_04 ,"FOR TESTING,
+             test001_05 ,"FOR TESTING,
+             test001_06 ,"FOR TESTING,
+             test001_07 ,"FOR TESTING,
+             test001_08 ,"FOR TESTING,
+             test001_09 ,"FOR TESTING,
+             test001_10 ,"FOR TESTING,
+             test001_11 ,"FOR TESTING,
+             test001_12 ,"FOR TESTING,
+             test001_13 ,"FOR TESTING,
+             test001_14 ,"FOR TESTING,
+             test001_15 ,"FOR TESTING,
+             test001_16 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -271,5 +272,18 @@ CLASS lcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.                    "test001_14
+
+  METHOD test001_16.
+* ===========
+
+    _code 'FIELD-SYMBOLS: <ls_wa> TYPE any.'.
+    _code 'READ TABLE lt_list[] ASSIGNING <ls_wa> INDEX 1.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.                    "test001_16
 
 ENDCLASS.       "lcl_Test
