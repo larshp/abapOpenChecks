@@ -122,7 +122,7 @@ METHOD constructor.
 
   super->constructor( ).
 
-  description    = 'Use LIKE LINE OF'.                      "#EC NOTEXT
+  description    = 'Use LINE OF'.                           "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '000'.
 
