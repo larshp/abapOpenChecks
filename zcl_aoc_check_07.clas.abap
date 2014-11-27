@@ -64,7 +64,9 @@ METHOD check.
       CONTINUE. " current loop
     ENDIF.
 
-    IF <ls_token3>-str CP '*>(*'.
+    IF <ls_token3>-str CP '*>(*'
+        OR <ls_token3>-str CP '*)=>*'
+        OR <ls_token3>-str CP '*)->*'.
 * allow dynamic calls
       CONTINUE.
     ENDIF.
