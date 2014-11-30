@@ -189,12 +189,44 @@ ENDMETHOD.
 
 METHOD inform.
 
+  DATA: li_oref    TYPE REF TO if_oo_class_incl_naming,
+        lv_clsname TYPE seoclassdf-clsname,
+        li_clif    TYPE REF TO if_oo_clif_incl_naming,
+        lv_method  TYPE seocpdname.
+
+
 * skip standard code, todo: namespaces
   IF p_sub_obj_name(1) <> 'Z'
       AND p_sub_obj_name(1) <> 'Y'
       AND p_sub_obj_name <> ''
       AND p_sub_obj_name <> '----------------------------------------'.
     RETURN.
+  ENDIF.
+
+* skip constructor in exception classes
+  cl_oo_include_naming=>get_instance_by_include(
+    EXPORTING
+      progname = p_sub_obj_name
+    RECEIVING
+      cifref   = li_clif
+    EXCEPTIONS
+      OTHERS   = 1 ).
+  IF sy-subrc = 0.
+    li_oref ?= li_clif.
+    SELECT SINGLE clsname FROM seoclassdf INTO lv_clsname
+      WHERE clsname = li_oref->clskey-clsname AND category = '40'. " exception
+    IF sy-subrc = 0.
+      li_oref->get_mtdname_by_include(
+        EXPORTING
+          progname = p_sub_obj_name
+        RECEIVING
+          mtdname  = lv_method
+        EXCEPTIONS
+          OTHERS   = 1 ).
+      IF sy-subrc = 0 AND lv_method = 'CONSTRUCTOR'.
+        RETURN.
+      ENDIF.
+    ENDIF.
   ENDIF.
 
   super->inform(
