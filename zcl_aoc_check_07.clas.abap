@@ -80,6 +80,16 @@ METHOD check.
         EXIT.
       ENDIF.
 
+* allow if old style exceptions are part of method
+      LOOP AT it_tokens TRANSPORTING NO FIELDS
+          FROM <ls_statement>-from TO <ls_statement>-to
+          WHERE str = 'EXCEPTIONS'
+          AND type = scan_token_type-identifier.
+      ENDLOOP.
+      IF sy-subrc = 0.
+        EXIT. " current loop
+      ENDIF.
+
       lv_include = get_include( p_level = <ls_statement>-level ).
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include

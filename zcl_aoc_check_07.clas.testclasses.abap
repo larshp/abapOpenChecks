@@ -21,7 +21,8 @@ CLASS lcl_test DEFINITION FOR TESTING
              test001_03 FOR TESTING,
              test001_04 FOR TESTING,
              test001_05 FOR TESTING,
-             test001_06 FOR TESTING.
+             test001_06 FOR TESTING,
+             test001_07 for testing.
 
 ENDCLASS.       "lcl_Test
 
@@ -113,6 +114,26 @@ CLASS lcl_test IMPLEMENTATION.
     _code 'CALL METHOD (lv_classname)=>(lv_method)'.
     _code '  RECEIVING'.
     _code '    rv_var = lv_var.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_07.
+* ===========
+
+* allow old style exceptions in method calls
+
+    _code 'cl_oo_include_naming=>get_instance_by_include('.
+    _code '  EXPORTING'.
+    _code '    progname = p_sub_obj_name'.
+    _code '  RECEIVING'.
+    _code '    cifref   = li_clif'.
+    _code '  EXCEPTIONS'.
+    _code '    OTHERS   = 1 ).'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
                                           io_check = mo_check ).

@@ -214,7 +214,9 @@ METHOD inform.
   IF sy-subrc = 0.
     li_oref ?= li_clif.
     SELECT SINGLE clsname FROM seoclassdf INTO lv_clsname
-      WHERE clsname = li_oref->clskey-clsname AND category = '40'. " exception
+      WHERE clsname = li_oref->clskey-clsname
+      AND category = '40'     " exception
+      AND version = '1'.
     IF sy-subrc = 0.
       li_oref->get_mtdname_by_include(
         EXPORTING
