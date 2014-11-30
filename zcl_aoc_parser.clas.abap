@@ -859,7 +859,7 @@ ENDMETHOD.
 
 METHOD walk_role.
 
-  DATA: lv_stack TYPE string.
+  DATA: lv_stack LIKE LINE OF gt_tokens.
 
 
   READ TABLE gt_tokens INDEX iv_index INTO lv_stack.
@@ -930,7 +930,7 @@ ENDMETHOD.
 
 METHOD walk_terminal.
 
-  DATA: lv_token TYPE string.
+  DATA: lv_token LIKE LINE OF gt_tokens.
 
 
   rv_match = abap_true.

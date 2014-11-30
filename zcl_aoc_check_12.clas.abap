@@ -36,9 +36,9 @@ METHOD check.
 
   DATA: lv_include   TYPE program,
         lv_trash     TYPE string,                           "#EC NEEDED
-        lv_statement TYPE string,
         lv_error     TYPE abap_bool,
-        lt_results   TYPE TABLE OF string.
+        lt_results   TYPE TABLE OF string,
+        lv_statement LIKE LINE OF lt_results.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
                  <ls_token>     LIKE LINE OF it_tokens.
