@@ -52,7 +52,7 @@ METHOD check.
 
       READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       CASE <ls_token>-str.
-        WHEN 'WHEN'.
+        WHEN 'WHEN' OR 'ELSEIF' OR 'ELSE'.
           CONTINUE.
         WHEN OTHERS.
           lv_found = abap_true.
