@@ -59,6 +59,10 @@ CLASS lcl_test DEFINITION FOR TESTING
              replace2        FOR TESTING,
              compute1        FOR TESTING,
              compute2        FOR TESTING,
+             compute3        FOR TESTING,
+             compute4        FOR TESTING,
+             compute5        FOR TESTING,
+             compute6        FOR TESTING,
              if1             FOR TESTING,
              if2             FOR TESTING,
              if3             FOR TESTING,
@@ -435,6 +439,38 @@ CLASS lcl_test IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "compute2
+
+  METHOD compute3.
+
+    _code '<lv_foo> = lv_bar.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
+  METHOD compute4.
+
+    _code 'lv_bar = <lv_foo>.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
+  METHOD compute5.
+
+    _code '<lv_foo>-moo = lv_bar.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
+  METHOD compute6.
+
+    _code 'lv_bar = <lv_foo>-moo.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
 
   METHOD if1.
 

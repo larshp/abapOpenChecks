@@ -1,30 +1,37 @@
-*----------------------------------------------------------------------*
-*       CLASS ZCL_AOC_PARSER DEFINITION
-*----------------------------------------------------------------------*
-*
-*----------------------------------------------------------------------*
-CLASS zcl_aoc_parser DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC .
+class ZCL_AOC_PARSER definition
+  public
+  final
+  create public .
 
-  PUBLIC SECTION.
+public section.
 *"* public components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
 
-    TYPES:
-      BEGIN OF st_result,
+  types:
+    BEGIN OF st_token,
+               type  TYPE c LENGTH 1,
+               value TYPE string,
+               code  TYPE string,
+             END OF st_token .
+  types:
+    tt_tokens TYPE STANDARD TABLE OF st_token WITH NON-UNIQUE DEFAULT KEY .
+  types:
+    BEGIN OF st_result,
                match TYPE abap_bool,
+               tokens TYPE tt_tokens,
              END OF st_result .
 
-    TYPE-POOLS abap .
-    CLASS zcl_aoc_parser DEFINITION LOAD .
-    CLASS-METHODS run
-      IMPORTING
-        !it_code TYPE string_table
-        !iv_debug TYPE abap_bool DEFAULT abap_false
-      RETURNING
-        value(rs_result) TYPE zcl_aoc_parser=>st_result .
+  constants C_ROLE type C value 'R'. "#EC NOTEXT
+  constants C_TERMINAL type C value 'T'. "#EC NOTEXT
+
+  type-pools ABAP .
+  class ZCL_AOC_PARSER definition load .
+  class-methods RUN
+    importing
+      !IT_CODE type STRING_TABLE
+      !IV_DEBUG type ABAP_BOOL default ABAP_FALSE
+    returning
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
 protected section.
 *"* protected components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
@@ -406,8 +413,7 @@ METHOD build_permutation.
            after TYPE REF TO lcl_node,
          END OF st_pair.
 
-  DATA: li_children   TYPE REF TO if_ixml_node_list,
-        li_append     TYPE REF TO if_ixml_node_list,
+  DATA: li_append     TYPE REF TO if_ixml_node_list,
         li_child      TYPE REF TO if_ixml_node,
         lv_index      TYPE i,
         lo_before     TYPE REF TO lcl_node,
@@ -416,7 +422,8 @@ METHOD build_permutation.
         lo_seq_before TYPE REF TO lcl_node,
         lo_seq_after  TYPE REF TO lcl_node,
         lt_pair       TYPE TABLE OF st_pair,
-        lt_per        TYPE TABLE OF REF TO if_ixml_node_list.
+        lt_per        TYPE TABLE OF REF TO if_ixml_node_list,
+        li_children   LIKE LINE OF lt_per.
 
   FIELD-SYMBOLS: <ls_pair> LIKE LINE OF lt_pair,
                  <ls_to>   LIKE LINE OF lt_pair.
@@ -672,9 +679,9 @@ METHOD graph_to_text.
 
   DATA: lt_nodes TYPE TABLE OF REF TO lcl_node,
         lv_label TYPE string,
-        lo_node  TYPE REF TO lcl_node,
+        lo_node  LIKE LINE OF lt_nodes,
         lv_node  TYPE string,
-        lo_edge  TYPE REF TO lcl_node,
+        lo_edge  LIKE LINE OF lo_node->mt_edges,
         lv_edge  TYPE string,
         lv_value TYPE string.
 
@@ -761,7 +768,11 @@ METHOD run.
 * MIT License
 
   DATA: lt_tokens     TYPE stokesx_tab,
+        lt_res_tok    LIKE rs_result-tokens,
+        lv_index      TYPE i,
         lt_statements TYPE sstmnt_tab.
+
+  FIELD-SYMBOLS: <ls_res_tok> LIKE LINE OF lt_res_tok.
 
 
   SCAN ABAP-SOURCE it_code
@@ -774,6 +785,16 @@ METHOD run.
 
   rs_result = parse( it_tokens     = lt_tokens
                      it_statements = lt_statements ).
+
+* reverse token order
+  lt_res_tok = rs_result-tokens.
+  CLEAR rs_result-tokens[].
+  lv_index = lines( lt_res_tok ).
+  DO lines( lt_res_tok ) TIMES.
+    READ TABLE lt_res_tok INDEX lv_index ASSIGNING <ls_res_tok>.
+    APPEND <ls_res_tok> TO rs_result-tokens.
+    lv_index = lv_index - 1.
+  ENDDO.
 
 * todo, clone graph, cache, shared memory?
 
@@ -819,7 +840,7 @@ ENDMETHOD.
 
 METHOD walk_node.
 
-  DATA: lo_node TYPE REF TO lcl_node.
+  DATA: lo_node LIKE LINE OF io_node->mt_edges.
 
 
   LOOP AT io_node->mt_edges INTO lo_node.
@@ -838,7 +859,7 @@ METHOD walk_nonterminal.
   DATA: lv_rulename TYPE string,
         lo_start    TYPE REF TO lcl_node,
         lo_end      TYPE REF TO lcl_node,
-        lo_node     TYPE REF TO lcl_node.
+        lo_node     LIKE LINE OF io_node->mt_edges.
 
 
   lv_rulename = io_node->mv_value.
@@ -872,23 +893,24 @@ ENDMETHOD.
 
 METHOD walk_role.
 
-  DATA: lv_stack LIKE LINE OF gt_tokens.
+  DATA: lv_token LIKE LINE OF gt_tokens.
+
+  FIELD-SYMBOLS: <ls_token> LIKE LINE OF rs_result-tokens.
 
 
-  READ TABLE gt_tokens INDEX iv_index INTO lv_stack.
+  READ TABLE gt_tokens INDEX iv_index INTO lv_token.
   IF sy-subrc <> 0.
     rs_result-match = abap_false.
     RETURN.
   ENDIF.
 
   CASE io_node->mv_value.
-    WHEN 'FieldId'.
-      FIND REGEX '^[a-zA-Z0-9_\-<>]+["\[\]"]*$' IN lv_stack.  "#EC NOTEXT
+    WHEN 'FieldId' OR 'FieldIdW'.
+      FIND REGEX '^[a-zA-Z0-9_\-<>]+["\[\]"]*$' IN lv_token. "#EC NOTEXT
       IF sy-subrc <> 0.
-        FIND REGEX '^''.*''$' IN lv_stack.
+        FIND REGEX '^''.*''$' IN lv_token.
       ENDIF.
-    WHEN 'FieldIdW'
-        OR 'FieldDefId'
+    WHEN 'FieldDefId'
         OR 'ItabFieldId'
         OR 'FieldListId'
         OR 'MethodDefId'
@@ -907,33 +929,39 @@ METHOD walk_role.
         OR 'MacroDefId'
         OR 'ClassexcrefFieldId'
         OR 'FieldCompId'.
-      FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_stack.           "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_token.           "#EC NOTEXT
     WHEN 'ClassrefFieldId'.
-      FIND REGEX '^[a-zA-Z0-9_]+$' IN lv_stack.             "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_]+$' IN lv_token.             "#EC NOTEXT
     WHEN 'FunctionId'.
-      FIND REGEX '^''.*''$' IN lv_stack.
+      FIND REGEX '^''.*''$' IN lv_token.
     WHEN 'ScreenId'.
-      FIND REGEX '^[0-9]+$' IN lv_stack.
+      FIND REGEX '^[0-9]+$' IN lv_token.
     WHEN 'MethodId('.
-      FIND REGEX '^[a-zA-Z0-9_\=\->]+\($' IN lv_stack.      "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\=\->]+\($' IN lv_token.      "#EC NOTEXT
     WHEN 'MethodId'.
-      FIND REGEX '^[a-zA-Z0-9_\=\->]+\(?$' IN lv_stack.     "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\=\->]+\(?$' IN lv_token.     "#EC NOTEXT
     WHEN 'LocationId'.
-      FIND REGEX '^/?[0-9]*["("0-9")"]*$' IN lv_stack.
+      FIND REGEX '^/?[0-9]*["("0-9")"]*$' IN lv_token.
     WHEN 'SelOptId'.
       rs_result-match = abap_false.
       RETURN.
     WHEN 'FieldSymbolDefId'.
-      FIND REGEX '^<[a-zA-Z0-9_\-]+>$' IN lv_stack.         "#EC NOTEXT
+      FIND REGEX '^<[a-zA-Z0-9_\-]+>$' IN lv_token.         "#EC NOTEXT
     WHEN 'ComponentId'.
-      FIND REGEX '^\*$' IN lv_stack.
+      FIND REGEX '^\*$' IN lv_token.
     WHEN 'MessageNumber'.
-      FIND REGEX '^.[0-9][0-9][0-9](\(.+\))?$' IN lv_stack.
+      FIND REGEX '^.[0-9][0-9][0-9](\(.+\))?$' IN lv_token.
   ENDCASE.
 
   IF sy-subrc = 0.
     rs_result = walk_node( io_node = io_node
                            iv_index = iv_index + 1 ).
+    IF rs_result-match = abap_true.
+      APPEND INITIAL LINE TO rs_result-tokens ASSIGNING <ls_token>.
+      <ls_token>-type  = c_role.
+      <ls_token>-value = io_node->mv_value.
+      <ls_token>-code  = lv_token.
+    ENDIF.
   ELSE.
     rs_result-match = abap_false.
   ENDIF.
@@ -944,6 +972,8 @@ ENDMETHOD.
 METHOD walk_terminal.
 
   DATA: lv_token LIKE LINE OF gt_tokens.
+
+  FIELD-SYMBOLS: <ls_token> LIKE LINE OF rs_result-tokens.
 
 
   rs_result-match = abap_true.
@@ -971,6 +1001,13 @@ METHOD walk_terminal.
 
   rs_result = walk_node( io_node  = io_node
                          iv_index = iv_index + 1 ).
+
+  IF rs_result-match = abap_true.
+    APPEND INITIAL LINE TO rs_result-tokens ASSIGNING <ls_token>.
+    <ls_token>-type  = c_terminal.
+    <ls_token>-value = io_node->mv_value.
+    <ls_token>-code  = lv_token.
+  ENDIF.
 
 ENDMETHOD.
 

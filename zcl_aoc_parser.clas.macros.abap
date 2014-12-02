@@ -10,4 +10,9 @@
                                     iv_debug = mv_debug ).
     cl_abap_unit_assert=>assert_equals( exp = &1
                                         act = ms_result-match ).
+    if ms_result-match = abap_true.
+      cl_abap_unit_assert=>assert_not_initial( ms_result-tokens ).
+    else.
+      cl_abap_unit_assert=>assert_initial( ms_result-tokens ).
+    endif.
   END-OF-DEFINITION.
