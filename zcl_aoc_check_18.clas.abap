@@ -51,6 +51,10 @@ METHOD check.
         FROM <ls_structure>-stmnt_from TO <ls_structure>-stmnt_to.
 
       READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      IF <ls_token>-type = scan_token_type-comment.
+        CONTINUE.
+      ENDIF.
+
       CASE <ls_token>-str.
         WHEN 'WHEN' OR 'ELSEIF' OR 'ELSE'.
           CONTINUE.

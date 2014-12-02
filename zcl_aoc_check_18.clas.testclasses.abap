@@ -21,7 +21,8 @@ CLASS lcl_test DEFINITION FOR TESTING
              test001_03 FOR TESTING,
              test001_04 FOR TESTING,
              test001_05 FOR TESTING,
-             test001_06 FOR TESTING.
+             test001_06 FOR TESTING,
+             test001_07 for testing.
 
 ENDCLASS.       "lcl_Test
 
@@ -129,6 +130,21 @@ CLASS lcl_test IMPLEMENTATION.
     _code 'IF mv_hikey = abap_true.'.
     _code '  lv_error = abap_true.'.
     _code 'ELSE.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_07.
+* ===========
+
+    _code 'IF sy-subrc <> 0.'.
+    _code '* todo'.
     _code 'ENDIF.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
