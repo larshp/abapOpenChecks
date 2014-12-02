@@ -23,6 +23,7 @@ public section.
 
   constants C_ROLE type C value 'R'. "#EC NOTEXT
   constants C_TERMINAL type C value 'T'. "#EC NOTEXT
+  constants C_ROLE_FIELDDEFID type STRING value 'FieldDefId'. "#EC NOTEXT
 
   type-pools ABAP .
   class ZCL_AOC_PARSER definition load .
