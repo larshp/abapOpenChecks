@@ -16,7 +16,7 @@ CLASS lcl_test DEFINITION FOR TESTING
 
     DATA: mv_debug TYPE abap_bool VALUE abap_false,
           mt_code  TYPE string_table,
-          mv_match TYPE abap_bool.
+          ms_result TYPE zcl_aoc_parser=>st_result.
 
     METHODS: setup.
 
@@ -859,6 +859,6 @@ CLASS lcl_test IMPLEMENTATION.
 
     _test abap_true.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "message2
 
 ENDCLASS.       "lcl_Test

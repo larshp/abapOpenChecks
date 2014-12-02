@@ -1,19 +1,30 @@
-class ZCL_AOC_PARSER definition
-  public
-  final
-  create public .
+*----------------------------------------------------------------------*
+*       CLASS ZCL_AOC_PARSER DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS zcl_aoc_parser DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 *"* public components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
 
-  type-pools ABAP .
-  class-methods RUN
-    importing
-      !IT_CODE type STRING_TABLE
-      !IV_DEBUG type ABAP_BOOL default ABAP_FALSE
-    returning
-      value(RV_MATCH) type ABAP_BOOL .
+    TYPES:
+      BEGIN OF st_result,
+               match TYPE abap_bool,
+             END OF st_result .
+
+    TYPE-POOLS abap .
+    CLASS zcl_aoc_parser DEFINITION LOAD .
+    CLASS-METHODS run
+      IMPORTING
+        !it_code TYPE string_table
+        !iv_debug TYPE abap_bool DEFAULT abap_false
+      RETURNING
+        value(rs_result) TYPE zcl_aoc_parser=>st_result .
 protected section.
 *"* protected components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
@@ -31,12 +42,13 @@ private section.
       !IV_RULENAME type STRING
       !II_XML type ref to IF_IXML
       !II_XML_DOC type ref to IF_IXML_DOCUMENT .
+  class ZCL_AOC_PARSER definition load .
   class-methods WALK
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RV_MATCH) type ABAP_BOOL .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
   class-methods GRAPH_TO_TEXT
     importing
       !IO_NODE type ref to LCL_NODE
@@ -107,31 +119,31 @@ private section.
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RV_MATCH) type ABAP_BOOL .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
   class-methods WALK_NODE
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RV_MATCH) type ABAP_BOOL .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
   class-methods WALK_NONTERMINAL
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RV_MATCH) type ABAP_BOOL .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
   class-methods WALK_ROLE
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RV_MATCH) type ABAP_BOOL .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
   class-methods WALK_TERMINAL
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RV_MATCH) type ABAP_BOOL .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
   class-methods XML_GET
     importing
       !IV_RULENAME type STRING
@@ -148,7 +160,7 @@ private section.
       !IT_TOKENS type STOKESX_TAB
       !IT_STATEMENTS type SSTMNT_TAB
     returning
-      value(RV_MATCH) type ABAP_BOOL .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
 ENDCLASS.
 
 
@@ -710,6 +722,7 @@ METHOD parse.
                  <ls_token>     LIKE LINE OF it_tokens.
 
 
+* todo, terminator = ','?
   LOOP AT it_statements ASSIGNING <ls_statement> WHERE terminator = '.'.
 
     CLEAR gt_tokens.
@@ -724,18 +737,18 @@ METHOD parse.
     graph_build( EXPORTING iv_rulename = gv_end_rule
                  IMPORTING eo_start = lo_start ).
 
-    rv_match = walk( io_node  = lo_start
-                     iv_index = 1 ).
-    IF rv_match = abap_false.
+    rs_result = walk( io_node  = lo_start
+                      iv_index = 1 ).
+    IF rs_result-match = abap_false.
       RETURN.
     ENDIF.
 
   ENDLOOP.
 
   IF sy-subrc = 0.
-    rv_match = abap_true.
+    rs_result-match = abap_true.
   ELSE.
-    rv_match = abap_false.
+    rs_result-match = abap_false.
   ENDIF.
 
 ENDMETHOD.
@@ -759,8 +772,8 @@ METHOD run.
 
   gv_debug = iv_debug.
 
-  rv_match = parse( it_tokens     = lt_tokens
-                    it_statements = lt_statements ).
+  rs_result = parse( it_tokens     = lt_tokens
+                     it_statements = lt_statements ).
 
 * todo, clone graph, cache, shared memory?
 
@@ -771,20 +784,20 @@ METHOD walk.
 
   CASE io_node->mv_type.
     WHEN gc_dummy OR gc_start.
-      rv_match = walk_node( io_node = io_node
-                            iv_index = iv_index ).
+      rs_result = walk_node( io_node = io_node
+                             iv_index = iv_index ).
     WHEN gc_end.
-      rv_match = walk_end( io_node = io_node
-                           iv_index = iv_index ).
-    WHEN gc_role.
-      rv_match = walk_role( io_node = io_node
+      rs_result = walk_end( io_node = io_node
                             iv_index = iv_index ).
+    WHEN gc_role.
+      rs_result = walk_role( io_node = io_node
+                             iv_index = iv_index ).
     WHEN gc_terminal.
-      rv_match = walk_terminal( io_node = io_node
-                                iv_index = iv_index ).
+      rs_result = walk_terminal( io_node = io_node
+                                 iv_index = iv_index ).
     WHEN gc_nonterminal.
-      rv_match = walk_nonterminal( io_node = io_node
-                                   iv_index = iv_index ).
+      rs_result = walk_nonterminal( io_node = io_node
+                                    iv_index = iv_index ).
   ENDCASE.
 
 ENDMETHOD.
@@ -794,12 +807,12 @@ METHOD walk_end.
 
   IF iv_index = lines( gt_tokens ) + 1
       AND io_node->mv_value = gv_end_rule.
-    rv_match = abap_true.
+    rs_result-match = abap_true.
     RETURN.
   ENDIF.
 
-  rv_match = walk_node( io_node  = io_node
-                        iv_index = iv_index ).
+  rs_result = walk_node( io_node  = io_node
+                         iv_index = iv_index ).
 
 ENDMETHOD.
 
@@ -810,9 +823,9 @@ METHOD walk_node.
 
 
   LOOP AT io_node->mt_edges INTO lo_node.
-    rv_match = walk( io_node  = lo_node
-                     iv_index = iv_index ).
-    IF rv_match = abap_true.
+    rs_result = walk( io_node  = lo_node
+                      iv_index = iv_index ).
+    IF rs_result-match = abap_true.
       RETURN.
     ENDIF.
   ENDLOOP.
@@ -832,7 +845,7 @@ METHOD walk_nonterminal.
 
   IF lv_rulename = 'MACRO'.
 * macro call makes everything valid ABAP code
-    rv_match = abap_false.
+    rs_result-match = abap_false.
     RETURN.
   ENDIF.
 
@@ -851,8 +864,8 @@ METHOD walk_nonterminal.
     lo_end->edge( lo_node ).
   ENDLOOP.
 
-  rv_match = walk_node( io_node  = lo_start
-                        iv_index = iv_index ).
+  rs_result = walk_node( io_node  = lo_start
+                         iv_index = iv_index ).
 
 ENDMETHOD.
 
@@ -864,7 +877,7 @@ METHOD walk_role.
 
   READ TABLE gt_tokens INDEX iv_index INTO lv_stack.
   IF sy-subrc <> 0.
-    rv_match = abap_false.
+    rs_result-match = abap_false.
     RETURN.
   ENDIF.
 
@@ -908,7 +921,7 @@ METHOD walk_role.
     WHEN 'LocationId'.
       FIND REGEX '^/?[0-9]*["("0-9")"]*$' IN lv_stack.
     WHEN 'SelOptId'.
-      rv_match = abap_false.
+      rs_result-match = abap_false.
       RETURN.
     WHEN 'FieldSymbolDefId'.
       FIND REGEX '^<[a-zA-Z0-9_\-]+>$' IN lv_stack.         "#EC NOTEXT
@@ -919,10 +932,10 @@ METHOD walk_role.
   ENDCASE.
 
   IF sy-subrc = 0.
-    rv_match = walk_node( io_node = io_node
-                          iv_index = iv_index + 1 ).
+    rs_result = walk_node( io_node = io_node
+                           iv_index = iv_index + 1 ).
   ELSE.
-    rv_match = abap_false.
+    rs_result-match = abap_false.
   ENDIF.
 
 ENDMETHOD.
@@ -933,31 +946,31 @@ METHOD walk_terminal.
   DATA: lv_token LIKE LINE OF gt_tokens.
 
 
-  rv_match = abap_true.
+  rs_result-match = abap_true.
 
   READ TABLE gt_tokens INDEX iv_index INTO lv_token.
   IF sy-subrc <> 0.
-    rv_match = abap_false.
+    rs_result-match = abap_false.
   ENDIF.
 
   CASE io_node->mv_value.
     WHEN '#ILITERAL#'.
       FIND REGEX '^[0-9]+$' IN lv_token.
       IF sy-subrc <> 0.
-        rv_match = abap_false.
+        rs_result-match = abap_false.
       ENDIF.
     WHEN OTHERS.
       IF lv_token <> io_node->mv_value.
-        rv_match = abap_false.
+        rs_result-match = abap_false.
       ENDIF.
   ENDCASE.
 
-  IF rv_match = abap_false.
+  IF rs_result-match = abap_false.
     RETURN.
   ENDIF.
 
-  rv_match = walk_node( io_node  = io_node
-                        iv_index = iv_index + 1 ).
+  rs_result = walk_node( io_node  = io_node
+                         iv_index = iv_index + 1 ).
 
 ENDMETHOD.
 

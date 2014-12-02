@@ -6,8 +6,8 @@
   END-OF-DEFINITION.
 
   DEFINE _test.
-    mv_match = zcl_aoc_parser=>run( it_code  = mt_code
+    ms_result = zcl_aoc_parser=>run( it_code  = mt_code
                                     iv_debug = mv_debug ).
     cl_abap_unit_assert=>assert_equals( exp = &1
-                                        act = mv_match ).
+                                        act = ms_result-match ).
   END-OF-DEFINITION.
