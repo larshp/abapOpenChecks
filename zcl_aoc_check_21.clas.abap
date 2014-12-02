@@ -83,7 +83,10 @@ METHOD check.
 
     LOOP AT it_statements ASSIGNING <ls_statement>
         FROM <ls_structure>-stmnt_from
-        TO <ls_structure>-stmnt_to.
+        TO <ls_structure>-stmnt_to
+        WHERE type <> scan_stmnt_type-empty
+        AND type <> scan_stmnt_type-comment
+        AND type <> scan_stmnt_type-comment_in_stmnt.
 
       lv_statement = build_statement(
           is_statement = <ls_statement>
