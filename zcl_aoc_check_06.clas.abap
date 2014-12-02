@@ -23,6 +23,7 @@ protected section.
 *"* protected components of class ZCL_AOC_CHECK_06
 *"* do not include other source files here!!!
 
+  data MV_ONE_FINDING type FLAG .
   data MV_HIKEY type FLAG .
   data MV_LOKEY type FLAG .
 private section.
@@ -131,7 +132,9 @@ METHOD check.
                 p_test         = c_my_name
                 p_code         = '001' ).
 
-        EXIT. " current loop, only one error per level
+        IF mv_one_finding = abap_true.
+          EXIT. " current loop, only one error per level
+        ENDIF.
       ENDIF.
 
     ENDLOOP.
@@ -154,6 +157,7 @@ METHOD constructor .
   mv_errty = c_error.
   mv_hikey = abap_true.
   mv_lokey = abap_false.
+  mv_one_finding = abap_false.
 
 ENDMETHOD.                    "CONSTRUCTOR
 
@@ -164,6 +168,7 @@ METHOD get_attributes.
     mv_errty = mv_errty
     mv_hikey = mv_hikey
     mv_lokey = mv_lokey
+    mv_one_finding = mv_one_finding
     TO DATA BUFFER p_attributes.
 
 ENDMETHOD.
@@ -211,6 +216,8 @@ METHOD if_ci_test~query_attributes.
   fill_att_rb mv_hikey 'Keywords upper case' 'R' 'TYPE'.    "#EC NOTEXT
   fill_att_rb mv_lokey 'Keywords lower case' 'R' 'TYPE'.    "#EC NOTEXT
 
+  fill_att mv_one_finding 'Report one finding per include' 'C'. "#EC NOTEXT
+
   WHILE lv_ok = abap_false.
     cl_ci_query_attributes=>generic(
                           p_name       = c_my_name
@@ -234,6 +241,7 @@ METHOD put_attributes.
     mv_errty = mv_errty
     mv_hikey = mv_hikey
     mv_lokey = mv_lokey
+    mv_one_finding = mv_one_finding
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
 
 ENDMETHOD.
