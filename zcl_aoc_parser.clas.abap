@@ -30,6 +30,7 @@ public section.
     importing
       !IT_CODE type STRING_TABLE
       !IV_DEBUG type ABAP_BOOL default ABAP_FALSE
+      !IV_RULE type STRING default 'START'
     returning
       value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
 protected section.
@@ -738,9 +739,6 @@ METHOD parse.
     ENDLOOP.
     APPEND '.' TO gt_tokens.
 
-* set start+end rule
-    gv_end_rule = 'START'.
-
     graph_build( EXPORTING iv_rulename = gv_end_rule
                  IMPORTING eo_start = lo_start ).
 
@@ -781,7 +779,8 @@ METHOD run.
        WITH ANALYSIS
        WITH COMMENTS.
 
-  gv_debug = iv_debug.
+  gv_debug    = iv_debug.
+  gv_end_rule = iv_rule.
 
   rs_result = parse( it_tokens     = lt_tokens
                      it_statements = lt_statements ).
