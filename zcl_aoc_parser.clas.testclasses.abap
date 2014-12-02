@@ -105,7 +105,8 @@ CLASS lcl_test DEFINITION FOR TESTING
              get1            FOR TESTING,
              field_symbol1   FOR TESTING,
              raise1          FOR TESTING,
-             message1        for testing.
+             message1        FOR TESTING,
+             message2        FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -820,7 +821,6 @@ CLASS lcl_test IMPLEMENTATION.
 
   ENDMETHOD.                    "check2
 
-
   METHOD get1.
 
     _code 'GET BIT 1 OF lv_var INTO lv_res.'.
@@ -848,6 +848,14 @@ CLASS lcl_test IMPLEMENTATION.
   METHOD message1.
 
     _code 'MESSAGE A500 WITH ''foobar''.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "message1
+
+  METHOD message2.
+
+    _code 'MESSAGE s111(zzz) WITH <ls_foo>-progname.'.
 
     _test abap_true.
 

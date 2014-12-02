@@ -870,7 +870,7 @@ METHOD walk_role.
 
   CASE io_node->mv_value.
     WHEN 'FieldId'.
-      FIND REGEX '^[a-zA-Z0-9_\-]+["\[\]"]*$' IN lv_stack.  "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\-<>]+["\[\]"]*$' IN lv_stack.  "#EC NOTEXT
       IF sy-subrc <> 0.
         FIND REGEX '^''.*''$' IN lv_stack.
       ENDIF.
@@ -915,7 +915,7 @@ METHOD walk_role.
     WHEN 'ComponentId'.
       FIND REGEX '^\*$' IN lv_stack.
     WHEN 'MessageNumber'.
-      FIND REGEX '^.[0-9][0-9][0-9]$' IN lv_stack.
+      FIND REGEX '^.[0-9][0-9][0-9](\(.+\))?$' IN lv_stack.
   ENDCASE.
 
   IF sy-subrc = 0.
