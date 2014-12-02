@@ -330,12 +330,14 @@ METHOD build_option.
   li_child = ii_rule->get_first_child( ).
 
   io_before->edge( lo_dummy ).
-  lo_dummy->edge( io_after ).
 
   zcl_aoc_parser=>build(
       ii_rule   = li_child
       io_before = lo_dummy
       io_after  = io_after ).
+
+* easy way should be the last option/edge
+  lo_dummy->edge( io_after ).
 
 ENDMETHOD.
 
@@ -737,7 +739,9 @@ METHOD parse.
     LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
       APPEND <ls_token>-str TO gt_tokens.
     ENDLOOP.
-    APPEND '.' TO gt_tokens.
+    IF gv_end_rule = 'START'.
+      APPEND '.' TO gt_tokens.
+    ENDIF.
 
     graph_build( EXPORTING iv_rulename = gv_end_rule
                  IMPORTING eo_start = lo_start ).
@@ -918,6 +922,7 @@ METHOD walk_role.
         OR 'TypeId'
         OR 'FormParamId'
         OR 'FormId'
+        OR 'FormDefId'
         OR 'ClasstypeDefId'
         OR 'SwitchId'
         OR 'BlockDefId'

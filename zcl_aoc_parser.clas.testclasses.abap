@@ -110,7 +110,8 @@ CLASS lcl_test DEFINITION FOR TESTING
              field_symbol1   FOR TESTING,
              raise1          FOR TESTING,
              message1        FOR TESTING,
-             message2        FOR TESTING.
+             message2        FOR TESTING,
+             form1           FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -446,7 +447,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _test abap_true.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "compute3
 
   METHOD compute4.
 
@@ -454,7 +455,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _test abap_true.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "compute4
 
   METHOD compute5.
 
@@ -462,7 +463,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _test abap_true.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "compute5
 
   METHOD compute6.
 
@@ -470,7 +471,7 @@ CLASS lcl_test IMPLEMENTATION.
 
     _test abap_true.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "compute6
 
   METHOD if1.
 
@@ -896,5 +897,13 @@ CLASS lcl_test IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "message2
+
+  METHOD form1.
+
+    _code 'FORM foobar USING pv_char type c.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "form1
 
 ENDCLASS.       "lcl_Test
