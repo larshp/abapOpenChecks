@@ -198,6 +198,8 @@ METHOD inform.
 * skip standard code, todo: namespaces
   IF p_sub_obj_name(1) <> 'Z'
       AND p_sub_obj_name(1) <> 'Y'
+      AND p_sub_obj_name(2) <> 'LZ'  " function group include
+      AND p_sub_obj_name(2) <> 'LY'  " function group include
       AND p_sub_obj_name <> ''
       AND p_sub_obj_name <> '----------------------------------------'.
     RETURN.
