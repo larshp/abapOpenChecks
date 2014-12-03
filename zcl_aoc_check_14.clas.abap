@@ -104,8 +104,22 @@ ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 METHOD parse.
 
+  DATA: lv_code LIKE LINE OF it_commented.
+
+
   IF lines( it_commented ) = 0.
     RETURN.
+  ENDIF.
+
+* skip auto generated INCLUDEs in function group top include
+  IF ( is_level-name CP 'LY*TOP' OR is_level-name CP 'LZ*TOP' )
+      AND lines( it_commented ) = 1.
+    READ TABLE it_commented INDEX 1 INTO lv_code.
+    ASSERT sy-subrc = 0.
+
+    IF lv_code CS 'INCLUDE L'.
+      RETURN.
+    ENDIF.
   ENDIF.
 
   IF zcl_aoc_parser=>run( it_commented )-match = abap_true.
