@@ -7,7 +7,7 @@
 
   DEFINE _test.
     ms_result = zcl_aoc_parser=>run( it_code  = mt_code
-                                    iv_debug = mv_debug ).
+                                     iv_debug = mv_debug ).
     cl_abap_unit_assert=>assert_equals( exp = &1
                                         act = ms_result-match ).
     if ms_result-match = abap_true.

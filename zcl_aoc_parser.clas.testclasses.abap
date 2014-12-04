@@ -3,7 +3,7 @@
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_test DEFINITION FOR TESTING
+CLASS lcl_test_statements DEFINITION FOR TESTING
     DURATION LONG
     RISK LEVEL HARMLESS
     FINAL.
@@ -14,8 +14,8 @@ CLASS lcl_test DEFINITION FOR TESTING
   PRIVATE SECTION.
 * ================
 
-    DATA: mv_debug TYPE abap_bool VALUE abap_false,
-          mt_code  TYPE string_table,
+    DATA: mv_debug  TYPE abap_bool VALUE abap_false,
+          mt_code   TYPE string_table,
           ms_result TYPE zcl_aoc_parser=>st_result.
 
     METHODS: setup.
@@ -51,7 +51,13 @@ CLASS lcl_test DEFINITION FOR TESTING
              call_method4    FOR TESTING,
              call_method5    FOR TESTING,
              call_method6    FOR TESTING,
+             call_method7    FOR TESTING,
              data1           FOR TESTING,
+             data2           FOR TESTING,
+             data3           FOR TESTING,
+             data4           FOR TESTING,
+             data5           FOR TESTING,
+             data6           FOR TESTING,
              write1          FOR TESTING,
              write2          FOR TESTING,
              write3          FOR TESTING,
@@ -63,6 +69,7 @@ CLASS lcl_test DEFINITION FOR TESTING
              compute4        FOR TESTING,
              compute5        FOR TESTING,
              compute6        FOR TESTING,
+             compute7        FOR TESTING,
              if1             FOR TESTING,
              if2             FOR TESTING,
              if3             FOR TESTING,
@@ -73,6 +80,7 @@ CLASS lcl_test DEFINITION FOR TESTING
              code2           FOR TESTING,
              code3           FOR TESTING,
              methods1        FOR TESTING,
+             methods2        FOR TESTING,
              read_table1     FOR TESTING,
              call_function1  FOR TESTING,
              concatenate1    FOR TESTING,
@@ -108,10 +116,21 @@ CLASS lcl_test DEFINITION FOR TESTING
              check2          FOR TESTING,
              get1            FOR TESTING,
              field_symbol1   FOR TESTING,
+             field_symbol2   FOR TESTING,
              raise1          FOR TESTING,
              message1        FOR TESTING,
              message2        FOR TESTING,
-             form1           FOR TESTING.
+             message3        FOR TESTING,
+             message4        FOR TESTING,
+             form1           FOR TESTING,
+             case1           FOR TESTING,
+             comment1        FOR TESTING,
+             comment2        FOR TESTING,
+             set1            FOR TESTING,
+             set2            FOR TESTING,
+             set3            FOR TESTING,
+             clear1          FOR TESTING,
+             append1         FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -120,7 +139,7 @@ ENDCLASS.       "lcl_Test
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_test IMPLEMENTATION.
+CLASS lcl_test_statements IMPLEMENTATION.
 * ==============================
 
   METHOD setup.
@@ -377,6 +396,14 @@ CLASS lcl_test IMPLEMENTATION.
 
   ENDMETHOD.                    "call_method6
 
+  METHOD call_method7.
+
+    _code 'CALL METHOD CL_GUI_CFW=>DISPATCH.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "call_method7
+
   METHOD data1.
 
     _code 'DATA lv_bar TYPE c.'.
@@ -384,6 +411,46 @@ CLASS lcl_test IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "data1
+
+  METHOD data2.
+
+    _code 'DATA: foo(4).'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "data2
+
+  METHOD data3.
+
+    _code 'DATA object LIKE tadir-object.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "data3
+
+  METHOD data4.
+
+    _code 'DATA: foobar.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "data4
+
+  METHOD data5.
+
+    _code 'DATA BEGIN OF foo OCCURS 0.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "data5
+
+  METHOD data6.
+
+    _code 'DATA ls_bar TYPE zcl_foo=>st_type.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "data6
 
   METHOD write1.
 
@@ -472,6 +539,14 @@ CLASS lcl_test IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "compute6
+
+  METHOD compute7.
+
+    _code 'lv_foo = zcl_bar=>c_value.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "compute7
 
   METHOD if1.
 
@@ -570,6 +645,14 @@ CLASS lcl_test IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "methods1
+
+  METHOD methods2.
+
+    _code 'METHOD foo~bar.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "methods2
 
   METHOD read_table1.
 
@@ -874,6 +957,14 @@ CLASS lcl_test IMPLEMENTATION.
 
   ENDMETHOD.                    "field_symbol1
 
+  METHOD field_symbol2.
+
+    _code 'FIELD-SYMBOLS: <lv_var> LIKE LINE OF li_foo~mt_bar.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "field_symbol2
+
   METHOD raise1.
 
     _code 'RAISE EXCEPTION TYPE cx_root.'.
@@ -898,6 +989,23 @@ CLASS lcl_test IMPLEMENTATION.
 
   ENDMETHOD.                    "message2
 
+  METHOD message3.
+
+    _code 'MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno'.
+    _code '  WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "message3
+
+  METHOD message4.
+
+    _code 'MESSAGE I001.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "message4
+
   METHOD form1.
 
     _code 'FORM foobar USING pv_char type c.'.
@@ -906,4 +1014,231 @@ CLASS lcl_test IMPLEMENTATION.
 
   ENDMETHOD.                    "form1
 
+  METHOD case1.
+
+    _code 'CASE lv_foobar.'.
+    _code '  WHEN ''moo''.'.
+    _code 'ENDCASE.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "case1
+
+  METHOD comment1.
+
+    _code '* lorem ipsum foo'.
+    _code 'lv_foo = lv_bar.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "comment1
+
+  METHOD comment2.
+
+    _code '" lorem ipsum foo'.
+    _code 'lv_foo = lv_bar.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "comment2
+
+  METHOD set1.
+
+    _code 'SET SCREEN 2000.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "set1
+
+  METHOD set2.
+
+    _code 'SET PF-STATUS ''TEST''.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "set2
+
+  METHOD set3.
+
+    _code 'SET TITLEBAR ''TITLE''.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "set3
+
+  METHOD clear1.
+
+    _code 'CLEAR lv_foo.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "clear1
+
+  METHOD append1.
+
+    _code 'APPEND ls_foo TO lt_foo.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "append1
+
 ENDCLASS.       "lcl_Test
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_Standard_Programs DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_test_programs DEFINITION FOR TESTING
+  DURATION SHORT
+  RISK LEVEL HARMLESS
+  FINAL.
+
+  PRIVATE SECTION.
+* ================
+
+    METHODS: read  IMPORTING iv_program TYPE program
+                   RETURNING value(rt_code) TYPE string_table,
+             check IMPORTING iv_program TYPE program.
+
+* note: the following programs should not contain macro calls
+*       macro calls doesnt work in the parser
+    METHODS: lwbabapf00           FOR TESTING,
+             lsuid_maintenancep01 FOR TESTING,
+             rsenqrr2             FOR TESTING,
+             lslvc_fullscreenf03  FOR TESTING,
+             saphtml_demo1        FOR TESTING,
+             sap_picture_demo     FOR TESTING,
+             rsdemo_table_control FOR TESTING,
+             saprdemoviewing      FOR TESTING.
+
+ENDCLASS.       "lcl_Standard_Programs
+
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_Standard_Programs IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_test_programs IMPLEMENTATION.
+* ===========================================
+
+  METHOD read.
+
+    DATA: lt_source TYPE TABLE OF abaptxt255,
+          lt_tokens     TYPE stokesx_tab,
+          lv_statement  TYPE string,
+          lt_statements TYPE sstmnt_tab.
+
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements,
+                   <ls_token> LIKE LINE OF lt_tokens.
+
+
+    CALL FUNCTION 'RPY_PROGRAM_READ'
+      EXPORTING
+        program_name     = iv_program
+        only_source      = abap_true
+        with_lowercase   = abap_true
+      TABLES
+        source_extended  = lt_source
+      EXCEPTIONS
+        cancelled        = 1
+        not_found        = 2
+        permission_error = 3
+        OTHERS           = 4.
+    IF sy-subrc <> 0.
+      cl_abap_unit_assert=>assert_initial( sy-subrc ).
+    ENDIF.
+
+* split the source so there is one statement per line in table
+    SCAN ABAP-SOURCE lt_source
+         TOKENS          INTO lt_tokens
+         STATEMENTS      INTO lt_statements
+         WITH ANALYSIS.
+
+    LOOP AT lt_statements ASSIGNING <ls_statement>.
+      CLEAR lv_statement.
+      LOOP AT lt_tokens ASSIGNING <ls_token>
+          FROM <ls_statement>-from TO <ls_statement>-to.
+        IF lv_statement IS INITIAL.
+          lv_statement = <ls_token>-str.
+        ELSE.
+          CONCATENATE lv_statement <ls_token>-str INTO lv_statement SEPARATED BY space.
+        ENDIF.
+      ENDLOOP.
+      CONCATENATE lv_statement '.' INTO lv_statement.
+      APPEND lv_statement TO rt_code.
+    ENDLOOP.
+
+  ENDMETHOD.                    "read
+
+  METHOD check.
+
+    DATA: lt_code     TYPE string_table,
+          lt_original TYPE string_table,
+          ls_result   TYPE zcl_aoc_parser=>st_result,
+          lv_string   LIKE LINE OF lt_code.
+
+
+    lt_original = read( iv_program ).
+
+    LOOP AT lt_original INTO lv_string.
+      CLEAR lt_code.
+      APPEND lv_string TO lt_code.
+      ls_result = zcl_aoc_parser=>run( lt_code ).
+      IF ls_result-match = abap_false.
+        cl_abap_unit_assert=>fail( lv_string ).
+      ENDIF.
+    ENDLOOP.
+
+  ENDMETHOD.                    "check
+
+  METHOD lwbabapf00.
+
+    check( 'LWBABAPF00' ).
+
+  ENDMETHOD.       "build
+
+  METHOD lsuid_maintenancep01.
+
+    check( 'LSUID_MAINTENANCEP01' ).
+
+  ENDMETHOD.                    "LSUID_MAINTENANCEP01
+
+  METHOD rsenqrr2.
+
+    check( 'RSENQRR2' ).
+
+  ENDMETHOD.                    "RSENQRR2
+
+  METHOD lslvc_fullscreenf03.
+
+    check( 'LSLVC_FULLSCREENF03' ).
+
+  ENDMETHOD.                    "LSLVC_FULLSCREENF03
+
+  METHOD saphtml_demo1.
+
+    check( 'SAPHTML_DEMO1' ).
+
+  ENDMETHOD.                    "SAPHTML_DEMO1
+
+  METHOD sap_picture_demo.
+
+    check( 'SAP_PICTURE_DEMO' ).
+
+  ENDMETHOD.                    "SAP_PICTURE_DEMO
+
+  METHOD rsdemo_table_control.
+
+    check( 'RSDEMO_TABLE_CONTROL' ).
+
+  ENDMETHOD.                    "RSDEMO_TABLE_CONTROL
+
+  METHOD saprdemoviewing.
+
+    check( 'SAPRDEMOVIEWING' ).
+
+  ENDMETHOD.                    "SAPRDEMOVIEWING
+
+ENDCLASS.       "lcl_Standard_Programs

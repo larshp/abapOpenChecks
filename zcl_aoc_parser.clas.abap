@@ -753,6 +753,8 @@ METHOD parse.
       RETURN.
     ENDIF.
 
+* todo, result-tokens if there are multiple statements
+
   ENDLOOP.
 
   IF sy-subrc = 0.
@@ -781,8 +783,7 @@ METHOD run.
   SCAN ABAP-SOURCE it_code
        TOKENS          INTO lt_tokens
        STATEMENTS      INTO lt_statements
-       WITH ANALYSIS
-       WITH COMMENTS.
+       WITH ANALYSIS.
 
   gv_debug    = iv_debug.
   gv_end_rule = iv_rule.
@@ -914,13 +915,14 @@ METHOD walk_role.
       IF sy-subrc <> 0.
         FIND REGEX '^''.*''$' IN lv_token.
       ENDIF.
-    WHEN 'FieldDefId'
-        OR 'ItabFieldId'
+    WHEN 'FieldDefId'.
+      FIND REGEX '^[a-zA-Z0-9_\-]+["("0-9")"]*$' IN lv_token. "#EC NOTEXT
+    WHEN 'ItabFieldId'
         OR 'FieldListId'
-        OR 'MethodDefId'
         OR 'LdbNodeId'
         OR 'MacroId'
         OR 'TypeId'
+        OR 'MethodDefId'
         OR 'FormParamId'
         OR 'FormId'
         OR 'FormDefId'
@@ -942,9 +944,9 @@ METHOD walk_role.
     WHEN 'ScreenId'.
       FIND REGEX '^[0-9]+$' IN lv_token.
     WHEN 'MethodId('.
-      FIND REGEX '^[a-zA-Z0-9_\=\->]+\($' IN lv_token.      "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\=\->~]+\($' IN lv_token.      "#EC NOTEXT
     WHEN 'MethodId'.
-      FIND REGEX '^[a-zA-Z0-9_\=\->]+\(?$' IN lv_token.     "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\=\->~]+\(?$' IN lv_token.     "#EC NOTEXT
     WHEN 'LocationId'.
       FIND REGEX '^/?[0-9]*["("0-9")"]*$' IN lv_token.
     WHEN 'SelOptId'.
