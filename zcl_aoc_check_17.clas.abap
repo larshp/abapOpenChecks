@@ -24,10 +24,18 @@ protected section.
 *"* do not include other source files here!!!
 
   data MV_TYPES type I .
+  data MV_DEFINE type I .
   data MV_CONSTANTS type I .
   data MV_DATA type I .
   data MV_FS type I .
   data MV_STATICS type I .
+
+  type-pools ABAP .
+  methods CHECK_MODE
+    importing
+      !IV_TYPE type I
+    returning
+      value(RV_EXIT) type ABAP_BOOL .
 private section.
 *"* private components of class ZCL_AOC_CHECK_17
 *"* do not include other source files here!!!
@@ -36,13 +44,6 @@ private section.
   data MS_TOKEN type STOKESX .
   data MV_MODE type I .
   constants C_MY_NAME type SEOCLSNAME value 'ZCL_AOC_CHECK_17'. "#EC NOTEXT
-
-  type-pools ABAP .
-  methods CHECK_MODE
-    importing
-      !IV_TYPE type I
-    returning
-      value(RV_EXIT) type ABAP_BOOL .
 ENDCLASS.
 
 
@@ -57,12 +58,13 @@ METHOD check.
 * MIT License
 
   DATA: lv_exit   TYPE abap_bool,
+        lv_define TYPE abap_bool,
         lv_others TYPE i.
 
   FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures.
 
 
-  lv_others = mv_constants + mv_data + mv_fs + mv_statics + mv_types.
+  lv_others = mv_constants + mv_data + mv_fs + mv_statics + mv_types + mv_define.
 
   LOOP AT it_structures ASSIGNING <ls_structure>
       WHERE type = scan_struc_type-routine.
@@ -84,6 +86,13 @@ METHOD check.
         CONTINUE.
       ENDIF.
 
+      IF lv_define = abap_true AND ms_token-str = 'END-OF-DEFINITION'.
+        lv_define = abap_false.
+        CONTINUE.
+      ELSEIF lv_define = abap_true.
+        CONTINUE. " current loop.
+      ENDIF.
+
       CASE ms_token-str.
         WHEN 'TYPE' OR 'TYPES'.
           lv_exit = check_mode( mv_types ).
@@ -95,6 +104,9 @@ METHOD check.
           lv_exit = check_mode( mv_fs ).
         WHEN 'STATICS'.
           lv_exit = check_mode( mv_statics ).
+        WHEN 'DEFINE'.
+          lv_exit = check_mode( mv_define ).
+          lv_define = abap_true.
         WHEN OTHERS.
           lv_exit = check_mode( lv_others ).
       ENDCASE.
@@ -145,6 +157,7 @@ METHOD constructor .
   attributes_ok  = abap_true.
 
   mv_types     = 1.
+  mv_define    = 2.
   mv_constants = 2.
   mv_statics   = 2.
   mv_data      = 2.
@@ -158,12 +171,13 @@ ENDMETHOD.                    "CONSTRUCTOR
 METHOD get_attributes.
 
   EXPORT
-    mv_errty = mv_errty
+    mv_errty     = mv_errty
     mv_constants = mv_constants
-    mv_data = mv_data
-    mv_fs = mv_fs
-    mv_statics = mv_statics
-    mv_types  = mv_types
+    mv_data      = mv_data
+    mv_fs        = mv_fs
+    mv_statics   = mv_statics
+    mv_types     = mv_types
+    mv_define    = mv_define
     TO DATA BUFFER p_attributes.
 
 ENDMETHOD.
@@ -183,11 +197,6 @@ ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 METHOD if_ci_test~query_attributes.
 
-  DATA: lv_ok         TYPE abap_bool,
-        lv_message    TYPE c LENGTH 72,
-        lt_attributes TYPE sci_atttab,
-        ls_attribute  LIKE LINE OF lt_attributes.
-
   DEFINE fill_att.
     get reference of &1 into ls_attribute-ref.
     ls_attribute-text = &2.
@@ -195,9 +204,15 @@ METHOD if_ci_test~query_attributes.
     append ls_attribute to lt_attributes.
   END-OF-DEFINITION.
 
+  DATA: lv_ok         TYPE abap_bool,
+        lv_message    TYPE c LENGTH 72,
+        lt_attributes TYPE sci_atttab,
+        ls_attribute  LIKE LINE OF lt_attributes.
+
 
   fill_att mv_errty 'Error Type' ''.                        "#EC NOTEXT
   fill_att mv_types 'TYPES' ''.                             "#EC NOTEXT
+  fill_att mv_define 'DEFINE' ''.                           "#EC NOTEXT
   fill_att mv_constants 'CONSTANTS' ''.                     "#EC NOTEXT
   fill_att mv_data 'DATA' ''.                               "#EC NOTEXT
   fill_att mv_statics 'STATICS' ''.                         "#EC NOTEXT
@@ -223,12 +238,13 @@ ENDMETHOD.
 METHOD put_attributes.
 
   IMPORT
-    mv_errty = mv_errty
+    mv_errty     = mv_errty
     mv_constants = mv_constants
-    mv_data = mv_data
-    mv_fs = mv_fs
-    mv_statics = mv_statics
-    mv_types = mv_types
+    mv_data      = mv_data
+    mv_fs        = mv_fs
+    mv_statics   = mv_statics
+    mv_types     = mv_types
+    mv_define    = mv_define
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
 
 ENDMETHOD.
