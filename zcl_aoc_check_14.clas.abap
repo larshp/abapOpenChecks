@@ -52,14 +52,16 @@ METHOD check.
     lt_code = get_source( <ls_level> ).
 
     LOOP AT lt_code ASSIGNING <lv_code>.
-      lv_line = sy-tabix.
 
       IF strlen( <lv_code> ) > 1 AND <lv_code>(1) = '*'.
+        IF lines( lt_commented ) = 0.
+          lv_line = sy-tabix.
+        ENDIF.
         APPEND <lv_code>+1 TO lt_commented.
       ELSE.
         parse( it_commented = lt_commented
                is_level     = <ls_level>
-               iv_line      = lv_line - 1 ).
+               iv_line      = lv_line ).
         CLEAR lt_commented.
       ENDIF.
 
