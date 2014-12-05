@@ -42,7 +42,9 @@ CLASS lcl_test_statements DEFINITION FOR TESTING
              sort8           FOR TESTING,
              sort9           FOR TESTING,
              sort10          FOR TESTING,
+             sort11          for testing,
              loop1           FOR TESTING,
+             loop2           FOR TESTING,
              collect1        FOR TESTING,
              call_screen     FOR TESTING,
              call_method1    FOR TESTING,
@@ -52,6 +54,7 @@ CLASS lcl_test_statements DEFINITION FOR TESTING
              call_method5    FOR TESTING,
              call_method6    FOR TESTING,
              call_method7    FOR TESTING,
+             call_method8    FOR TESTING,
              data1           FOR TESTING,
              data2           FOR TESTING,
              data3           FOR TESTING,
@@ -71,6 +74,7 @@ CLASS lcl_test_statements DEFINITION FOR TESTING
              compute6        FOR TESTING,
              compute7        FOR TESTING,
              compute8        FOR TESTING,
+             compute9        FOR TESTING,
              if1             FOR TESTING,
              if2             FOR TESTING,
              if3             FOR TESTING,
@@ -102,6 +106,7 @@ CLASS lcl_test_statements DEFINITION FOR TESTING
              try2            FOR TESTING,
              try3            FOR TESTING,
              select1         FOR TESTING,
+             select2         FOR TESTING,
              uline1          FOR TESTING,
              uline2          FOR TESTING,
              uline3          FOR TESTING,
@@ -130,7 +135,7 @@ CLASS lcl_test_statements DEFINITION FOR TESTING
              set1            FOR TESTING,
              set2            FOR TESTING,
              set3            FOR TESTING,
-             set4            for testing,
+             set4            FOR TESTING,
              clear1          FOR TESTING,
              append1         FOR TESTING,
              append2         FOR TESTING,
@@ -327,6 +332,14 @@ CLASS lcl_test_statements IMPLEMENTATION.
 
   ENDMETHOD.                    "sort10
 
+  METHOD sort11.
+
+    _code 'SORT lt_tab BY (lv_name).'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
   METHOD loop1.
 
     _code 'LOOP AT lt_data.'.
@@ -334,6 +347,14 @@ CLASS lcl_test_statements IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "loop1
+
+  METHOD loop2.
+
+    _code 'LOOP AT li_foo~mt_tab ASSIGNING <ls_var>.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "loop2
 
   METHOD collect1.
 
@@ -407,6 +428,18 @@ CLASS lcl_test_statements IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "call_method7
+
+  METHOD call_method8.
+
+    _code 'CALL METHOD cl_abap_conv_in_ce=>uccp'.
+    _code '  EXPORTING'.
+    _code '    uccp = ''0000'''.
+    _code '  RECEIVING'.
+    _code '    char = lt_table(1).'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "call_method8
 
   METHOD data1.
 
@@ -559,6 +592,14 @@ CLASS lcl_test_statements IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "compute8
+
+  METHOD compute9.
+
+    _code 'lv_foo = lo_ref->if_erface~var.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "compute9
 
   METHOD if1.
 
@@ -849,6 +890,14 @@ CLASS lcl_test_statements IMPLEMENTATION.
 
   ENDMETHOD.                    "try1
 
+  METHOD select2.
+
+    _code 'SELECT SINGLE * FROM trdir WHERE name = lv_name.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
   METHOD uline1.
 
     _code 'ULINE.'.
@@ -1084,7 +1133,7 @@ CLASS lcl_test_statements IMPLEMENTATION.
 
     _test abap_true.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "set4
 
   METHOD clear1.
 

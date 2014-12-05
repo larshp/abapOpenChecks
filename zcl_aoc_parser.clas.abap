@@ -38,6 +38,9 @@ protected section.
 *"* protected components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
 
+  class-methods XML_FIX
+    changing
+      !CV_XML type STRING .
   class-methods BUILD_PERMUTATION
     importing
       !II_RULE type ref to IF_IXML_NODE
@@ -911,7 +914,7 @@ METHOD walk_role.
 
   CASE io_node->mv_value.
     WHEN 'FieldId' OR 'FieldIdW'.
-      FIND REGEX '^[a-zA-Z0-9_\-=<>]+["\[\]"]*$' IN lv_token. "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\-=<>~+]+["\[\]"]*["("0-9")"]*$' IN lv_token. "#EC NOTEXT
       IF sy-subrc <> 0.
         FIND REGEX '^''.*''["("0-9")"]*$' IN lv_token.
       ENDIF.
@@ -920,7 +923,7 @@ METHOD walk_role.
     WHEN 'TypeId'
         OR 'ScreenId'
         OR 'ItabFieldId'.
-      FIND REGEX '^[a-zA-Z0-9_\-=>]+$' IN lv_token.         "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\-=>~]+$' IN lv_token.        "#EC NOTEXT
     WHEN 'FieldListId'
         OR 'LdbNodeId'
         OR 'MacroId'
@@ -955,7 +958,7 @@ METHOD walk_role.
     WHEN 'FieldSymbolDefId'.
       FIND REGEX '^<[a-zA-Z0-9_\-]+>$' IN lv_token.         "#EC NOTEXT
     WHEN 'ComponentId'.
-      FIND REGEX '^\*$' IN lv_token.
+      FIND REGEX '^[a-zA-Z0-9_\*]+$' IN lv_token.           "#EC NOTEXT
     WHEN 'MessageNumber'.
       FIND REGEX '^.[0-9][0-9][0-9](\(.+\))?$' IN lv_token.
   ENDCASE.
@@ -1098,92 +1101,120 @@ METHOD xml_download.
 ENDMETHOD.
 
 
-METHOD xml_get.
+METHOD xml_fix.
 
-  STATICS: st_syntax TYPE syntax_tt.
-
-  DATA: lv_rulename TYPE ssyntaxstructure-rulename.
-
-  FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF st_syntax.
-
-
-  IF st_syntax[] IS INITIAL.
-    SELECT * FROM ssyntaxstructure INTO TABLE st_syntax.    "#EC *
-  ENDIF.
-
-  lv_rulename = iv_rulename. " type conversion
-  READ TABLE st_syntax ASSIGNING <ls_syntax> WITH KEY rulename = lv_rulename.
-  ASSERT sy-subrc = 0.
-
-  REPLACE ALL OCCURRENCES OF REGEX
-    '<Terminal>([A-Z\-]*)</Terminal>' &&
-    '<Terminal>#NWS_MINUS_NWS#</Terminal>' &&
-    '<Terminal>([A-Z\-]*)</Terminal>'
-    IN <ls_syntax>-description
-    WITH '<Terminal>$1-$2</Terminal>' IGNORING CASE.
-
+  WHILE sy-subrc = 0.
+    REPLACE ALL OCCURRENCES OF REGEX
+      '<Terminal>([A-Z-]*)</Terminal>' &&
+      '<Terminal>#NWS_MINUS_NWS#</Terminal>' &&
+      '<Terminal>([A-Z-]*)</Terminal>'
+      IN cv_xml
+      WITH '<Terminal>$1-$2</Terminal>' IGNORING CASE.
+  ENDWHILE.
 
   REPLACE ALL OCCURRENCES OF REGEX
     '<Role>MethodId</Role><Terminal>#NWS_LPAREN#</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Role>MethodId(</Role>' IGNORING CASE.
 * todo #RPAREN_NWS# ?
 
 
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#LPAREN#</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>(</Terminal>' IGNORING CASE.
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#RPAREN#</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>)</Terminal>' IGNORING CASE.
 
 
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#PLUS#</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>+</Terminal>' IGNORING CASE.
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#MINUS#</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>-</Terminal>' IGNORING CASE.
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#ASTERISK#</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>*</Terminal>' IGNORING CASE.
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#SLASH#</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>/</Terminal>' IGNORING CASE.
 
 * #ASTERISK_NWS# ?
 
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>%_SORTMODE</Terminal>'
-      IN <ls_syntax>-description
+      IN cv_xml
       WITH '' IGNORING CASE.
 
 * comparison operators
   REPLACE ALL OCCURRENCES OF REGEX
     '<Terminal>#LT_NWS#</Terminal><Terminal>#NWS_GT#</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>&lt;&gt;</Terminal>' IGNORING CASE.
   REPLACE ALL OCCURRENCES OF REGEX
     '<Terminal>#GT_NWS#</Terminal><Terminal>#NWS_LT#</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>&gt;&lt;</Terminal>' IGNORING CASE.
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#LT#</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>&lt;</Terminal>' IGNORING CASE.
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#LT_NWS#</Terminal><Terminal>=</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>&lt;=</Terminal>' IGNORING CASE.
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>=</Terminal><Terminal>#NWS_LT#</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>=&lt;</Terminal>' IGNORING CASE.
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#GT#</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>&gt;</Terminal>' IGNORING CASE.
   REPLACE ALL OCCURRENCES OF REGEX '<Terminal>#GT_NWS#</Terminal><Terminal>=</Terminal>'
-    IN <ls_syntax>-description
+    IN cv_xml
     WITH '<Terminal>&gt;=</Terminal>' IGNORING CASE.
+
+ENDMETHOD.
+
+
+METHOD xml_get.
+
+  TYPES: BEGIN OF ty_cache,
+           rulename TYPE string,
+           node     TYPE REF TO if_ixml_node,
+         END OF ty_cache.
+
+  STATICS: st_syntax TYPE syntax_tt,
+           st_cache TYPE SORTED TABLE OF ty_cache WITH UNIQUE KEY rulename.
+
+  DATA: lv_rulename TYPE ssyntaxstructure-rulename,
+        ls_cache    LIKE LINE OF st_cache.
+
+  FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF st_syntax.
+
+
+  READ TABLE st_cache INTO ls_cache WITH KEY rulename = iv_rulename.
+  IF sy-subrc = 0.
+    ri_rule = ls_cache-node.
+    RETURN.
+  ENDIF.
+
+  IF st_syntax[] IS INITIAL.
+    SELECT * FROM ssyntaxstructure INTO TABLE st_syntax.    "#EC *
+    SORT st_syntax BY rulename ASCENDING.
+  ENDIF.
+
+  lv_rulename = iv_rulename. " type conversion
+  READ TABLE st_syntax ASSIGNING <ls_syntax>
+    WITH KEY rulename = lv_rulename BINARY SEARCH.
+  ASSERT sy-subrc = 0.
+
+  xml_fix( CHANGING cv_xml = <ls_syntax>-description ).
 
   ri_rule = xml_parse( iv_rulename = iv_rulename
                        iv_xml      = <ls_syntax>-description ).
+
+  CLEAR ls_cache.
+  ls_cache-rulename = iv_rulename.
+  ls_cache-node     = ri_rule.
+  INSERT ls_cache INTO TABLE st_cache.
 
 ENDMETHOD.
 
