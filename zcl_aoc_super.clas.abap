@@ -9,7 +9,7 @@ public section.
 *"* do not include other source files here!!!
 
   types:
-    TT_STRUCTURES type standard table of SSTRUC .
+    TT_STRUCTURES type standard table of SSTRUC with non-unique default key.
 
   methods CHECK
     importing
