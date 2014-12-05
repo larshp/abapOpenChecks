@@ -70,6 +70,7 @@ CLASS lcl_test_statements DEFINITION FOR TESTING
              compute5        FOR TESTING,
              compute6        FOR TESTING,
              compute7        FOR TESTING,
+             compute8        FOR TESTING,
              if1             FOR TESTING,
              if2             FOR TESTING,
              if3             FOR TESTING,
@@ -129,8 +130,11 @@ CLASS lcl_test_statements DEFINITION FOR TESTING
              set1            FOR TESTING,
              set2            FOR TESTING,
              set3            FOR TESTING,
+             set4            for testing,
              clear1          FOR TESTING,
-             append1         FOR TESTING.
+             append1         FOR TESTING,
+             append2         FOR TESTING,
+             start1          FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -548,6 +552,14 @@ CLASS lcl_test_statements IMPLEMENTATION.
 
   ENDMETHOD.                    "compute7
 
+  METHOD compute8.
+
+    _code 'lv_foo = ''text symbol''(001).'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "compute8
+
   METHOD if1.
 
     _code 'IF lv_foo = lv_bar.'.
@@ -775,7 +787,7 @@ CLASS lcl_test_statements IMPLEMENTATION.
 
   METHOD non_code9.
 
-    _code 'Call 911.'.
+    _code 'Call 911 for something.'.
 
     _test abap_false.
 
@@ -1066,6 +1078,14 @@ CLASS lcl_test_statements IMPLEMENTATION.
 
   ENDMETHOD.                    "set3
 
+  METHOD set4.
+
+    _code 'SET SCREEN SY-DYNNR.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
   METHOD clear1.
 
     _code 'CLEAR lv_foo.'.
@@ -1082,6 +1102,22 @@ CLASS lcl_test_statements IMPLEMENTATION.
 
   ENDMETHOD.                    "append1
 
+  METHOD append2.
+
+    _code 'APPEND ls_foo TO lo_bar->gt_tab.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "append2
+
+  METHOD start1.
+
+    _code 'START-OF-SELECTION.'.
+
+    _test abap_true.
+
+  ENDMETHOD.                    "start1
+
 ENDCLASS.       "lcl_Test
 
 *----------------------------------------------------------------------*
@@ -1090,7 +1126,7 @@ ENDCLASS.       "lcl_Test
 *
 *----------------------------------------------------------------------*
 CLASS lcl_test_programs DEFINITION FOR TESTING
-  DURATION SHORT
+  DURATION MEDIUM
   RISK LEVEL HARMLESS
   FINAL.
 
@@ -1113,7 +1149,6 @@ CLASS lcl_test_programs DEFINITION FOR TESTING
              saprdemoviewing      FOR TESTING.
 
 ENDCLASS.       "lcl_Standard_Programs
-
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_Standard_Programs IMPLEMENTATION

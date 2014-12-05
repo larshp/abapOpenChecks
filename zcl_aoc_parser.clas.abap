@@ -37,58 +37,8 @@ public section.
 protected section.
 *"* protected components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
-private section.
-*"* private components of class ZCL_AOC_PARSER
-*"* do not include other source files here!!!
 
-  class-data GT_TOKENS type STRING_TABLE .
-  class-data GV_END_RULE type STRING .
-  type-pools ABAP .
-  class-data GV_DEBUG type ABAP_BOOL .
-
-  class-methods XML_DOWNLOAD
-    importing
-      !IV_RULENAME type STRING
-      !II_XML type ref to IF_IXML
-      !II_XML_DOC type ref to IF_IXML_DOCUMENT .
-  class ZCL_AOC_PARSER definition load .
-  class-methods WALK
-    importing
-      !IO_NODE type ref to LCL_NODE
-      !IV_INDEX type I
-    returning
-      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
-  class-methods GRAPH_TO_TEXT
-    importing
-      !IO_NODE type ref to LCL_NODE
-    returning
-      value(RV_TEXT) type STRING .
-  class-methods GRAPH_DOWNLOAD
-    importing
-      !IV_RULENAME type STRING
-      !IO_START type ref to LCL_NODE .
-  class-methods GRAPH_BUILD
-    importing
-      !IV_RULENAME type STRING
-    exporting
-      !EO_START type ref to LCL_NODE
-      !EO_END type ref to LCL_NODE .
   class-methods BUILD_PERMUTATION
-    importing
-      !II_RULE type ref to IF_IXML_NODE
-      !IO_BEFORE type ref to LCL_NODE
-      !IO_AFTER type ref to LCL_NODE .
-  class-methods BUILD_ROLE
-    importing
-      !II_RULE type ref to IF_IXML_NODE
-      !IO_BEFORE type ref to LCL_NODE
-      !IO_AFTER type ref to LCL_NODE .
-  class-methods BUILD_SEQUENCE
-    importing
-      !II_RULE type ref to IF_IXML_NODE
-      !IO_BEFORE type ref to LCL_NODE
-      !IO_AFTER type ref to LCL_NODE .
-  class-methods BUILD_TERMINAL
     importing
       !II_RULE type ref to IF_IXML_NODE
       !IO_BEFORE type ref to LCL_NODE
@@ -123,19 +73,49 @@ private section.
       !II_RULE type ref to IF_IXML_NODE
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
-  class-methods WALK_END
+  class-methods GRAPH_BUILD
+    importing
+      !IV_RULENAME type STRING
+    exporting
+      !EO_START type ref to LCL_NODE
+      !EO_END type ref to LCL_NODE .
+  class-methods GRAPH_DOWNLOAD
+    importing
+      !IV_RULENAME type STRING
+      !IO_START type ref to LCL_NODE .
+  class-methods GRAPH_TO_TEXT
+    importing
+      !IO_NODE type ref to LCL_NODE
+    returning
+      value(RV_TEXT) type STRING .
+  class ZCL_AOC_PARSER definition load .
+  class-methods WALK
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
       value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
-  class-methods WALK_NODE
+  class-methods XML_DOWNLOAD
     importing
-      !IO_NODE type ref to LCL_NODE
-      !IV_INDEX type I
-    returning
-      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
-  class-methods WALK_NONTERMINAL
+      !IV_RULENAME type STRING
+      !II_XML type ref to IF_IXML
+      !II_XML_DOC type ref to IF_IXML_DOCUMENT .
+  class-methods BUILD_ROLE
+    importing
+      !II_RULE type ref to IF_IXML_NODE
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD_SEQUENCE
+    importing
+      !II_RULE type ref to IF_IXML_NODE
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods BUILD_TERMINAL
+    importing
+      !II_RULE type ref to IF_IXML_NODE
+      !IO_BEFORE type ref to LCL_NODE
+      !IO_AFTER type ref to LCL_NODE .
+  class-methods WALK_TERMINAL
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
@@ -147,7 +127,19 @@ private section.
       !IV_INDEX type I
     returning
       value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
-  class-methods WALK_TERMINAL
+  class-methods WALK_NONTERMINAL
+    importing
+      !IO_NODE type ref to LCL_NODE
+      !IV_INDEX type I
+    returning
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
+  class-methods WALK_NODE
+    importing
+      !IO_NODE type ref to LCL_NODE
+      !IV_INDEX type I
+    returning
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
+  class-methods WALK_END
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
@@ -170,6 +162,14 @@ private section.
       !IT_STATEMENTS type SSTMNT_TAB
     returning
       value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
+private section.
+*"* private components of class ZCL_AOC_PARSER
+*"* do not include other source files here!!!
+
+  class-data GT_TOKENS type STRING_TABLE .
+  class-data GV_END_RULE type STRING .
+  type-pools ABAP .
+  class-data GV_DEBUG type ABAP_BOOL .
 ENDCLASS.
 
 
@@ -911,17 +911,19 @@ METHOD walk_role.
 
   CASE io_node->mv_value.
     WHEN 'FieldId' OR 'FieldIdW'.
-      FIND REGEX '^[a-zA-Z0-9_\-<>]+["\[\]"]*$' IN lv_token. "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\-=<>]+["\[\]"]*$' IN lv_token. "#EC NOTEXT
       IF sy-subrc <> 0.
-        FIND REGEX '^''.*''$' IN lv_token.
+        FIND REGEX '^''.*''["("0-9")"]*$' IN lv_token.
       ENDIF.
     WHEN 'FieldDefId'.
       FIND REGEX '^[a-zA-Z0-9_\-]+["("0-9")"]*$' IN lv_token. "#EC NOTEXT
-    WHEN 'ItabFieldId'
-        OR 'FieldListId'
+    WHEN 'TypeId'
+        OR 'ScreenId'
+        OR 'ItabFieldId'.
+      FIND REGEX '^[a-zA-Z0-9_\-=>]+$' IN lv_token.         "#EC NOTEXT
+    WHEN 'FieldListId'
         OR 'LdbNodeId'
         OR 'MacroId'
-        OR 'TypeId'
         OR 'MethodDefId'
         OR 'FormParamId'
         OR 'FormId'
@@ -936,17 +938,15 @@ METHOD walk_role.
         OR 'MacroDefId'
         OR 'ClassexcrefFieldId'
         OR 'FieldCompId'.
-      FIND REGEX '^[a-zA-Z0-9_\-]+$' IN lv_token.           "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_]+$' IN lv_token.             "#EC NOTEXT
     WHEN 'ClassrefFieldId'.
       FIND REGEX '^[a-zA-Z0-9_]+$' IN lv_token.             "#EC NOTEXT
     WHEN 'FunctionId'.
       FIND REGEX '^''.*''$' IN lv_token.
-    WHEN 'ScreenId'.
-      FIND REGEX '^[0-9]+$' IN lv_token.
     WHEN 'MethodId('.
-      FIND REGEX '^[a-zA-Z0-9_\=\->~]+\($' IN lv_token.      "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\=\->~]+\($' IN lv_token.     "#EC NOTEXT
     WHEN 'MethodId'.
-      FIND REGEX '^[a-zA-Z0-9_\=\->~]+\(?$' IN lv_token.     "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\=\->~]+\(?$' IN lv_token.    "#EC NOTEXT
     WHEN 'LocationId'.
       FIND REGEX '^/?[0-9]*["("0-9")"]*$' IN lv_token.
     WHEN 'SelOptId'.
@@ -1115,8 +1115,10 @@ METHOD xml_get.
   READ TABLE st_syntax ASSIGNING <ls_syntax> WITH KEY rulename = lv_rulename.
   ASSERT sy-subrc = 0.
 
-  REPLACE ALL OCCURRENCES OF REGEX '<Terminal>([A-Z]*)</Terminal>' &&
-    '<Terminal>#NWS_MINUS_NWS#</Terminal><Terminal>([A-Z]*)</Terminal>'
+  REPLACE ALL OCCURRENCES OF REGEX
+    '<Terminal>([A-Z\-]*)</Terminal>' &&
+    '<Terminal>#NWS_MINUS_NWS#</Terminal>' &&
+    '<Terminal>([A-Z\-]*)</Terminal>'
     IN <ls_syntax>-description
     WITH '<Terminal>$1-$2</Terminal>' IGNORING CASE.
 
@@ -1191,9 +1193,14 @@ METHOD xml_parse.
   DATA: li_ixml           TYPE REF TO if_ixml,
         li_xml_doc        TYPE REF TO if_ixml_document,
         li_type           TYPE REF TO if_ixml_node,
-        li_view           TYPE REF TO if_ixml_element,
         li_attr           TYPE REF TO if_ixml_named_node_map,
         lv_type           TYPE string,
+        li_collection     TYPE REF TO if_ixml_node_collection,
+        li_iterator       TYPE REF TO if_ixml_node_iterator,
+        li_node           TYPE REF TO if_ixml_node,
+        li_normal         TYPE REF TO if_ixml_node,
+        li_obsolete       TYPE REF TO if_ixml_node,
+        li_private        TYPE REF TO if_ixml_node,
         li_stream_factory TYPE REF TO if_ixml_stream_factory,
         li_istream        TYPE REF TO if_ixml_istream,
         li_parser         TYPE REF TO if_ixml_parser.
@@ -1218,17 +1225,35 @@ METHOD xml_parse.
         ii_xml_doc  = li_xml_doc ).
   ENDIF.
 
-  li_view = li_xml_doc->find_from_name( depth = 0 name = 'View' ). "#EC NOTEXT
-* todo, get Obsolete view instead?
+  li_collection =
+    li_xml_doc->get_elements_by_tag_name( depth = 0 name = 'View' ). "#EC NOTEXT
 
-  li_attr = li_view->get_attributes( ).
-  li_type = li_attr->get_named_item( 'type' ).              "#EC NOTEXT
-  lv_type = li_type->get_value( ).
-  IF lv_type = 'Private'.
-    RETURN.
+  li_iterator = li_collection->create_iterator( ).
+  li_node = li_iterator->get_next( ).
+  WHILE li_node IS BOUND.
+
+    li_attr = li_node->get_attributes( ).
+    li_type = li_attr->get_named_item( 'type' ).            "#EC NOTEXT
+    lv_type = li_type->get_value( ).
+    CASE lv_type.
+      WHEN 'Normal'.                                        "#EC NOTEXT
+        li_normal = li_node.
+      WHEN 'Obsolete'.                                      "#EC NOTEXT
+        li_obsolete = li_node.
+      WHEN 'Private'.                                       "#EC NOTEXT
+        li_private = li_node.
+    ENDCASE.
+
+    li_node = li_iterator->get_next( ).
+  ENDWHILE.
+
+  IF li_obsolete IS BOUND.
+    ri_rule = li_obsolete->get_first_child( ).
+  ELSEIF li_normal IS BOUND.
+    ri_rule = li_normal->get_first_child( ).
+  ELSEIF li_private IS BOUND.
+    ri_rule = li_private->get_first_child( ).
   ENDIF.
-
-  ri_rule = li_view->get_first_child( ).
 
 ENDMETHOD.
 ENDCLASS.
