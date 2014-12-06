@@ -14,9 +14,9 @@ public section.
   methods GET_MESSAGE_TEXT
     redefinition .
 protected section.
+
 *"* protected components of class ZCL_AOC_CHECK_21
 *"* do not include other source files here!!!
-
   methods BUILD_STATEMENT
     importing
       !IS_STATEMENT type SSTMNT
@@ -27,7 +27,7 @@ protected section.
     importing
       !IV_STATEMENT type STRING
     returning
-      value(RT_PARAMETERS) type STRING_TT .
+      value(RT_PARAMETERS) type STRING_TABLE .
 private section.
 *"* private components of class ZCL_AOC_CHECK_21
 *"* do not include other source files here!!!
@@ -64,7 +64,7 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lt_parameters TYPE string_tt,
+  DATA: lt_parameters TYPE string_table,
         lv_parameter  LIKE LINE OF lt_parameters,
         lv_statement  TYPE string,
         ls_form_stmnt LIKE LINE OF it_statements,
