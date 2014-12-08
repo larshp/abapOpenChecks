@@ -104,14 +104,14 @@ METHOD analyze.
 * statement type must be COMPUTE/CALL METHOD/.. not eg IF?
 
 * todo
-*  IF lv_inform = abap_true.
-*    inform( p_sub_obj_type = c_type_include
-*            p_sub_obj_name = get_include( p_level = <ls_condition>-level )
-*            p_line         = <ls_condition>-row
-*            p_kind         = mv_errty
-*            p_test         = c_my_name
-*            p_code         = '001' ).
-*  ENDIF.
+  IF lv_inform = abap_true.
+    inform( p_sub_obj_type = c_type_include
+            p_sub_obj_name = get_include( p_level = <ls_condition>-level )
+            p_line         = <ls_condition>-row
+            p_kind         = mv_errty
+            p_test         = c_my_name
+            p_code         = '001' ).
+  ENDIF.
 
 ENDMETHOD.
 
@@ -126,6 +126,8 @@ METHOD check.
 
   FIELD-SYMBOLS: <ls_alternation> LIKE LINE OF it_structures.
 
+
+* todo, multiple IF structures?
 
   LOOP AT it_structures ASSIGNING <ls_alternation>
       WHERE type = scan_struc_type-alternation
@@ -153,19 +155,25 @@ METHOD conditions.
   DATA: lv_statement  TYPE string,
         lv_from       TYPE i.
 
-  FIELD-SYMBOLS: <ls_token>       LIKE LINE OF it_tokens,
-                 <ls_statement>   LIKE LINE OF it_statements,
-                 <ls_condition>   LIKE LINE OF ct_conditions,
-                 <ls_structure>   LIKE LINE OF it_structures.
+  FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
+                 <ls_statement> LIKE LINE OF it_statements,
+                 <ls_condition> LIKE LINE OF ct_conditions,
+                 <lv_statement> LIKE LINE OF <ls_condition>-statements,
+                 <ls_structure> LIKE LINE OF it_structures.
 
 
   CLEAR ct_conditions.
+
+* todo, if is_alternation-STMNT_TYPE = scan_struc_stmnt_type-if
+* then condition must contain a scan_struc_stmnt_type-else
 
   LOOP AT it_structures ASSIGNING <ls_structure>
       FROM is_alternation-struc_from
       TO is_alternation-struc_to.
 
     APPEND INITIAL LINE TO ct_conditions ASSIGNING <ls_condition>.
+
+* todo, add <ls_structure>-stmnt_type to <ls_condition>
 
     IF <ls_structure>-key_start = abap_true.
       lv_from = <ls_structure>-stmnt_from + 1.
@@ -190,6 +198,16 @@ METHOD conditions.
           <ls_condition>-row = <ls_token>-row.
         ENDIF.
 
+        IF <ls_token>-str = 'ENDIF'. " todo, statement type = C?
+          READ TABLE <ls_condition>-statements
+            INDEX lines( <ls_condition>-statements )
+            ASSIGNING <lv_statement>.
+          ASSERT sy-subrc = 0.
+          CONCATENATE <lv_statement> <ls_token>-str
+            INTO <lv_statement> SEPARATED BY space.
+          CONTINUE. " current loop
+        ENDIF.
+
         IF lv_statement IS INITIAL.
           lv_statement = <ls_token>-str.
         ELSE.
@@ -197,7 +215,10 @@ METHOD conditions.
             INTO lv_statement SEPARATED BY space.
         ENDIF.
       ENDLOOP.
-      APPEND lv_statement TO <ls_condition>-statements.
+
+      IF NOT lv_statement IS INITIAL.
+        APPEND lv_statement TO <ls_condition>-statements.
+      ENDIF.
     ENDLOOP.
 
   ENDLOOP.
