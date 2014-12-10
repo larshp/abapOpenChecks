@@ -108,6 +108,8 @@ METHOD parse.
 
   DATA: lv_code LIKE LINE OF it_commented.
 
+  FIELD-SYMBOLS: <lv_commented> LIKE LINE OF it_commented.
+
 
   IF lines( it_commented ) = 0.
     RETURN.
@@ -123,6 +125,21 @@ METHOD parse.
       RETURN.
     ENDIF.
   ENDIF.
+
+  LOOP AT it_commented ASSIGNING <lv_commented>.
+    IF strlen( <lv_commented> ) > 1 AND <lv_commented>(2) = '"*'.
+      RETURN.
+    ENDIF.
+    IF strlen( <lv_commented> ) > 4 AND <lv_commented>(5) = '-----'.
+      RETURN.
+    ENDIF.
+    IF strlen( <lv_commented> ) > 4 AND <lv_commented>(5) = ' ===='.
+      RETURN.
+    ENDIF.
+    IF strlen( <lv_commented> ) > 4 AND <lv_commented>(5) = '*****'.
+      RETURN.
+    ENDIF.
+  ENDLOOP.
 
   IF zcl_aoc_parser=>run( it_commented )-match = abap_true.
     inform( p_sub_obj_type = c_type_include

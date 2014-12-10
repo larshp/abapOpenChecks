@@ -736,6 +736,12 @@ METHOD parse.
                  <ls_token>     LIKE LINE OF it_tokens.
 
 
+  READ TABLE it_statements WITH KEY terminator = space TRANSPORTING NO FIELDS.
+  IF sy-subrc = 0 AND gv_end_rule = 'START'.
+    rs_result-match = abap_false.
+    RETURN.
+  ENDIF.
+
   LOOP AT it_statements ASSIGNING <ls_statement>.
 
     CLEAR gt_tokens.
@@ -743,7 +749,7 @@ METHOD parse.
       APPEND <ls_token>-str TO gt_tokens.
     ENDLOOP.
     IF gv_end_rule = 'START'.
-      APPEND <ls_statement>-terminator TO gt_tokens.
+      APPEND '.' TO gt_tokens.
     ENDIF.
 
     graph_build( EXPORTING iv_rulename = gv_end_rule
@@ -802,8 +808,6 @@ METHOD run.
     APPEND <ls_res_tok> TO rs_result-tokens.
     lv_index = lv_index - 1.
   ENDDO.
-
-* todo, clone graph, cache, shared memory?
 
 ENDMETHOD.
 
