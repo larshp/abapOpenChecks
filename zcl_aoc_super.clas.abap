@@ -189,21 +189,31 @@ ENDMETHOD.
 
 METHOD inform.
 
-  DATA: li_oref    TYPE REF TO if_oo_class_incl_naming,
-        lv_clsname TYPE seoclassdf-clsname,
-        li_clif    TYPE REF TO if_oo_clif_incl_naming,
-        lv_method  TYPE seocpdname.
+  DATA: li_oref     TYPE REF TO if_oo_class_incl_naming,
+        lv_clsname  TYPE seoclassdf-clsname,
+        li_clif     TYPE REF TO if_oo_clif_incl_naming,
+        lv_cnam     TYPE reposrc-cnam,
+        lv_method   TYPE seocpdname.
 
-
-* skip standard code, todo: namespaces
-  IF p_sub_obj_name(1) <> 'Z'
-      AND p_sub_obj_name(1) <> 'Y'
-      AND p_sub_obj_name(2) <> 'LZ'  " function group include
-      AND p_sub_obj_name(2) <> 'LY'  " function group include
-      AND p_sub_obj_name <> ''
-      AND p_sub_obj_name <> '----------------------------------------'.
-    RETURN.
+* todo, web dynpro?
+  IF p_sub_obj_type = 'PROG' AND p_sub_obj_name <> ''.
+    SELECT SINGLE cnam FROM reposrc INTO lv_cnam
+      WHERE progname = p_sub_obj_name AND r3state = 'A'.
+    IF sy-subrc = 0
+        AND ( lv_cnam = 'SAP'
+        OR lv_cnam = 'SAP*'
+        OR lv_cnam = 'DDIC' ).
+      RETURN.
+    ENDIF.
   ENDIF.
+*  IF p_sub_obj_name(1) <> 'Z'
+*      AND p_sub_obj_name(1) <> 'Y'
+*      AND p_sub_obj_name(2) <> 'LZ'  " function group include
+*      AND p_sub_obj_name(2) <> 'LY'  " function group include
+*      AND p_sub_obj_name <> ''
+*      AND p_sub_obj_name <> '----------------------------------------'.
+*    RETURN.
+*  ENDIF.
 
 * skip constructor in exception classes
   cl_oo_include_naming=>get_instance_by_include(
