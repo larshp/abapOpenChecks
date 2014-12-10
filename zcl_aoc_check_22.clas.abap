@@ -104,14 +104,14 @@ METHOD analyze.
 * statement type must be COMPUTE/CALL METHOD/.. not eg IF?
 
 * todo
-  IF lv_inform = abap_true.
-    inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = get_include( p_level = <ls_condition>-level )
-            p_line         = <ls_condition>-row
-            p_kind         = mv_errty
-            p_test         = c_my_name
-            p_code         = '001' ).
-  ENDIF.
+*  IF lv_inform = abap_true.
+*    inform( p_sub_obj_type = c_type_include
+*            p_sub_obj_name = get_include( p_level = <ls_condition>-level )
+*            p_line         = <ls_condition>-row
+*            p_kind         = mv_errty
+*            p_test         = c_my_name
+*            p_code         = '001' ).
+*  ENDIF.
 
 ENDMETHOD.
 

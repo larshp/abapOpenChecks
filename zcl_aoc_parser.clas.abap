@@ -736,15 +736,14 @@ METHOD parse.
                  <ls_token>     LIKE LINE OF it_tokens.
 
 
-* todo, terminator = ','?
-  LOOP AT it_statements ASSIGNING <ls_statement> WHERE terminator = '.'.
+  LOOP AT it_statements ASSIGNING <ls_statement>.
 
     CLEAR gt_tokens.
     LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
       APPEND <ls_token>-str TO gt_tokens.
     ENDLOOP.
     IF gv_end_rule = 'START'.
-      APPEND '.' TO gt_tokens.
+      APPEND <ls_statement>-terminator TO gt_tokens.
     ENDIF.
 
     graph_build( EXPORTING iv_rulename = gv_end_rule

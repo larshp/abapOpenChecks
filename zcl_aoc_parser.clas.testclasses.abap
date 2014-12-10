@@ -61,6 +61,7 @@ CLASS lcl_test_statements DEFINITION FOR TESTING
              data4           FOR TESTING,
              data5           FOR TESTING,
              data6           FOR TESTING,
+             data7           FOR TESTING,
              write1          FOR TESTING,
              write2          FOR TESTING,
              write3          FOR TESTING,
@@ -100,6 +101,7 @@ CLASS lcl_test_statements DEFINITION FOR TESTING
              non_code7       FOR TESTING,
              non_code8       FOR TESTING,
              non_code9       FOR TESTING,
+             non_code10      for testing,
              perform1        FOR TESTING,
              perform2        FOR TESTING,
              try1            FOR TESTING,
@@ -489,6 +491,15 @@ CLASS lcl_test_statements IMPLEMENTATION.
 
   ENDMETHOD.                    "data6
 
+  METHOD data7.
+
+    _code 'DATA: ls_moo TYPE zcl_foo=>st_type,'.
+    _code '      ls_boo TYPE zcl_foo=>st_type.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
   METHOD write1.
 
     _code 'WRITE ''fobar''.'.
@@ -833,6 +844,14 @@ CLASS lcl_test_statements IMPLEMENTATION.
     _test abap_false.
 
   ENDMETHOD.                    "non_code9
+
+  METHOD non_code10.
+
+    _code 'Call 11.111 as foo'.
+
+    _test abap_false.
+
+  ENDMETHOD.
 
   METHOD perform1.
 
