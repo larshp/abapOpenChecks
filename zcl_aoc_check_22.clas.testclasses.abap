@@ -23,7 +23,11 @@ CLASS lcl_test DEFINITION FOR TESTING
              test001_05 FOR TESTING,
              test001_06 FOR TESTING,
              test001_07 FOR TESTING,
-             test001_08 FOR TESTING.
+             test001_08 FOR TESTING,
+             test001_09 FOR TESTING,
+             test001_10 FOR TESTING,
+             test001_11 FOR TESTING,
+             test001_12 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -187,5 +191,81 @@ CLASS lcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
   ENDMETHOD.                    "test001_08
+
+  METHOD test001_09.
+* ===========
+
+    _code 'CASE lv_foo.'.
+    _code '  WHEN ''a''.'.
+    _code '    lv_moo = lv_boo.'.
+    _code '  WHEN ''b''.'.
+    _code '    lv_moo = lv_boo.'.
+    _code 'ENDCASE.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.                    "test001_08
+
+  METHOD test001_10.
+* ===========
+
+    _code 'CASE lv_foo.'.
+    _code '  WHEN ''a''.'.
+    _code '    lv_moo = lv_boo.'.
+    _code '  WHEN OTHERS.'.
+    _code '    lv_moo = lv_boo.'.
+    _code 'ENDCASE.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.                    "test001_10
+
+  METHOD test001_11.
+* ===========
+
+    _code 'IF 1 = 2.'.
+    _code '  WRITE: / lv_text.'.
+    _code 'ENDIF.'.
+    _code 'IF 1 = 2.'.
+    _code '  WRITE: / lv_bar.'.
+    _code 'ELSE.'.
+    _code '  WRITE: / lv_bar.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.                    "test001_11
+
+  METHOD test001_12.
+* ===========
+
+    _code 'IF lv_a = lv_b.'.
+    _code '  lv_foo = lv_bar.'.
+    _code 'ELSE.'.
+    _code '  IF lv_c = ''12''.'.
+    _code '    lv_foo = lv_bar.'.
+    _code '  ELSE.'.
+    _code '    lv_foo = lv_bar.'.
+    _code '  ENDIF.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Te
