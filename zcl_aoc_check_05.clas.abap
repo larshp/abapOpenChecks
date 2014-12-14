@@ -14,6 +14,8 @@ public section.
   methods GET_MESSAGE_TEXT
     redefinition .
 protected section.
+
+  class-data GO_CONV type ref to CL_ABAP_CONV_OUT_CE .
 *"* protected components of class ZCL_AOC_CHECK_05
 *"* do not include other source files here!!!
 private section.
@@ -37,7 +39,6 @@ METHOD check.
   DATA: lt_code    TYPE string_table,
         lv_line    TYPE token_row,
         lv_column  TYPE token_col,
-        lo_obj     TYPE REF TO cl_abap_conv_out_ce,
         lv_offset  TYPE i,
         lv_bit     TYPE c LENGTH 1,
         lv_xstring TYPE xstring,
@@ -47,8 +48,10 @@ METHOD check.
                  <lv_code>  LIKE LINE OF lt_code.
 
 
+  IF NOT go_conv IS BOUND.
 * convert to UTF-16BE
-  lo_obj = cl_abap_conv_out_ce=>create( encoding = '4102' ).
+    go_conv = cl_abap_conv_out_ce=>create( encoding = '4102' ).
+  ENDIF.
 
   LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
     lt_code = get_source( <ls_level> ).
@@ -56,7 +59,7 @@ METHOD check.
       lv_line = sy-tabix.
 
       TRY.
-          lo_obj->convert( EXPORTING data   = <lv_code>
+          go_conv->convert( EXPORTING data   = <lv_code>
                            IMPORTING buffer = lv_xstring ).
         CATCH cx_parameter_invalid_range
               cx_sy_codepage_converter_init
