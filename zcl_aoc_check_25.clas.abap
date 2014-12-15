@@ -193,7 +193,7 @@ METHOD find_fields.
 
       IF mv_skip_radio = abap_true.
         READ TABLE ls_result-tokens
-          WITH KEY type = 'T' code = 'RADIOBUTTON'
+          WITH KEY type = zcl_aoc_parser=>c_terminal code = 'RADIOBUTTON'
           TRANSPORTING NO FIELDS.
         IF sy-subrc = 0.
           CONTINUE.
