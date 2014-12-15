@@ -24,10 +24,12 @@ CLASS lcl_node DEFINITION FINAL.
     DATA: mv_type  TYPE ty_node_type READ-ONLY,
           mv_value TYPE string READ-ONLY,
           mv_key   TYPE i READ-ONLY,
+          mv_rulename  TYPE string READ-ONLY,
           mt_edges TYPE TABLE OF REF TO lcl_node READ-ONLY.
 
     METHODS: constructor IMPORTING iv_type TYPE ty_node_type
-                                   iv_value TYPE string,
+                                   iv_value TYPE string
+                                   iv_rulename TYPE string,
              edge IMPORTING io_node TYPE REF TO lcl_node.
 
   PRIVATE SECTION.

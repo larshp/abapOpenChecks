@@ -9,9 +9,10 @@ public section.
 
   types:
     BEGIN OF st_token,
-               type  TYPE c LENGTH 1,
-               value TYPE string,
-               code  TYPE string,
+               type     TYPE c LENGTH 1,
+               value    TYPE string,
+               code     TYPE string,
+               rulename TYPE string,
              END OF st_token .
   types:
     tt_tokens TYPE STANDARD TABLE OF st_token WITH NON-UNIQUE DEFAULT KEY .
@@ -44,36 +45,43 @@ protected section.
   class-methods BUILD_PERMUTATION
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_RULENAME type STRING
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
   class-methods BUILD_OPTIONLIST
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_RULENAME type STRING
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
   class-methods BUILD_OPTION
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_RULENAME type STRING
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
   class-methods BUILD_NONTERMINAL
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_RULENAME type STRING
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
   class-methods BUILD_ITERATION
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_RULENAME type STRING
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
   class-methods BUILD_ALTERNATIVE
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_RULENAME type STRING
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
   class-methods BUILD
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_RULENAME type STRING
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
   class-methods GRAPH_BUILD
@@ -106,16 +114,19 @@ protected section.
   class-methods BUILD_ROLE
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_RULENAME type STRING
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
   class-methods BUILD_SEQUENCE
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_RULENAME type STRING
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
   class-methods BUILD_TERMINAL
     importing
       !II_RULE type ref to IF_IXML_NODE
+      !IV_RULENAME type STRING
       !IO_BEFORE type ref to LCL_NODE
       !IO_AFTER type ref to LCL_NODE .
   class-methods WALK_TERMINAL
@@ -192,50 +203,61 @@ METHOD build.
 
   lv_name = ii_rule->get_name( ).
 
+* todo, change input to structure instead?
+
   CASE lv_name.
     WHEN 'Sequence'.
       build_sequence(
           ii_rule   = ii_rule
+          iv_rulename = iv_rulename
           io_before = io_before
           io_after  = io_after ).
     WHEN 'Alternative'.
       build_alternative(
           ii_rule   = ii_rule
+          iv_rulename = iv_rulename
           io_before = io_before
           io_after  = io_after ).
     WHEN 'Nonterminal'.
       build_nonterminal(
           ii_rule   = ii_rule
+          iv_rulename = iv_rulename
           io_before = io_before
           io_after  = io_after ).
     WHEN 'Terminal'.
       build_terminal(
           ii_rule   = ii_rule
+          iv_rulename = iv_rulename
           io_before = io_before
           io_after  = io_after ).
     WHEN 'Role'.
       build_role(
           ii_rule   = ii_rule
+          iv_rulename = iv_rulename
           io_before = io_before
           io_after  = io_after ).
     WHEN 'Option'.
       build_option(
           ii_rule   = ii_rule
+          iv_rulename = iv_rulename
           io_before = io_before
           io_after  = io_after ).
     WHEN 'Permutation'.
       build_permutation(
           ii_rule   = ii_rule
+          iv_rulename = iv_rulename
           io_before = io_before
           io_after  = io_after ).
     WHEN 'Iteration'.
       build_iteration(
           ii_rule   = ii_rule
+          iv_rulename = iv_rulename
           io_before = io_before
           io_after  = io_after ).
     WHEN 'Optionlist'.
       build_optionlist(
           ii_rule   = ii_rule
+          iv_rulename = iv_rulename
           io_before = io_before
           io_after  = io_after ).
   ENDCASE.
@@ -252,8 +274,9 @@ METHOD build_alternative.
 
   CREATE OBJECT lo_dummy
     EXPORTING
-      iv_type  = gc_dummy
-      iv_value = 'Alternative'.                             "#EC NOTEXT
+      iv_type     = gc_dummy
+      iv_value    = 'Alternative'
+      iv_rulename = iv_rulename.                            "#EC NOTEXT
 
   li_children = ii_rule->get_children( ).
 
@@ -263,6 +286,7 @@ METHOD build_alternative.
     li_child = li_children->get_item( sy-index - 1 ).
     li_child = li_child->get_first_child( ). " get rid of <Alt> tag
     build( ii_rule   = li_child
+           iv_rulename = iv_rulename
            io_before = lo_dummy
            io_after  = io_after ).
   ENDDO.
@@ -281,22 +305,24 @@ METHOD build_iteration.
 
   CREATE OBJECT lo_dummy1
     EXPORTING
-      iv_type  = gc_dummy
-      iv_value = 'IterationStart'.                          "#EC NOTEXT
+      iv_type     = gc_dummy
+      iv_value    = 'IterationStart'
+      iv_rulename = iv_rulename.                            "#EC NOTEXT
 
   CREATE OBJECT lo_dummy2
     EXPORTING
-      iv_type  = gc_dummy
-      iv_value = 'IterationEnd'.                            "#EC NOTEXT
+      iv_type     = gc_dummy
+      iv_value    = 'IterationEnd'
+      iv_rulename = iv_rulename.                            "#EC NOTEXT
 
   io_before->edge( lo_dummy1 ).
   lo_dummy2->edge( io_after ).
   lo_dummy2->edge( lo_dummy1 ).
 
-  zcl_aoc_parser=>build(
-      ii_rule   = li_child
-      io_before = lo_dummy1
-      io_after  = lo_dummy2 ).
+  build( ii_rule   = li_child
+         iv_rulename = iv_rulename
+         io_before = lo_dummy1
+         io_after  = lo_dummy2 ).
 
 ENDMETHOD.
 
@@ -311,8 +337,9 @@ METHOD build_nonterminal.
 
   CREATE OBJECT lo_node
     EXPORTING
-      iv_type  = gc_nonterminal
-      iv_value = lv_rulename.
+      iv_type     = gc_nonterminal
+      iv_value    = lv_rulename
+      iv_rulename = iv_rulename.
 
   io_before->edge( lo_node ).
   lo_node->edge( io_after ).
@@ -328,17 +355,18 @@ METHOD build_option.
 
   CREATE OBJECT lo_dummy
     EXPORTING
-      iv_type  = gc_dummy
-      iv_value = 'Option'.                                  "#EC NOTEXT
+      iv_type     = gc_dummy
+      iv_value    = 'Option'
+      iv_rulename = iv_rulename.                            "#EC NOTEXT
 
   li_child = ii_rule->get_first_child( ).
 
   io_before->edge( lo_dummy ).
 
-  zcl_aoc_parser=>build(
-      ii_rule   = li_child
-      io_before = lo_dummy
-      io_after  = io_after ).
+  build( ii_rule   = li_child
+         iv_rulename = iv_rulename
+         io_before = lo_dummy
+         io_after  = io_after ).
 
 * easy way should be the last option/edge
   lo_dummy->edge( io_after ).
@@ -375,8 +403,9 @@ METHOD build_optionlist.
     ELSE.
       CREATE OBJECT lo_after
         EXPORTING
-          iv_type  = gc_dummy
-          iv_value = 'Optionlist'.                          "#EC NOTEXT
+          iv_type     = gc_dummy
+          iv_value    = 'Optionlist'
+          iv_rulename = iv_rulename.                        "#EC NOTEXT
     ENDIF.
     lo_before->edge( lo_after ).
 
@@ -391,11 +420,13 @@ METHOD build_optionlist.
 
       CREATE OBJECT lo_seq_after
         EXPORTING
-          iv_type  = gc_dummy
-          iv_value = 'Optionlist Seq'.                      "#EC NOTEXT
+          iv_type     = gc_dummy
+          iv_value    = 'Optionlist Seq'
+          iv_rulename = iv_rulename.                        "#EC NOTEXT
 
       li_child = li_opt->get_item( sy-index - 1 ).
       build( ii_rule   = li_child
+             iv_rulename = iv_rulename
              io_before = lo_seq_before
              io_after  = lo_seq_after ).
 
@@ -451,14 +482,16 @@ METHOD build_permutation.
 
     CREATE OBJECT lo_before
       EXPORTING
-        iv_type  = gc_dummy
-        iv_value = 'PerBefore'.
+        iv_type     = gc_dummy
+        iv_value    = 'PerBefore'
+        iv_rulename = iv_rulename.
     io_before->edge( lo_before ).
 
     CREATE OBJECT lo_after
       EXPORTING
-        iv_type  = gc_dummy
-        iv_value = 'PerAfter'.
+        iv_type     = gc_dummy
+        iv_value    = 'PerAfter'
+        iv_rulename = iv_rulename.
     lo_after->edge( io_after ).
 
     APPEND INITIAL LINE TO lt_pair ASSIGNING <ls_pair>.
@@ -488,10 +521,12 @@ METHOD build_permutation.
 
       CREATE OBJECT lo_seq_after
         EXPORTING
-          iv_type  = gc_dummy
-          iv_value = 'PerSeq'.
+          iv_type     = gc_dummy
+          iv_value    = 'PerSeq'
+          iv_rulename = iv_rulename.
 
       build( ii_rule   = li_child
+             iv_rulename = iv_rulename
              io_before = lo_seq_before
              io_after  = lo_seq_after ).
 
@@ -523,8 +558,9 @@ METHOD build_role.
 
   CREATE OBJECT lo_node
     EXPORTING
-      iv_type  = gc_role
-      iv_value = lv_value.
+      iv_type     = gc_role
+      iv_value    = lv_value
+      iv_rulename = iv_rulename.
 
   io_before->edge( lo_node ).
   lo_node->edge( io_after ).
@@ -550,13 +586,15 @@ METHOD build_sequence.
     ELSE.
       CREATE OBJECT lo_after
         EXPORTING
-          iv_type  = gc_dummy
-          iv_value = 'Sequence'.                            "#EC NOTEXT
+          iv_type     = gc_dummy
+          iv_value    = 'Sequence'
+          iv_rulename = iv_rulename.                        "#EC NOTEXT
     ENDIF.
     li_child = li_children->get_item( sy-index - 1 ).
-    build( ii_rule   = li_child
-           io_before = lo_before
-           io_after  = lo_after ).
+    build( ii_rule     = li_child
+           iv_rulename = iv_rulename
+           io_before   = lo_before
+           io_after    = lo_after ).
     lo_before = lo_after.
   ENDDO.
 
@@ -574,8 +612,9 @@ METHOD build_terminal.
 
   CREATE OBJECT lo_node
     EXPORTING
-      iv_type  = gc_terminal
-      iv_value = lv_value.
+      iv_type     = gc_terminal
+      iv_value    = lv_value
+      iv_rulename = iv_rulename.
 
   io_before->edge( lo_node ).
   lo_node->edge( io_after ).
@@ -592,15 +631,18 @@ METHOD graph_build.
 
   CREATE OBJECT eo_start
     EXPORTING
-      iv_type  = gc_start
-      iv_value = iv_rulename.
+      iv_type     = gc_start
+      iv_value    = iv_rulename
+      iv_rulename = iv_rulename.
 
   CREATE OBJECT eo_end
     EXPORTING
-      iv_type  = gc_end
-      iv_value = iv_rulename.
+      iv_type     = gc_end
+      iv_value    = iv_rulename
+      iv_rulename = iv_rulename.
 
   build( ii_rule   = li_rule
+         iv_rulename = iv_rulename
          io_before = eo_start
          io_after  = eo_end ).
 
@@ -967,13 +1009,14 @@ METHOD walk_role.
   ENDCASE.
 
   IF sy-subrc = 0.
-    rs_result = walk_node( io_node = io_node
+    rs_result = walk_node( io_node  = io_node
                            iv_index = iv_index + 1 ).
     IF rs_result-match = abap_true.
       APPEND INITIAL LINE TO rs_result-tokens ASSIGNING <ls_token>.
-      <ls_token>-type  = c_role.
-      <ls_token>-value = io_node->mv_value.
-      <ls_token>-code  = lv_token.
+      <ls_token>-type     = c_role.
+      <ls_token>-value    = io_node->mv_value.
+      <ls_token>-code     = lv_token.
+      <ls_token>-rulename = io_node->mv_rulename.
     ENDIF.
   ELSE.
     rs_result-match = abap_false.
@@ -1017,9 +1060,10 @@ METHOD walk_terminal.
 
   IF rs_result-match = abap_true.
     APPEND INITIAL LINE TO rs_result-tokens ASSIGNING <ls_token>.
-    <ls_token>-type  = c_terminal.
-    <ls_token>-value = io_node->mv_value.
-    <ls_token>-code  = lv_token.
+    <ls_token>-type     = c_terminal.
+    <ls_token>-value    = io_node->mv_value.
+    <ls_token>-code     = lv_token.
+    <ls_token>-rulename = io_node->mv_rulename.
   ENDIF.
 
 ENDMETHOD.
