@@ -51,19 +51,7 @@ CLASS lcl_test IMPLEMENTATION.
     _code 'CHECK 9 = 2.'.
     _code 'CHECK 10 = 2.'.
 
-    _code 'EXIT.'.
-
-    _code 'CHECK 1 = 2.'.
-    _code 'CHECK 2 = 2.'.
-    _code 'CHECK 3 = 2.'.
-    _code 'CHECK 4 = 2.'.
-    _code 'CHECK 5 = 2.'.
-    _code 'CHECK 6 = 2.'.
-    _code 'CHECK 7 = 2.'.
-    _code 'CHECK 8 = 2.'.
-    _code 'CHECK 9 = 2.'.
-    _code 'CHECK 10 = 2.'.
-
+    APPEND LINES OF mt_code TO mt_code.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
                                           io_check = mo_check ).
