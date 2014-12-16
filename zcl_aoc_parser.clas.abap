@@ -33,6 +33,7 @@ public section.
       !IT_CODE type STRING_TABLE
       !IV_DEBUG type ABAP_BOOL default ABAP_FALSE
       !IV_RULE type STRING default 'START'
+      !IV_ALLOW_OBSOLETE type ABAP_BOOL default ABAP_TRUE
     returning
       value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
 protected section.
@@ -184,6 +185,7 @@ private section.
   class-data GV_END_RULE type STRING .
   type-pools ABAP .
   class-data GV_DEBUG type ABAP_BOOL .
+  class-data GV_ALLOW_OBSOLETE type ABAP_BOOL .
 ENDCLASS.
 
 
@@ -835,8 +837,9 @@ METHOD run.
        STATEMENTS      INTO lt_statements
        WITH ANALYSIS.
 
-  gv_debug    = iv_debug.
-  gv_end_rule = iv_rule.
+  gv_debug          = iv_debug.
+  gv_end_rule       = iv_rule.
+  gv_allow_obsolete = iv_allow_obsolete.
 
   rs_result = parse( it_tokens     = lt_tokens
                      it_statements = lt_statements ).
@@ -1325,7 +1328,7 @@ METHOD xml_parse.
     li_node = li_iterator->get_next( ).
   ENDWHILE.
 
-  IF li_obsolete IS BOUND.
+  IF li_obsolete IS BOUND AND gv_allow_obsolete = abap_true.
     ri_rule = li_obsolete->get_first_child( ).
   ELSEIF li_normal IS BOUND.
     ri_rule = li_normal->get_first_child( ).

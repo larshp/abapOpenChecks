@@ -74,8 +74,9 @@ METHOD check.
 
     CLEAR lt_code.
     APPEND lv_statement TO lt_code.
-    ls_result = zcl_aoc_parser=>run( it_code = lt_code
-                                     iv_rule = lv_keyword ).
+    ls_result = zcl_aoc_parser=>run( it_code           = lt_code
+                                     iv_rule           = lv_keyword
+                                     iv_allow_obsolete = abap_false ).
 
     IF ls_result-match = abap_false.
       CONTINUE.
