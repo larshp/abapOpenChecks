@@ -36,7 +36,9 @@ METHOD check.
 
   DATA: lv_keyword   TYPE string,
         lt_code      TYPE string_table,
+        lv_as4user   TYPE dd02l-as4user,
         ls_result    TYPE zcl_aoc_parser=>st_result,
+        lv_include   TYPE program,
         lv_statement TYPE string.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
@@ -82,9 +84,27 @@ METHOD check.
       CONTINUE.
     ENDIF.
 
-* first token typed C_ROLE?
-* todo, work in progress
-*    BREAK-POINT.
+* the parser sometimes mixes up the itab and dbtab updates, so look for the first role
+    READ TABLE ls_result-tokens ASSIGNING <ls_rt> WITH KEY type = zcl_aoc_parser=>c_role.
+    IF sy-subrc <> 0.
+      CONTINUE.
+    ENDIF.
+
+    SELECT SINGLE as4user FROM dd02l INTO lv_as4user
+      WHERE tabname = <ls_rt>-code
+      AND as4local = 'A'
+      AND as4vers = space
+      AND tabclass = 'TRANSP'.                       "#EC CI_SEL_NESTED
+    IF sy-subrc = 0 AND ( lv_as4user = 'SAP' OR lv_as4user = 'DDIC' ).
+      lv_include = get_include( p_level = <ls_statement>-level ).
+
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = lv_include
+              p_line         = <ls_token>-row
+              p_kind         = mv_errty
+              p_test         = c_my_name
+              p_code         = '001' ).
+    ENDIF.
 
   ENDLOOP.
 

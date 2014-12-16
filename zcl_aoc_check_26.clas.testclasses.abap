@@ -19,7 +19,8 @@ CLASS lcl_test DEFINITION FOR TESTING
              test001_01 FOR TESTING,
              test001_02 FOR TESTING,
              test001_03 FOR TESTING,
-             test001_04 FOR TESTING.
+             test001_04 FOR TESTING,
+             test001_05 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -88,5 +89,17 @@ CLASS lcl_test IMPLEMENTATION.
                                         act = ms_result-code ).
 
   ENDMETHOD.                    "test001_04
+
+  METHOD test001_05.
+* ===========
+
+    _code 'MODIFY SCREEN.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Test
