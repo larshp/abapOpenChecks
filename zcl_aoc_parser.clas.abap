@@ -478,8 +478,6 @@ METHOD build_permutation.
     APPEND li_append TO lt_per.
   ENDDO.
 
-  io_before->edge( io_after ).
-
   LOOP AT lt_per INTO li_children.
 
     CREATE OBJECT lo_before
@@ -505,7 +503,7 @@ METHOD build_permutation.
 
       li_child = li_children->get_item( sy-index - 1 ).
 
-* permutations are always treated at optional, so make sure its not possible
+* permutations are always treated as optional, so make sure its not possible
 * to cycle in the graph without meeting terminals
       IF li_children->get_length( ) = 1.
         lv_name = li_child->get_name( ).
@@ -546,6 +544,9 @@ METHOD build_permutation.
     ENDLOOP.
   ENDLOOP.
 
+* easy way as last option
+  io_before->edge( io_after ).
+
 ENDMETHOD.
 
 
@@ -580,7 +581,14 @@ METHOD build_sequence.
 
   li_children = ii_rule->get_children( ).
 
-  lo_before = io_before.
+*  lo_before = io_before.
+
+  CREATE OBJECT lo_before
+    EXPORTING
+      iv_type     = gc_dummy
+      iv_value    = 'Sequence'
+      iv_rulename = iv_rulename.
+  io_before->edge( lo_before ).
 
   DO li_children->get_length( ) TIMES.
     IF sy-index = li_children->get_length( ).
@@ -752,6 +760,7 @@ METHOD graph_to_text.
     REPLACE ALL OCCURRENCES OF '<' IN lv_value WITH '\<'.
 
     lv_label = 'Type\n' && lo_node->mv_type && '|' &&
+               'Key\n' && lo_node->mv_key && '|' &&
                'Value\n' && lv_value.                       "#EC NOTEXT
     lv_node = 'node' && lo_node->mv_key &&
               ' [label = "' && lv_label &&

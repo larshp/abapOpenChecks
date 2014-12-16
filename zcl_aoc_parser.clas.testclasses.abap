@@ -141,7 +141,9 @@ CLASS lcl_test_statements DEFINITION FOR TESTING
              clear1          FOR TESTING,
              append1         FOR TESTING,
              append2         FOR TESTING,
-             start1          FOR TESTING.
+             start1          FOR TESTING,
+             modify1         FOR TESTING,
+             modify2         FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -1185,6 +1187,22 @@ CLASS lcl_test_statements IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "start1
+
+  METHOD modify1.
+
+    _code 'MODIFY CURRENT LINE.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
+  METHOD modify2.
+
+    _code 'MODIFY CURRENT LINE FIELD FORMAT lv_foo COLOR 1 LINE FORMAT COLOR 5.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Test
 
