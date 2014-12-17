@@ -34,7 +34,8 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lv_keyword   TYPE string,
+  DATA: lv_keyword1   TYPE string,
+        lv_keyword2   TYPE string,
         lt_code      TYPE string_table,
         lv_as4user   TYPE dd02l-as4user,
         ls_result    TYPE zcl_aoc_parser=>st_result,
@@ -48,7 +49,8 @@ METHOD check.
 
   LOOP AT it_statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard..
 
-    CLEAR lv_keyword.
+    CLEAR lv_keyword1.
+    CLEAR lv_keyword2.
     CLEAR lv_statement.
 
     LOOP AT it_tokens ASSIGNING <ls_token>
@@ -56,8 +58,10 @@ METHOD check.
         TO <ls_statement>-to
         WHERE type <> scan_token_type-comment.
 
-      IF lv_keyword IS INITIAL.
-        lv_keyword = <ls_token>-str.
+      IF lv_keyword1 IS INITIAL.
+        lv_keyword1 = <ls_token>-str.
+      ELSEIF lv_keyword2 IS INITIAL.
+        lv_keyword2 = <ls_token>-str.
       ENDIF.
 
       IF lv_statement IS INITIAL.
@@ -67,17 +71,22 @@ METHOD check.
       ENDIF.
     ENDLOOP.
 
-    IF lv_keyword <> 'UPDATE'
-        AND lv_keyword <> 'MODIFY'
-        AND lv_keyword <> 'DELETE'
-        AND lv_keyword <> 'INSERT'.
+    IF lv_keyword1 <> 'UPDATE'
+        AND lv_keyword1 <> 'MODIFY'
+        AND lv_keyword1 <> 'DELETE'
+        AND lv_keyword1 <> 'INSERT'.
+      CONTINUE. " current loop
+    ENDIF.
+
+    IF lv_keyword2 = 'SCREEN'
+        OR lv_keyword2 = 'CURRENT'.
       CONTINUE. " current loop
     ENDIF.
 
     CLEAR lt_code.
     APPEND lv_statement TO lt_code.
     ls_result = zcl_aoc_parser=>run( it_code           = lt_code
-                                     iv_rule           = lv_keyword
+                                     iv_rule           = lv_keyword1
                                      iv_allow_obsolete = abap_false ).
 
     IF ls_result-match = abap_false.
