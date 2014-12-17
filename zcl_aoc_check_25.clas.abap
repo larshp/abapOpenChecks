@@ -34,6 +34,11 @@ protected section.
 
   data MV_SKIP_RADIO type SYCHAR01 .
 
+  methods STRIP
+    importing
+      !IV_INPUT type STRING
+    returning
+      value(RV_OUTPUT) type STRING .
   methods ANALYZE
     importing
       !IT_TOKENS type STOKESX_TAB
@@ -77,9 +82,7 @@ METHOD analyze.
         FROM <ls_statement>-from
         TO <ls_statement>-to
         WHERE type <> scan_token_type-comment.
-      lv_name = <ls_token>-str.
-      REPLACE ALL OCCURRENCES OF '[' IN lv_name WITH ''.
-      REPLACE ALL OCCURRENCES OF ']' IN lv_name WITH ''.
+      lv_name = strip( <ls_token>-str ).
       DELETE lt_fields
         WHERE name = lv_name
         AND ( row <> <ls_token>-row
@@ -201,7 +204,7 @@ METHOD find_fields.
       ENDIF.
 
       CLEAR ls_field.
-      ls_field-name  = <ls_rt>-code.
+      ls_field-name  = strip( <ls_rt>-code ).
       ls_field-level = <ls_statement>-level.
       ls_field-row   = <ls_token>-row.
       APPEND ls_field TO rt_fields.
@@ -275,6 +278,31 @@ METHOD put_attributes.
     mv_errty = mv_errty
     mv_skip_radio = mv_skip_radio
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+
+ENDMETHOD.
+
+
+METHOD strip.
+
+  DATA: lv_offset TYPE i.
+
+
+  rv_output = iv_input.
+
+  FIND FIRST OCCURRENCE OF '[' IN rv_output MATCH OFFSET lv_offset.
+  IF sy-subrc = 0.
+    rv_output = rv_output(lv_offset).
+  ENDIF.
+
+  FIND FIRST OCCURRENCE OF '+' IN rv_output MATCH OFFSET lv_offset.
+  IF sy-subrc = 0.
+    rv_output = rv_output(lv_offset).
+  ENDIF.
+
+  FIND FIRST OCCURRENCE OF '(' IN rv_output MATCH OFFSET lv_offset.
+  IF sy-subrc = 0.
+    rv_output = rv_output(lv_offset).
+  ENDIF.
 
 ENDMETHOD.
 ENDCLASS.
