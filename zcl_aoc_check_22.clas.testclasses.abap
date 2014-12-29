@@ -28,7 +28,8 @@ CLASS lcl_test DEFINITION FOR TESTING
              test001_10 FOR TESTING,
              test001_11 FOR TESTING,
              test001_12 FOR TESTING,
-             test001_13 FOR TESTING.
+             test001_13 FOR TESTING,
+             test001_14 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -288,5 +289,25 @@ CLASS lcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
   ENDMETHOD.                    "test001_13
+
+  METHOD test001_14.
+* ===========
+
+    _code 'IF lv_a = lv_b.'.
+    _code '  IF lv_c = ''14''.'.
+    _code '    lv_asdf = lv_bar.'.
+    _code '  ENDIF.'.
+    _code 'ELSE.'.
+    _code '  IF lv_c = ''14''.'.
+    _code '    lv_foo = lv_bar.'.
+    _code '  ENDIF.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Te
