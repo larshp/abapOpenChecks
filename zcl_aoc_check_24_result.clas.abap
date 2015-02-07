@@ -5,20 +5,6 @@ class ZCL_AOC_CHECK_24_RESULT definition
 
 public section.
 
-  constants:
-*"* public components of class ZCL_AOC_CHECK_24_RESULT
-*"* do not include other source files here!!!
-    begin of C_MESSAGE_CODE,
-      Summary   type Sci_ErrC  value 'Summary',                "#EC NOTEXT
-      Obsolete_Tolerant type Sci_ErrC  value 'Tolerant',       "#EC NOTEXT
-      Tolerable  type Sci_ErrC  value 'Tolerable',             "#EC NOTEXT
-      Fatal      type Sci_ErrC  value 'Fatal',                 "#EC NOTEXT
-      Critical   type Sci_ErrC  value 'Critical',              "#EC NOTEXT
-      Info       type Sci_ErrC  value 'Info',                  "#EC NOTEXT
-      Timeout    type Sci_ErrC  value 'Timeout',               "#EC NOTEXT
-      Statistics type Sci_ErrC  value 'Statistics',            "#EC NOTEXT
-    end of c_MEssage_Code .
-
   methods CONSTRUCTOR
     importing
       !P_KIND type SYCHAR01 .
