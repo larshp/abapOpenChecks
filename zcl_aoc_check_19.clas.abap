@@ -11,16 +11,29 @@ public section.
 
   methods CHECK
     redefinition .
+  methods GET_ATTRIBUTES
+    redefinition .
   methods GET_MESSAGE_TEXT
+    redefinition .
+  methods PUT_ATTRIBUTES
+    redefinition .
+  methods IF_CI_TEST~QUERY_ATTRIBUTES
     redefinition .
 protected section.
 *"* protected components of class ZCL_AOC_CHECK_19
 *"* do not include other source files here!!!
+
+  data MV_OBJ type SAP_BOOL .
+  data MV_SIMPLE type SAP_BOOL .
+
+  methods INIT_RANGE .
 private section.
 *"* private components of class ZCL_AOC_CHECK_19
 *"* do not include other source files here!!!
 
   constants C_MY_NAME type SEOCLSNAME value 'ZCL_AOC_CHECK_19'. "#EC NOTEXT
+  data:
+    mt_range     TYPE RANGE OF string .
 ENDCLASS.
 
 
@@ -47,6 +60,8 @@ METHOD check.
                  <ls_token>     LIKE LINE OF it_tokens.
 
 
+  init_range( ).
+
   LOOP AT it_statements ASSIGNING <ls_statement>
       WHERE type <> scan_stmnt_type-comment
       AND type <> scan_stmnt_type-comment_in_stmnt
@@ -71,7 +86,7 @@ METHOD check.
       ASSERT sy-subrc = 0.
       lv_name = <ls_token>-str.
 
-      IF lv_statement CP '* LINE OF *' OR lv_statement CP '* TYPE ANY'.
+      IF lv_statement IN mt_range.
         DELETE TABLE lt_not WITH TABLE KEY name = lv_name.
       ELSE.
         CLEAR ls_name.
@@ -129,9 +144,18 @@ METHOD constructor.
   has_attributes = abap_true.
   attributes_ok  = abap_true.
 
-  mv_errty = c_error.
+  mv_errty  = c_error.
+  mv_obj    = abap_true.
+  mv_simple = abap_true.
 
 ENDMETHOD.                    "CONSTRUCTOR
+
+
+METHOD get_attributes.
+
+  EXPORT mv_obj = mv_obj mv_simple = mv_simple TO DATA BUFFER p_attributes.
+
+ENDMETHOD.
 
 
 METHOD get_message_text.
@@ -144,4 +168,96 @@ METHOD get_message_text.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
+
+
+METHOD if_ci_test~query_attributes.
+
+  DATA: lv_ok         TYPE abap_bool,
+        lv_message    TYPE c LENGTH 72,
+        lt_attributes TYPE sci_atttab,
+        ls_attribute  LIKE LINE OF lt_attributes.
+
+  DEFINE fill_att.
+    get reference of &1 into ls_attribute-ref.
+    ls_attribute-text = &2.
+    ls_attribute-kind = &3.
+    append ls_attribute to lt_attributes.
+  END-OF-DEFINITION.
+
+
+  fill_att mv_errty 'Error Type' ''.                        "#EC NOTEXT
+  fill_att mv_obj 'Allow objects' 'C'.                      "#EC NOTEXT
+  fill_att mv_simple 'Allow simple types' 'C'.              "#EC NOTEXT
+
+  WHILE lv_ok = abap_false.
+    cl_ci_query_attributes=>generic(
+                          p_name       = c_my_name
+                          p_title      = 'Options'
+                          p_attributes = lt_attributes
+                          p_message    = lv_message
+                          p_display    = p_display ).       "#EC NOTEXT
+    IF ( mv_errty = c_error OR mv_errty = c_warning OR mv_errty = c_note ).
+      lv_ok = abap_true.
+    ELSE.
+      lv_message = 'Fill attributes'.                       "#EC NOTEXT
+    ENDIF.
+  ENDWHILE.
+
+ENDMETHOD.
+
+
+METHOD init_range.
+
+  DATA: ls_range LIKE LINE OF mt_range.
+
+
+  IF NOT mt_range IS INITIAL.
+    RETURN.
+  ENDIF.
+
+  ls_range-sign = 'I'.
+  ls_range-option = 'CP'.
+
+  ls_range-low = '* LINE OF *'.
+  APPEND ls_range TO mt_range.
+
+  ls_range-low = '* TYPE ANY'.
+  APPEND ls_range TO mt_range.
+  IF mv_simple = abap_true.
+    ls_range-low = '* TYPE I'.
+    APPEND ls_range TO mt_range.
+    ls_range-low = '* TYPE F'.
+    APPEND ls_range TO mt_range.
+    ls_range-low = '* TYPE D'.
+    APPEND ls_range TO mt_range.
+    ls_range-low = '* TYPE T'.
+    APPEND ls_range TO mt_range.
+    ls_range-low = '* TYPE C *'.
+    APPEND ls_range TO mt_range.
+    ls_range-low = '* TYPE X *'.
+    APPEND ls_range TO mt_range.
+    ls_range-low = '* TYPE N *'.
+    APPEND ls_range TO mt_range.
+    ls_range-low = '* TYPE STRING'.
+    APPEND ls_range TO mt_range.
+    ls_range-low = '* TYPE XSTRING'.
+    APPEND ls_range TO mt_range.
+  ENDIF.
+
+  IF mv_obj = abap_true.
+    ls_range-low = '* TYPE REF TO *'.
+    APPEND ls_range TO mt_range.
+  ENDIF.
+
+ENDMETHOD.
+
+
+METHOD put_attributes.
+
+  IMPORT
+    mv_obj = mv_obj
+    mv_simple = mv_simple
+    FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+
+ENDMETHOD.
 ENDCLASS.

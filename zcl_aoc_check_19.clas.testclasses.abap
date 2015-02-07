@@ -31,7 +31,9 @@ CLASS lcl_test DEFINITION FOR TESTING
              test001_13 FOR TESTING,
              test001_14 FOR TESTING,
              test001_15 FOR TESTING,
-             test001_16 FOR TESTING.
+             test001_16 FOR TESTING,
+             test001_17 FOR TESTING,
+             test001_18 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -54,8 +56,8 @@ CLASS lcl_test IMPLEMENTATION.
   METHOD test001_01.
 * ===========
 
-    _code 'DATA: lt_table TYPE string_tt,'.
-    _code '      ls_wa TYPE string.'.
+    _code 'DATA: lt_table TYPE foo_tt,'.
+    _code '      ls_wa TYPE foo.'.
     _code 'READ TABLE lt_table INDEX 1 INTO ls_wa.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
@@ -69,8 +71,8 @@ CLASS lcl_test IMPLEMENTATION.
   METHOD test001_02.
 * ===========
 
-    _code 'DATA: lt_table TYPE string_tt,'.
-    _code '      ls_wa TYPE string.'.
+    _code 'DATA: lt_table TYPE foo_tt,'.
+    _code '      ls_wa TYPE foo.'.
     _code 'READ TABLE lt_table INTO ls_wa WITH KEY = ''foo''.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
@@ -84,8 +86,8 @@ CLASS lcl_test IMPLEMENTATION.
   METHOD test001_03.
 * ===========
 
-    _code 'DATA: lt_table TYPE string_tt,'.
-    _code '      ls_wa TYPE string.'.
+    _code 'DATA: lt_table TYPE foo_tt,'.
+    _code '      ls_wa TYPE foo.'.
     _code 'LOOP AT lt_table INTO ls_wa.'.
     _code 'ENDLOOP.'.
 
@@ -100,8 +102,8 @@ CLASS lcl_test IMPLEMENTATION.
   METHOD test001_04.
 * ===========
 
-    _code 'DATA: lt_table TYPE string_tt.'.
-    _code 'FIELD-SYMBOLS: <ls_wa> TYPE string.'.
+    _code 'DATA: lt_table TYPE foo_tt.'.
+    _code 'FIELD-SYMBOLS: <ls_wa> TYPE foo.'.
     _code 'READ TABLE lt_table INDEX 1 ASSIGNING <ls_wa>.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
@@ -115,8 +117,8 @@ CLASS lcl_test IMPLEMENTATION.
   METHOD test001_05.
 * ===========
 
-    _code 'DATA: lt_table TYPE string_tt.'.
-    _code 'FIELD-SYMBOLS: <ls_wa> TYPE string.'.
+    _code 'DATA: lt_table TYPE foo_tt.'.
+    _code 'FIELD-SYMBOLS: <ls_wa> TYPE foo.'.
     _code 'READ TABLE lt_table ASSIGNING <ls_wa> WITH KEY = ''foo''.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
@@ -130,8 +132,8 @@ CLASS lcl_test IMPLEMENTATION.
   METHOD test001_06.
 * ===========
 
-    _code 'DATA: lt_table TYPE string_tt.'.
-    _code 'FIELD-SYMBOLS: <ls_wa> TYPE string.'.
+    _code 'DATA: lt_table TYPE foo_tt.'.
+    _code 'FIELD-SYMBOLS: <ls_wa> TYPE foo.'.
     _code 'LOOP AT lt_table ASSIGNING <ls_wa>.'.
     _code 'ENDLOOP.'.
 
@@ -146,8 +148,8 @@ CLASS lcl_test IMPLEMENTATION.
   METHOD test001_07.
 * ===========
 
-    _code 'DATA: lt_table TYPE string_tt.'.
-    _code 'FIELD-SYMBOLS: <ls_wa> TYPE string.'.
+    _code 'DATA: lt_table TYPE foo_tt.'.
+    _code 'FIELD-SYMBOLS: <ls_wa> TYPE foo.'.
     _code 'APPEND INITIAL LINE TO lt_table ASSIGNING <ls_wa>.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
@@ -285,5 +287,31 @@ CLASS lcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.                    "test001_16
+
+  METHOD test001_17.
+* ===========
+
+    _code 'FIELD-SYMBOLS: <lv_wa> TYPE i.'.
+    _code 'READ TABLE lt_list[] ASSIGNING <lv_wa> INDEX 1.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_18.
+* ===========
+
+    _code 'FIELD-SYMBOLS: <lo_wa> TYPE REF TO cl_foobar.'.
+    _code 'READ TABLE lt_list[] ASSIGNING <lo_wa> INDEX 1.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Test

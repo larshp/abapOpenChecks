@@ -211,14 +211,6 @@ METHOD inform.
       RETURN.
     ENDIF.
   ENDIF.
-*  IF p_sub_obj_name(1) <> 'Z'
-*      AND p_sub_obj_name(1) <> 'Y'
-*      AND p_sub_obj_name(2) <> 'LZ'  " function group include
-*      AND p_sub_obj_name(2) <> 'LY'  " function group include
-*      AND p_sub_obj_name <> ''
-*      AND p_sub_obj_name <> '----------------------------------------'.
-*    RETURN.
-*  ENDIF.
 
 * skip constructor in exception classes
   cl_oo_include_naming=>get_instance_by_include(
@@ -287,9 +279,11 @@ METHOD run.
 
   CLEAR mt_source[].  " limit memory use
 
-  CHECK program_name IS NOT INITIAL.
-  IF ref_scan IS INITIAL.
-    CHECK get( ) = abap_true.
+  IF program_name IS INITIAL.
+    RETURN.
+  ENDIF.
+  IF ref_scan IS INITIAL AND get( ) <> abap_true.
+    RETURN.
   ENDIF.
 
   set_source( iv_name = ref_include->trdir-name

@@ -85,6 +85,7 @@ METHOD check.
           FROM <ls_statement>-from TO <ls_statement>-to
           WHERE str = 'EXCEPTIONS'
           AND type = scan_token_type-identifier.
+        EXIT.
       ENDLOOP.
       IF sy-subrc = 0.
         EXIT. " current loop

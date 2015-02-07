@@ -47,7 +47,7 @@ METHOD check.
                  <ls_token> LIKE LINE OF it_tokens.
 
 
-  LOOP AT it_statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard..
+  LOOP AT it_statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
 
     CLEAR lv_keyword1.
     CLEAR lv_keyword2.

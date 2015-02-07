@@ -581,12 +581,10 @@ METHOD build_sequence.
 
   li_children = ii_rule->get_children( ).
 
-*  lo_before = io_before.
-
   CREATE OBJECT lo_before
     EXPORTING
       iv_type     = gc_dummy
-      iv_value    = 'Sequence'
+      iv_value    = 'Sequence'                              "#EC NOTEXT
       iv_rulename = iv_rulename.
   io_before->edge( lo_before ).
 
