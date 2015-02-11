@@ -28,17 +28,18 @@ protected section.
   types:
     tt_conditions TYPE STANDARD TABLE OF ty_condition WITH NON-UNIQUE DEFAULT KEY .
 
-  methods ANALYZE
+  methods ANALYZE_CONDITION
     importing
-      !IT_CONDITIONS type TT_CONDITIONS .
-  methods CONDITIONS
+      !IO_STRUCTURE type ref to ZCL_AOC_STRUCTURE .
+  class ZCL_AOC_STRUCTURE definition load .
+  type-pools ABAP .
+  methods COMPARE
     importing
-      !IS_ALTERNATION type SSTRUC
-      !IT_STRUCTURES type TT_STRUCTURES
-      !IT_STATEMENTS type SSTMNT_TAB
-      !IT_TOKENS type STOKESX_TAB
-    changing
-      !CT_CONDITIONS type TT_CONDITIONS .
+      !IT_STRUCTURE type ZCL_AOC_STRUCTURE=>TY_STRUCTURE_TT
+      !IV_FIRST_LAST type ABAP_BOOL .
+  methods LOOP
+    importing
+      !IO_STRUCTURE type ref to ZCL_AOC_STRUCTURE .
 private section.
 *"* private components of class ZCL_AOC_CHECK_22
 *"* do not include other source files here!!!
@@ -51,63 +52,31 @@ ENDCLASS.
 CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
 
-METHOD analyze.
+METHOD analyze_condition.
 
-  DATA: lv_inform    TYPE abap_bool,
-        lv_search    TYPE string,
-        lv_statement TYPE string.
-
-  FIELD-SYMBOLS: <ls_condition> LIKE LINE OF it_conditions.
+  DATA: lo_structure TYPE REF TO zcl_aoc_structure,
+        lv_found     TYPE abap_bool.
 
 
-  LOOP AT it_conditions ASSIGNING <ls_condition>.
-    IF lines( <ls_condition>-statements ) = 0.
-      RETURN.
+* IFs must contain ELSE, CASE must contain OTHERS
+  LOOP AT io_structure->mt_structure INTO lo_structure.
+    IF ( io_structure->mv_stmnt_type = scan_struc_stmnt_type-if
+        AND lo_structure->ms_statement-statement = 'ELSE' )
+        OR ( io_structure->mv_stmnt_type = scan_struc_stmnt_type-case
+        AND lo_structure->ms_statement-statement = 'WHEN OTHERS' ).
+      lv_found = abap_true.
+      EXIT. " current loop.
     ENDIF.
   ENDLOOP.
 
-  IF lines( it_conditions ) <= 1.
+  IF lv_found = abap_false.
     RETURN.
   ENDIF.
 
-
-* first statements in each condition
-  lv_inform = abap_true.
-  LOOP AT it_conditions ASSIGNING <ls_condition>.
-    READ TABLE <ls_condition>-statements INDEX 1 INTO lv_statement.
-    IF lv_search IS INITIAL.
-      lv_search = lv_statement.
-    ENDIF.
-    IF lv_search <> lv_statement.
-      lv_inform = abap_false.
-    ENDIF.
-  ENDLOOP.
-
-* last statements
-  IF lv_inform = abap_false.
-    CLEAR lv_search.
-    lv_inform = abap_true.
-    LOOP AT it_conditions ASSIGNING <ls_condition>.
-      READ TABLE <ls_condition>-statements
-        INDEX lines( <ls_condition>-statements )
-        INTO lv_statement.
-      IF lv_search IS INITIAL.
-        lv_search = lv_statement.
-      ENDIF.
-      IF lv_search <> lv_statement.
-        lv_inform = abap_false.
-      ENDIF.
-    ENDLOOP.
-  ENDIF.
-
-  IF lv_inform = abap_true.
-    inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = get_include( p_level = <ls_condition>-level )
-            p_line         = <ls_condition>-row
-            p_kind         = mv_errty
-            p_test         = c_my_name
-            p_code         = '001' ).
-  ENDIF.
+  compare( it_structure  = io_structure->mt_structure
+           iv_first_last = abap_true ).
+  compare( it_structure  = io_structure->mt_structure
+           iv_first_last = abap_false ).
 
 ENDMETHOD.
 
@@ -118,121 +87,62 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lt_conditions TYPE tt_conditions.
-
-  FIELD-SYMBOLS: <ls_alternation> LIKE LINE OF it_structures.
-
-
-  LOOP AT it_structures ASSIGNING <ls_alternation>
-      WHERE type = scan_struc_type-alternation
-      AND key_start = abap_true
-      AND key_end = abap_true.
-
-    conditions(
-      EXPORTING
-        is_alternation = <ls_alternation>
-        it_structures  = it_structures
-        it_statements  = it_statements
-        it_tokens      = it_tokens
-      CHANGING
-        ct_conditions  = lt_conditions ).
-
-    analyze( lt_conditions ).
-
-  ENDLOOP.
+  loop( zcl_aoc_structure=>build( it_tokens     = it_tokens
+                                  it_statements = it_statements
+                                  it_levels     = it_levels
+                                  it_structures = it_structures ) ).
 
 ENDMETHOD.
 
 
-METHOD conditions.
+METHOD compare.
 
-  DATA: lv_statement TYPE string.
+  DATA: lo_stru    TYPE REF TO zcl_aoc_structure,
+        lo_first   TYPE REF TO zcl_aoc_structure,
+        lo_compare TYPE REF TO zcl_aoc_structure,
+        lv_str1    TYPE string,
+        lv_str2    TYPE string,
+        lv_index   TYPE i.
 
-  FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
-                 <ls_statement> LIKE LINE OF it_statements,
-                 <ls_condition> LIKE LINE OF ct_conditions,
-                 <lv_statement> LIKE LINE OF <ls_condition>-statements,
-                 <ls_structure> LIKE LINE OF it_structures.
 
+* compare first or last statement in each branch
+  LOOP AT it_structure INTO lo_stru.
 
-  CLEAR ct_conditions.
+    IF iv_first_last = abap_true.
+      lv_index = 1.
+    ELSE.
+      lv_index = lines( lo_stru->mt_structure ).
+    ENDIF.
 
-  LOOP AT it_structures ASSIGNING <ls_structure>
-      FROM is_alternation-struc_from
-      TO is_alternation-struc_to.
-
-    APPEND INITIAL LINE TO ct_conditions ASSIGNING <ls_condition>.
-    <ls_condition>-stmnt_type = <ls_structure>-stmnt_type.
-
-    LOOP AT it_statements ASSIGNING <ls_statement>
-        FROM <ls_structure>-stmnt_from
-        TO <ls_structure>-stmnt_to
-        WHERE type <> scan_stmnt_type-trmac_call
-        AND type <> scan_stmnt_type-macro_call.
-
-      IF <ls_condition>-level IS INITIAL.
-        <ls_condition>-level = <ls_statement>-level.
+    IF NOT lo_first IS BOUND.
+      READ TABLE lo_stru->mt_structure INDEX lv_index INTO lo_first.
+      IF sy-subrc <> 0.
+        RETURN.
       ENDIF.
+      CONTINUE. " current loop
+    ENDIF.
+    READ TABLE lo_stru->mt_structure INDEX lv_index INTO lo_compare.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
 
-      CLEAR lv_statement.
-      LOOP AT it_tokens ASSIGNING <ls_token>
-          FROM <ls_statement>-from
-          TO <ls_statement>-to
-          WHERE type <> scan_token_type-comment.
-
-        IF <ls_condition>-row IS INITIAL.
-          <ls_condition>-row = <ls_token>-row.
-        ENDIF.
-
-* todo, statement type = C?
-        IF <ls_token>-str = 'ENDIF' OR <ls_token>-str = 'ENDLOOP'.
-          READ TABLE <ls_condition>-statements
-            INDEX lines( <ls_condition>-statements )
-            ASSIGNING <lv_statement>.
-          ASSERT sy-subrc = 0.
-          CONCATENATE <lv_statement> <ls_token>-str
-            INTO <lv_statement> SEPARATED BY space.
-          CONTINUE. " current loop
-        ENDIF.
-
-        IF lv_statement IS INITIAL.
-          lv_statement = <ls_token>-str.
-        ELSE.
-          CONCATENATE lv_statement <ls_token>-str
-            INTO lv_statement SEPARATED BY space.
-        ENDIF.
-      ENDLOOP.
-
-      IF NOT lv_statement IS INITIAL.
-        APPEND lv_statement TO <ls_condition>-statements.
-      ENDIF.
-    ENDLOOP.
-
-    IF <ls_structure>-key_start = abap_true.
-      READ TABLE <ls_condition>-statements INDEX 1 INTO <ls_condition>-cond.
-      DELETE <ls_condition>-statements INDEX 1.
+    lv_str1 = zcl_aoc_structure=>to_string_simple( lo_first ).
+    lv_str2 = zcl_aoc_structure=>to_string_simple( lo_compare ).
+    IF lv_str1 <> lv_str2.
+      RETURN.
     ENDIF.
 
   ENDLOOP.
-
-
-* IFs must contain ELSE
-  IF is_alternation-stmnt_type = scan_struc_stmnt_type-if.
-    READ TABLE ct_conditions WITH KEY stmnt_type = scan_struc_stmnt_type-else
-      TRANSPORTING NO FIELDS.
-    IF sy-subrc <> 0.
-      CLEAR ct_conditions.
-    ENDIF.
+  IF sy-subrc <> 0.
+    RETURN. " list is empty
   ENDIF.
 
-* CASE must contain OTHERS
-  IF is_alternation-stmnt_type = scan_struc_stmnt_type-case.
-    READ TABLE ct_conditions WITH KEY cond = 'WHEN OTHERS'
-      TRANSPORTING NO FIELDS.
-    IF sy-subrc <> 0.
-      CLEAR ct_conditions.
-    ENDIF.
-  ENDIF.
+  inform( p_sub_obj_type = c_type_include
+          p_sub_obj_name = get_include( p_level = lo_first->ms_statement-level )
+          p_line         = lo_first->ms_statement-row
+          p_kind         = mv_errty
+          p_test         = c_my_name
+          p_code         = '001' ).
 
 ENDMETHOD.
 
@@ -263,4 +173,21 @@ METHOD get_message_text.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
+
+
+METHOD loop.
+
+  DATA: lo_structure TYPE REF TO zcl_aoc_structure.
+
+
+  CASE io_structure->mv_stmnt_type.
+    WHEN scan_struc_stmnt_type-if OR scan_struc_stmnt_type-case.
+      analyze_condition( io_structure ).
+  ENDCASE.
+
+  LOOP AT io_structure->mt_structure INTO lo_structure.
+    loop( lo_structure ).
+  ENDLOOP.
+
+ENDMETHOD.
 ENDCLASS.

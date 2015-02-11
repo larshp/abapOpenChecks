@@ -17,7 +17,6 @@
         IMPORTING
           it_tokens     TYPE stokesx_tab
           it_statements TYPE sstmnt_tab
-          it_levels     TYPE slevel_tab
           it_structures TYPE zcl_aoc_super=>tt_structures.
 
       METHODS: build
@@ -27,7 +26,6 @@
     PRIVATE SECTION.
       DATA: mt_tokens     TYPE stokesx_tab,
             mt_statements TYPE sstmnt_tab,
-            mt_levels     TYPE slevel_tab,
             mt_structures TYPE zcl_aoc_super=>tt_structures.
 
       DATA: mt_sstr TYPE TABLE OF zcl_aoc_structure=>ty_statement.
@@ -53,7 +51,6 @@
 
       mt_tokens     = it_tokens.
       mt_statements = it_statements.
-      mt_levels     = it_levels.
       mt_structures = it_structures.
 
     ENDMETHOD.                    "constructor
@@ -116,7 +113,7 @@
       DATA: lv_string    TYPE string,
             ls_statement TYPE zcl_aoc_structure=>ty_statement.
 
-      FIELD-SYMBOLS: <ls_token> LIKE LINE OF mt_tokens,
+      FIELD-SYMBOLS: <ls_token>     LIKE LINE OF mt_tokens,
                      <ls_statement> LIKE LINE OF mt_statements.
 
 
@@ -132,6 +129,9 @@
             CONCATENATE lv_string <ls_token>-str INTO lv_string SEPARATED BY space.
           ENDIF.
         ENDLOOP.
+        IF sy-subrc <> 0.
+          CONTINUE. " continue current loop, loop above was not executed
+        ENDIF.
 
         CLEAR ls_statement.
         ls_statement-statement = lv_string.

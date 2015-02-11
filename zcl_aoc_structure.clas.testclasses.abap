@@ -11,8 +11,6 @@ CLASS lcl_test DEFINITION FOR TESTING
   PRIVATE SECTION.
 * ================
 
-    TYPES: ty_string_tt TYPE STANDARD TABLE OF string WITH DEFAULT KEY.
-
     DATA: mt_code       TYPE string_table,
           mt_tokens     TYPE stokesx_tab,
           mt_statements TYPE sstmnt_tab,
@@ -20,10 +18,6 @@ CLASS lcl_test DEFINITION FOR TESTING
           mt_structures TYPE zcl_aoc_super=>tt_structures.
 
     METHODS: build FOR TESTING.
-
-    METHODS: to_string
-      IMPORTING io_structure TYPE REF TO zcl_aoc_structure
-      RETURNING value(rt_string) TYPE ty_string_tt.
 
     METHODS: parse.
 
@@ -53,7 +47,7 @@ CLASS lcl_test IMPLEMENTATION.
 
   METHOD build.
 
-    DATA: lt_string TYPE ty_string_tt,
+    DATA: lt_string TYPE zcl_aoc_structure=>ty_string_tt,
           lo_stru   TYPE REF TO zcl_aoc_structure.
 
 
@@ -77,26 +71,10 @@ CLASS lcl_test IMPLEMENTATION.
                 it_levels     = mt_levels
                 it_structures = mt_structures ).
 
-    lt_string = to_string( lo_stru ).
+    lt_string = zcl_aoc_structure=>to_string( lo_stru ).
+
+    cl_abap_unit_assert=>assert_not_initial( lt_string ).
 
   ENDMETHOD.       "build
-
-  METHOD to_string.
-
-    DATA: lv_string    TYPE string,
-          lt_string    TYPE ty_string_tt,
-          lo_structure TYPE REF TO zcl_aoc_structure.
-
-
-    APPEND io_structure->ms_statement-statement TO rt_string.
-    LOOP AT io_structure->mt_structure INTO lo_structure.
-      lt_string = to_string( lo_structure ).
-      LOOP AT lt_string INTO lv_string.
-        lv_string = '__' && lv_string.
-        APPEND lv_string TO rt_string.
-      ENDLOOP.
-    ENDLOOP.
-
-  ENDMETHOD.                    "to_string
 
 ENDCLASS.       "lcl_Test
