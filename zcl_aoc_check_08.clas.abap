@@ -4,9 +4,9 @@ class ZCL_AOC_CHECK_08 definition
   create public .
 
 public section.
+
 *"* public components of class ZCL_AOC_CHECK_08
 *"* do not include other source files here!!!
-
   methods CONSTRUCTOR .
 
   methods CHECK
@@ -34,26 +34,50 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lv_include TYPE sobj_name.
+  DATA: lv_include   TYPE sobj_name,
+        lv_code      TYPE sci_errc,
+        lv_statement TYPE string.
 
   FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
                  <ls_statement> LIKE LINE OF it_statements.
 
 
-  LOOP AT it_statements ASSIGNING <ls_statement>
-      WHERE type = scan_stmnt_type-standard.
+  LOOP AT it_statements ASSIGNING <ls_statement>.
 
-    READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-    ASSERT sy-subrc = 0.
+    CLEAR lv_statement.
 
-    IF <ls_token>-str = 'REFRESH'.
+    LOOP AT it_tokens ASSIGNING <ls_token>
+        FROM <ls_statement>-from TO <ls_statement>-to
+        WHERE type = scan_token_type-identifier.
+      IF lv_statement IS INITIAL.
+        lv_statement = <ls_token>-str.
+      ELSE.
+        CONCATENATE lv_statement <ls_token>-str INTO lv_statement SEPARATED BY space.
+      ENDIF.
+    ENDLOOP.
+
+    CLEAR lv_code.
+
+    IF lv_statement CP 'REFRESH*'.
+      lv_code = '001'.
+    ELSEIF lv_statement CP '*IS REQUESTED*'.
+      lv_code = '002'.
+    ELSEIF lv_statement = 'LEAVE'.
+      lv_code = '003'.
+    ELSEIF lv_statement CP 'COMPUTE*'.
+      lv_code = '004'.
+    ELSEIF lv_statement CP 'MOVE*'.
+      lv_code = '005'.
+    ENDIF.
+
+    IF NOT lv_code IS INITIAL.
       lv_include = get_include( p_level = <ls_statement>-level ).
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
               p_line         = <ls_token>-row
               p_kind         = mv_errty
               p_test         = c_my_name
-              p_code         = '001' ).
+              p_code         = lv_code ).
     ENDIF.
 
   ENDLOOP.
@@ -65,7 +89,7 @@ METHOD constructor .
 
   super->constructor( ).
 
-  description    = 'REFRESH is obsolete'.                   "#EC NOTEXT
+  description    = 'Obsolete statement'.                    "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '000'.
 
@@ -82,6 +106,14 @@ METHOD get_message_text.
   CASE p_code.
     WHEN '001'.
       p_text = 'REFRESH is obsolete'.                       "#EC NOTEXT
+    WHEN '002'.
+      p_text = 'IS REQUESTED is obsolete'.                  "#EC NOTEXT
+    WHEN '003'.
+      p_text = 'LEAVE is obsolete'.                         "#EC NOTEXT
+    WHEN '004'.
+      p_text = 'COMPUTE is obsolete'.                       "#EC NOTEXT
+    WHEN '005'.
+      p_text = 'MOVE is obsolete'.                          "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
