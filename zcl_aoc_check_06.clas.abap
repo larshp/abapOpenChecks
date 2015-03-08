@@ -111,6 +111,7 @@ METHOD check.
       IF mv_hikey = abap_true AND lv_code <> lv_upper.
         lv_error = abap_true.
       ELSEIF mv_lokey = abap_true AND lv_code <> lv_lower.
+        lv_error = abap_true.
       ENDIF.
 
       IF lv_error = abap_true.
