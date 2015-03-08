@@ -114,9 +114,20 @@ METHOD check.
         IN lv_statement SUBMATCHES lv_name.
     ENDIF.
 
-* todo, also show error if looping at table with simple types
 * todo, report error where the variable is defined instead of used
     IF sy-subrc = 0.
+
+* dont report for class member variables
+      IF object_type = 'CLAS'.
+        SELECT COUNT(*) FROM seocompodf
+          WHERE clsname = object_name
+          AND typtype <> ''
+          AND cmpname = lv_name.
+        IF sy-subrc = 0.
+          CONTINUE. " current loop
+        ENDIF.
+      ENDIF.
+
       READ TABLE lt_not WITH KEY name = lv_name TRANSPORTING NO FIELDS.
       IF sy-subrc = 0.
         inform( p_sub_obj_type = c_type_include
