@@ -4,16 +4,25 @@ class ZCL_AOC_CHECK_26 definition
   create public .
 
 public section.
+
 *"* public components of class ZCL_AOC_CHECK_26
 *"* do not include other source files here!!!
-
   methods CONSTRUCTOR .
 
   methods CHECK
     redefinition .
+  methods GET_ATTRIBUTES
+    redefinition .
   methods GET_MESSAGE_TEXT
     redefinition .
-protected section.
+  methods PUT_ATTRIBUTES
+    redefinition .
+  methods IF_CI_TEST~QUERY_ATTRIBUTES
+    redefinition .
+PROTECTED SECTION.
+
+  DATA:
+    mt_tables TYPE SCIT_TABL.
 *"* protected components of class ZCL_AOC_CHECK_26
 *"* do not include other source files here!!!
 private section.
@@ -34,8 +43,8 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lv_keyword1   TYPE string,
-        lv_keyword2   TYPE string,
+  DATA: lv_keyword1  TYPE string,
+        lv_keyword2  TYPE string,
         lt_code      TYPE string_table,
         lv_as4user   TYPE dd02l-as4user,
         ls_result    TYPE zcl_aoc_parser=>st_result,
@@ -43,8 +52,8 @@ METHOD check.
         lv_statement TYPE string.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                 <ls_rt> LIKE LINE OF ls_result-tokens,
-                 <ls_token> LIKE LINE OF it_tokens.
+                 <ls_rt>        LIKE LINE OF ls_result-tokens,
+                 <ls_token>     LIKE LINE OF it_tokens.
 
 
   LOOP AT it_statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
@@ -104,7 +113,9 @@ METHOD check.
       AND as4local = 'A'
       AND as4vers = space
       AND tabclass = 'TRANSP'.                       "#EC CI_SEL_NESTED
-    IF sy-subrc = 0 AND ( lv_as4user = 'SAP' OR lv_as4user = 'DDIC' ).
+    IF sy-subrc = 0
+        AND ( lv_as4user = 'SAP' OR lv_as4user = 'DDIC' )
+        AND <ls_rt>-code IN mt_tables..
       lv_include = get_include( p_level = <ls_statement>-level ).
 
       inform( p_sub_obj_type = c_type_include
@@ -132,8 +143,19 @@ METHOD constructor.
   attributes_ok  = abap_true.
 
   mv_errty = c_error.
+  CLEAR mt_tables.
 
 ENDMETHOD.                    "CONSTRUCTOR
+
+
+METHOD get_attributes.
+
+  EXPORT
+    mv_errty = mv_errty
+    mt_tables = mt_tables
+    TO DATA BUFFER p_attributes.
+
+ENDMETHOD.
 
 
 METHOD get_message_text.
@@ -146,4 +168,49 @@ METHOD get_message_text.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
+
+
+METHOD if_ci_test~query_attributes.
+
+  DATA: lv_ok         TYPE abap_bool,
+        lv_message    TYPE c LENGTH 72,
+        lt_attributes TYPE sci_atttab,
+        ls_attribute  LIKE LINE OF lt_attributes.
+
+  DEFINE fill_att.
+    get reference of &1 into ls_attribute-ref.
+    ls_attribute-text = &2.
+    ls_attribute-kind = &3.
+    append ls_attribute to lt_attributes.
+  END-OF-DEFINITION.
+
+
+  fill_att mv_errty 'Error Type' ''.                        "#EC NOTEXT
+  fill_att mt_tables 'Tables' 'S'.                          "#EC NOTEXT
+
+  WHILE lv_ok = abap_false.
+    cl_ci_query_attributes=>generic(
+                          p_name       = c_my_name
+                          p_title      = 'Options'
+                          p_attributes = lt_attributes
+                          p_message    = lv_message
+                          p_display    = p_display ).       "#EC NOTEXT
+    IF mv_errty = c_error OR mv_errty = c_warning OR mv_errty = c_note.
+      lv_ok = abap_true.
+    ELSE.
+      lv_message = 'Fill attributes'.                       "#EC NOTEXT
+    ENDIF.
+  ENDWHILE.
+
+ENDMETHOD.
+
+
+METHOD put_attributes.
+
+  IMPORT
+    mv_errty = mv_errty
+    mt_tables = mt_tables
+    FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+
+ENDMETHOD.
 ENDCLASS.
