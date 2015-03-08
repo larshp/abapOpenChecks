@@ -194,11 +194,11 @@ ENDMETHOD.
 
 METHOD inform.
 
-  DATA: li_oref     TYPE REF TO if_oo_class_incl_naming,
-        lv_clsname  TYPE seoclassdf-clsname,
-        li_clif     TYPE REF TO if_oo_clif_incl_naming,
-        lv_cnam     TYPE reposrc-cnam,
-        lv_method   TYPE seocpdname.
+  DATA: li_oref    TYPE REF TO if_oo_class_incl_naming,
+        li_clif    TYPE REF TO if_oo_clif_incl_naming,
+        lv_clsname TYPE seoclassdf-clsname,
+        lv_cnam    TYPE reposrc-cnam,
+        lv_method  TYPE seocpdname.
 
 * todo, web dynpro?
   IF p_sub_obj_type = 'PROG' AND p_sub_obj_name <> ''.
@@ -222,6 +222,15 @@ METHOD inform.
       OTHERS   = 1 ).
   IF sy-subrc = 0.
     li_oref ?= li_clif.
+
+    SELECT SINGLE clsname FROM seoclassdf INTO lv_clsname
+      WHERE clsname = li_oref->clskey-clsname
+      AND category = '11'     " persistent co-class
+      AND version = '1'.
+    IF sy-subrc = 0.
+      RETURN.
+    ENDIF.
+
     SELECT SINGLE clsname FROM seoclassdf INTO lv_clsname
       WHERE clsname = li_oref->clskey-clsname
       AND category = '40'     " exception
