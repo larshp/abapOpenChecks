@@ -64,7 +64,8 @@ METHOD check.
        LEVELS          INTO lt_levels
        STRUCTURES      INTO lt_structures
        WITH ANALYSIS
-       WITH COMMENTS.
+       WITH COMMENTS
+       WITH PRAGMAS    abap_true.
 
   CLEAR gs_result.
   SET HANDLER handler FOR io_check.

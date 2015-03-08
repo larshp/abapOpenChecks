@@ -16,12 +16,13 @@ CLASS lcl_test DEFINITION FOR TESTING
           mo_check  TYPE REF TO zcl_aoc_check_11.
 
     METHODS: setup,
-             test001_01 FOR TESTING,
-             test001_02 FOR TESTING,
-             test001_03 FOR TESTING,
-             test001_04 FOR TESTING,
-             test001_05 FOR TESTING,
-             test001_06 FOR TESTING.
+      test001_01 FOR TESTING,
+      test001_02 FOR TESTING,
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING,
+      test001_05 FOR TESTING,
+      test001_06 FOR TESTING,
+      test001_07 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -121,5 +122,20 @@ CLASS lcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.                    "test001_06
+
+  METHOD test001_07.
+* ===========
+
+    _code 'TRY.'.
+    _code '  CATCH cx_root ##CATCH_ALL.'.
+    _code 'ASSERT 1 = 1 + 1.'.
+    _code 'ENDTRY.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Test

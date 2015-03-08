@@ -44,7 +44,9 @@ METHOD check.
                  <ls_token_from> LIKE LINE OF it_tokens.
 
 
-  LOOP AT it_statements ASSIGNING <ls_statement> WHERE terminator = '.'.
+  LOOP AT it_statements ASSIGNING <ls_statement>
+      WHERE terminator = '.'
+      AND type <> scan_stmnt_type-pragma.
 
     READ TABLE it_tokens ASSIGNING <ls_token_to> INDEX <ls_statement>-to.
     CHECK sy-subrc = 0.
