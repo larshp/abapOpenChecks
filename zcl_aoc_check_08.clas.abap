@@ -68,6 +68,17 @@ METHOD check.
       lv_code = '004'.
     ELSEIF lv_statement CP 'MOVE*'.
       lv_code = '005'.
+    ELSEIF lv_statement CP '* >< *'
+        OR lv_statement CP '* =< *'
+        OR lv_statement CP '* => *'.
+      lv_code = '006'.
+    ELSEIF lv_statement CP '* EQ *'
+        OR lv_statement CP '* NE *'
+        OR lv_statement CP '* LT *'
+        OR lv_statement CP '* GT *'
+        OR lv_statement CP '* LE *'
+        OR lv_statement CP '* GE *'.
+      lv_code = '007'.
     ENDIF.
 
     IF NOT lv_code IS INITIAL.
@@ -114,6 +125,10 @@ METHOD get_message_text.
       p_text = 'COMPUTE is obsolete'.                       "#EC NOTEXT
     WHEN '005'.
       p_text = 'MOVE is obsolete'.                          "#EC NOTEXT
+    WHEN '006'.
+      p_text = 'Obsolete operator'.                         "#EC NOTEXT
+    WHEN '007'.
+      p_text = 'Use new operator'.                          "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.

@@ -36,6 +36,12 @@ CLASS lcl_test DEFINITION FOR TESTING
     METHODS:
       test005_01 FOR TESTING.
 
+    METHODS:
+      test006_01 FOR TESTING.
+
+    METHODS:
+      test007_01 FOR TESTING.
+
 ENDCLASS.       "lcl_Test
 
 *----------------------------------------------------------------------*
@@ -164,6 +170,34 @@ CLASS lcl_test IMPLEMENTATION.
                                           io_check = mo_check ).
 
     cl_abap_unit_assert=>assert_equals( exp = '005'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test006_01.
+* ===========
+
+    _code 'IF lv_foo >< lv_bar.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '006'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test007_01.
+* ===========
+
+    _code 'IF lv_foo EQ lv_bar.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '007'
                                         act = ms_result-code ).
 
   ENDMETHOD.
