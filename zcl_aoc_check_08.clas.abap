@@ -64,9 +64,9 @@ METHOD check.
       lv_code = '002'.
     ELSEIF lv_statement = 'LEAVE'.
       lv_code = '003'.
-    ELSEIF lv_statement CP 'COMPUTE*'.
+    ELSEIF lv_statement CP 'COMPUTE *'.
       lv_code = '004'.
-    ELSEIF lv_statement CP 'MOVE*'.
+    ELSEIF lv_statement CP 'MOVE *'.
       lv_code = '005'.
     ELSEIF lv_statement CP '* >< *'
         OR lv_statement CP '* =< *'

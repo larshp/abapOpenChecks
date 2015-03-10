@@ -34,7 +34,8 @@ CLASS lcl_test DEFINITION FOR TESTING
       test004_01 FOR TESTING.
 
     METHODS:
-      test005_01 FOR TESTING.
+      test005_01 FOR TESTING,
+      test005_02 FOR TESTING.
 
     METHODS:
       test006_01 FOR TESTING.
@@ -171,6 +172,18 @@ CLASS lcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '005'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test005_02.
+* ===========
+
+    _code 'MOVE-CORRESPONDING lv_foo TO lv_bar.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
 
