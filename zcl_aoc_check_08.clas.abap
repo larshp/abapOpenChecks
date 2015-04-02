@@ -58,7 +58,7 @@ METHOD check.
 
     CLEAR lv_code.
 
-    IF lv_statement CP 'REFRESH*'.
+    IF lv_statement CP 'REFRESH *'.
       lv_code = '001'.
     ELSEIF lv_statement CP '*IS REQUESTED*'.
       lv_code = '002'.
