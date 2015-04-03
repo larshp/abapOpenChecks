@@ -115,7 +115,7 @@ METHOD check.
       AND tabclass = 'TRANSP'.                       "#EC CI_SEL_NESTED
     IF sy-subrc = 0
         AND ( lv_as4user = 'SAP' OR lv_as4user = 'DDIC' )
-        AND <ls_rt>-code IN mt_tables..
+        AND <ls_rt>-code IN mt_tables.
       lv_include = get_include( p_level = <ls_statement>-level ).
 
       inform( p_sub_obj_type = c_type_include

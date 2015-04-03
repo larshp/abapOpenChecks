@@ -1,41 +1,42 @@
-class ZCL_AOC_PARSER definition
-  public
-  final
-  create public .
+CLASS zcl_aoc_parser DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 *"* public components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
 
-  types:
-    BEGIN OF st_token,
-               type     TYPE c LENGTH 1,
-               value    TYPE string,
-               code     TYPE string,
-               rulename TYPE string,
-             END OF st_token .
-  types:
-    tt_tokens TYPE STANDARD TABLE OF st_token WITH NON-UNIQUE DEFAULT KEY .
-  types:
-    BEGIN OF st_result,
-               match TYPE abap_bool,
-               tokens TYPE tt_tokens,
-             END OF st_result .
+    TYPES:
+      BEGIN OF st_token,
+        statement TYPE i,
+        type      TYPE c LENGTH 1,
+        value     TYPE string,
+        code      TYPE string,
+        rulename  TYPE string,
+      END OF st_token .
+    TYPES:
+      tt_tokens TYPE STANDARD TABLE OF st_token WITH NON-UNIQUE DEFAULT KEY .
+    TYPES:
+      BEGIN OF st_result,
+        match  TYPE abap_bool,
+        tokens TYPE tt_tokens,
+      END OF st_result .
 
-  constants C_ROLE type C value 'R'. "#EC NOTEXT
-  constants C_TERMINAL type C value 'T'. "#EC NOTEXT
-  constants C_ROLE_FIELDDEFID type STRING value 'FieldDefId'. "#EC NOTEXT
+    CONSTANTS c_role TYPE c VALUE 'R'.                      "#EC NOTEXT
+    CONSTANTS c_terminal TYPE c VALUE 'T'.                  "#EC NOTEXT
+    CONSTANTS c_role_fielddefid TYPE string VALUE 'FieldDefId'. "#EC NOTEXT
 
-  type-pools ABAP .
-  class ZCL_AOC_PARSER definition load .
-  class-methods RUN
-    importing
-      !IT_CODE type STRING_TABLE
-      !IV_DEBUG type ABAP_BOOL default ABAP_FALSE
-      !IV_RULE type STRING default 'START'
-      !IV_ALLOW_OBSOLETE type ABAP_BOOL default ABAP_TRUE
-    returning
-      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
+    TYPE-POOLS abap .
+    CLASS zcl_aoc_parser DEFINITION LOAD .
+    CLASS-METHODS run
+      IMPORTING
+        !it_code           TYPE string_table
+        !iv_debug          TYPE abap_bool DEFAULT abap_false
+        !iv_rule           TYPE string DEFAULT 'START'
+        !iv_allow_obsolete TYPE abap_bool DEFAULT abap_true
+      RETURNING
+        VALUE(rs_result)   TYPE zcl_aoc_parser=>st_result .
 protected section.
 *"* protected components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
@@ -781,10 +782,15 @@ ENDMETHOD.
 
 METHOD parse.
 
-  DATA: lo_start TYPE REF TO lcl_node.
+  DATA: lo_start     TYPE REF TO lcl_node,
+        lt_rt        TYPE tt_tokens,
+        lv_statement TYPE i,
+        lt_res_tok   LIKE rs_result-tokens,
+        lv_index     TYPE i.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                 <ls_token>     LIKE LINE OF it_tokens.
+                 <ls_token>     LIKE LINE OF it_tokens,
+                 <ls_res_tok>   LIKE LINE OF lt_res_tok.
 
 
   READ TABLE it_statements WITH KEY terminator = space TRANSPORTING NO FIELDS.
@@ -794,6 +800,7 @@ METHOD parse.
   ENDIF.
 
   LOOP AT it_statements ASSIGNING <ls_statement>.
+    lv_statement = sy-tabix.
 
     CLEAR gt_tokens.
     LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
@@ -812,7 +819,15 @@ METHOD parse.
       RETURN.
     ENDIF.
 
-* todo, result-tokens if there are multiple statements
+* reverse token order
+    lt_res_tok = rs_result-tokens.
+    lv_index = lines( lt_res_tok ).
+    DO lines( lt_res_tok ) TIMES.
+      READ TABLE lt_res_tok INDEX lv_index ASSIGNING <ls_res_tok>.
+      <ls_res_tok>-statement = lv_statement.
+      APPEND <ls_res_tok> TO lt_rt.
+      lv_index = lv_index - 1.
+    ENDDO.
 
   ENDLOOP.
 
@@ -821,6 +836,8 @@ METHOD parse.
   ELSE.
     rs_result-match = abap_false.
   ENDIF.
+
+  rs_result-tokens = lt_rt.
 
 ENDMETHOD.
 
@@ -832,11 +849,7 @@ METHOD run.
 * MIT License
 
   DATA: lt_tokens     TYPE stokesx_tab,
-        lt_res_tok    LIKE rs_result-tokens,
-        lv_index      TYPE i,
         lt_statements TYPE sstmnt_tab.
-
-  FIELD-SYMBOLS: <ls_res_tok> LIKE LINE OF lt_res_tok.
 
 
   SCAN ABAP-SOURCE it_code
@@ -850,16 +863,6 @@ METHOD run.
 
   rs_result = parse( it_tokens     = lt_tokens
                      it_statements = lt_statements ).
-
-* reverse token order
-  lt_res_tok = rs_result-tokens.
-  CLEAR rs_result-tokens[].
-  lv_index = lines( lt_res_tok ).
-  DO lines( lt_res_tok ) TIMES.
-    READ TABLE lt_res_tok INDEX lv_index ASSIGNING <ls_res_tok>.
-    APPEND <ls_res_tok> TO rs_result-tokens.
-    lv_index = lv_index - 1.
-  ENDDO.
 
 ENDMETHOD.
 

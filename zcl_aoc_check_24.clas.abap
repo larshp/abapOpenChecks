@@ -48,7 +48,7 @@ protected section.
   types:
     BEGIN OF ty_block,
              statements TYPE string,
-             statement_list type table of string with default key,
+             statement_list type standard table of string with default key,
              level TYPE i,
              row TYPE token_row,
            END OF ty_block .
