@@ -16,19 +16,20 @@ CLASS lcl_test DEFINITION FOR TESTING
           mo_check  TYPE REF TO zcl_aoc_check_22.
 
     METHODS: setup,
-             test001_01 FOR TESTING,
-             test001_02 FOR TESTING,
-             test001_03 FOR TESTING,
-             test001_04 FOR TESTING,
-             test001_05 FOR TESTING,
-             test001_06 FOR TESTING,
-             test001_07 FOR TESTING,
-             test001_08 FOR TESTING,
-             test001_09 FOR TESTING,
-             test001_10 FOR TESTING,
-             test001_12 FOR TESTING,
-             test001_13 FOR TESTING,
-             test001_14 FOR TESTING.
+      test001_01 FOR TESTING,
+      test001_02 FOR TESTING,
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING,
+      test001_05 FOR TESTING,
+      test001_06 FOR TESTING,
+      test001_07 FOR TESTING,
+      test001_08 FOR TESTING,
+      test001_09 FOR TESTING,
+      test001_10 FOR TESTING,
+      test001_12 FOR TESTING,
+      test001_13 FOR TESTING,
+      test001_14 FOR TESTING,
+      test001_15 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -280,6 +281,23 @@ CLASS lcl_test IMPLEMENTATION.
     _code '  IF lv_c = ''14''.'.
     _code '    lv_foo = lv_bar.'.
     _code '  ENDIF.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_15.
+* ===========
+
+    _code 'DATA gv_c TYPE c.'.
+    _code 'IF gv_c <> '''''.
+    _code '  WRITE ''filled'' ##NO_TEXT.'.
+    _code 'ELSE.'.
+    _code '  WRITE ''else'' ##NO_TEXT.'.
     _code 'ENDIF.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code

@@ -21,7 +21,7 @@
 
       METHODS: build
         RETURNING
-          value(ro_structure) TYPE REF TO zcl_aoc_structure.
+          VALUE(ro_structure) TYPE REF TO zcl_aoc_structure.
 
     PRIVATE SECTION.
       DATA: mt_tokens     TYPE stokesx_tab,
@@ -34,9 +34,9 @@
 
       METHODS: structure_loop
         IMPORTING
-          is_structure TYPE sstruc
+          is_structure        TYPE sstruc
         RETURNING
-          value(ro_structure) TYPE REF TO zcl_aoc_structure.
+          VALUE(ro_structure) TYPE REF TO zcl_aoc_structure.
 
   ENDCLASS.                    "lcl_build DEFINITION
 
@@ -122,7 +122,8 @@
         LOOP AT mt_tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from
             TO <ls_statement>-to
-            WHERE type <> scan_token_type-comment.
+            WHERE type <> scan_token_type-comment
+            AND type <> scan_token_type-pragma.
           IF lv_string IS INITIAL.
             lv_string = <ls_token>-str.
           ELSE.
