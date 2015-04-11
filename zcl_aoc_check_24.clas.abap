@@ -295,7 +295,7 @@ METHOD get_result_node.
 
   CREATE OBJECT p_result TYPE zcl_aoc_check_24_result
     EXPORTING
-      p_kind = p_kind.
+      iv_kind = p_kind.
 
 ENDMETHOD.
 

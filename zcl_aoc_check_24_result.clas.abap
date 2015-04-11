@@ -7,7 +7,7 @@ public section.
 
   methods CONSTRUCTOR
     importing
-      !P_KIND type SYCHAR01 .
+      !IV_KIND type SYCHAR01 .
 
   methods IF_CI_TEST~NAVIGATE
     redefinition .
@@ -41,7 +41,7 @@ CLASS ZCL_AOC_CHECK_24_RESULT IMPLEMENTATION.
 
 METHOD constructor.
 
-  super->constructor( p_kind ).
+  super->constructor( iv_kind ).
 
 ENDMETHOD.
 

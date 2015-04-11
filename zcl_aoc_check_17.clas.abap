@@ -77,7 +77,9 @@ METHOD check.
         WHERE type <> scan_stmnt_type-macro_call.
 
       READ TABLE it_tokens INTO ms_token INDEX ms_statement-from.
-      IF sy-subrc <> 0 OR ms_token-type = scan_token_type-comment .
+      IF sy-subrc <> 0
+          OR ms_token-type = scan_token_type-comment
+          OR ms_token-type = scan_token_type-pragma.
         CONTINUE. " current loop
       ENDIF.
 
