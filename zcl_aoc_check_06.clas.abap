@@ -99,7 +99,9 @@ METHOD check.
 
 * check first token in statement, this is always a keyword
       READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-      CHECK sy-subrc = 0 AND <ls_token>-type = scan_token_type-identifier.
+      CHECK sy-subrc = 0
+        AND <ls_token>-type = scan_token_type-identifier
+        AND NOT <ls_token>-str CA '['.
 
       READ TABLE lt_code ASSIGNING <lv_code> INDEX <ls_token>-row.
       ASSERT sy-subrc = 0.
