@@ -58,17 +58,21 @@ METHOD check.
                  <lv_code>      LIKE LINE OF lt_code,
                  <ls_token>     LIKE LINE OF it_tokens.
 
-* todo, this is too simple
+* todo, this is too simple, but seems to work in most cases
 
   LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
     lv_level = sy-tabix.
 
 * skip class definitions, they are auto generated(in most cases)
+* todo: move this to check configuration
     IF strlen( <ls_level>-name ) = 32
+        AND ( object_type = 'CLAS' OR object_type = 'INTF' )
         AND ( <ls_level>-name+30(2) = 'CU'
         OR <ls_level>-name+30(2) = 'CO'
         OR <ls_level>-name+30(2) = 'CI'
-        OR <ls_level>-name+30(2) = 'CP' ).
+        OR <ls_level>-name+30(2) = 'CP'
+        OR <ls_level>-name+30(2) = 'IP'
+        OR <ls_level>-name+30(2) = 'IU' ).
       CONTINUE. " current loop
     ENDIF.
     IF <ls_level>-name(8) = '/1BCWDY/'.
