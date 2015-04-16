@@ -66,7 +66,12 @@ METHOD check.
     ENDIF.
 
     CASE <ls_token>-str.
-      WHEN 'IF' OR 'LOOP' OR 'ELSEIF'.
+      WHEN 'IF'
+          OR 'LOOP'
+          OR 'ELSEIF'
+          OR 'CATCH'
+          OR 'DO'
+          OR 'WHILE'.
         lv_offset = mv_nest_offset.
       WHEN OTHERS.
         lv_offset = mv_offset.
