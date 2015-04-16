@@ -20,7 +20,9 @@ CLASS lcl_test DEFINITION FOR TESTING
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
       test001_04 FOR TESTING,
-      test001_05 FOR TESTING.
+      test001_05 FOR TESTING,
+      test001_06 FOR TESTING,
+      test001_07 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -105,6 +107,31 @@ CLASS lcl_test IMPLEMENTATION.
                                           io_check = mo_check ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_06.
+* ===========
+
+    _code 'DATA(lv_icon) = icon_incomplete.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_07.
+* ===========
+
+    _code 'data(lv_icon) = icon_incomplete.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
 
   ENDMETHOD.
 

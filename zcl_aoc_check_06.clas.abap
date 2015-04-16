@@ -85,7 +85,6 @@ METHOD check.
     LOOP AT it_statements ASSIGNING <ls_statement>
         WHERE type <> scan_stmnt_type-comment
         AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-compute_direct
         AND type <> scan_stmnt_type-method_direct
         AND type <> scan_stmnt_type-trmac_call
         AND type <> scan_stmnt_type-macro_call
@@ -99,9 +98,16 @@ METHOD check.
 
 * check first token in statement, this is always a keyword
       READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-      CHECK sy-subrc = 0
-        AND <ls_token>-type = scan_token_type-identifier
-        AND NOT <ls_token>-str CA '['.
+      IF sy-subrc <> 0
+          OR <ls_token>-type <> scan_token_type-identifier
+          OR <ls_token>-str CA '['.
+        CONTINUE.
+      ENDIF.
+      IF <ls_statement>-type = scan_stmnt_type-compute_direct
+          AND strlen( <ls_token>-str ) >= 5
+          AND <ls_token>-str(5) <> 'DATA('.
+        CONTINUE.
+      ENDIF.
 
       READ TABLE lt_code ASSIGNING <lv_code> INDEX <ls_token>-row.
       ASSERT sy-subrc = 0.
