@@ -147,7 +147,7 @@ METHOD check_mode.
 ENDMETHOD.
 
 
-METHOD constructor .
+METHOD constructor.
 
   super->constructor( ).
 

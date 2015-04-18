@@ -125,7 +125,7 @@ METHOD check.
 ENDMETHOD.
 
 
-METHOD constructor .
+METHOD constructor.
 
   super->constructor( ).
 
