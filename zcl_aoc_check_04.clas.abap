@@ -42,16 +42,20 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lt_code TYPE string_table,
-        lv_line TYPE token_row.
+  DATA: lv_len   LIKE mv_maxlength,
+        lv_level TYPE stmnt_levl.
 
-  FIELD-SYMBOLS: <ls_level> LIKE LINE OF it_levels,
-                 <lv_code>  LIKE LINE OF lt_code.
+  FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
+                 <ls_statement> LIKE LINE OF it_statements,
+                 <ls_token>     LIKE LINE OF it_tokens.
 
 
   LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    lv_level = sy-tabix.
+
 * skip class definitions, they are auto generated(in most cases)
-    IF strlen( <ls_level>-name ) = 32
+    IF object_type = 'CLAS'
+        AND strlen( <ls_level>-name ) = 32
         AND ( <ls_level>-name+30(2) = 'CU'
         OR <ls_level>-name+30(2) = 'CO'
         OR <ls_level>-name+30(2) = 'CI'
@@ -63,17 +67,21 @@ METHOD check.
       RETURN.
     ENDIF.
 
-    lt_code = get_source( <ls_level> ).
-    LOOP AT lt_code ASSIGNING <lv_code>.
-      lv_line = sy-tabix.
-      IF strlen( <lv_code> ) > mv_maxlength.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_level>-name
-                p_line         = lv_line
-                p_kind         = mv_errty
-                p_test         = c_my_name
-                p_code         = '001' ).
-      ENDIF.
+    LOOP AT it_statements ASSIGNING <ls_statement>
+        WHERE level = lv_level.
+      LOOP AT it_tokens ASSIGNING <ls_token>
+          FROM <ls_statement>-from TO <ls_statement>-to.
+
+        lv_len = <ls_token>-col + <ls_token>-len1.
+        IF lv_len > mv_maxlength.
+          inform( p_sub_obj_type = c_type_include
+                  p_sub_obj_name = <ls_level>-name
+                  p_line         = <ls_token>-row
+                  p_kind         = mv_errty
+                  p_test         = c_my_name
+                  p_code         = '001' ).
+        ENDIF.
+      ENDLOOP.
     ENDLOOP.
   ENDLOOP.
 
