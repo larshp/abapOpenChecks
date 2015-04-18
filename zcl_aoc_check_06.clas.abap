@@ -108,6 +108,10 @@ METHOD check.
           AND <ls_token>-str(5) <> 'DATA('.
         CONTINUE.
       ENDIF.
+      IF <ls_statement>-type = scan_stmnt_type-compute_direct
+          AND strlen( <ls_token>-str ) < 5.
+        CONTINUE.
+      ENDIF.
 
       READ TABLE lt_code ASSIGNING <lv_code> INDEX <ls_token>-row.
       ASSERT sy-subrc = 0.
