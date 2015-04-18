@@ -45,6 +45,9 @@ METHOD check.
     lv_level = sy-tabix.
 
 * skip class definitions, they are auto generated(in most cases)
+    IF object_type = 'INTF'.
+      RETURN.
+    ENDIF.
     IF object_type = 'CLAS'
         AND strlen( <ls_level>-name ) = 32
         AND ( <ls_level>-name+30(2) = 'CU'
