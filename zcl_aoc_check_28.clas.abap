@@ -74,7 +74,7 @@ METHOD check.
 
       lv_len = <ls_token>-col + strlen( <ls_token>-str ).
 
-      IF  <ls_statement>-tcol <> lv_len.
+      IF <ls_statement>-tcol > lv_len.
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = <ls_level>-name
                 p_line         = <ls_token>-row

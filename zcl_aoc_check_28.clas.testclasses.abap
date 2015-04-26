@@ -24,7 +24,8 @@ CLASS lcl_test DEFINITION FOR TESTING
       test001_06 FOR TESTING,
       test001_07 FOR TESTING,
       test001_08 FOR TESTING,
-      test001_09 FOR TESTING.
+      test001_09 FOR TESTING,
+      test001_10 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -157,6 +158,20 @@ CLASS lcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_10.
+* ===========
+
+    _code 'CONSTANTS:'.
+    _code '  lc_begin TYPE string VALUE ''* <SIGNATURE>-------------------'''.
+    _code '  & ''----------------------------------+''.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
 
