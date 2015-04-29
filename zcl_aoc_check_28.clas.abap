@@ -32,9 +32,10 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lv_len       TYPE i,
-        lv_prev_type TYPE sstmnt-type,
-        lv_level     TYPE stmnt_levl.
+  DATA: lv_len   TYPE i,
+        lt_code  TYPE string_table,
+        lv_code  LIKE LINE OF lt_code,
+        lv_level TYPE stmnt_levl.
 
   FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
                  <ls_statement> LIKE LINE OF it_statements,
@@ -63,10 +64,6 @@ METHOD check.
         AND terminator <> ''
         AND level = lv_level.
 
-      IF lv_prev_type = scan_stmnt_type-pragma.
-        CONTINUE.
-      ENDIF.
-
       READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-to.
       IF sy-subrc <> 0.
         CONTINUE.
@@ -75,6 +72,13 @@ METHOD check.
       lv_len = <ls_token>-col + strlen( <ls_token>-str ).
 
       IF <ls_statement>-tcol > lv_len.
+        lt_code = get_source( <ls_level> ).
+        READ TABLE lt_code INDEX <ls_token>-row INTO lv_code.
+* pragmas are not part of IT_TOKENS or IT_STATEMENTS, so check:
+        IF sy-subrc = 0 AND lv_code CP '*##*'.
+          CONTINUE. " current loop
+        ENDIF.
+
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = <ls_level>-name
                 p_line         = <ls_token>-row
@@ -82,8 +86,6 @@ METHOD check.
                 p_test         = c_my_name
                 p_code         = '001' ).
       ENDIF.
-
-      lv_prev_type = <ls_statement>-type.
 
     ENDLOOP.
   ENDLOOP.
