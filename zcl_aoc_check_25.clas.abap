@@ -151,8 +151,8 @@ METHOD find_fields.
         lv_statement TYPE string.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                 <ls_rt> LIKE LINE OF ls_result-tokens,
-                 <ls_token> LIKE LINE OF it_tokens.
+                 <ls_rt>        LIKE LINE OF ls_result-tokens,
+                 <ls_token>     LIKE LINE OF it_tokens.
 
 
   LOOP AT it_statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
@@ -192,7 +192,8 @@ METHOD find_fields.
     ENDIF.
 
     LOOP AT ls_result-tokens ASSIGNING <ls_rt>
-        WHERE value = zcl_aoc_parser=>c_role_fielddefid.
+        WHERE value = zcl_aoc_parser=>c_role_fielddefid
+        AND type = zcl_aoc_parser=>c_role.
 
       IF mv_skip_radio = abap_true.
         READ TABLE ls_result-tokens

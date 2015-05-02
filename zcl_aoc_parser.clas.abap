@@ -4,12 +4,16 @@ CLASS zcl_aoc_parser DEFINITION
   CREATE PUBLIC .
 
   PUBLIC SECTION.
-*"* public components of class ZCL_AOC_PARSER
-*"* do not include other source files here!!!
+    TYPE-POOLS abap .
+    CLASS zcl_aoc_parser DEFINITION LOAD .
 
     TYPES:
+*"* public components of class ZCL_AOC_PARSER
+*"* do not include other source files here!!!
       BEGIN OF st_token,
         statement TYPE i,
+        id        TYPE i,
+        parent    TYPE i,
         type      TYPE c LENGTH 1,
         value     TYPE string,
         code      TYPE string,
@@ -23,12 +27,11 @@ CLASS zcl_aoc_parser DEFINITION
         tokens TYPE tt_tokens,
       END OF st_result .
 
-    CONSTANTS c_role TYPE c VALUE 'R'.                      "#EC NOTEXT
-    CONSTANTS c_terminal TYPE c VALUE 'T'.                  "#EC NOTEXT
-    CONSTANTS c_role_fielddefid TYPE string VALUE 'FieldDefId'. "#EC NOTEXT
+    CONSTANTS c_role TYPE c VALUE 'R' ##NO_TEXT.
+    CONSTANTS c_terminal TYPE c VALUE 'T' ##NO_TEXT.
+    CONSTANTS c_nonterminal TYPE c VALUE 'N' ##NO_TEXT.
+    CONSTANTS c_role_fielddefid TYPE string VALUE 'FieldDefId' ##NO_TEXT.
 
-    TYPE-POOLS abap .
-    CLASS zcl_aoc_parser DEFINITION LOAD .
     CLASS-METHODS run
       IMPORTING
         !it_code           TYPE string_table
@@ -38,9 +41,12 @@ CLASS zcl_aoc_parser DEFINITION
       RETURNING
         VALUE(rs_result)   TYPE zcl_aoc_parser=>st_result .
 protected section.
+
+  class-methods PARENTS
+    changing
+      !CS_TOKENS type TT_TOKENS .
 *"* protected components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
-
   class-methods XML_FIX
     changing
       !CV_XML type STRING .
@@ -101,7 +107,6 @@ protected section.
       !IO_NODE type ref to LCL_NODE
     returning
       value(RV_TEXT) type STRING .
-  class ZCL_AOC_PARSER definition load .
   class-methods WALK
     importing
       !IO_NODE type ref to LCL_NODE
@@ -780,6 +785,36 @@ METHOD graph_to_text.
 ENDMETHOD.
 
 
+METHOD parents.
+
+  FIELD-SYMBOLS: <ls_token> LIKE LINE OF cs_tokens,
+                 <ls_child> LIKE LINE OF cs_tokens.
+
+
+  LOOP AT cs_tokens ASSIGNING <ls_token>.
+    <ls_token>-id = sy-tabix.
+  ENDLOOP.
+
+  DO lines( cs_tokens ) TIMES.
+    READ TABLE cs_tokens INDEX sy-index ASSIGNING <ls_child>.
+    ASSERT sy-subrc = 0.
+
+    IF <ls_child>-rulename = gv_end_rule.
+      CONTINUE. " current loop.
+    ENDIF.
+
+    LOOP AT cs_tokens ASSIGNING <ls_token>
+        WHERE type = c_nonterminal
+        AND statement = <ls_child>-statement
+        AND value = <ls_child>-rulename..
+      <ls_child>-parent = <ls_token>-id.
+    ENDLOOP.
+    ASSERT sy-subrc = 0.
+  ENDDO.
+
+ENDMETHOD.
+
+
 METHOD parse.
 
   DATA: lo_start     TYPE REF TO lcl_node,
@@ -813,8 +848,8 @@ METHOD parse.
     graph_build( EXPORTING iv_rulename = gv_end_rule
                  IMPORTING eo_start = lo_start ).
 
-    rs_result = walk( io_node  = lo_start
-                      iv_index = 1 ).
+    rs_result = walk( io_node   = lo_start
+                      iv_index  = 1 ).
     IF rs_result-match = abap_false.
       RETURN.
     ENDIF.
@@ -830,6 +865,8 @@ METHOD parse.
     ENDDO.
 
   ENDLOOP.
+
+  parents( CHANGING cs_tokens = lt_rt ).
 
   IF sy-subrc = 0.
     rs_result-match = abap_true.
@@ -898,8 +935,8 @@ METHOD walk_end.
     RETURN.
   ENDIF.
 
-  rs_result = walk_node( io_node  = io_node
-                         iv_index = iv_index ).
+  rs_result = walk_node( io_node   = io_node
+                         iv_index  = iv_index ).
 
 ENDMETHOD.
 
@@ -910,8 +947,8 @@ METHOD walk_node.
 
 
   LOOP AT io_node->mt_edges INTO lo_node.
-    rs_result = walk( io_node  = lo_node
-                      iv_index = iv_index ).
+    rs_result = walk( io_node   = lo_node
+                      iv_index  = iv_index ).
     IF rs_result-match = abap_true.
       RETURN.
     ENDIF.
@@ -926,6 +963,8 @@ METHOD walk_nonterminal.
         lo_start    TYPE REF TO lcl_node,
         lo_end      TYPE REF TO lcl_node,
         lo_node     LIKE LINE OF io_node->mt_edges.
+
+  FIELD-SYMBOLS: <ls_token> LIKE LINE OF rs_result-tokens.
 
 
   lv_rulename = io_node->mv_value.
@@ -953,6 +992,12 @@ METHOD walk_nonterminal.
 
   rs_result = walk_node( io_node  = lo_start
                          iv_index = iv_index ).
+  IF rs_result-match = abap_true.
+    APPEND INITIAL LINE TO rs_result-tokens ASSIGNING <ls_token>.
+    <ls_token>-type     = c_nonterminal.
+    <ls_token>-value    = io_node->mv_value.
+    <ls_token>-rulename = io_node->mv_rulename.
+  ENDIF.
 
 ENDMETHOD.
 
@@ -1070,7 +1115,6 @@ METHOD walk_terminal.
 
   rs_result = walk_node( io_node  = io_node
                          iv_index = iv_index + 1 ).
-
   IF rs_result-match = abap_true.
     APPEND INITIAL LINE TO rs_result-tokens ASSIGNING <ls_token>.
     <ls_token>-type     = c_terminal.
