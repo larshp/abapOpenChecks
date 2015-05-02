@@ -787,6 +787,8 @@ ENDMETHOD.
 
 METHOD parents.
 
+  DATA: lv_index TYPE i.
+
   FIELD-SYMBOLS: <ls_token> LIKE LINE OF cs_tokens,
                  <ls_child> LIKE LINE OF cs_tokens.
 
@@ -796,7 +798,8 @@ METHOD parents.
   ENDLOOP.
 
   DO lines( cs_tokens ) TIMES.
-    READ TABLE cs_tokens INDEX sy-index ASSIGNING <ls_child>.
+    lv_index = sy-index.
+    READ TABLE cs_tokens INDEX lv_index ASSIGNING <ls_child>.
     ASSERT sy-subrc = 0.
 
     IF <ls_child>-rulename = gv_end_rule.
@@ -804,9 +807,10 @@ METHOD parents.
     ENDIF.
 
     LOOP AT cs_tokens ASSIGNING <ls_token>
+        TO lv_index - 1
         WHERE type = c_nonterminal
         AND statement = <ls_child>-statement
-        AND value = <ls_child>-rulename..
+        AND value = <ls_child>-rulename.
       <ls_child>-parent = <ls_token>-id.
     ENDLOOP.
     ASSERT sy-subrc = 0.
