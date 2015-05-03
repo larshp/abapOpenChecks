@@ -16,13 +16,15 @@ CLASS lcl_test DEFINITION FOR TESTING
           mo_check  TYPE REF TO zcl_aoc_check_07.
 
     METHODS: setup,
-             test001_01 FOR TESTING,
-             test001_02 FOR TESTING,
-             test001_03 FOR TESTING,
-             test001_04 FOR TESTING,
-             test001_05 FOR TESTING,
-             test001_06 FOR TESTING,
-             test001_07 for testing.
+      test001_01 FOR TESTING,
+      test001_02 FOR TESTING,
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING,
+      test001_05 FOR TESTING,
+      test001_06 FOR TESTING,
+      test001_07 FOR TESTING,
+      test001_08 FOR TESTING,
+      test001_09 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -140,6 +142,38 @@ CLASS lcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
+  ENDMETHOD.
+
+  METHOD test001_08.
+* ===========
+
+    _code 'CALL METHOD (lv_method)'.
+    _code '  EXPORTING'.
+    _code '    is_data = is_data'.
+    _code '  RECEIVING'.
+    _code '    rv_ret  = lv_ret.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_09.
+* ===========
+
+    _code 'CALL METHOD foobar'.
+    _code '  EXPORTING'.
+    _code '    is_data = is_data'.
+    _code '  RECEIVING'.
+    _code '    rv_ret  = lv_ret.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
   ENDMETHOD.
 
 ENDCLASS.       "lcl_Test

@@ -34,8 +34,8 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lv_token     LIKE sy-tabix,
-        lv_include   TYPE sobj_name.
+  DATA: lv_token   LIKE sy-tabix,
+        lv_include TYPE sobj_name.
 
   FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
                  <ls_token1>    LIKE LINE OF it_tokens,
@@ -66,7 +66,8 @@ METHOD check.
 
     IF <ls_token3>-str CP '*>(*'
         OR <ls_token3>-str CP '*)=>*'
-        OR <ls_token3>-str CP '*)->*'.
+        OR <ls_token3>-str CP '*)->*'
+        OR <ls_token3>-str CP '*(*'.
 * allow dynamic calls
       CONTINUE.
     ENDIF.
