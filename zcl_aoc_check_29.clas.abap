@@ -82,6 +82,12 @@ METHOD check.
         CONTINUE.
       ENDIF.
 
+      IF object_type = 'CLAS'
+          AND strlen( <ls_level>-name ) = 32
+          AND <ls_level>-name+30(2) = 'CU'.
+        CONTINUE.
+      ENDIF.
+
       IF NOT lv_name CP mv_name.
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = <ls_level>-name

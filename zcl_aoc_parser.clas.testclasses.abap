@@ -3,7 +3,7 @@
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_test_statements DEFINITION FOR TESTING
+CLASS ltcl_test_statements DEFINITION FOR TESTING
     DURATION LONG
     RISK LEVEL HARMLESS
     FINAL.
@@ -152,7 +152,7 @@ ENDCLASS.       "lcl_Test
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_test_statements IMPLEMENTATION.
+CLASS ltcl_test_statements IMPLEMENTATION.
 * ==============================
 
   METHOD setup.
@@ -1211,7 +1211,7 @@ ENDCLASS.       "lcl_Test
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_test_programs DEFINITION FOR TESTING
+CLASS ltcl_test_programs DEFINITION FOR TESTING
   DURATION MEDIUM
   RISK LEVEL HARMLESS
   FINAL.
@@ -1241,7 +1241,7 @@ ENDCLASS.       "lcl_Standard_Programs
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_test_programs IMPLEMENTATION.
+CLASS ltcl_test_programs IMPLEMENTATION.
 * ===========================================
 
   METHOD read.

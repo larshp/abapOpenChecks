@@ -44,7 +44,7 @@ protected section.
 
   class-methods PARENTS
     changing
-      !CS_TOKENS type TT_TOKENS .
+      !CT_TOKENS type TT_TOKENS .
 *"* protected components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
   class-methods XML_FIX
@@ -789,24 +789,24 @@ METHOD parents.
 
   DATA: lv_index TYPE i.
 
-  FIELD-SYMBOLS: <ls_token> LIKE LINE OF cs_tokens,
-                 <ls_child> LIKE LINE OF cs_tokens.
+  FIELD-SYMBOLS: <ls_token> LIKE LINE OF ct_tokens,
+                 <ls_child> LIKE LINE OF ct_tokens.
 
 
-  LOOP AT cs_tokens ASSIGNING <ls_token>.
+  LOOP AT ct_tokens ASSIGNING <ls_token>.
     <ls_token>-id = sy-tabix.
   ENDLOOP.
 
-  DO lines( cs_tokens ) TIMES.
+  DO lines( ct_tokens ) TIMES.
     lv_index = sy-index.
-    READ TABLE cs_tokens INDEX lv_index ASSIGNING <ls_child>.
+    READ TABLE ct_tokens INDEX lv_index ASSIGNING <ls_child>.
     ASSERT sy-subrc = 0.
 
     IF <ls_child>-rulename = gv_end_rule.
       CONTINUE. " current loop.
     ENDIF.
 
-    LOOP AT cs_tokens ASSIGNING <ls_token>
+    LOOP AT ct_tokens ASSIGNING <ls_token>
         TO lv_index - 1
         WHERE type = c_nonterminal
         AND statement = <ls_child>-statement
@@ -870,7 +870,7 @@ METHOD parse.
 
   ENDLOOP.
 
-  parents( CHANGING cs_tokens = lt_rt ).
+  parents( CHANGING ct_tokens = lt_rt ).
 
   IF sy-subrc = 0.
     rs_result-match = abap_true.
@@ -1290,7 +1290,7 @@ METHOD xml_get.
          END OF ty_cache.
 
   STATICS: st_syntax TYPE syntax_tt,
-           st_cache TYPE SORTED TABLE OF ty_cache WITH UNIQUE KEY rulename.
+           st_cache  TYPE SORTED TABLE OF ty_cache WITH UNIQUE KEY rulename.
 
   DATA: lv_rulename TYPE ssyntaxstructure-rulename,
         ls_cache    LIKE LINE OF st_cache.
@@ -1305,7 +1305,8 @@ METHOD xml_get.
   ENDIF.
 
   IF st_syntax[] IS INITIAL.
-    SELECT * FROM ssyntaxstructure INTO TABLE st_syntax.    "#EC *
+    SELECT * FROM ssyntaxstructure
+      INTO TABLE st_syntax.               "#EC CI_NOWHERE "#EC CI_SUBRC
     SORT st_syntax BY rulename ASCENDING.
   ENDIF.
 

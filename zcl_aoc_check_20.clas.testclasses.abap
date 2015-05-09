@@ -3,7 +3,7 @@
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_test DEFINITION FOR TESTING
+CLASS ltcl_test DEFINITION FOR TESTING
   DURATION SHORT
   RISK LEVEL HARMLESS
   FINAL.
@@ -39,7 +39,7 @@ ENDCLASS.       "lcl_Test
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_test IMPLEMENTATION.
+CLASS ltcl_test IMPLEMENTATION.
 * ==============================
 
   DEFINE _code.

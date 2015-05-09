@@ -75,10 +75,8 @@ METHOD double_click.
       object_type = 'PROG'
       position    = lv_line
     EXCEPTIONS
-      OTHERS      = 3.
-  IF sy-subrc <> 0.
-    RETURN.
-  ENDIF.
+      OTHERS      = 3. "#EC CI_SUBRC
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 
