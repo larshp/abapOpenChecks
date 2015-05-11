@@ -89,11 +89,12 @@ METHOD build.
                  <ls_token>     LIKE LINE OF it_tokens.
 
 
+  CLEAR mt_statements.
+
   IF is_structure-stmnt_to - is_structure-stmnt_from = 2.
     RETURN.
   ENDIF.
 
-  CLEAR mt_statements.
   LOOP AT it_statements ASSIGNING <ls_statement>
       FROM is_structure-stmnt_from TO is_structure-stmnt_to.
     CLEAR ls_statement.
