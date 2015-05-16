@@ -91,12 +91,11 @@ METHOD build.
 
   CLEAR mt_statements.
 
-  IF is_structure-stmnt_to - is_structure-stmnt_from = 2.
-    RETURN.
-  ENDIF.
-
   LOOP AT it_statements ASSIGNING <ls_statement>
-      FROM is_structure-stmnt_from TO is_structure-stmnt_to.
+      FROM is_structure-stmnt_from TO is_structure-stmnt_to
+      WHERE type <> scan_stmnt_type-comment
+      AND type <> scan_stmnt_type-comment_in_stmnt.
+
     CLEAR ls_statement.
     LOOP AT it_tokens ASSIGNING <ls_token>
         FROM <ls_statement>-from TO <ls_statement>-to.
@@ -111,6 +110,10 @@ METHOD build.
     ENDLOOP.
     APPEND ls_statement TO mt_statements.
   ENDLOOP.
+
+  IF lines( mt_statements ) = 3.
+    CLEAR mt_statements.
+  ENDIF.
 
 ENDMETHOD.
 
