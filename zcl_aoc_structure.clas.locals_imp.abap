@@ -63,7 +63,10 @@
       build_sstr( ).
 
       READ TABLE mt_structures INDEX 1 INTO ls_structure.
-      ASSERT sy-subrc = 0.
+      IF sy-subrc <> 0.
+        CREATE OBJECT ro_structure.
+        RETURN.
+      ENDIF.
 
       ro_structure = structure_loop( ls_structure ).
 
