@@ -897,6 +897,10 @@ METHOD run.
        TOKENS          INTO lt_tokens
        STATEMENTS      INTO lt_statements
        WITH ANALYSIS.
+  IF sy-subrc <> 0.
+    rs_result-match = abap_false.
+    RETURN.
+  ENDIF.
 
   gv_debug          = iv_debug.
   gv_end_rule       = iv_rule.
