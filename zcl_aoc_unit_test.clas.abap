@@ -66,6 +66,7 @@ METHOD check.
        WITH ANALYSIS
        WITH COMMENTS
        WITH PRAGMAS    abap_true.
+  cl_abap_unit_assert=>assert_subrc( msg = 'Error while parsing'(001) ).
 
   CLEAR gs_result.
   SET HANDLER handler FOR io_check.

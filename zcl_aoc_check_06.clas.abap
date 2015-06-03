@@ -104,12 +104,7 @@ METHOD check.
         CONTINUE.
       ENDIF.
       IF <ls_statement>-type = scan_stmnt_type-compute_direct
-          AND strlen( <ls_token>-str ) >= 5
-          AND <ls_token>-str(5) <> 'DATA('.
-        CONTINUE.
-      ENDIF.
-      IF <ls_statement>-type = scan_stmnt_type-compute_direct
-          AND strlen( <ls_token>-str ) < 5.
+          AND ( strlen( <ls_token>-str ) < 5 OR <ls_token>-str(5) <> 'DATA(' ).
         CONTINUE.
       ENDIF.
 
