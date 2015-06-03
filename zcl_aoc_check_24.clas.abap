@@ -135,6 +135,13 @@ METHOD analyze.
               p_test         = c_my_name
               p_code         = '001'
               p_param_1      = pack( lt_list ) ).
+
+* dont report too may findings if there are identical blocks larger than mv_statements
+      DELETE ct_blocks WHERE level = ls_prev-level
+        AND row >= ls_prev-row
+        AND row <= ls_prev-row + mv_statements.
+      CLEAR ls_prev.
+      CONTINUE.
     ENDIF.
 
     ls_prev = <ls_block>.
