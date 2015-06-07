@@ -100,7 +100,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_04
 
   METHOD test001_05.
 * ===========
@@ -112,10 +112,14 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_05
 
   METHOD test001_06.
 * ===========
+
+    IF sy-saprl < '740'.
+      RETURN.
+    ENDIF.
 
     _code 'DATA(lv_icon) = icon_incomplete.'.
 
@@ -124,10 +128,14 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_06
 
   METHOD test001_07.
 * ===========
+
+    IF sy-saprl < '740'.
+      RETURN.
+    ENDIF.
 
     _code 'data(lv_icon) = icon_incomplete.'.
 
@@ -137,7 +145,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_07
 
   METHOD test001_08.
 * ===========
@@ -149,7 +157,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_08
 
   METHOD test001_09.
 * ===========
@@ -163,7 +171,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_09
 
   METHOD test001_10.
 * ===========
@@ -175,7 +183,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_10
 
   METHOD test001_11.
 * ===========
@@ -191,6 +199,6 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_11
 
 ENDCLASS.       "lcl_Test

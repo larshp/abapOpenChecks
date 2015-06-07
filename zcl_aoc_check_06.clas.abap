@@ -25,6 +25,8 @@ protected section.
 
   data MV_ONE_FINDING type FLAG .
   data MV_HIKEY type FLAG .
+  data MV_LOWER type FLAG .
+  data MV_UPPER type FLAG .
   data MV_LOKEY type FLAG .
 private section.
 *"* private components of class ZCL_AOC_CHECK_06
@@ -44,24 +46,46 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lt_code      TYPE string_table,
-        lv_level     TYPE stmnt_levl,
-        lv_statement TYPE i,
-        lv_error     TYPE abap_bool,
-        lv_code      TYPE string,
-        lv_lower     TYPE string,
-        lv_upper     TYPE string,
-        lv_offset    TYPE i.
+  DATA: lt_code     TYPE string_table,
+        lt_pretty   TYPE string_table,
+        ls_rseumod  TYPE rseumod,
+        lv_row      TYPE i,
+        lv_option   TYPE c LENGTH 5.
 
-  FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                 <ls_statement> LIKE LINE OF it_statements,
-                 <lv_code>      LIKE LINE OF lt_code,
-                 <ls_token>     LIKE LINE OF it_tokens.
+  FIELD-SYMBOLS: <ls_level>  LIKE LINE OF it_levels,
+                 <lv_code>   LIKE LINE OF lt_code,
+                 <lv_pretty> LIKE LINE OF lt_pretty.
 
-* todo, this is too simple, but seems to work in most cases
+* check workbench settings
+  CALL FUNCTION 'RS_WORKBENCH_CUSTOMIZING'
+    EXPORTING
+      choice          = 'WB'
+      suppress_dialog = 'X'
+    IMPORTING
+      setting         = ls_rseumod.
+  IF ls_rseumod-lowercase = 'X'.
+    lv_option = 'LOWER'.
+  ELSEIF ls_rseumod-lowercase = 'G'.
+    lv_option = 'HIKEY'.
+  ELSEIF ls_rseumod-lowercase = 'L'.
+    lv_option = 'LOKEY'.
+  ELSE.
+    lv_option = 'UPPER'.
+  ENDIF.
+
+  IF ( mv_lower = abap_true AND lv_option <> 'LOWER' )
+      OR ( mv_hikey = abap_true AND lv_option <> 'HIKEY' )
+      OR ( mv_lokey = abap_true AND lv_option <> 'LOKEY' )
+      OR ( mv_upper = abap_true AND lv_option <> 'UPPER' ).
+    inform( p_sub_obj_type = object_type
+            p_sub_obj_name = object_name
+            p_kind         = mv_errty
+            p_test         = c_my_name
+            p_code         = '002' ).
+    RETURN.
+  ENDIF.
 
   LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
-    lv_level = sy-tabix.
 
 * skip class definitions, they are auto generated(in most cases)
 * todo: move this to check configuration
@@ -82,74 +106,36 @@ METHOD check.
 
     lt_code = get_source( <ls_level> ).
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-method_direct
-        AND type <> scan_stmnt_type-trmac_call
-        AND type <> scan_stmnt_type-macro_call
-        AND level = lv_level.
-      lv_statement = sy-tabix.
+    lt_pretty = lt_code.
+    CALL FUNCTION 'CREATE_PRETTY_PRINT_FORMAT'
+      EXPORTING
+        mode          = lv_option
+      TABLES
+        source        = lt_pretty
+      EXCEPTIONS
+        syntax_errors = 1
+        OTHERS        = 2.
+    IF sy-subrc <> 0.
+      CONTINUE.
+    ENDIF.
 
-      IF <ls_statement>-type = scan_stmnt_type-empty.
-* it messes up if there are empty statements, remove the empty statement
-        EXIT.
-      ENDIF.
+    LOOP AT lt_code ASSIGNING <lv_code>.
+      lv_row = sy-tabix.
+      READ TABLE lt_pretty INDEX lv_row ASSIGNING <lv_pretty>.
 
-* check first token in statement, this is always a keyword
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-      IF sy-subrc <> 0
-          OR <ls_token>-type <> scan_token_type-identifier
-          OR <ls_token>-str CA '['.
-        CONTINUE.
-      ENDIF.
-      IF <ls_statement>-type = scan_stmnt_type-compute_direct
-          AND ( strlen( <ls_token>-str ) < 5 OR <ls_token>-str(5) <> 'DATA(' ).
-        CONTINUE.
-      ENDIF.
-
-      READ TABLE lt_code ASSIGNING <lv_code> INDEX <ls_token>-row.
-      ASSERT sy-subrc = 0.
-
-      lv_offset = <ls_token>-col.
-      lv_code = <lv_code>+lv_offset(<ls_token>-len1).
-      lv_lower = lv_code.
-      lv_upper = lv_code.
-      TRANSLATE lv_lower TO LOWER CASE.
-      TRANSLATE lv_upper TO UPPER CASE.
-
-      lv_error = abap_false.
-      IF mv_hikey = abap_true AND lv_code <> lv_upper.
-        lv_error = abap_true.
-      ELSEIF mv_lokey = abap_true AND lv_code <> lv_lower.
-        lv_error = abap_true.
-      ENDIF.
-
-      IF lv_error = abap_true.
-* skip if part of macro
-        LOOP AT it_structures TRANSPORTING NO FIELDS
-            WHERE stmnt_from <= lv_statement
-            AND stmnt_to >= lv_statement
-            AND type = scan_struc_type-macro.
-          EXIT. " current loop.
-        ENDLOOP.
-        IF sy-subrc = 0.
-          CONTINUE. " current loop
-        ENDIF.
-
+      IF <lv_code> <> <lv_pretty>.
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = <ls_level>-name
-                p_line         = <ls_token>-row
+                p_line         = lv_row
                 p_kind         = mv_errty
                 p_test         = c_my_name
                 p_code         = '001' ).
-
         IF mv_one_finding = abap_true.
           EXIT. " current loop, only one error per level
         ENDIF.
       ENDIF.
-
     ENDLOOP.
+
   ENDLOOP.
 
 ENDMETHOD.
@@ -169,7 +155,9 @@ METHOD constructor.
   mv_errty = c_error.
   mv_hikey = abap_true.
   mv_lokey = abap_false.
-  mv_one_finding = abap_false.
+  mv_lower = abap_false.
+  mv_upper = abap_false.
+  mv_one_finding = abap_true.
 
 ENDMETHOD.                    "CONSTRUCTOR
 
@@ -180,6 +168,8 @@ METHOD get_attributes.
     mv_errty = mv_errty
     mv_hikey = mv_hikey
     mv_lokey = mv_lokey
+    mv_lower = mv_lower
+    mv_upper = mv_upper
     mv_one_finding = mv_one_finding
     TO DATA BUFFER p_attributes.
 
@@ -191,6 +181,8 @@ METHOD get_message_text.
   CASE p_code.
     WHEN '001'.
       p_text = 'Use pretty printer'.                        "#EC NOTEXT
+    WHEN '002'.
+      p_text = 'Pretty printer settings does not match'.    "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
@@ -227,6 +219,8 @@ METHOD if_ci_test~query_attributes.
 
   fill_att_rb mv_hikey 'Keywords upper case' 'R' 'TYPE'.    "#EC NOTEXT
   fill_att_rb mv_lokey 'Keywords lower case' 'R' 'TYPE'.    "#EC NOTEXT
+  fill_att_rb mv_upper 'Upper case' 'R' 'TYPE'.    "#EC NOTEXT
+  fill_att_rb mv_lower 'Lower case' 'R' 'TYPE'.    "#EC NOTEXT
 
   fill_att mv_one_finding 'Report one finding per include' 'C'. "#EC NOTEXT
 
@@ -253,6 +247,8 @@ METHOD put_attributes.
     mv_errty = mv_errty
     mv_hikey = mv_hikey
     mv_lokey = mv_lokey
+    mv_lower = mv_lower
+    mv_upper = mv_upper
     mv_one_finding = mv_one_finding
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
 
