@@ -88,12 +88,12 @@ ENDMETHOD.
 METHOD handler.
 
 * assume only one result
-  GS_RESULT-sobjname = p_sub_obj_name.
-  GS_RESULT-sobjtype = p_sub_obj_type.
-  GS_RESULT-line     = p_line.
-  GS_RESULT-col      = p_column.
-  GS_RESULT-kind     = p_kind.
-  GS_RESULT-code     = p_code.
+  gs_result-sobjname = p_sub_obj_name.
+  gs_result-sobjtype = p_sub_obj_type.
+  gs_result-line     = p_line.
+  gs_result-col      = p_column.
+  gs_result-kind     = p_kind.
+  gs_result-code     = p_code.
 
 ENDMETHOD.
 ENDCLASS.

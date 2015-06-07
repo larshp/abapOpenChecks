@@ -16,13 +16,13 @@ CLASS ltcl_test DEFINITION FOR TESTING
           mo_check  TYPE REF TO zcl_aoc_check_18.
 
     METHODS: setup,
-             test001_01 FOR TESTING,
-             test001_02 FOR TESTING,
-             test001_03 FOR TESTING,
-             test001_04 FOR TESTING,
-             test001_05 FOR TESTING,
-             test001_06 FOR TESTING,
-             test001_07 for testing.
+      test001_01 FOR TESTING,
+      test001_02 FOR TESTING,
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING,
+      test001_05 FOR TESTING,
+      test001_06 FOR TESTING,
+      test001_07 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
