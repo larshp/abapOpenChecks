@@ -45,16 +45,18 @@ METHOD check.
 
   DATA: lv_obj_name TYPE sobj_name,
         lv_text     TYPE string,
+        ls_flags    TYPE rslin_test_flags,
         lt_result   TYPE slin_result.
 
   FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result,
                  <ls_line>   LIKE LINE OF <ls_result>-lines.
 
 
+  ls_flags = set_flags( ).
   CALL FUNCTION 'EXTENDED_PROGRAM_CHECK'
     EXPORTING
       program    = program_name
-      test_flags = set_flags( )
+      test_flags = ls_flags
     IMPORTING
       result     = lt_result.
 
@@ -182,7 +184,6 @@ METHOD set_flags.
   rs_flags-x_mls = abap_true.
   rs_flags-x_put = abap_true.
   rs_flags-x_hel = abap_true.
-  rs_flags-x_sec = abap_true.
 
 ENDMETHOD.
 ENDCLASS.
