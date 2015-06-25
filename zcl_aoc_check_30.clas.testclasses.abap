@@ -1,0 +1,143 @@
+*----------------------------------------------------------------------*
+*       CLASS lcl_Test DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS ltcl_test DEFINITION FOR TESTING
+  DURATION SHORT
+  RISK LEVEL HARMLESS
+  FINAL.
+
+  PRIVATE SECTION.
+* ================
+
+    DATA: mt_code   TYPE string_table,
+          ms_result TYPE scirest_ad,
+          mo_check  TYPE REF TO zcl_aoc_check_30.
+
+    METHODS: setup,
+      test001_01 FOR TESTING,
+      test001_02 FOR TESTING,
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING,
+      test001_05 FOR TESTING,
+      test001_06 FOR TESTING,
+      test001_07 FOR TESTING.
+
+ENDCLASS.       "lcl_Test
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_Test IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS ltcl_test IMPLEMENTATION.
+* ==============================
+
+  DEFINE _code.
+    append &1 to mt_code.
+  END-OF-DEFINITION.
+
+  METHOD setup.
+    CREATE OBJECT mo_check.
+  ENDMETHOD.                    "setup
+
+  METHOD test001_01.
+* ===========
+
+    _code 'lx_error->to_fpm_error('.
+    _code 'EXPORTING iv_ref_name = lv_field_name'.
+    _code 'iv_ref_index = lv_row ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.                    "test1
+
+  METHOD test001_02.
+* ===========
+
+    _code 'lx_error->to_fpm_error('.
+    _code 'iv_ref_name = lv_field_name'.
+    _code 'iv_ref_index = lv_row ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.                    "test2
+
+  METHOD test001_03.
+* ===========
+
+    _code 'li_bcs->send_mail('.
+    _code 'EXPORTING'.
+    _code 'iv_subject_text = iv_subject_text'.
+    _code 'iv_distr_list = iv_distr_list'.
+    _code 'iv_recipient = iv_recipient'.
+    _code 'it_body = lt_body_text ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_04.
+* ===========
+
+    _code 'foo( EXPORTING iv_bar = bar( CHANGING cv_maz = lv_baz ) ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_05.
+* ===========
+
+    _code 'foo( EXPORTING iv_bar = ''CHANGING'' ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_06.
+* ===========
+
+    _code 'foo( EXPORTING iv_bar = '')'' CHANGING cv_moo = lv_boo ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_07.
+* ===========
+
+    _code 'foo( iv_bar = bar( EXPORTING ci_moo = lv_boo ) ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+ENDCLASS.       "lcl_Test
