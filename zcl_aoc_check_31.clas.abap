@@ -64,6 +64,7 @@ METHOD check.
 
     LOOP AT <ls_result>-lines ASSIGNING <ls_line>.
       CONCATENATE LINES OF cl_slin_io=>old_line_to_src( <ls_line> ) INTO lv_text.
+      EXIT.
     ENDLOOP.
 
     lv_obj_name = <ls_result>-src_incl.
