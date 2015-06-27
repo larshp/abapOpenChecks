@@ -45,6 +45,7 @@ METHOD check.
 
   DATA: lv_obj_name TYPE sobj_name,
         lv_text     TYPE string,
+        lv_tmp      TYPE string,
         ls_flags    TYPE rslin_test_flags,
         lt_result   TYPE slin_result.
 
@@ -62,9 +63,14 @@ METHOD check.
 
   LOOP AT lt_result ASSIGNING <ls_result> WHERE code IN mt_codes. "#EC CI_SORTSEQ
 
+    CLEAR lv_text.
     LOOP AT <ls_result>-lines ASSIGNING <ls_line>.
-      CONCATENATE LINES OF cl_slin_io=>old_line_to_src( <ls_line> ) INTO lv_text.
-      EXIT.
+      CONCATENATE LINES OF cl_slin_io=>old_line_to_src( <ls_line> ) INTO lv_tmp.
+      IF lv_text IS INITIAL.
+        lv_text = lv_tmp.
+      ELSE.
+        CONCATENATE lv_text cl_abap_char_utilities=>newline lv_tmp INTO lv_text.
+      ENDIF.
     ENDLOOP.
 
     lv_obj_name = <ls_result>-src_incl.
