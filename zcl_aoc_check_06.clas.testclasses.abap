@@ -26,7 +26,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_08 FOR TESTING,
       test001_09 FOR TESTING,
       test001_10 FOR TESTING,
-      test001_11 FOR TESTING.
+      test001_11 FOR TESTING,
+      test001_12 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -200,5 +201,17 @@ CLASS ltcl_test IMPLEMENTATION.
                                         act = ms_result-code ).
 
   ENDMETHOD.                    "test001_11
+
+  METHOD test001_12.
+* ===========
+
+    _code ''. " empty
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Test

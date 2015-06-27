@@ -49,6 +49,7 @@ METHOD check.
   DATA: lt_code     TYPE string_table,
         lt_pretty   TYPE string_table,
         ls_rseumod  TYPE rseumod,
+        lv_level    TYPE i,
         lv_row      TYPE i,
         lv_option   TYPE c LENGTH 5.
 
@@ -86,6 +87,7 @@ METHOD check.
   ENDIF.
 
   LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    lv_level = sy-tabix.
 
 * skip class definitions, they are auto generated(in most cases)
 * todo: move this to check configuration
@@ -102,6 +104,13 @@ METHOD check.
     IF <ls_level>-name(8) = '/1BCWDY/'.
 * todo, web dynpro
       RETURN.
+    ENDIF.
+
+* make sure the source code is not empty, as it will cause the pretty
+* printer to show an error message
+    READ TABLE it_statements WITH KEY level = lv_level TRANSPORTING NO FIELDS.
+    IF sy-subrc <> 0.
+      CONTINUE.
     ENDIF.
 
     lt_code = get_source( <ls_level> ).

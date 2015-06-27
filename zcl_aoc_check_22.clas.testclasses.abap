@@ -29,7 +29,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_12 FOR TESTING,
       test001_13 FOR TESTING,
       test001_14 FOR TESTING,
-      test001_15 FOR TESTING.
+      test001_15 FOR TESTING,
+      test001_16 FOR TESTING,
+      test001_17 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -299,6 +301,41 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'ELSE.'.
     _code '  WRITE ''else'' ##NO_TEXT.'.
     _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_16.
+* ===========
+
+    _code 'CASE lv_bar.'.
+    _code '  WHEN ''A''.'.
+    _code '    WRITE ''sdf''.'.
+    _code '    CASE lv_button.'.
+    _code '      WHEN 1.'.
+    _code '        WRITE ''hgf''.'.
+    _code '      WHEN 2 OR 3.'.
+    _code '        WRITE ''ytyu''.'.
+    _code '      WHEN OTHERS.'.
+    _code '        ASSERT 1 = 1 + 1.'.
+    _code '    ENDCASE.'.
+    _code 'ENDCASE.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_17.
+* ===========
+
+    _code ''. " empty
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
                                           io_check = mo_check ).

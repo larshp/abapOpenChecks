@@ -119,6 +119,7 @@ METHOD compare.
       IF sy-subrc <> 0.
         RETURN.
       ENDIF.
+      lv_str1 = zcl_aoc_structure=>to_string_simple( lo_first ).
       CONTINUE. " current loop
     ENDIF.
     READ TABLE lo_stru->mt_structure INDEX lv_index INTO lo_compare.
@@ -126,7 +127,6 @@ METHOD compare.
       RETURN.
     ENDIF.
 
-    lv_str1 = zcl_aoc_structure=>to_string_simple( lo_first ).
     lv_str2 = zcl_aoc_structure=>to_string_simple( lo_compare ).
     IF lv_str1 <> lv_str2.
       RETURN.
@@ -137,12 +137,17 @@ METHOD compare.
     RETURN. " list is empty
   ENDIF.
 
+  IF lv_str1 IS INITIAL.
+    RETURN.
+  ENDIF.
+
   inform( p_sub_obj_type = c_type_include
           p_sub_obj_name = get_include( p_level = lo_first->ms_statement-level )
           p_line         = lo_first->ms_statement-row
           p_kind         = mv_errty
           p_test         = c_my_name
-          p_code         = '001' ).
+          p_code         = '001'
+          p_param_1      = lv_str1 ).
 
 ENDMETHOD.
 
@@ -167,7 +172,7 @@ METHOD get_message_text.
 
   CASE p_code.
     WHEN '001'.
-      p_text = 'Conditions contain identical code'.         "#EC NOTEXT
+      p_text = 'Conditions contain identical code, &1'.      "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
