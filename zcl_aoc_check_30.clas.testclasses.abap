@@ -22,7 +22,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_04 FOR TESTING,
       test001_05 FOR TESTING,
       test001_06 FOR TESTING,
-      test001_07 FOR TESTING.
+      test001_07 FOR TESTING,
+      test001_08 FOR TESTING,
+      test001_09 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -137,6 +139,44 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_08.
+* ===========
+
+   _code '  cl_ci_inspection=>get_ref('.
+   _code '    EXPORTING'.
+   _code '      p_user          = '''''.
+   _code '      p_name          = lv_name'.
+   _code '    RECEIVING'.
+   _code '      p_ref           = lo_ci'.
+   _code '    EXCEPTIONS'.
+   _code '      insp_not_exists = 1'.
+   _code '      OTHERS          = 2 ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_09.
+* ===========
+
+   _code '  cl_ci_inspection=>get_ref('.
+   _code '    EXPORTING'.
+   _code '      p_user          = '''''.
+   _code '      p_name          = lv_name'.
+   _code '    EXCEPTIONS'.
+   _code '      insp_not_exists = 1'.
+   _code '      OTHERS          = 2 ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
 
