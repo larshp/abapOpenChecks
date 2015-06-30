@@ -105,6 +105,10 @@ METHOD check.
 * todo, web dynpro
       RETURN.
     ENDIF.
+    IF <ls_level>-name(4) = 'SAPL'.
+* exclude functionpool
+      CONTINUE.
+    ENDIF.
 
 * make sure the source code is not empty, as it will cause the pretty
 * printer to show an error message
