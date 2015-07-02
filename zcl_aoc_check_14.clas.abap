@@ -130,6 +130,9 @@ METHOD parse.
     IF strlen( <lv_commented> ) > 1 AND <lv_commented>(2) = '"*'.
       RETURN.
     ENDIF.
+    IF strlen( <lv_commented> ) > 0 AND <lv_commented>(1) = '*'.
+      RETURN.
+    ENDIF.
     IF strlen( <lv_commented> ) > 4 AND <lv_commented>(5) = '-----'.
       RETURN.
     ENDIF.
