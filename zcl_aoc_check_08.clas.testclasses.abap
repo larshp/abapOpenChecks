@@ -41,7 +41,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test006_01 FOR TESTING.
 
     METHODS:
-      test007_01 FOR TESTING.
+      test007_01 FOR TESTING,
+      test008_01 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -205,6 +206,20 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     _code 'IF lv_foo EQ lv_bar.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '007'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test008_01.
+* ===========
+
+    _code 'IF lv_foo NE ''asf''.'.
     _code 'ENDIF.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code

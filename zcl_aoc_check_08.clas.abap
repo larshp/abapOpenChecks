@@ -32,6 +32,7 @@ METHOD check.
 
   DATA: lv_include   TYPE sobj_name,
         lv_code      TYPE sci_errc,
+        lv_token     TYPE string,
         lv_statement TYPE string.
 
   FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
@@ -43,12 +44,17 @@ METHOD check.
     CLEAR lv_statement.
 
     LOOP AT it_tokens ASSIGNING <ls_token>
-        FROM <ls_statement>-from TO <ls_statement>-to
-        WHERE type = scan_token_type-identifier.
-      IF lv_statement IS INITIAL.
-        lv_statement = <ls_token>-str.
+        FROM <ls_statement>-from TO <ls_statement>-to.
+      IF <ls_token>-type <> scan_token_type-identifier.
+        lv_token = 'SOMETHING'.
       ELSE.
-        CONCATENATE lv_statement <ls_token>-str INTO lv_statement SEPARATED BY space.
+        lv_token = <ls_token>-str.
+      ENDIF.
+
+      IF lv_statement IS INITIAL.
+        lv_statement = lv_token.
+      ELSE.
+        CONCATENATE lv_statement lv_token INTO lv_statement SEPARATED BY space.
       ENDIF.
     ENDLOOP.
 
