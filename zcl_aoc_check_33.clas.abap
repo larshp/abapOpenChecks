@@ -53,7 +53,7 @@ METHOD GET_MESSAGE_TEXT.
 ENDMETHOD.
 
 
-METHOD RUN.
+METHOD run.
 
   DATA: lv_name  TYPE ddobjname,
         ls_dd02v TYPE dd02v,
@@ -84,7 +84,7 @@ METHOD RUN.
     RETURN.
   ENDIF.
 
-  LOOP AT lt_dd03p ASSIGNING <ls_dd03p>.
+  LOOP AT lt_dd03p ASSIGNING <ls_dd03p> WHERE fieldname <> '.INCLUDE'.
     IF <ls_dd03p>-fieldname(2) <> 'ZZ' AND <ls_dd03p>-fieldname(2) <> 'YY'.
       inform( p_sub_obj_type = object_type
               p_sub_obj_name = object_name
