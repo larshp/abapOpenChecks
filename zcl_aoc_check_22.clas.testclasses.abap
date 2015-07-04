@@ -31,7 +31,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_14 FOR TESTING,
       test001_15 FOR TESTING,
       test001_16 FOR TESTING,
-      test001_17 FOR TESTING.
+      test001_17 FOR TESTING,
+      test001_18 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -336,6 +337,24 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     _code ''. " empty
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_18.
+* ===========
+    _code 'CASE mv_mode.'.
+    _code '  WHEN c_change.'.
+    _code '    change_group( ).'.
+    _code '    li_tr_mgr->commit( ).'.
+    _code '  WHEN c_create.'.
+    _code '    create_group( ).'.
+    _code '    li_tr_mgr->commit( ).'.
+    _code 'ENDCASE.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
                                           io_check = mo_check ).
