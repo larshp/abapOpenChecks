@@ -41,7 +41,7 @@ METHOD check.
       lv_include = get_include( p_level = <ls_statement>-level ).
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
-              p_line         = <ls_token>-row
+              p_line         = lv_start
               p_kind         = mv_errty
               p_test         = myname
               p_code         = '001' ).
