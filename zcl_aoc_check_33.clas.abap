@@ -22,7 +22,7 @@ ENDCLASS.
 CLASS ZCL_AOC_CHECK_33 IMPLEMENTATION.
 
 
-METHOD CONSTRUCTOR.
+METHOD constructor.
 
   super->constructor( ).
 
@@ -41,7 +41,7 @@ METHOD CONSTRUCTOR.
 ENDMETHOD.                    "CONSTRUCTOR
 
 
-METHOD GET_MESSAGE_TEXT.
+METHOD get_message_text.
 
   CASE p_code.
     WHEN '001'.
