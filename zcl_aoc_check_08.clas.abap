@@ -79,6 +79,12 @@ METHOD check.
         OR lv_statement CP '* LE *'
         OR lv_statement CP '* GE *'.
       lv_code = '007'.
+    ELSEIF lv_statement CP 'DEMAND *'.
+      lv_code = '008'.
+    ELSEIF lv_statement CP 'SUPPLY *'.
+      lv_code = '009'.
+    ELSEIF lv_statement CP 'CONTEXTS *'.
+      lv_code = '010'.
     ENDIF.
 
     IF NOT lv_code IS INITIAL.
@@ -129,6 +135,12 @@ METHOD get_message_text.
       p_text = 'Obsolete operator'.                         "#EC NOTEXT
     WHEN '007'.
       p_text = 'Use new operator'.                          "#EC NOTEXT
+    WHEN '008'.
+      p_text = 'DEMAND is obsolete'.                        "#EC NOTEXT
+    WHEN '009'.
+      p_text = 'SUPPLY is obsolete'.                        "#EC NOTEXT
+    WHEN '010'.
+      p_text = 'CONTEXTS is obsolete'.                      "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
