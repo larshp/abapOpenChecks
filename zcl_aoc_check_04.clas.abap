@@ -76,6 +76,7 @@ METHOD check.
                   p_kind         = mv_errty
                   p_test         = myname
                   p_code         = '001' ).
+          EXIT. " only one error per statement
         ENDIF.
       ENDLOOP.
     ENDLOOP.
