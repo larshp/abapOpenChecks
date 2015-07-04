@@ -25,19 +25,17 @@ protected section.
       !IS_STRUCTURE type SSTRUC
       !IT_STATEMENTS type SSTMNT_TAB
       !IT_TOKENS type STOKESX_TAB .
-PRIVATE SECTION.
-*"* private components of class ZCL_AOC_CHECK_27
-*"* do not include other source files here!!!
+private section.
 
-  CONSTANTS c_my_name TYPE seoclsname VALUE 'ZCL_AOC_CHECK_27'. "#EC NOTEXT
-
-  TYPES: BEGIN OF st_statement,
+  types:
+    BEGIN OF st_statement,
            statement TYPE string,
            row TYPE stmnt_levl,
            level TYPE token_row,
-         END OF st_statement.
+         END OF st_statement .
 
-  DATA: mt_statements TYPE TABLE OF st_statement.
+  data:
+    mt_statements TYPE TABLE OF st_statement .
 ENDCLASS.
 
 
@@ -69,7 +67,7 @@ METHOD analyze.
               p_sub_obj_name = lv_include
               p_line         = ls_statement-row
               p_kind         = mv_errty
-              p_test         = c_my_name
+              p_test         = myname
               p_code         = '001' ).
       RETURN.
     ELSE.

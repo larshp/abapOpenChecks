@@ -41,10 +41,6 @@ protected section.
     importing
       !IO_STRUCTURE type ref to ZCL_AOC_STRUCTURE .
 private section.
-*"* private components of class ZCL_AOC_CHECK_22
-*"* do not include other source files here!!!
-
-  constants C_MY_NAME type SEOCLSNAME value 'ZCL_AOC_CHECK_22'. "#EC NOTEXT
 ENDCLASS.
 
 
@@ -145,7 +141,7 @@ METHOD compare.
           p_sub_obj_name = get_include( p_level = lo_first->ms_statement-level )
           p_line         = lo_first->ms_statement-row
           p_kind         = mv_errty
-          p_test         = c_my_name
+          p_test         = myname
           p_code         = '001'
           p_param_1      = lv_str1 ).
 

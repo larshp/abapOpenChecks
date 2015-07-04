@@ -29,10 +29,6 @@ protected section.
   data MV_UPPER type FLAG .
   data MV_LOKEY type FLAG .
 private section.
-*"* private components of class ZCL_AOC_CHECK_06
-*"* do not include other source files here!!!
-
-  constants C_MY_NAME type SEOCLSNAME value 'ZCL_AOC_CHECK_06'. "#EC NOTEXT
 ENDCLASS.
 
 
@@ -81,7 +77,7 @@ METHOD check.
     inform( p_sub_obj_type = object_type
             p_sub_obj_name = object_name
             p_kind         = mv_errty
-            p_test         = c_my_name
+            p_test         = myname
             p_code         = '002' ).
     RETURN.
   ENDIF.
@@ -141,7 +137,7 @@ METHOD check.
                 p_sub_obj_name = <ls_level>-name
                 p_line         = lv_row
                 p_kind         = mv_errty
-                p_test         = c_my_name
+                p_test         = myname
                 p_code         = '001' ).
         IF mv_one_finding = abap_true.
           EXIT. " current loop, only one error per level
@@ -239,7 +235,7 @@ METHOD if_ci_test~query_attributes.
 
   WHILE lv_ok = abap_false.
     cl_ci_query_attributes=>generic(
-                          p_name       = c_my_name
+                          p_name       = myname
                           p_title      = 'Options'
                           p_attributes = lt_attributes
                           p_message    = lv_message

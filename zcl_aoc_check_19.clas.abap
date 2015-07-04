@@ -28,10 +28,7 @@ protected section.
 
   methods INIT_RANGE .
 private section.
-*"* private components of class ZCL_AOC_CHECK_19
-*"* do not include other source files here!!!
 
-  constants C_MY_NAME type SEOCLSNAME value 'ZCL_AOC_CHECK_19'. "#EC NOTEXT
   data:
     mt_range     TYPE RANGE OF string .
 ENDCLASS.
@@ -134,7 +131,7 @@ METHOD check.
                 p_sub_obj_name = get_include( p_level = <ls_statement>-level )
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
-                p_test         = c_my_name
+                p_test         = myname
                 p_code         = '001' ).
       ENDIF.
     ENDIF.
@@ -202,7 +199,7 @@ METHOD if_ci_test~query_attributes.
 
   WHILE lv_ok = abap_false.
     cl_ci_query_attributes=>generic(
-                          p_name       = c_my_name
+                          p_name       = myname
                           p_title      = 'Options'
                           p_attributes = lt_attributes
                           p_message    = lv_message

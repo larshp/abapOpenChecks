@@ -37,13 +37,12 @@ protected section.
     returning
       value(RV_EXIT) type ABAP_BOOL .
 private section.
+
 *"* private components of class ZCL_AOC_CHECK_17
 *"* do not include other source files here!!!
-
   data MS_STATEMENT type SSTMNT .
   data MS_TOKEN type STOKESX .
   data MV_MODE type I .
-  constants C_MY_NAME type SEOCLSNAME value 'ZCL_AOC_CHECK_17'. "#EC NOTEXT
 ENDCLASS.
 
 
@@ -138,7 +137,7 @@ METHOD check_mode.
             p_sub_obj_name = lv_include
             p_line = ms_token-row
             p_kind = mv_errty
-            p_test = c_my_name
+            p_test = myname
             p_code = '001' ).
   ENDIF.
 
@@ -222,7 +221,7 @@ METHOD if_ci_test~query_attributes.
 
   WHILE lv_ok = abap_false.
     cl_ci_query_attributes=>generic(
-                          p_name       = c_my_name
+                          p_name       = myname
                           p_title      = 'Options'
                           p_attributes = lt_attributes
                           p_message    = lv_message

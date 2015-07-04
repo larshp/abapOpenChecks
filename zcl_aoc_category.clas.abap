@@ -16,10 +16,6 @@ protected section.
 *"* protected components of class ZCL_AOC_CATEGORY
 *"* do not include other source files here!!!
 private section.
-*"* private components of class ZCL_AOC_CATEGORY
-*"* do not include other source files here!!!
-
-  constants C_MY_NAME type SEOCLSNAME value 'ZCL_AOC_CATEGORY'. "#EC NOTEXT
 ENDCLASS.
 
 
@@ -46,7 +42,7 @@ METHOD if_ci_test~display_documentation.
   DATA: lv_object TYPE dokhl-object.
 
 
-  lv_object = c_my_name.
+  lv_object = myname.
 
   CALL FUNCTION 'DOCU_CALL'
     EXPORTING

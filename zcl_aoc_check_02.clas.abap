@@ -17,10 +17,6 @@ protected section.
 *"* protected components of class ZCL_AOC_CHECK_02
 *"* do not include other source files here!!!
 private section.
-*"* private components of class ZCL_AOC_CHECK_02
-*"* do not include other source files here!!!
-
-  constants C_MY_NAME type SEOCLSNAME value 'ZCL_AOC_CHECK_02'. "#EC NOTEXT
 ENDCLASS.
 
 
@@ -75,7 +71,7 @@ METHOD check.
               p_sub_obj_name = lv_include
               p_line = lv_line
               p_kind = mv_errty
-              p_test = c_my_name
+              p_test = myname
               p_code = '001' ).
     ENDIF.
 

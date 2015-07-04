@@ -23,9 +23,6 @@ protected section.
 private section.
 
   data MT_CODES type ZAOC_SLIN_DESC_KEY_RANGE_TT .
-*"* private components of class ZCL_AOC_CHECK_31
-*"* do not include other source files here!!!
-  constants C_MY_NAME type SEOCLSNAME value 'ZCL_AOC_CHECK_31'. "#EC NOTEXT
 
   methods SET_FLAGS
     returning
@@ -78,7 +75,7 @@ METHOD check.
             p_sub_obj_name = lv_obj_name
             p_line         = <ls_result>-src_line
             p_kind         = mv_errty
-            p_test         = c_my_name
+            p_test         = myname
             p_code         = '001'
             p_param_1      = <ls_result>-code
             p_param_2      = lv_text ).
@@ -145,7 +142,7 @@ METHOD if_ci_test~query_attributes.
 
   WHILE lv_ok = abap_false.
     cl_ci_query_attributes=>generic(
-                          p_name       = c_my_name
+                          p_name       = myname
                           p_title      = 'Options'
                           p_attributes = lt_attributes
                           p_message    = lv_message
