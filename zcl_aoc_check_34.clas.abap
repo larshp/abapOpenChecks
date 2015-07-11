@@ -104,7 +104,7 @@ METHOD get_message_text.
 
   CASE p_code.
     WHEN '001'.
-      p_text = 'Database access'.                           "#EC NOTEXT
+      p_text = 'Large WHEN construct'.                      "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
