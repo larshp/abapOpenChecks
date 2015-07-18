@@ -93,6 +93,7 @@ METHOD run.
       WHERE type_kind = cl_abap_classdescr=>typekind_struct2
       AND visibility = cl_abap_classdescr=>public
       AND is_constant = abap_true
+      AND is_inherited = abap_false
       AND is_interface = abap_false.
 
     IF <ls_attr>-name = object_name.
