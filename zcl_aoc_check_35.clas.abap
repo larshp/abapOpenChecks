@@ -70,6 +70,9 @@ METHOD run.
   SELECT * FROM t100 INTO TABLE lt_t100
     WHERE sprsl = sy-langu
     AND arbgb = object_name.                            "#EC CI_GENBUFF
+  IF sy-subrc <> 0.
+    RETURN.
+  ENDIF.
 
   LOOP AT lt_t100 ASSIGNING <ls_t100>.
     CONCATENATE <ls_t100>-arbgb <ls_t100>-msgnr INTO lv_name RESPECTING BLANKS.
