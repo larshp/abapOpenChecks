@@ -72,6 +72,7 @@ METHOD constructor.
   description    = 'Define message texts in SE91'.          "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '000'.
+  position       = '037'.
 
   has_attributes = abap_true.
   attributes_ok  = abap_true.

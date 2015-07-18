@@ -64,6 +64,7 @@ METHOD constructor.
   description    = 'Avoid use of SELECT-ENDSELECT'.         "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '000'.
+  position       = '038'.
 
   has_attributes = abap_true.
   attributes_ok  = abap_true.

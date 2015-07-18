@@ -134,6 +134,7 @@ METHOD constructor.
   description    = 'No direct changes to standard tables'.  "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '000'.
+  position       = '026'.
 
   has_attributes = abap_true.
   attributes_ok  = abap_true.

@@ -87,6 +87,7 @@ METHOD constructor.
   description    = 'CHECK outside of LOOP'.                 "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '000'.
+  position       = '023'.
 
   has_attributes = abap_true.
   attributes_ok  = abap_true.

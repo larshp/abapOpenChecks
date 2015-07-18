@@ -95,6 +95,7 @@ METHOD constructor.
   description    = 'Specify SORT order'.                    "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '000'.
+  position       = '012'.
 
   has_attributes = abap_true.
   attributes_ok  = abap_true.

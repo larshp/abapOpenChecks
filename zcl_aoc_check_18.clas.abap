@@ -88,6 +88,7 @@ METHOD constructor.
   description    = 'Empty branch'.                          "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '000'.
+  position       = '018'.
 
   has_attributes = abap_true.
   attributes_ok  = abap_true.

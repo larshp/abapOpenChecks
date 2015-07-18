@@ -85,6 +85,7 @@ METHOD constructor.
   description    = 'Max one statement per line'.            "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '000'.
+  position       = '011'.
 
   has_attributes = abap_true.
   attributes_ok  = abap_true.

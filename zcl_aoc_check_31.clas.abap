@@ -91,6 +91,7 @@ METHOD constructor.
   description    = 'Extended Program Check, Filterable'.    "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '000'.
+  position       = '031'.
 
   has_attributes = abap_true.
   attributes_ok  = abap_true.
