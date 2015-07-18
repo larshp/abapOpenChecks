@@ -55,6 +55,10 @@ ENDMETHOD.
 
 METHOD run.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   DATA: lt_t100  TYPE TABLE OF t100 WITH DEFAULT KEY,
         lt_cross TYPE TABLE OF cross,
         lt_name  TYPE TABLE OF cross-name,

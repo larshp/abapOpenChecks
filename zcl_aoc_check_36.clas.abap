@@ -55,6 +55,10 @@ ENDMETHOD.
 
 METHOD run.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   DEFINE _check_field.
     READ TABLE lt_comp WITH KEY name = &1 TRANSPORTING NO FIELDS.
     if sy-subrc <> 0.

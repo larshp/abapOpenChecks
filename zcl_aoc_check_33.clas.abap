@@ -55,6 +55,10 @@ ENDMETHOD.
 
 METHOD run.
 
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
   DATA: lv_name  TYPE ddobjname,
         ls_dd02v TYPE dd02v,
         lt_dd03p TYPE TABLE OF dd03p.
