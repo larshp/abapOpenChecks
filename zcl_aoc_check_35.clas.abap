@@ -62,6 +62,7 @@ METHOD run.
   DATA: lt_t100  TYPE TABLE OF t100 WITH DEFAULT KEY,
         lt_cross TYPE TABLE OF cross,
         lt_name  TYPE TABLE OF cross-name,
+        ls_dd08l TYPE dd08l,
         lv_name  LIKE LINE OF lt_name.
 
   FIELD-SYMBOLS: <ls_t100> LIKE LINE OF lt_t100.
@@ -93,6 +94,13 @@ METHOD run.
 
     CONCATENATE <ls_t100>-arbgb <ls_t100>-msgnr INTO lv_name RESPECTING BLANKS.
     READ TABLE lt_cross WITH KEY name = lv_name TRANSPORTING NO FIELDS.
+    IF sy-subrc = 0.
+      CONTINUE.
+    ENDIF.
+
+    SELECT SINGLE * FROM dd08l INTO ls_dd08l
+      WHERE arbgb = <ls_t100>-arbgb
+      AND msgnr = <ls_t100>-msgnr ##WARN_OK.
     IF sy-subrc = 0.
       CONTINUE.
     ENDIF.
