@@ -91,6 +91,11 @@ METHOD run.
       AND is_constant = abap_true
       AND is_interface = abap_false.
 
+    IF <ls_attr>-name = object_name.
+* ignore default text name
+      CONTINUE.
+    ENDIF.
+
     lo_struct ?= lo_object->get_attribute_type( <ls_attr>-name ).
     lt_comp = lo_struct->get_components( ).
 
