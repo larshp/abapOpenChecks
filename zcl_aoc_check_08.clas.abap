@@ -87,6 +87,14 @@ METHOD check.
       lv_code = '009'.
     ELSEIF lv_statement CP 'CONTEXTS *'.
       lv_code = '010'.
+    ELSEIF lv_statement CP 'ADD *'.
+      lv_code = '011'.
+    ELSEIF lv_statement CP 'SUBTRACT *'.
+      lv_code = '012'.
+    ELSEIF lv_statement CP 'MULTIPLY *'.
+      lv_code = '013'.
+    ELSEIF lv_statement CP 'DIVIDE *'.
+      lv_code = '014'.
     ENDIF.
 
     IF NOT lv_code IS INITIAL.
@@ -144,6 +152,14 @@ METHOD get_message_text.
       p_text = 'SUPPLY is obsolete'.                        "#EC NOTEXT
     WHEN '010'.
       p_text = 'CONTEXTS is obsolete'.                      "#EC NOTEXT
+    WHEN '011'.
+      p_text = 'ADD is obsolete'.                           "#EC NOTEXT
+    WHEN '012'.
+      p_text = 'SUBTRACT is obsolete'.                      "#EC NOTEXT
+    WHEN '013'.
+      p_text = 'MULTIPLY is obsolete'.                      "#EC NOTEXT
+    WHEN '014'.
+      p_text = 'DIVIDE is obsolete'.                        "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
