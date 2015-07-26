@@ -208,38 +208,40 @@ METHOD inform.
   ENDIF.
 
 * skip constructor in exception classes
-  cl_oo_include_naming=>get_instance_by_include(
-    EXPORTING
-      progname = p_sub_obj_name
-    RECEIVING
-      cifref   = li_clif
-    EXCEPTIONS
-      OTHERS   = 1 ).
-  IF sy-subrc = 0.
-    li_oref ?= li_clif.
-
-    SELECT SINGLE clsname FROM seoclassdf INTO lv_clsname
-      WHERE clsname = li_oref->clskey-clsname
-      AND category = '11'     " persistent co-class
-      AND version = '1'.
+  IF p_sub_obj_type = 'PROG' AND strlen( p_sub_obj_name ) = 35.
+    cl_oo_include_naming=>get_instance_by_include(
+      EXPORTING
+        progname = p_sub_obj_name
+      RECEIVING
+        cifref   = li_clif
+      EXCEPTIONS
+        OTHERS   = 1 ).
     IF sy-subrc = 0.
-      RETURN.
-    ENDIF.
+      li_oref ?= li_clif.
 
-    SELECT SINGLE clsname FROM seoclassdf INTO lv_clsname
-      WHERE clsname = li_oref->clskey-clsname
-      AND category = '40'     " exception
-      AND version = '1'.
-    IF sy-subrc = 0.
-      li_oref->get_mtdname_by_include(
-        EXPORTING
-          progname = p_sub_obj_name
-        RECEIVING
-          mtdname  = lv_method
-        EXCEPTIONS
-          OTHERS   = 1 ).
-      IF sy-subrc = 0 AND lv_method = 'CONSTRUCTOR'.
+      SELECT SINGLE clsname FROM seoclassdf INTO lv_clsname
+        WHERE clsname = li_oref->clskey-clsname
+        AND category = '11'     " persistent co-class
+        AND version = '1'.
+      IF sy-subrc = 0.
         RETURN.
+      ENDIF.
+
+      SELECT SINGLE clsname FROM seoclassdf INTO lv_clsname
+        WHERE clsname = li_oref->clskey-clsname
+        AND category = '40'     " exception
+        AND version = '1'.
+      IF sy-subrc = 0.
+        li_oref->get_mtdname_by_include(
+          EXPORTING
+            progname = p_sub_obj_name
+          RECEIVING
+            mtdname  = lv_method
+          EXCEPTIONS
+            OTHERS   = 1 ).
+        IF sy-subrc = 0 AND lv_method = 'CONSTRUCTOR'.
+          RETURN.
+        ENDIF.
       ENDIF.
     ENDIF.
   ENDIF.
