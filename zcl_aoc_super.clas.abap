@@ -195,7 +195,7 @@ METHOD inform.
         lv_cnam    TYPE reposrc-cnam,
         lv_method  TYPE seocpdname.
 
-* todo, web dynpro?
+
   IF p_sub_obj_type = 'PROG' AND p_sub_obj_name <> ''.
     SELECT SINGLE cnam FROM reposrc INTO lv_cnam
       WHERE progname = p_sub_obj_name AND r3state = 'A'.

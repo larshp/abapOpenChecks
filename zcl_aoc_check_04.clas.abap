@@ -58,10 +58,6 @@ METHOD check.
         OR <ls_level>-name+30(2) = 'CP' ).
       CONTINUE. " current loop
     ENDIF.
-    IF <ls_level>-name(8) = '/1BCWDY/'.
-* todo, web dynpro
-      RETURN.
-    ENDIF.
 
     LOOP AT it_statements ASSIGNING <ls_statement>
         WHERE level = lv_level.
