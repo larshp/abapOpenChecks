@@ -101,6 +101,10 @@ METHOD compare.
         lv_index   TYPE i.
 
 
+  IF lines( it_structure ) = 1.
+    RETURN.
+  ENDIF.
+
 * compare first or last statement in each branch
   LOOP AT it_structure INTO lo_stru.
 
