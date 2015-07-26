@@ -64,6 +64,7 @@ METHOD check_nested.
 
   DATA: lv_index TYPE i,
         lv_include TYPE program,
+        lv_error TYPE abap_bool,
         lv_exception TYPE string.
 
   FIELD-SYMBOLS: <ls_token> LIKE LINE OF it_tokens,
@@ -92,6 +93,13 @@ METHOD check_nested.
       ENDIF.
 
       IF lv_exception = <ls_token>-str.
+        lv_error = abap_true.
+      ELSE.
+        lv_error = abap_false.
+      ENDIF.
+      lv_exception = <ls_token>-str.
+    ELSEIF <ls_token>-str = 'ENDTRY'.
+      IF lv_error = abap_true AND NOT lv_exception IS INITIAL.
         lv_include = get_include( p_level = <ls_statement>-level ).
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
@@ -100,8 +108,7 @@ METHOD check_nested.
                 p_test = myname
                 p_code = '002' ).
       ENDIF.
-      lv_exception = <ls_token>-str.
-    ELSEIF <ls_token>-str = 'ENDTRY'.
+      lv_error = abap_false.
       CONTINUE.
     ELSE.
       CLEAR lv_exception.

@@ -20,8 +20,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
              test001_02 FOR TESTING,
              test001_03 FOR TESTING,
              test001_04 FOR TESTING,
-             test001_05 FOR TESTING,
-             test001_06 FOR TESTING.
+             test002_01 FOR TESTING,
+             test002_02 FOR TESTING,
+             test002_03 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -108,7 +109,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD test001_05.
+  METHOD test002_01.
 * ===========
 
     _code 'TRY.'.
@@ -128,13 +129,31 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD test001_06.
+  METHOD test002_02.
 * ===========
 
     _code 'TRY.'.
     _code '  CATCH cx_ai_system_fault cx_ai_application_fault INTO cl_exc.'.
     _code '  CATCH cx_soap_core INTO cl_exc..'.
     _code '  CATCH   zcx_fileinfo INTO cl_exc.'.
+    _code 'ENDTRY.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test002_03.
+* ===========
+
+    _code 'TRY.'.
+    _code '    TRY.'.
+    _code '      CATCH ycx_root.'.
+    _code '    ENDTRY.'.
+    _code '  CATCH ycx_root.'.
+    _code '    WRITE: ''asdf''.'.
     _code 'ENDTRY.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
