@@ -4,9 +4,9 @@ class ZCL_AOC_CHECK_03 definition
   create public .
 
 public section.
+
 *"* public components of class ZCL_AOC_CHECK_03
 *"* do not include other source files here!!!
-
   methods CONSTRUCTOR .
 
   methods CHECK
@@ -14,6 +14,19 @@ public section.
   methods GET_MESSAGE_TEXT
     redefinition .
 protected section.
+
+  methods CHECK_NESTED
+    importing
+      !IT_TOKENS type STOKESX_TAB
+      !IT_STATEMENTS type SSTMNT_TAB
+      !IT_LEVELS type SLEVEL_TAB
+      !IT_STRUCTURES type TT_STRUCTURES .
+  methods CHECK_NO_CATCH
+    importing
+      !IT_TOKENS type STOKESX_TAB
+      !IT_STATEMENTS type SSTMNT_TAB
+      !IT_LEVELS type SLEVEL_TAB
+      !IT_STRUCTURES type TT_STRUCTURES .
 *"* protected components of class ZCL_AOC_CHECK_03
 *"* do not include other source files here!!!
 private section.
@@ -25,6 +38,81 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
 
 METHOD check.
+
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
+  check_no_catch( it_tokens     = it_tokens
+                  it_statements = it_statements
+                  it_levels     = it_levels
+                  it_structures = it_structures ).
+
+  check_nested( it_tokens     = it_tokens
+                it_statements = it_statements
+                it_levels     = it_levels
+                it_structures = it_structures ).
+
+ENDMETHOD.
+
+
+METHOD check_nested.
+
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
+  DATA: lv_index TYPE i,
+        lv_include TYPE program,
+        lv_exception TYPE string.
+
+  FIELD-SYMBOLS: <ls_token> LIKE LINE OF it_tokens,
+                 <ls_statement> LIKE LINE OF it_statements.
+
+
+  LOOP AT it_statements ASSIGNING <ls_statement>
+      WHERE type <> scan_stmnt_type-comment
+      AND type <> scan_stmnt_type-empty
+      AND type <> scan_stmnt_type-comment_in_stmnt
+      AND type <> scan_stmnt_type-pragma.
+
+    READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+    IF sy-subrc <> 0.
+      CLEAR lv_exception.
+      CONTINUE.
+    ENDIF.
+
+    IF <ls_token>-str = 'CATCH'.
+      lv_index = <ls_statement>-from + 1.
+
+      READ TABLE it_tokens ASSIGNING <ls_token> INDEX lv_index.
+      IF sy-subrc <> 0.
+        CLEAR lv_exception.
+        CONTINUE.
+      ENDIF.
+
+      IF lv_exception = <ls_token>-str.
+        lv_include = get_include( p_level = <ls_statement>-level ).
+        inform( p_sub_obj_type = c_type_include
+                p_sub_obj_name = lv_include
+                p_line = <ls_token>-row
+                p_kind = mv_errty
+                p_test = myname
+                p_code = '002' ).
+      ENDIF.
+      lv_exception = <ls_token>-str.
+    ELSEIF <ls_token>-str = 'ENDTRY'.
+      CONTINUE.
+    ELSE.
+      CLEAR lv_exception.
+    ENDIF.
+
+  ENDLOOP.
+
+ENDMETHOD.
+
+
+METHOD CHECK_NO_CATCH.
 
 * abapOpenChecks
 * https://github.com/larshp/abapOpenChecks
@@ -86,7 +174,7 @@ METHOD constructor.
 
   super->constructor( ).
 
-  description    = 'TRY without CATCH'.                     "#EC NOTEXT
+  description    = 'Wrong use of TRY-CATCH'.                "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '000'.
   position       = '003'.
@@ -104,6 +192,8 @@ METHOD get_message_text.
   CASE p_code.
     WHEN '001'.
       p_text = 'TRY without CATCH'.                         "#EC NOTEXT
+    WHEN '002'.
+      p_text = 'Nesting with same exception'.               "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.

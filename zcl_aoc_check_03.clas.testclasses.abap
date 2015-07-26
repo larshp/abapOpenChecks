@@ -19,7 +19,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
              test001_01 FOR TESTING,
              test001_02 FOR TESTING,
              test001_03 FOR TESTING,
-             test001_04 FOR TESTING.
+             test001_04 FOR TESTING,
+             test001_05 FOR TESTING,
+             test001_06 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -98,6 +100,42 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  CLEANUP.         '.
     _code '    WRITE ''bar''. '.
     _code 'ENDTRY.            '.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_05.
+* ===========
+
+    _code 'TRY.'.
+    _code '    WRITE: ''foo''.'.
+    _code '    TRY.'.
+    _code '        WRITE: ''bar''.'.
+    _code '      CATCH zcx_error.'.
+    _code '    ENDTRY.'.
+    _code '  CATCH zcx_error.'.
+    _code 'ENDTRY.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '002'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_06.
+* ===========
+
+    _code 'TRY.'.
+    _code '  CATCH cx_ai_system_fault cx_ai_application_fault INTO cl_exc.'.
+    _code '  CATCH cx_soap_core INTO cl_exc..'.
+    _code '  CATCH   zcx_fileinfo INTO cl_exc.'.
+    _code 'ENDTRY.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
                                           io_check = mo_check ).
