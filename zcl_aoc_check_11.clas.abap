@@ -44,6 +44,10 @@ METHOD check.
       WHERE terminator = '.'
       AND type <> scan_stmnt_type-pragma.
 
+    IF <ls_statement>-from > <ls_statement>-to.
+      CONTINUE.
+    ENDIF.
+
     READ TABLE it_tokens ASSIGNING <ls_token_to> INDEX <ls_statement>-to.
     CHECK sy-subrc = 0.
 
