@@ -63,10 +63,10 @@ protected section.
   methods INFORM
     redefinition .
 private section.
-*"* private components of class ZCL_AOC_SUPER
-*"* do not include other source files here!!!
 
   types:
+*"* private components of class ZCL_AOC_SUPER
+*"* do not include other source files here!!!
     BEGIN OF st_source,
            name TYPE level_name,
            code TYPE string_table,
@@ -75,6 +75,21 @@ private section.
     tt_source TYPE SORTED TABLE OF st_source WITH UNIQUE KEY name .
 
   data MT_SOURCE type TT_SOURCE .
+
+  type-pools ABAP .
+  methods CHECK_CLASS
+    importing
+      !IV_SUB_OBJ_TYPE type TROBJTYPE
+      !IV_SUB_OBJ_NAME type SOBJ_NAME
+    returning
+      value(RV_SKIP) type ABAP_BOOL .
+  methods CHECK_WDY
+    importing
+      !IV_SUB_OBJ_TYPE type TROBJTYPE
+      !IV_SUB_OBJ_NAME type SOBJ_NAME
+      !IV_LINE type TOKEN_ROW
+    returning
+      value(RV_SKIP) type ABAP_BOOL .
 ENDCLASS.
 
 
@@ -86,6 +101,105 @@ METHOD check.
 
 * add code here
   ASSERT 1 = 1 + 1.
+
+ENDMETHOD.
+
+
+METHOD check_class.
+
+  DATA: li_oref     TYPE REF TO if_oo_class_incl_naming,
+        li_clif     TYPE REF TO if_oo_clif_incl_naming,
+        lv_category TYPE seoclassdf-category,
+        lv_method   TYPE seocpdname.
+
+
+  IF iv_sub_obj_type <> 'PROG'
+      OR ( strlen( iv_sub_obj_name ) <> 35 AND strlen( iv_sub_obj_name ) <> 32 ).
+    RETURN.
+  ENDIF.
+
+  cl_oo_include_naming=>get_instance_by_include(
+    EXPORTING
+      progname = iv_sub_obj_name
+    RECEIVING
+      cifref   = li_clif
+    EXCEPTIONS
+      OTHERS   = 1 ).
+  IF sy-subrc = 0.
+    li_oref ?= li_clif.
+
+    SELECT SINGLE category FROM seoclassdf INTO lv_category
+      WHERE clsname = li_oref->clskey-clsname
+      AND version = '1'.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+* skip persistent co-classes and web dynpro runtime obects
+    IF lv_category = '11' OR lv_category = '80'.
+      rv_skip = abap_true.
+      RETURN.
+    ENDIF.
+
+* skip constructor in exception classes
+    IF lv_category = '40'.
+      li_oref->get_mtdname_by_include(
+        EXPORTING
+          progname = iv_sub_obj_name
+        RECEIVING
+          mtdname  = lv_method
+        EXCEPTIONS
+          OTHERS   = 1 ).
+      IF sy-subrc = 0 AND lv_method = 'CONSTRUCTOR'.
+        rv_skip = abap_true.
+      ENDIF.
+    ENDIF.
+  ENDIF.
+
+ENDMETHOD.
+
+
+METHOD check_wdy.
+
+  DATA: ls_map_header  TYPE wdy_wb_sourcemap,
+        lo_tool_state  TYPE REF TO cl_wdy_wb_vc_state,
+        lv_inclname    TYPE program,
+        ls_controller  TYPE wdy_controller_key,
+        lt_map         TYPE wdyrt_line_info_tab_type,
+        lv_no_codepos  TYPE seu_bool.
+
+
+  IF iv_sub_obj_type <> 'PROG' OR iv_sub_obj_name(8) <> '/1BCWDY/'.
+    RETURN.
+  ENDIF.
+
+  lv_inclname = iv_sub_obj_name.
+  CALL FUNCTION 'WDY_WB_GET_SOURCECODE_MAPPING'
+    EXPORTING
+      p_include = lv_inclname
+    IMPORTING
+      p_map     = lt_map
+      p_header  = ls_map_header
+    EXCEPTIONS
+      OTHERS    = 1.
+  IF sy-subrc <> 0.
+    RETURN.
+  ENDIF.
+
+  ls_controller-component_name  = ls_map_header-component_name.
+  ls_controller-controller_name = ls_map_header-controller_name.
+  cl_wdy_wb_error_handling=>create_tool_state_for_codepos(
+    EXPORTING
+      p_controller_key           = ls_controller
+      p_controller_type          = ls_map_header-ctrl_type
+      p_line                     = iv_line
+      p_lineinfo                 = lt_map
+    IMPORTING
+      p_no_corresponding_codepos = lv_no_codepos
+      p_tool_state               = lo_tool_state ).
+  IF lv_no_codepos = abap_true OR lo_tool_state IS INITIAL.
+    rv_skip = abap_true.
+  ENDIF.
 
 ENDMETHOD.
 
@@ -189,11 +303,8 @@ ENDMETHOD.
 
 METHOD inform.
 
-  DATA: li_oref    TYPE REF TO if_oo_class_incl_naming,
-        li_clif    TYPE REF TO if_oo_clif_incl_naming,
-        lv_clsname TYPE seoclassdf-clsname,
-        lv_cnam    TYPE reposrc-cnam,
-        lv_method  TYPE seocpdname.
+  DATA: lv_cnam TYPE reposrc-cnam,
+        lv_skip TYPE abap_bool.
 
 
   IF p_sub_obj_type = 'PROG' AND p_sub_obj_name <> ''.
@@ -207,43 +318,17 @@ METHOD inform.
     ENDIF.
   ENDIF.
 
-* skip constructor in exception classes
-  IF p_sub_obj_type = 'PROG' AND strlen( p_sub_obj_name ) = 35.
-    cl_oo_include_naming=>get_instance_by_include(
-      EXPORTING
-        progname = p_sub_obj_name
-      RECEIVING
-        cifref   = li_clif
-      EXCEPTIONS
-        OTHERS   = 1 ).
-    IF sy-subrc = 0.
-      li_oref ?= li_clif.
+  lv_skip = check_class( iv_sub_obj_type = p_sub_obj_type
+                         iv_sub_obj_name = p_sub_obj_name ).
+  IF lv_skip = abap_true.
+    RETURN.
+  ENDIF.
 
-      SELECT SINGLE clsname FROM seoclassdf INTO lv_clsname
-        WHERE clsname = li_oref->clskey-clsname
-        AND category = '11'     " persistent co-class
-        AND version = '1'.
-      IF sy-subrc = 0.
-        RETURN.
-      ENDIF.
-
-      SELECT SINGLE clsname FROM seoclassdf INTO lv_clsname
-        WHERE clsname = li_oref->clskey-clsname
-        AND category = '40'     " exception
-        AND version = '1'.
-      IF sy-subrc = 0.
-        li_oref->get_mtdname_by_include(
-          EXPORTING
-            progname = p_sub_obj_name
-          RECEIVING
-            mtdname  = lv_method
-          EXCEPTIONS
-            OTHERS   = 1 ).
-        IF sy-subrc = 0 AND lv_method = 'CONSTRUCTOR'.
-          RETURN.
-        ENDIF.
-      ENDIF.
-    ENDIF.
+  lv_skip = check_wdy( iv_sub_obj_type = p_sub_obj_type
+                       iv_sub_obj_name = p_sub_obj_name
+                       iv_line         = p_line ).
+  IF lv_skip = abap_true.
+    RETURN.
   ENDIF.
 
   super->inform(
