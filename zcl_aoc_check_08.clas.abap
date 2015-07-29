@@ -95,6 +95,8 @@ METHOD check.
       lv_code = '013'.
     ELSEIF lv_statement CP 'DIVIDE *'.
       lv_code = '014'.
+    ELSEIF lv_statement CP 'CALL DIALOG *'.
+      lv_code = '015'.
     ENDIF.
 
     IF NOT lv_code IS INITIAL.
@@ -160,6 +162,8 @@ METHOD get_message_text.
       p_text = 'MULTIPLY is obsolete'.                      "#EC NOTEXT
     WHEN '014'.
       p_text = 'DIVIDE is obsolete'.                        "#EC NOTEXT
+    WHEN '015'.
+      p_text = 'CALL DIALOG is obsolete'.                   "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
