@@ -119,7 +119,7 @@ METHOD check_nested.
 ENDMETHOD.
 
 
-METHOD CHECK_NO_CATCH.
+METHOD check_no_catch.
 
 * abapOpenChecks
 * https://github.com/larshp/abapOpenChecks

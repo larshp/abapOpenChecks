@@ -20,7 +20,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
     METHODS:
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
-      test001_03 FOR TESTING.
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -30,7 +31,7 @@ ENDCLASS.       "lcl_Test
 *
 *----------------------------------------------------------------------*
 CLASS ltcl_test IMPLEMENTATION.
-* ==============================
+* ==============================7
 
   DEFINE _code.
     append &1 to mt_code.
@@ -76,6 +77,20 @@ CLASS ltcl_test IMPLEMENTATION.
                                           io_check = mo_check ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_04.
+* ===========
+
+    _code 'lv_include = get_include( p_level = <ls_statement>-level '.
+    _code ').'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
 
   ENDMETHOD.
 

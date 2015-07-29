@@ -40,11 +40,13 @@ METHOD check.
   LOOP AT it_statements ASSIGNING <ls_statement>
       WHERE type <> scan_stmnt_type-empty
       AND type <> scan_stmnt_type-macro_definition
-      AND type <> scan_stmnt_type-comment.
+      AND type <> scan_stmnt_type-comment
+      AND type <> scan_stmnt_type-comment_in_stmnt.
 
     LOOP AT it_tokens ASSIGNING <ls_token>
         FROM <ls_statement>-from TO <ls_statement>-to
-        WHERE type <> scan_token_type-comment.
+        WHERE type <> scan_token_type-comment
+        AND str <> ')'.
       lv_ok = <ls_token>-row.
     ENDLOOP.
     IF sy-subrc <> 0.
