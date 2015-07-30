@@ -202,9 +202,7 @@ ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 METHOD if_ci_test~query_attributes.
 
-  DATA: lv_ok         TYPE abap_bool,
-        lv_message    TYPE c LENGTH 72,
-        lt_attributes TYPE sci_atttab,
+  DATA: lt_attributes TYPE sci_atttab,
         ls_attribute  LIKE LINE OF lt_attributes.
 
   DEFINE fill_att.
@@ -229,24 +227,21 @@ METHOD if_ci_test~query_attributes.
 
   fill_att_rb mv_hikey 'Keywords upper case' 'R' 'TYPE'.    "#EC NOTEXT
   fill_att_rb mv_lokey 'Keywords lower case' 'R' 'TYPE'.    "#EC NOTEXT
-  fill_att_rb mv_upper 'Upper case' 'R' 'TYPE'.    "#EC NOTEXT
-  fill_att_rb mv_lower 'Lower case' 'R' 'TYPE'.    "#EC NOTEXT
+  fill_att_rb mv_upper 'Upper case' 'R' 'TYPE'.             "#EC NOTEXT
+  fill_att_rb mv_lower 'Lower case' 'R' 'TYPE'.             "#EC NOTEXT
 
   fill_att mv_one_finding 'Report one finding per include' 'C'. "#EC NOTEXT
 
-  WHILE lv_ok = abap_false.
-    cl_ci_query_attributes=>generic(
-                          p_name       = myname
-                          p_title      = 'Options'
-                          p_attributes = lt_attributes
-                          p_message    = lv_message
-                          p_display    = p_display ).       "#EC NOTEXT
-    IF mv_errty = c_error OR mv_errty = c_warning OR mv_errty = c_note.
-      lv_ok = abap_true.
-    ELSE.
-      lv_message = 'Fill attributes'.                       "#EC NOTEXT
-    ENDIF.
-  ENDWHILE.
+  cl_ci_query_attributes=>generic(
+                        p_name       = myname
+                        p_title      = 'Options'
+                        p_attributes = lt_attributes
+                        p_display    = p_display ).         "#EC NOTEXT
+  IF mv_errty = c_error OR mv_errty = c_warning OR mv_errty = c_note.
+    attributes_ok = abap_true.
+  ELSE.
+    attributes_ok = abap_false.
+  ENDIF.
 
 ENDMETHOD.
 
