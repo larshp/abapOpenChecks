@@ -64,7 +64,7 @@ METHOD constructor.
 
   description    = 'Tab instead of spaces'.                 "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '000'.
+  version        = '001'.
   position       = '009'.
 
   has_attributes = abap_true.

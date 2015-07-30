@@ -28,7 +28,7 @@ METHOD constructor.
 
   description    = 'Message not in use'.                    "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '000'.
+  version        = '001'.
   position       = '035'.
 
   has_documentation = c_true.

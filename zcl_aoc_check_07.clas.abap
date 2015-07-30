@@ -120,7 +120,7 @@ METHOD constructor.
 
   description    = 'Functional writing style for CALL METHOD'. "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '000'.
+  version        = '001'.
   position       = '007'.
 
   has_attributes = abap_true.

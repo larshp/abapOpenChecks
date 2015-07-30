@@ -183,7 +183,7 @@ METHOD constructor.
 
   description    = 'Wrong use of TRY-CATCH'.                "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '000'.
+  version        = '001'.
   position       = '003'.
 
   has_attributes = abap_true.

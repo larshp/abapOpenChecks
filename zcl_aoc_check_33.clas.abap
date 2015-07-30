@@ -28,7 +28,7 @@ METHOD constructor.
 
   description    = 'Append structure field names'.          "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '000'.
+  version        = '001'.
   position       = '033'.
 
   has_documentation = c_true.

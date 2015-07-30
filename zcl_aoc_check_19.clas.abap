@@ -147,7 +147,7 @@ METHOD constructor.
 
   description    = 'Use LINE OF'.                           "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '000'.
+  version        = '001'.
   position       = '019'.
 
   has_attributes = abap_true.

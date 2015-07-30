@@ -127,7 +127,7 @@ METHOD constructor.
 
   description    = 'Selection screen data not referenced statically'. "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '000'.
+  version        = '001'.
   position       = '025'.
 
   has_attributes = abap_true.

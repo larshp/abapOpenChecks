@@ -74,7 +74,7 @@ METHOD constructor.
 
   description    = 'Line only contains . or ).'.            "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '000'.
+  version        = '001'.
   position       = '016'.
 
   has_attributes = abap_true.
