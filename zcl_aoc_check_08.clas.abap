@@ -97,6 +97,10 @@ METHOD check.
       lv_code = '014'.
     ELSEIF lv_statement CP 'CALL DIALOG *'.
       lv_code = '015'.
+    ELSEIF lv_statement CP '* OCCURS *'.
+      lv_code = '016'.
+    ELSEIF lv_statement CP '* WITH HEADER LINE *'.
+      lv_code = '017'.
     ENDIF.
 
     IF NOT lv_code IS INITIAL.
@@ -164,6 +168,10 @@ METHOD get_message_text.
       p_text = 'DIVIDE is obsolete'.                        "#EC NOTEXT
     WHEN '015'.
       p_text = 'CALL DIALOG is obsolete'.                   "#EC NOTEXT
+    WHEN '016'.
+      p_text = 'OCCURS is obsolete'.                        "#EC NOTEXT
+    WHEN '017'.
+      p_text = 'WITH HEADER LINE is obsolete'.              "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
