@@ -33,5 +33,4 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.                    "test1
 
-
 ENDCLASS.       "lcl_Test

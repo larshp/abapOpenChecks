@@ -22,7 +22,10 @@ public section.
 protected section.
 private section.
 
-  data MT_CODES type ZAOC_SLIN_DESC_KEY_RANGE_TT .
+  data MT_ERROR type ZAOC_SLIN_DESC_KEY_RANGE_TT .
+  data MT_WARN type ZAOC_SLIN_DESC_KEY_RANGE_TT .
+  data MT_INFO type ZAOC_SLIN_DESC_KEY_RANGE_TT .
+  data MT_IGNORE type ZAOC_SLIN_DESC_KEY_RANGE_TT .
 
   methods SET_FLAGS
     returning
@@ -44,6 +47,7 @@ METHOD check.
         lv_text     TYPE string,
         lv_tmp      TYPE string,
         ls_flags    TYPE rslin_test_flags,
+        lv_errty    TYPE sci_errty,
         lt_result   TYPE slin_result.
 
   FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result,
@@ -58,7 +62,7 @@ METHOD check.
     IMPORTING
       result     = lt_result.
 
-  LOOP AT lt_result ASSIGNING <ls_result> WHERE code IN mt_codes. "#EC CI_SORTSEQ
+  LOOP AT lt_result ASSIGNING <ls_result>.              "#EC CI_SORTSEQ
 
     CLEAR lv_text.
     LOOP AT <ls_result>-lines ASSIGNING <ls_line>.
@@ -70,11 +74,23 @@ METHOD check.
       ENDIF.
     ENDLOOP.
 
+    IF lines( mt_error ) > 0 AND <ls_result>-code IN mt_error.
+      lv_errty = c_error.
+    ELSEIF lines( mt_warn ) > 0 AND <ls_result>-code IN mt_warn.
+      lv_errty = c_warning.
+    ELSEIF lines( mt_info ) > 0 AND <ls_result>-code IN mt_info.
+      lv_errty = c_note.
+    ELSEIF lines( mt_ignore ) > 0 AND <ls_result>-code IN mt_ignore.
+      CONTINUE.
+    ELSE.
+      lv_errty = c_error.
+    ENDIF.
+
     lv_obj_name = <ls_result>-src_incl.
     inform( p_sub_obj_type = c_type_include
             p_sub_obj_name = lv_obj_name
             p_line         = <ls_result>-src_line
-            p_kind         = mv_errty
+            p_kind         = lv_errty
             p_test         = myname
             p_code         = '001'
             p_param_1      = <ls_result>-code
@@ -90,13 +106,11 @@ METHOD constructor.
 
   description    = 'Extended Program Check, Filterable'.    "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '001'.
+  version        = '002'.
   position       = '031'.
 
   has_attributes = abap_true.
   attributes_ok  = abap_true.
-
-  mv_errty = c_error.
 
 ENDMETHOD.                    "CONSTRUCTOR
 
@@ -104,8 +118,10 @@ ENDMETHOD.                    "CONSTRUCTOR
 METHOD get_attributes.
 
   EXPORT
-    mv_errty = mv_errty
-    mt_codes = mt_codes
+    mt_error = mt_error
+    mt_warn = mt_warn
+    mt_info = mt_info
+    mt_ignore = mt_ignore
     TO DATA BUFFER p_attributes.
 
 ENDMETHOD.
@@ -136,19 +152,17 @@ METHOD if_ci_test~query_attributes.
   END-OF-DEFINITION.
 
 
-  fill_att mv_errty 'Error Type' ''.                        "#EC NOTEXT
-  fill_att mt_codes 'Code' 'S'.                             "#EC NOTEXT
+  fill_att mt_error 'Error' 'S'.                            "#EC NOTEXT
+  fill_att mt_warn 'Warning' 'S'.                           "#EC NOTEXT
+  fill_att mt_info 'Info' 'S'.                              "#EC NOTEXT
+  fill_att mt_ignore 'Ignore' 'S'.                          "#EC NOTEXT
 
   cl_ci_query_attributes=>generic(
                         p_name       = myname
                         p_title      = 'Options'
                         p_attributes = lt_attributes
                         p_display    = p_display ).         "#EC NOTEXT
-  IF mv_errty = c_error OR mv_errty = c_warning OR mv_errty = c_note.
-    attributes_ok = abap_true.
-  ELSE.
-    attributes_ok = abap_false.
-  ENDIF.
+  attributes_ok = abap_true.
 
 ENDMETHOD.
 
@@ -156,8 +170,10 @@ ENDMETHOD.
 METHOD put_attributes.
 
   IMPORT
-    mv_errty = mv_errty
-    mt_codes = mt_codes
+    mt_error = mt_error
+    mt_warn = mt_warn
+    mt_info = mt_info
+    mt_ignore = mt_ignore
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
 
 ENDMETHOD.
