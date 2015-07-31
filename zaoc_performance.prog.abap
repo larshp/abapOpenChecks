@@ -91,7 +91,8 @@ FORM run.
     lv_seconds = ( lv_t2 - lv_t1 ) / 1000000.
     CLEAR lv_descript.
     SELECT SINGLE descript FROM seoclasstx INTO lv_descript
-      WHERE clsname = <ls_classdf>-clsname AND langu = sy-langu.
+      WHERE clsname = <ls_classdf>-clsname AND langu = sy-langu. "#EC CI_SUBRC
+    ASSERT sy-subrc = 0.
     WRITE: / <ls_classdf>-clsname, lv_descript, lv_seconds, 's'.
   ENDLOOP.
 
