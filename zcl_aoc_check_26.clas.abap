@@ -119,7 +119,8 @@ METHOD check.
               p_line         = <ls_token>-row
               p_kind         = mv_errty
               p_test         = myname
-              p_code         = '001' ).
+              p_code         = '001'
+              p_param_1      = <ls_rt>-code ).
     ENDIF.
 
   ENDLOOP.
@@ -159,7 +160,7 @@ METHOD get_message_text.
 
   CASE p_code.
     WHEN '001'.
-      p_text = 'No direct changes to standard tables'.      "#EC NOTEXT
+      p_text = 'No direct changes to standard tables, &1'.      "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
