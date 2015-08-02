@@ -84,7 +84,7 @@ METHOD run.
     INTO lv_category
     WHERE clsname = object_name
     AND version = '1'.
-  IF sy-subrc <> 0 OR lv_category <> '40'.
+  IF sy-subrc <> 0 OR lv_category <> seoc_category_exception.
     RETURN.
   ENDIF.
 

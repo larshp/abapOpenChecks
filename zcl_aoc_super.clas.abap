@@ -136,13 +136,14 @@ METHOD check_class.
     ENDIF.
 
 * skip persistent co-classes and web dynpro runtime obects
-    IF lv_category = '11' OR lv_category = '80'.
+    IF lv_category = seoc_category_p_agent
+        OR lv_category = seoc_category_webdynpro_class.
       rv_skip = abap_true.
       RETURN.
     ENDIF.
 
 * skip constructor in exception classes
-    IF lv_category = '40'.
+    IF lv_category = seoc_category_exception.
       li_oref->get_mtdname_by_include(
         EXPORTING
           progname = iv_sub_obj_name
