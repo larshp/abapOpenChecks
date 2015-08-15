@@ -15,11 +15,16 @@ CLASS ltcl_test DEFINITION FOR TESTING
           ms_result TYPE scirest_ad,
           mo_check  TYPE REF TO zcl_aoc_check_37.
 
-    METHODS: setup,
+    METHODS:
+      setup,
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
       test001_04 FOR TESTING.
+
+    METHODS:
+      test002_01 FOR TESTING,
+      test002_02 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -82,6 +87,31 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     _code 'MESSAGE s001(saab).'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test002_01.
+* ===========
+
+    _code 'MESSAGE lo_cx->get_text( ) TYPE ''S''.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '002'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test002_02.
+* ===========
+
+    _code 'MESSAGE lo_cx TYPE ''S''.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
                                           io_check = mo_check ).

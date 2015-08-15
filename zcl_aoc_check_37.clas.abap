@@ -58,6 +58,15 @@ METHOD check.
               p_kind         = mv_errty
               p_test         = myname
               p_code         = '001' ).
+    ELSEIF lv_statement CP 'MESSAGE *->GET_TEXT( )*'.
+      lv_include = get_include( p_level = <ls_statement>-level ).
+
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = lv_include
+              p_line         = <ls_token>-row
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '002' ).
     ENDIF.
 
   ENDLOOP.
@@ -87,6 +96,8 @@ METHOD get_message_text.
   CASE p_code.
     WHEN '001'.
       p_text = 'Define message texts in SE91'.              "#EC NOTEXT
+    WHEN '002'.
+      p_text = 'Remove ''->get_text( )'''.              "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
