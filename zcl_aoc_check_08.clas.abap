@@ -62,7 +62,7 @@ METHOD check.
 
     IF lv_statement CP 'REFRESH *'.
       lv_code = '001'.
-    ELSEIF lv_statement CP '*IS REQUESTED*'.
+    ELSEIF lv_statement CP '* IS REQUESTED*'.
       lv_code = '002'.
     ELSEIF lv_statement = 'LEAVE'.
       lv_code = '003'.
@@ -101,6 +101,8 @@ METHOD check.
       lv_code = '016'.
     ELSEIF lv_statement CP '* WITH HEADER LINE *'.
       lv_code = '017'.
+    ELSEIF lv_statement CP 'RANGES *'.
+      lv_code = '018'.
     ENDIF.
 
     IF NOT lv_code IS INITIAL.
@@ -172,6 +174,8 @@ METHOD get_message_text.
       p_text = 'OCCURS is obsolete'.                        "#EC NOTEXT
     WHEN '017'.
       p_text = 'WITH HEADER LINE is obsolete'.              "#EC NOTEXT
+    WHEN '018'.
+      p_text = 'RANGES declarations is obsolete'.           "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
