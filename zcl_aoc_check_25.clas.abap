@@ -271,6 +271,7 @@ METHOD put_attributes.
     mv_errty = mv_errty
     mv_skip_radio = mv_skip_radio
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 

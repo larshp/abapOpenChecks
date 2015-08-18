@@ -204,6 +204,7 @@ METHOD put_attributes.
     mv_errty = mv_errty
     mt_tables = mt_tables
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 ENDCLASS.

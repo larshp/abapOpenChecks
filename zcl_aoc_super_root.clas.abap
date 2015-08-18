@@ -95,6 +95,7 @@ METHOD put_attributes.
   IMPORT
     mv_errty = mv_errty
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 ENDCLASS.

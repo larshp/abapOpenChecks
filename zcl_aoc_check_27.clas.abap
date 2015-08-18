@@ -54,6 +54,7 @@ METHOD analyze.
 
     lv_index = lines( mt_statements ).
     READ TABLE mt_statements INDEX lv_index INTO ls_statement.
+    ASSERT sy-subrc = 0.
 
     IF ls_statement-statement = 'ENDIF'
         OR ls_statement-statement = 'ENDTRY'

@@ -243,6 +243,7 @@ METHOD put_attributes.
     mv_types     = mv_types
     mv_define    = mv_define
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 ENDCLASS.

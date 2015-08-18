@@ -863,6 +863,8 @@ METHOD parse.
     lv_index = lines( lt_res_tok ).
     DO lines( lt_res_tok ) TIMES.
       READ TABLE lt_res_tok INDEX lv_index ASSIGNING <ls_res_tok>.
+      ASSERT sy-subrc = 0.
+
       <ls_res_tok>-statement = lv_statement.
       APPEND <ls_res_tok> TO lt_rt.
       lv_index = lv_index - 1.

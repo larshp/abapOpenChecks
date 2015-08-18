@@ -42,12 +42,12 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lt_code     TYPE string_table,
-        lt_pretty   TYPE string_table,
-        ls_rseumod  TYPE rseumod,
-        lv_level    TYPE i,
-        lv_row      TYPE i,
-        lv_option   TYPE c LENGTH 5.
+  DATA: lt_code    TYPE string_table,
+        lt_pretty  TYPE string_table,
+        ls_rseumod TYPE rseumod,
+        lv_level   TYPE i,
+        lv_row     TYPE i,
+        lv_option  TYPE c LENGTH 5.
 
   FIELD-SYMBOLS: <ls_level>  LIKE LINE OF it_levels,
                  <lv_code>   LIKE LINE OF lt_code,
@@ -131,6 +131,7 @@ METHOD check.
     LOOP AT lt_code ASSIGNING <lv_code>.
       lv_row = sy-tabix.
       READ TABLE lt_pretty INDEX lv_row ASSIGNING <lv_pretty>.
+      ASSERT sy-subrc = 0.
 
       IF <lv_code> <> <lv_pretty>.
         inform( p_sub_obj_type = c_type_include
@@ -256,6 +257,7 @@ METHOD put_attributes.
     mv_upper = mv_upper
     mv_one_finding = mv_one_finding
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 ENDCLASS.

@@ -136,6 +136,7 @@ METHOD unpack.
 
   lv_xstring = iv_string.
   IMPORT list = et_list FROM DATA BUFFER lv_xstring.
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 ENDCLASS.

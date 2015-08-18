@@ -154,6 +154,7 @@ METHOD put_attributes.
     mv_errty = mv_errty
     mv_maxlength = mv_maxlength
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 ENDCLASS.

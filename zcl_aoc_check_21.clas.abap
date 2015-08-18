@@ -105,6 +105,7 @@ METHOD check.
 
     LOOP AT lt_parameters INTO lv_parameter.
       READ TABLE it_tokens INDEX ls_form_stmnt-from ASSIGNING <ls_token>.
+      ASSERT sy-subrc = 0.
 
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = get_include( p_level = ls_form_stmnt-level )

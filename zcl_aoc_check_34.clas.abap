@@ -48,8 +48,8 @@ METHOD check.
     ENDIF.
   END-OF-DEFINITION.
 
-  DATA: lv_start    TYPE i,
-        lv_include  TYPE sobj_name.
+  DATA: lv_start   TYPE i,
+        lv_include TYPE sobj_name.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
                  <ls_token>     LIKE LINE OF it_tokens.
@@ -59,6 +59,8 @@ METHOD check.
       WHERE type = scan_stmnt_type-standard.
 
     READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+    ASSERT sy-subrc = 0.
+
     CASE <ls_token>-str.
       WHEN 'WHEN'.
         _check.
@@ -149,6 +151,7 @@ METHOD put_attributes.
     mv_errty = mv_errty
     mv_lines = mv_lines
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 ENDCLASS.

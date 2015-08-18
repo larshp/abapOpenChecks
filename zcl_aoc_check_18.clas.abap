@@ -47,7 +47,7 @@ METHOD check.
         FROM <ls_structure>-stmnt_from TO <ls_structure>-stmnt_to.
 
       READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-      IF <ls_token>-type = scan_token_type-comment.
+      IF sy-subrc <> 0 OR <ls_token>-type = scan_token_type-comment.
         CONTINUE.
       ENDIF.
 

@@ -174,6 +174,7 @@ METHOD put_attributes.
     mv_offset = mv_offset
     mv_nest_offset = mv_nest_offset
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 ENDCLASS.

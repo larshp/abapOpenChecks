@@ -175,6 +175,7 @@ METHOD put_attributes.
     mt_info = mt_info
     mt_ignore = mt_ignore
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 

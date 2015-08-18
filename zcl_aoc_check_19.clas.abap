@@ -262,6 +262,7 @@ METHOD put_attributes.
     mv_obj = mv_obj
     mv_simple = mv_simple
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 ENDCLASS.
