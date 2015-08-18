@@ -9,11 +9,15 @@ public section.
 *"* do not include other source files here!!!
   methods CONSTRUCTOR .
 
+  methods GET_ATTRIBUTES
+    redefinition .
   methods GET_MESSAGE_TEXT
+    redefinition .
+  methods IF_CI_TEST~QUERY_ATTRIBUTES
     redefinition .
   methods RUN
     redefinition .
-  methods IF_CI_TEST~QUERY_ATTRIBUTES
+  methods PUT_ATTRIBUTES
     redefinition .
 protected section.
 
@@ -120,6 +124,16 @@ METHOD determine_prefix.
 ENDMETHOD.
 
 
+METHOD get_attributes.
+
+  EXPORT
+    mv_errty = mv_errty
+    ms_settings = ms_settings
+    TO DATA BUFFER p_attributes.
+
+ENDMETHOD.
+
+
 METHOD get_message_text.
 
   CASE p_code.
@@ -173,6 +187,17 @@ METHOD if_ci_test~query_attributes.
   ELSE.
     attributes_ok = abap_false.
   ENDIF.
+
+ENDMETHOD.
+
+
+METHOD put_attributes.
+
+  IMPORT
+    mv_errty = mv_errty
+    ms_settings = ms_settings
+    FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+  ASSERT sy-subrc = 0.
 
 ENDMETHOD.
 
