@@ -41,6 +41,7 @@ METHOD check.
       WHERE type <> scan_stmnt_type-empty
       AND type <> scan_stmnt_type-comment
       AND type <> scan_stmnt_type-comment_in_stmnt
+      AND type <> scan_stmnt_type-macro_definition
       AND type <> scan_stmnt_type-pragma.
 
     CLEAR lv_statement.
