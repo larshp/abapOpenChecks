@@ -17,7 +17,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
 
     METHODS: setup,
       test001_01 FOR TESTING,
-      test001_02 FOR TESTING.
+      test001_02 FOR TESTING,
+      test001_03 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -55,6 +56,22 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     _code 'READ TABLE lt_table INDEX 1 INTO ls_table.'.
+    _code 'ASSERT sy-subrc = 0.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_03.
+* ===========
+
+    _code 'READ TABLE lt_table INDEX 2 INTO ls_table.'.
+    _code 'IF sy-subrc <> 0.'.
+    _code '  READ TABLE lt_table INDEX 1 INTO ls_table.'.
+    _code 'ENDIF.'.
     _code 'ASSERT sy-subrc = 0.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code

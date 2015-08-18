@@ -38,8 +38,10 @@ METHOD check.
 
 
   LOOP AT it_statements ASSIGNING <ls_statement>
-      WHERE type = scan_stmnt_type-standard
-      OR type = scan_stmnt_type-method_direct.
+      WHERE type <> scan_stmnt_type-empty
+      AND type <> scan_stmnt_type-comment
+      AND type <> scan_stmnt_type-comment_in_stmnt
+      AND type <> scan_stmnt_type-pragma.
 
     CLEAR lv_statement.
 
@@ -60,6 +62,10 @@ METHOD check.
       lv_check = abap_true.
       lv_row = <ls_token>-row.
       CONTINUE. " to next statement
+    ENDIF.
+
+    IF lv_statement = 'ENDIF'.
+      CONTINUE.
     ENDIF.
 
     IF lv_check = abap_true AND NOT lv_statement CP '* SY-SUBRC *'.
