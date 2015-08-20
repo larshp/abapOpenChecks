@@ -30,6 +30,8 @@ METHOD check.
 
   DATA: lv_include   TYPE sobj_name,
         lv_check     TYPE abap_bool,
+        lv_report    TYPE i,
+        lv_position  TYPE i,
         lv_row       TYPE token_row,
         lv_statement TYPE string.
 
@@ -43,6 +45,7 @@ METHOD check.
       AND type <> scan_stmnt_type-comment_in_stmnt
       AND type <> scan_stmnt_type-macro_definition
       AND type <> scan_stmnt_type-pragma.
+    lv_position = sy-tabix.
 
     CLEAR lv_statement.
 
@@ -60,6 +63,7 @@ METHOD check.
     IF lv_statement CP 'READ TABLE *'
         OR lv_statement CP 'IMPORT *'
         OR lv_statement CP 'ASSIGN COMPONENT *'.
+      lv_report = lv_position.
       lv_check = abap_true.
       lv_row = <ls_token>-row.
       CONTINUE. " to next statement
@@ -75,6 +79,7 @@ METHOD check.
               p_sub_obj_name = lv_include
               p_line         = lv_row
               p_kind         = mv_errty
+              p_position     = lv_report
               p_test         = myname
               p_code         = '001' ).
     ENDIF.
@@ -88,6 +93,9 @@ ENDMETHOD.
 
 METHOD constructor.
 
+  DATA: ls_message LIKE LINE OF scimessages.
+
+
   super->constructor( ).
 
   description    = 'Check SY-SUBRC'.                        "#EC NOTEXT
@@ -99,6 +107,12 @@ METHOD constructor.
   attributes_ok  = abap_true.
 
   mv_errty = c_error.
+
+  ls_message-test = myname.
+  ls_message-code = '001'.
+  ls_message-kind = c_error.
+  ls_message-pcom = '"#EC CI_SUBRC'.
+  INSERT ls_message INTO TABLE scimessages.
 
 ENDMETHOD.                    "CONSTRUCTOR
 
@@ -112,5 +126,5 @@ METHOD get_message_text.
       ASSERT 1 = 1 + 1.
   ENDCASE.
 
-ENDMETHOD.                    "GET_MESSAGE_TEXT
+ENDMETHOD.
 ENDCLASS.

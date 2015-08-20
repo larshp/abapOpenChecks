@@ -263,7 +263,20 @@ METHOD if_ci_test~display_documentation.
 
   CONCATENATE lv_url myname INTO lv_url.
 
-  cl_gui_frontend_services=>execute( document = lv_url ).
+  cl_gui_frontend_services=>execute(
+    EXPORTING
+      document               = lv_url
+    EXCEPTIONS
+      cntl_error             = 1
+      error_no_gui           = 2
+      bad_parameter          = 3
+      file_not_found         = 4
+      path_not_found         = 5
+      file_extension_unknown = 6
+      error_execute_failed   = 7
+      synchronous_failed     = 8
+      not_supported_by_gui   = 9
+      OTHERS                 = 10 ).
 
 ENDMETHOD.
 
@@ -302,6 +315,8 @@ METHOD inform.
   DATA: lv_cnam TYPE reposrc-cnam,
         lv_skip TYPE abap_bool.
 
+  FIELD-SYMBOLS: <ls_message> LIKE LINE OF scimessages.
+
 
   IF p_sub_obj_type = 'PROG' AND p_sub_obj_name <> ''.
     SELECT SINGLE cnam FROM reposrc INTO lv_cnam
@@ -325,6 +340,12 @@ METHOD inform.
                        iv_line         = p_line ).
   IF lv_skip = abap_true.
     RETURN.
+  ENDIF.
+
+  READ TABLE scimessages ASSIGNING <ls_message>
+    WITH KEY test = myname code = p_code.
+  IF sy-subrc = 0.
+    <ls_message>-kind = p_kind.
   ENDIF.
 
   super->inform(
