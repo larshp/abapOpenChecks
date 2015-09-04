@@ -83,6 +83,7 @@ CLASS ltcl_test_statements DEFINITION FOR TESTING
       compute15       FOR TESTING,
       compute16       FOR TESTING,
       compute17       FOR TESTING,
+      compute18       FOR TESTING,
       if1             FOR TESTING,
       if2             FOR TESTING,
       if3             FOR TESTING,
@@ -680,6 +681,14 @@ CLASS ltcl_test_statements IMPLEMENTATION.
   METHOD compute17.
 
     _code 'lv_var = zcl_class=>method( )->method( )-field=>method( lv_foo ).'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
+  METHOD compute18.
+
+    _code 'lv_var = <ls_foo>-ref->get_all( ).'.
 
     _test abap_true.
 

@@ -1061,9 +1061,9 @@ METHOD walk_role.
     WHEN 'FunctionId'.
       FIND REGEX '^''.*''$' IN lv_token.
     WHEN 'MethodId('.
-      FIND REGEX '^[a-zA-Z0-9_\=\->~]+\($' IN lv_token.     "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\=\-<>~]+\($' IN lv_token.     "#EC NOTEXT
     WHEN 'MethodId'.
-      FIND REGEX '^[a-zA-Z0-9_\=\->~]+\(?$' IN lv_token.    "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\=\-<>~]+\(?$' IN lv_token.    "#EC NOTEXT
     WHEN 'LocationId'.
       FIND REGEX '^/?[0-9]*["("0-9")"]*$' IN lv_token.
     WHEN 'SelOptId'.
