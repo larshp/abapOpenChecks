@@ -9,7 +9,6 @@ CLASS ltcl_test_statements DEFINITION FOR TESTING
     FINAL.
 
 * todo, colon test, separator
-* todo, chained method call
 
   PRIVATE SECTION.
 * ================
@@ -76,6 +75,14 @@ CLASS ltcl_test_statements DEFINITION FOR TESTING
       compute7        FOR TESTING,
       compute8        FOR TESTING,
       compute9        FOR TESTING,
+      compute10       FOR TESTING,
+      compute11       FOR TESTING,
+      compute12       FOR TESTING,
+      compute13       FOR TESTING,
+      compute14       FOR TESTING,
+      compute15       FOR TESTING,
+      compute16       FOR TESTING,
+      compute17       FOR TESTING,
       if1             FOR TESTING,
       if2             FOR TESTING,
       if3             FOR TESTING,
@@ -613,6 +620,70 @@ CLASS ltcl_test_statements IMPLEMENTATION.
     _test abap_true.
 
   ENDMETHOD.                    "compute9
+
+  METHOD compute10.
+
+    _code 'lv_var = zcl_class=>method( )-field.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
+  METHOD compute11.
+
+    _code 'lv_var = zcl_class=>method( )->method( ).'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
+  METHOD compute12.
+
+    _code 'lv_var = zcl_class=>method( )->method( )-field.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
+  METHOD compute13.
+
+    _code 'lv_var = zcl_class=>method( )->method( )-field=>method( ).'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
+  METHOD compute14.
+
+    _code 'lv_var = zcl_class=>method( lv_foo )-field.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
+  METHOD compute15.
+
+    _code 'lv_var = zcl_class=>method( )->method( lv_foo ).'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
+  METHOD compute16.
+
+    _code 'lv_var = zcl_class=>method( )->method( lv_foo )-field.'.
+
+    _test abap_true.
+
+  ENDMETHOD.
+
+  METHOD compute17.
+
+    _code 'lv_var = zcl_class=>method( )->method( )-field=>method( lv_foo ).'.
+
+    _test abap_true.
+
+  ENDMETHOD.
 
   METHOD if1.
 

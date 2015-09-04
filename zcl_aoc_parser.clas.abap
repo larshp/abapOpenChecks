@@ -1052,9 +1052,10 @@ METHOD walk_role.
         OR 'ProgramId'
         OR 'ProgramDefId'
         OR 'MacroDefId'
-        OR 'ClassexcrefFieldId'
-        OR 'FieldCompId'.
+        OR 'ClassexcrefFieldId'.
       FIND REGEX '^[a-zA-Z0-9_]+$' IN lv_token.             "#EC NOTEXT
+    WHEN 'FieldCompId'.
+      FIND REGEX '^\(?[a-zA-Z0-9_]+\)?$' IN lv_token.       "#EC NOTEXT
     WHEN 'ClassrefFieldId'.
       FIND REGEX '^[a-zA-Z0-9_]+$' IN lv_token.             "#EC NOTEXT
     WHEN 'FunctionId'.
@@ -1095,9 +1096,12 @@ ENDMETHOD.
 
 METHOD walk_terminal.
 
-  DATA: lv_token LIKE LINE OF gt_tokens.
-
-  FIELD-SYMBOLS: <ls_token> LIKE LINE OF rs_result-tokens.
+  DATA: lv_nws   TYPE abap_bool,
+        lv_len   TYPE i,
+        lv_token LIKE LINE OF gt_tokens.
+* too many variables with similar names
+  FIELD-SYMBOLS: <lv_token> LIKE LINE OF gt_tokens,
+                 <ls_token> LIKE LINE OF rs_result-tokens.
 
 
   rs_result-match = abap_true.
@@ -1113,6 +1117,41 @@ METHOD walk_terminal.
       IF sy-subrc <> 0.
         rs_result-match = abap_false.
       ENDIF.
+    WHEN '#ASTERISK_NWS#'.
+      IF lv_token CP '#*+*'.
+        lv_token = '*'.
+        lv_nws = abap_true.
+      ELSE.
+        rs_result-match = abap_false.
+      ENDIF.
+    WHEN '#RPAREN_NWS#'.
+      IF lv_token CP ')+*'.
+        lv_token = ')'.
+        lv_nws = abap_true.
+      ELSE.
+        rs_result-match = abap_false.
+      ENDIF.
+    WHEN '#PLUS_NWS#'.
+      IF lv_token CP '#++*'.
+        lv_token = '+'.
+        lv_nws = abap_true.
+      ELSE.
+        rs_result-match = abap_false.
+      ENDIF.
+    WHEN '#NWS_ARROW_NWS#'.
+      IF lv_token CP '->+*' OR lv_token CP '=>+*'.
+        lv_token = lv_token(2).
+        lv_nws = abap_true.
+      ELSE.
+        rs_result-match = abap_false.
+      ENDIF.
+    WHEN '#NWS_MINUS_NWS#'.
+      IF lv_token CP '-+*'.
+        lv_token = '-'.
+        lv_nws = abap_true.
+      ELSE.
+        rs_result-match = abap_false.
+      ENDIF.
     WHEN OTHERS.
       IF lv_token <> io_node->mv_value.
         rs_result-match = abap_false.
@@ -1123,8 +1162,21 @@ METHOD walk_terminal.
     RETURN.
   ENDIF.
 
-  rs_result = walk_node( io_node  = io_node
-                         iv_index = iv_index + 1 ).
+  IF lv_nws = abap_true.
+    READ TABLE gt_tokens INDEX iv_index ASSIGNING <lv_token>.
+    ASSERT sy-subrc = 0.
+    lv_len = strlen( lv_token ).
+    <lv_token> = <lv_token>+lv_len.
+
+    rs_result = walk_node( io_node  = io_node
+                           iv_index = iv_index ).
+    IF rs_result-match = abap_false.
+      CONCATENATE lv_token <lv_token> INTO <lv_token>.
+    ENDIF.
+  ELSE.
+    rs_result = walk_node( io_node  = io_node
+                           iv_index = iv_index + 1 ).
+  ENDIF.
   IF rs_result-match = abap_true.
     APPEND INITIAL LINE TO rs_result-tokens ASSIGNING <ls_token>.
     <ls_token>-type     = c_terminal.
