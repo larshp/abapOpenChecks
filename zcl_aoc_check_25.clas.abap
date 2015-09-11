@@ -189,12 +189,12 @@ METHOD find_fields.
     ENDIF.
 
     LOOP AT ls_result-tokens ASSIGNING <ls_rt>
-        WHERE value = zcl_aoc_parser=>c_role_fielddefid
-        AND type = zcl_aoc_parser=>c_role.
+        WHERE value = zcl_aoc_parser=>c_role-fielddefid
+        AND type = zcl_aoc_parser=>c_type-role.
 
       IF mv_skip_radio = abap_true.
         READ TABLE ls_result-tokens
-          WITH KEY type = zcl_aoc_parser=>c_terminal code = 'RADIOBUTTON'
+          WITH KEY type = zcl_aoc_parser=>c_type-terminal code = 'RADIOBUTTON'
           TRANSPORTING NO FIELDS.
         IF sy-subrc = 0.
           CONTINUE.

@@ -27,10 +27,20 @@ CLASS zcl_aoc_parser DEFINITION
         tokens TYPE tt_tokens,
       END OF st_result .
 
-    CONSTANTS c_role TYPE c VALUE 'R' ##NO_TEXT.
-    CONSTANTS c_terminal TYPE c VALUE 'T' ##NO_TEXT.
-    CONSTANTS c_nonterminal TYPE c VALUE 'N' ##NO_TEXT.
-    CONSTANTS c_role_fielddefid TYPE string VALUE 'FieldDefId' ##NO_TEXT.
+    CONSTANTS: BEGIN OF c_type,
+                 role        TYPE c VALUE 'R' ##NO_TEXT,
+                 terminal    TYPE c VALUE 'T' ##NO_TEXT,
+                 nonterminal TYPE c VALUE 'N' ##NO_TEXT,
+               END OF c_type.
+
+    CONSTANTS: BEGIN OF c_role,
+                 fielddefid     TYPE string VALUE 'FieldDefId' ##NO_TEXT,
+                 fieldid        TYPE string VALUE 'FieldId' ##NO_TEXT,
+                 formid         TYPE string VALUE 'FormId' ##NO_TEXT,
+                 formdefid      TYPE string VALUE 'FormDefId' ##NO_TEXT,
+                 classexctypeid TYPE string VALUE 'ClassexcTypeId' ##NO_TEXT,
+                 typeid         TYPE string VALUE 'TypeId' ##NO_TEXT,
+               END OF c_role.
 
     CLASS-METHODS run
       IMPORTING
@@ -808,7 +818,7 @@ METHOD parents.
 
     LOOP AT ct_tokens ASSIGNING <ls_token>
         TO lv_index - 1
-        WHERE type = c_nonterminal
+        WHERE type = c_type-nonterminal
         AND statement = <ls_child>-statement
         AND value = <ls_child>-rulename.
       <ls_child>-parent = <ls_token>-id.
@@ -1004,7 +1014,7 @@ METHOD walk_nonterminal.
                          iv_index = iv_index ).
   IF rs_result-match = abap_true.
     APPEND INITIAL LINE TO rs_result-tokens ASSIGNING <ls_token>.
-    <ls_token>-type     = c_nonterminal.
+    <ls_token>-type     = c_type-nonterminal.
     <ls_token>-value    = io_node->mv_value.
     <ls_token>-rulename = io_node->mv_rulename.
   ENDIF.
@@ -1082,7 +1092,7 @@ METHOD walk_role.
                            iv_index = iv_index + 1 ).
     IF rs_result-match = abap_true.
       APPEND INITIAL LINE TO rs_result-tokens ASSIGNING <ls_token>.
-      <ls_token>-type     = c_role.
+      <ls_token>-type     = c_type-role.
       <ls_token>-value    = io_node->mv_value.
       <ls_token>-code     = lv_token.
       <ls_token>-rulename = io_node->mv_rulename.
@@ -1179,7 +1189,7 @@ METHOD walk_terminal.
   ENDIF.
   IF rs_result-match = abap_true.
     APPEND INITIAL LINE TO rs_result-tokens ASSIGNING <ls_token>.
-    <ls_token>-type     = c_terminal.
+    <ls_token>-type     = c_type-terminal.
     <ls_token>-value    = io_node->mv_value.
     <ls_token>-code     = lv_token.
     <ls_token>-rulename = io_node->mv_rulename.

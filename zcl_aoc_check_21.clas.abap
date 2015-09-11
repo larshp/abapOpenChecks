@@ -151,8 +151,8 @@ METHOD find_parameters.
       iv_rule = 'FORM' ).
 
   LOOP AT ls_result-tokens ASSIGNING <ls_res_tok>
-      WHERE value = zcl_aoc_parser=>c_role_fielddefid
-      AND type = zcl_aoc_parser=>c_role.
+      WHERE value = zcl_aoc_parser=>c_role-fielddefid
+      AND type = zcl_aoc_parser=>c_type-role.
     APPEND <ls_res_tok>-code TO rt_parameters.
   ENDLOOP.
 

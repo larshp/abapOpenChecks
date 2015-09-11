@@ -99,7 +99,8 @@ METHOD check.
     ENDIF.
 
 * the parser sometimes mixes up the itab and dbtab updates, so look for the first role
-    READ TABLE ls_result-tokens ASSIGNING <ls_rt> WITH KEY type = zcl_aoc_parser=>c_role.
+    READ TABLE ls_result-tokens ASSIGNING <ls_rt>
+      WITH KEY type = zcl_aoc_parser=>c_type-role.
     IF sy-subrc <> 0.
       CONTINUE.
     ENDIF.
