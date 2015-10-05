@@ -147,7 +147,7 @@ METHOD constructor.
 
   description    = 'Use LINE OF'.                           "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '001'.
+  version        = '002'.
   position       = '019'.
 
   has_attributes = abap_true.
@@ -162,7 +162,11 @@ ENDMETHOD.                    "CONSTRUCTOR
 
 METHOD get_attributes.
 
-  EXPORT mv_obj = mv_obj mv_simple = mv_simple TO DATA BUFFER p_attributes.
+  EXPORT
+    mv_obj = mv_obj
+    mv_simple = mv_simple
+    mv_errty = mv_errty
+    TO DATA BUFFER p_attributes.
 
 ENDMETHOD.
 
@@ -261,6 +265,7 @@ METHOD put_attributes.
   IMPORT
     mv_obj = mv_obj
     mv_simple = mv_simple
+    mv_errty = mv_errty
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
   ASSERT sy-subrc = 0.
 
