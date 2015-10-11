@@ -197,8 +197,16 @@ CLASS lcl_app IMPLEMENTATION.
 
     LOOP AT lt_tadir ASSIGNING <ls_tadir>.
       lv_clsname = <ls_tadir>-obj_name.
-      lt_methods = cl_oo_classname_service=>get_all_method_includes( lv_clsname ).
-      APPEND LINES OF lt_methods TO rt_methods.
+      cl_oo_classname_service=>get_all_method_includes(
+        EXPORTING
+          clsname            = lv_clsname
+        RECEIVING
+          result             = lt_methods
+        EXCEPTIONS
+          class_not_existing = 1 ).
+      IF sy-subrc = 0.
+        APPEND LINES OF lt_methods TO rt_methods.
+      ENDIF.
     ENDLOOP.
 
   ENDMETHOD.                    "find_methods
