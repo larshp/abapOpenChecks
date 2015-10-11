@@ -52,6 +52,10 @@ CLASS zcl_aoc_parser DEFINITION
         VALUE(rs_result)   TYPE zcl_aoc_parser=>st_result .
 protected section.
 
+  class-methods DOWNLOAD
+    importing
+      !IV_FILENAME type STRING
+      !IV_DATA type STRING .
   class-methods PARENTS
     changing
       !CT_TOKENS type TT_TOKENS .
@@ -194,12 +198,11 @@ protected section.
     returning
       value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
 private section.
+
 *"* private components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
-
   class-data GT_TOKENS type STRING_TABLE .
   class-data GV_END_RULE type STRING .
-  type-pools ABAP .
   class-data GV_DEBUG type ABAP_BOOL .
   class-data GV_ALLOW_OBSOLETE type ABAP_BOOL .
 ENDCLASS.
@@ -646,43 +649,9 @@ METHOD build_terminal.
 ENDMETHOD.
 
 
-METHOD graph_build.
+METHOD download.
 
-  DATA: li_rule TYPE REF TO if_ixml_node.
-
-
-  li_rule = xml_get( iv_rulename ).
-
-  CREATE OBJECT eo_start
-    EXPORTING
-      iv_type     = gc_start
-      iv_value    = iv_rulename
-      iv_rulename = iv_rulename.
-
-  CREATE OBJECT eo_end
-    EXPORTING
-      iv_type     = gc_end
-      iv_value    = iv_rulename
-      iv_rulename = iv_rulename.
-
-  build( ii_rule   = li_rule
-         iv_rulename = iv_rulename
-         io_before = eo_start
-         io_after  = eo_end ).
-
-  IF gv_debug = abap_true.
-    graph_download(
-        iv_rulename = iv_rulename
-        io_start    = eo_start ).
-  ENDIF.
-
-ENDMETHOD.
-
-
-METHOD graph_download.
-
-  DATA: lv_text     TYPE string,
-        lv_desktop  TYPE string,
+  DATA: lv_desktop  TYPE string,
         lv_filename TYPE string,
         lt_data     TYPE TABLE OF string.
 
@@ -702,11 +671,9 @@ METHOD graph_download.
 
   cl_gui_cfw=>flush( ).
 
-  lv_text = graph_to_text( io_start ).
-  CLEAR lt_data.
-  APPEND lv_text TO lt_data.
+  APPEND iv_data TO lt_data.
 
-  lv_filename = lv_desktop && '\graphviz\' && iv_rulename && '.txt'. "#EC NOTEXT
+  lv_filename = lv_desktop && '\graphviz\' && iv_filename.  "#EC NOTEXT
 
   cl_gui_frontend_services=>gui_download(
     EXPORTING
@@ -742,6 +709,53 @@ METHOD graph_download.
     MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
                WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
   ENDIF.
+
+
+ENDMETHOD.
+
+
+METHOD graph_build.
+
+  DATA: li_rule TYPE REF TO if_ixml_node.
+
+
+  li_rule = xml_get( iv_rulename ).
+
+  CREATE OBJECT eo_start
+    EXPORTING
+      iv_type     = gc_start
+      iv_value    = iv_rulename
+      iv_rulename = iv_rulename.
+
+  CREATE OBJECT eo_end
+    EXPORTING
+      iv_type     = gc_end
+      iv_value    = iv_rulename
+      iv_rulename = iv_rulename.
+
+  build( ii_rule   = li_rule
+         iv_rulename = iv_rulename
+         io_before = eo_start
+         io_after  = eo_end ).
+
+  IF gv_debug = abap_true.
+    graph_download(
+        iv_rulename = iv_rulename
+        io_start    = eo_start ).
+  ENDIF.
+
+ENDMETHOD.
+
+
+METHOD graph_download.
+
+  DATA: lv_text TYPE string.
+
+
+  lv_text = graph_to_text( io_start ).
+
+  download( iv_filename = iv_rulename && '.txt'
+            iv_data     = lv_text ).
 
 ENDMETHOD.
 
@@ -1200,29 +1214,11 @@ ENDMETHOD.
 
 METHOD xml_download.
 
-  DATA: lv_desktop       TYPE string,
-        lv_filename      TYPE string,
-        lv_xml           TYPE string,
-        lt_data          TYPE TABLE OF string,
+  DATA: lv_xml           TYPE string,
         li_ostream       TYPE REF TO if_ixml_ostream,
         li_renderer      TYPE REF TO if_ixml_renderer,
         li_streamfactory TYPE REF TO if_ixml_stream_factory.
 
-
-  cl_gui_frontend_services=>get_desktop_directory(
-    CHANGING
-      desktop_directory    = lv_desktop
-    EXCEPTIONS
-      cntl_error           = 1
-      error_no_gui         = 2
-      not_supported_by_gui = 3
-      OTHERS               = 4 ).
-  IF sy-subrc <> 0.
-    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-               WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
-  ENDIF.
-
-  cl_gui_cfw=>flush( ).
 
   li_streamfactory = ii_xml->create_stream_factory( ).
   li_ostream = li_streamfactory->create_ostream_cstring( lv_xml ).
@@ -1235,44 +1231,8 @@ METHOD xml_download.
   REPLACE ALL OCCURRENCES OF cl_abap_char_utilities=>newline
     IN lv_xml WITH cl_abap_char_utilities=>cr_lf.
 
-  APPEND lv_xml TO lt_data.
-
-  lv_filename = lv_desktop && '\graphviz\' && iv_rulename && '.xml'. "#EC NOTEXT
-
-  cl_gui_frontend_services=>gui_download(
-    EXPORTING
-      filename                  = lv_filename
-    CHANGING
-      data_tab                  = lt_data
-    EXCEPTIONS
-      file_write_error          = 1
-      no_batch                  = 2
-      gui_refuse_filetransfer   = 3
-      invalid_type              = 4
-      no_authority              = 5
-      unknown_error             = 6
-      header_not_allowed        = 7
-      separator_not_allowed     = 8
-      filesize_not_allowed      = 9
-      header_too_long           = 10
-      dp_error_create           = 11
-      dp_error_send             = 12
-      dp_error_write            = 13
-      unknown_dp_error          = 14
-      access_denied             = 15
-      dp_out_of_memory          = 16
-      disk_full                 = 17
-      dp_timeout                = 18
-      file_not_found            = 19
-      dataprovider_exception    = 20
-      control_flush_error       = 21
-      not_supported_by_gui      = 22
-      error_no_gui              = 23
-      OTHERS                    = 24 ).
-  IF sy-subrc <> 0.
-    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-               WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
-  ENDIF.
+  download( iv_filename = iv_rulename && '.xml'
+            iv_data     = lv_xml ).
 
 ENDMETHOD.
 
