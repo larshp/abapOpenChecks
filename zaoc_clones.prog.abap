@@ -14,6 +14,11 @@ SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE text-002.
 PARAMETERS: p_top TYPE i DEFAULT 100 OBLIGATORY.
 SELECTION-SCREEN END OF BLOCK b2.
 
+*----------------------------------------------------------------------*
+*       CLASS lcl_app DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 CLASS lcl_app DEFINITION FINAL.
 
   PUBLIC SECTION.
@@ -25,7 +30,7 @@ CLASS lcl_app DEFINITION FINAL.
     TYPES: BEGIN OF ty_combi,
              method1 TYPE seop_method_w_include,
              method2 TYPE seop_method_w_include,
-             match   TYPE dec12_2,
+             match   TYPE dec20_2,
            END OF ty_combi.
 
     TYPES: ty_combi_tt TYPE STANDARD TABLE OF ty_combi WITH DEFAULT KEY.
@@ -33,22 +38,27 @@ CLASS lcl_app DEFINITION FINAL.
     CLASS-METHODS:
       compare
         IMPORTING is_combi        TYPE ty_combi
-        RETURNING VALUE(rv_match) TYPE dec12_2,
+        RETURNING value(rv_match) TYPE dec20_2,
       find_methods
-        RETURNING VALUE(rt_methods) TYPE seop_methods_w_include,
+        RETURNING value(rt_methods) TYPE seop_methods_w_include,
       output
         IMPORTING it_combi TYPE ty_combi_tt
         RAISING   cx_salv_error,
       delta
         IMPORTING it_old          TYPE STANDARD TABLE
                   it_new          TYPE STANDARD TABLE
-        RETURNING VALUE(rt_delta) TYPE vxabapt255_tab,
+        RETURNING value(rt_delta) TYPE vxabapt255_tab,
       combinations
         IMPORTING it_methods      TYPE seop_methods_w_include
-        RETURNING VALUE(rt_combi) TYPE ty_combi_tt.
+        RETURNING value(rt_combi) TYPE ty_combi_tt.
 
-ENDCLASS.
+ENDCLASS.                    "lcl_app DEFINITION
 
+*----------------------------------------------------------------------*
+*       CLASS lcl_app IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
 CLASS lcl_app IMPLEMENTATION.
 
   METHOD output.
@@ -68,7 +78,7 @@ CLASS lcl_app IMPLEMENTATION.
 
     lo_alv->display( ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "output
 
   METHOD delta.
 
@@ -88,7 +98,7 @@ CLASS lcl_app IMPLEMENTATION.
         trdir_delta             = lt_trdir_delta
         text_delta              = rt_delta.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "delta
 
   METHOD compare.
 
@@ -113,11 +123,12 @@ CLASS lcl_app IMPLEMENTATION.
 * this calculation might not be 100% correct but will give a good indication
     rv_match = lv_max - lines( lt_delta ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "compare
 
   METHOD run.
 
     DATA: lt_combi   TYPE ty_combi_tt,
+          lv_text    TYPE string,
           lt_methods TYPE seop_methods_w_include.
 
     FIELD-SYMBOLS: <ls_combi> LIKE LINE OF lt_combi.
@@ -128,10 +139,11 @@ CLASS lcl_app IMPLEMENTATION.
 
     LOOP AT lt_combi ASSIGNING <ls_combi>.
       IF sy-tabix MOD 100 = 0.
+        lv_text = |{ sy-tabix }/{ lines( lt_combi ) }|.
         CALL FUNCTION 'SAPGUI_PROGRESS_INDICATOR'
           EXPORTING
             percentage = 100
-            text       = |{ sy-tabix }/{ lines( lt_combi ) }|.
+            text       = lv_text.
       ENDIF.
 
       <ls_combi>-match = compare( <ls_combi> ).
@@ -141,7 +153,7 @@ CLASS lcl_app IMPLEMENTATION.
     DELETE lt_combi FROM p_top.
     output( lt_combi ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "run
 
   METHOD combinations.
 
@@ -162,7 +174,7 @@ CLASS lcl_app IMPLEMENTATION.
       ENDLOOP.
     ENDLOOP.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "combinations
 
   METHOD find_methods.
 
@@ -174,6 +186,8 @@ CLASS lcl_app IMPLEMENTATION.
           lt_methods TYPE seop_methods_w_include,
           lt_tadir   TYPE TABLE OF ty_tadir.
 
+    FIELD-SYMBOLS: <ls_tadir> LIKE LINE OF lt_tadir.
+
 
     SELECT obj_name FROM tadir
       INTO TABLE lt_tadir
@@ -181,15 +195,15 @@ CLASS lcl_app IMPLEMENTATION.
       AND object = 'CLAS'
       ORDER BY PRIMARY KEY.
 
-    LOOP AT lt_tadir ASSIGNING FIELD-SYMBOL(<ls_tadir>).
+    LOOP AT lt_tadir ASSIGNING <ls_tadir>.
       lv_clsname = <ls_tadir>-obj_name.
       lt_methods = cl_oo_classname_service=>get_all_method_includes( lv_clsname ).
       APPEND LINES OF lt_methods TO rt_methods.
     ENDLOOP.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "find_methods
 
-ENDCLASS.
+ENDCLASS.                    "lcl_app IMPLEMENTATION
 
 START-OF-SELECTION.
   lcl_app=>run( ).
