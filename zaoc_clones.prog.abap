@@ -12,7 +12,7 @@ SELECT-OPTIONS: s_devcla FOR tadir-devclass,
 SELECTION-SCREEN END OF BLOCK b1.
 
 SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE text-002.
-PARAMETERS: p_top TYPE i DEFAULT 100 OBLIGATORY,
+PARAMETERS: p_top  TYPE i DEFAULT 100 OBLIGATORY,
             p_prog TYPE i DEFAULT 100 OBLIGATORY.
 SELECTION-SCREEN END OF BLOCK b2.
 
@@ -196,7 +196,7 @@ CLASS lcl_app IMPLEMENTATION.
       WHERE devclass IN s_devcla
       AND obj_name IN s_name
       AND object = 'CLAS'
-      ORDER BY PRIMARY KEY.
+      ORDER BY PRIMARY KEY.               "#EC CI_GENBUFF "#EC CI_SUBRC
 
     LOOP AT lt_tadir ASSIGNING <ls_tadir>.
       lv_clsname = <ls_tadir>-obj_name.

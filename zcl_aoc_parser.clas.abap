@@ -755,7 +755,7 @@ METHOD graph_download.
   lv_text = graph_to_text( io_start ).
 
   download( iv_filename = iv_rulename && '.txt'
-            iv_data     = lv_text ).
+            iv_data     = lv_text ) ##NO_TEXT.
 
 ENDMETHOD.
 
@@ -1232,7 +1232,7 @@ METHOD xml_download.
     IN lv_xml WITH cl_abap_char_utilities=>cr_lf.
 
   download( iv_filename = iv_rulename && '.xml'
-            iv_data     = lv_xml ).
+            iv_data     = lv_xml ) ##NO_TEXT.
 
 ENDMETHOD.
 

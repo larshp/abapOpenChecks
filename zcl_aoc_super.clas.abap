@@ -276,7 +276,7 @@ METHOD if_ci_test~display_documentation.
       error_execute_failed   = 7
       synchronous_failed     = 8
       not_supported_by_gui   = 9
-      OTHERS                 = 10 ).
+      OTHERS                 = 10 ).                      "#EC CI_SUBRC
 
 ENDMETHOD.
 
@@ -346,6 +346,10 @@ METHOD inform.
     WITH KEY test = myname code = p_code.
   IF sy-subrc = 0.
     <ls_message>-kind = p_kind.
+  ENDIF.
+  IF sy-subrc = 0 AND NOT mt_source IS INITIAL.
+* fix failing unit tests
+    CLEAR <ls_message>-pcom.
   ENDIF.
 
   super->inform(

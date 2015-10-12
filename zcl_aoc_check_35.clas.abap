@@ -60,10 +60,13 @@ METHOD run.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
+  TYPES: BEGIN OF ty_cross,
+           name TYPE cross-name,
+         END OF ty_cross.
+
   DATA: lt_t100  TYPE TABLE OF t100 WITH DEFAULT KEY,
-        lt_cross TYPE TABLE OF cross,
+        lt_cross TYPE TABLE OF ty_cross,
         lt_name  TYPE TABLE OF cross-name,
-        ls_dd08l TYPE dd08l,
         lv_name  LIKE LINE OF lt_name.
 
   FIELD-SYMBOLS: <ls_t100> LIKE LINE OF lt_t100.
@@ -86,20 +89,23 @@ METHOD run.
   ENDLOOP.
 
   ASSERT lines( lt_name ) > 0.
-  SELECT * FROM cross INTO TABLE lt_cross
+  SELECT name FROM cross INTO TABLE lt_cross
     FOR ALL ENTRIES IN lt_name
     WHERE ( type = '3' OR type = 'N' )
     AND name = lt_name-table_line.                        "#EC CI_SUBRC
+  SORT lt_cross BY name ASCENDING.
 
   LOOP AT lt_t100 ASSIGNING <ls_t100>.
 
-    CONCATENATE <ls_t100>-arbgb <ls_t100>-msgnr INTO lv_name RESPECTING BLANKS.
-    READ TABLE lt_cross WITH KEY name = lv_name TRANSPORTING NO FIELDS.
+    CONCATENATE <ls_t100>-arbgb <ls_t100>-msgnr
+      INTO lv_name RESPECTING BLANKS.
+    READ TABLE lt_cross WITH KEY name = lv_name
+      BINARY SEARCH TRANSPORTING NO FIELDS.
     IF sy-subrc = 0.
       CONTINUE.
     ENDIF.
 
-    SELECT SINGLE * FROM dd08l INTO ls_dd08l
+    SELECT SINGLE COUNT( * ) FROM dd08l
       WHERE arbgb = <ls_t100>-arbgb
       AND msgnr = <ls_t100>-msgnr ##WARN_OK.
     IF sy-subrc = 0.

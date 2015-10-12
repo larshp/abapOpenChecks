@@ -62,7 +62,11 @@ ENDFORM.
 *----------------------------------------------------------------------*
 FORM run.
 
-  DATA: lt_classdf  TYPE TABLE OF seoclassdf,
+  TYPES: BEGIN OF ty_classdf,
+           clsname TYPE seoclassdf-clsname,
+         END OF ty_classdf.
+
+  DATA: lt_classdf  TYPE TABLE OF ty_classdf,
         lv_descript TYPE seoclasstx-descript,
         lv_t1       TYPE i,
         lv_t2       TYPE i,
@@ -73,10 +77,11 @@ FORM run.
 
   PERFORM get_objectset.
 
-  SELECT * FROM seoclassdf
+  SELECT clsname FROM seoclassdf
     INTO TABLE lt_classdf
     WHERE clsname IN s_class
-    AND version = '1'.                                  "#EC CI_GENBUFF
+    AND version = '1'
+    ORDER BY PRIMARY KEY.                               "#EC CI_GENBUFF
   IF sy-subrc <> 0.
     WRITE: / 'No classes found'(002).
   ENDIF.
