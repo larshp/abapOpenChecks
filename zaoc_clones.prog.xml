@@ -82,5 +82,11 @@
    <ENTRY>D       .</ENTRY>
    <LENGTH>15 </LENGTH>
   </TEXTPOOL>
+  <TEXTPOOL>
+   <ID>S</ID>
+   <KEY>S_NAME</KEY>
+   <ENTRY>D       .</ENTRY>
+   <LENGTH>9 </LENGTH>
+  </TEXTPOOL>
  </TEXTPOOL_TABLE>
 </abapGit>

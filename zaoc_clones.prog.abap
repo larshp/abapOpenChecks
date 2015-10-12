@@ -7,7 +7,8 @@ REPORT zaoc_clones.
 TABLES: tadir.
 
 SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE text-001.
-SELECT-OPTIONS: s_devcla FOR tadir-devclass.
+SELECT-OPTIONS: s_devcla FOR tadir-devclass,
+                s_name   FOR tadir-obj_name.
 SELECTION-SCREEN END OF BLOCK b1.
 
 SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE text-002.
@@ -38,19 +39,19 @@ CLASS lcl_app DEFINITION FINAL.
     CLASS-METHODS:
       compare
         IMPORTING is_combi        TYPE ty_combi
-        RETURNING value(rv_match) TYPE dec20_2,
+        RETURNING VALUE(rv_match) TYPE dec20_2,
       find_methods
-        RETURNING value(rt_methods) TYPE seop_methods_w_include,
+        RETURNING VALUE(rt_methods) TYPE seop_methods_w_include,
       output
         IMPORTING it_combi TYPE ty_combi_tt
         RAISING   cx_salv_error,
       delta
         IMPORTING it_old          TYPE STANDARD TABLE
                   it_new          TYPE STANDARD TABLE
-        RETURNING value(rt_delta) TYPE vxabapt255_tab,
+        RETURNING VALUE(rt_delta) TYPE vxabapt255_tab,
       combinations
         IMPORTING it_methods      TYPE seop_methods_w_include
-        RETURNING value(rt_combi) TYPE ty_combi_tt.
+        RETURNING VALUE(rt_combi) TYPE ty_combi_tt.
 
 ENDCLASS.                    "lcl_app DEFINITION
 
@@ -192,6 +193,7 @@ CLASS lcl_app IMPLEMENTATION.
     SELECT obj_name FROM tadir
       INTO TABLE lt_tadir
       WHERE devclass IN s_devcla
+      AND obj_name IN s_name
       AND object = 'CLAS'
       ORDER BY PRIMARY KEY.
 
