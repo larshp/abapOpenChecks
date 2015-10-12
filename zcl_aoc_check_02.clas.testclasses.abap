@@ -110,7 +110,7 @@ CLASS ltcl_test IMPLEMENTATION.
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
                                           io_check = mo_check ).
 
-    cl_abap_unit_assert=>assert_equals( exp = '001'
+    cl_abap_unit_assert=>assert_equals( exp = '002'
                                         act = ms_result-code ).
 
   ENDMETHOD.                    "test1
