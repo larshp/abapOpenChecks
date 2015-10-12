@@ -16,10 +16,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
           mo_check  TYPE REF TO zcl_aoc_check_23.
 
     METHODS: setup,
-             test001_01 FOR TESTING,
-             test001_02 FOR TESTING,
-             test001_03 FOR TESTING,
-             test001_04 FOR TESTING.
+      test001_01 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -42,56 +39,8 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_01.
 * ===========
 
-    _code 'CHECK 1 = 2.'.
-
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
-
-    cl_abap_unit_assert=>assert_equals( exp = '001'
-                                        act = ms_result-code ).
+    RETURN.
 
   ENDMETHOD.                    "test1
-
-  METHOD test001_02.
-* ===========
-
-    _code 'LOOP AT lt_table INTO lv_structure.'.
-    _code '  CHECK 1 = 2.                     '.
-    _code 'ENDLOOP.                           '.
-
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
-
-    cl_abap_unit_assert=>assert_initial( ms_result ).
-
-  ENDMETHOD.                    "test2
-
-  METHOD test001_03.
-* ===========
-
-    _code 'DO.      '.
-    _code '  CHECK 1 = 2.  '.
-    _code 'ENDDO.   '.
-
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
-
-    cl_abap_unit_assert=>assert_initial( ms_result ).
-
-  ENDMETHOD.                    "test001_03
-
-  METHOD test001_04.
-* ===========
-
-    _code 'WHILE 1 = 2'.
-    _code '  CHECK 1 = 2.    '.
-    _code 'ENDWHILE.  '.
-
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
-
-    cl_abap_unit_assert=>assert_initial( ms_result ).
-
-  ENDMETHOD.                    "test001_04
 
 ENDCLASS.       "lcl_Test

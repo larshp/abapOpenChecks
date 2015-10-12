@@ -4,9 +4,9 @@ class ZCL_AOC_CHECK_02 definition
   create public .
 
 public section.
+
 *"* public components of class ZCL_AOC_CHECK_02
 *"* do not include other source files here!!!
-
   methods CONSTRUCTOR .
 
   methods CHECK
@@ -33,6 +33,7 @@ METHOD check.
   DATA: lv_keyword TYPE string,
         lv_line    TYPE token_row,
         lv_include TYPE program,
+        lv_error   TYPE sci_errc,
         lv_index   LIKE sy-tabix.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements.
@@ -46,9 +47,14 @@ METHOD check.
         it_statements = it_statements
         it_tokens     = it_tokens ).
 
-    IF lv_keyword <> 'EXIT'.
-      CONTINUE. " current loop
-    ENDIF.
+    CASE lv_keyword.
+      WHEN 'EXIT'.
+        lv_error = '001'.
+      WHEN 'CHECK'.
+        lv_error = '002'.
+      WHEN OTHERS.
+        CONTINUE. " current loop
+    ENDCASE.
 
     LOOP AT it_structures TRANSPORTING NO FIELDS
         WHERE ( stmnt_type = scan_struc_stmnt_type-loop
@@ -72,7 +78,7 @@ METHOD check.
               p_line = lv_line
               p_kind = mv_errty
               p_test = myname
-              p_code = '001' ).
+              p_code = lv_error ).
     ENDIF.
 
   ENDLOOP.
@@ -84,7 +90,7 @@ METHOD constructor.
 
   super->constructor( ).
 
-  description    = 'EXIT outside of LOOP'.                  "#EC NOTEXT
+  description    = 'EXIT or CHECK outside of LOOP'.         "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '001'.
   position       = '002'.
@@ -102,6 +108,8 @@ METHOD get_message_text.
   CASE p_code.
     WHEN '001'.
       p_text = 'EXIT outside loop, use RETURN instead'.     "#EC NOTEXT
+    WHEN '002'.
+      p_text = 'CHECK outside of loop'.                     "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
