@@ -12,7 +12,8 @@ SELECT-OPTIONS: s_devcla FOR tadir-devclass,
 SELECTION-SCREEN END OF BLOCK b1.
 
 SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE text-002.
-PARAMETERS: p_top TYPE i DEFAULT 100 OBLIGATORY.
+PARAMETERS: p_top TYPE i DEFAULT 100 OBLIGATORY,
+            p_prog TYPE i DEFAULT 100 OBLIGATORY.
 SELECTION-SCREEN END OF BLOCK b2.
 
 *----------------------------------------------------------------------*
@@ -139,7 +140,7 @@ CLASS lcl_app IMPLEMENTATION.
     lt_combi = combinations( lt_methods ).
 
     LOOP AT lt_combi ASSIGNING <ls_combi>.
-      IF sy-tabix MOD 100 = 0.
+      IF sy-tabix MOD p_prog = 0.
         lv_text = |{ sy-tabix }/{ lines( lt_combi ) }|.
         CALL FUNCTION 'SAPGUI_PROGRESS_INDICATOR'
           EXPORTING

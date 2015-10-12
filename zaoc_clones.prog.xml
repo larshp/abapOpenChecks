@@ -72,6 +72,12 @@
   </TEXTPOOL>
   <TEXTPOOL>
    <ID>S</ID>
+   <KEY>P_PROG</KEY>
+   <ENTRY>        Show progress per</ENTRY>
+   <LENGTH>25 </LENGTH>
+  </TEXTPOOL>
+  <TEXTPOOL>
+   <ID>S</ID>
    <KEY>P_TOP</KEY>
    <ENTRY>        Top Results</ENTRY>
    <LENGTH>19 </LENGTH>
@@ -86,7 +92,7 @@
    <ID>S</ID>
    <KEY>S_NAME</KEY>
    <ENTRY>D       .</ENTRY>
-   <LENGTH>9 </LENGTH>
+   <LENGTH>19 </LENGTH>
   </TEXTPOOL>
  </TEXTPOOL_TABLE>
 </abapGit>
