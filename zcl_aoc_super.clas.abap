@@ -348,8 +348,13 @@ METHOD inform.
     <ls_message>-kind = p_kind.
   ENDIF.
   IF sy-subrc = 0 AND NOT mt_source IS INITIAL.
+    READ TABLE mt_source
+      WITH KEY name = '----------------------------------------'
+      TRANSPORTING NO FIELDS.
+    IF sy-subrc = 0 AND lines( mt_source ) = 1.
 * fix failing unit tests
-    CLEAR <ls_message>-pcom.
+      CLEAR <ls_message>-pcom.
+    ENDIF.
   ENDIF.
 
   super->inform(
