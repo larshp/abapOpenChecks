@@ -1,7 +1,8 @@
 TYPE-POOL zzaoc.
 
 DEFINE zzaoc_top.
-  DATA: lt_attributes TYPE sci_atttab,
+  DATA: lv_cancel     TYPE abap_bool,
+        lt_attributes TYPE sci_atttab,
         ls_attribute  LIKE LINE OF lt_attributes.
 END-OF-DEFINITION.
 
@@ -22,11 +23,14 @@ DEFINE zzaoc_fill_att_rb.
 END-OF-DEFINITION.
 
 DEFINE zzaoc_popup.
-  cl_ci_query_attributes=>generic(
+  lv_cancel = cl_ci_query_attributes=>generic(
                         p_name       = myname
                         p_title      = 'Options'
                         p_attributes = lt_attributes
                         p_display    = p_display ).         "#EC NOTEXT
+  IF lv_cancel = abap_true.
+    RETURN.
+  ENDIF.
   IF mv_errty = c_error OR mv_errty = c_warning OR mv_errty = c_note.
     attributes_ok = abap_true.
   ELSE.
