@@ -105,7 +105,7 @@ METHOD run.
       CONTINUE.
     ENDIF.
 
-    SELECT SINGLE COUNT( * ) FROM dd08l
+    SELECT COUNT( * ) FROM dd08l
       WHERE arbgb = <ls_t100>-arbgb
       AND msgnr = <ls_t100>-msgnr ##WARN_OK.
     IF sy-subrc = 0.

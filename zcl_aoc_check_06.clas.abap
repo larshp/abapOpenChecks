@@ -203,46 +203,18 @@ ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 METHOD if_ci_test~query_attributes.
 
-  DATA: lt_attributes TYPE sci_atttab,
-        ls_attribute  LIKE LINE OF lt_attributes.
+  zzaoc_top.
 
-  DEFINE fill_att.
-    clear ls_attribute.
-    get reference of &1 into ls_attribute-ref.
-    ls_attribute-text = &2.
-    ls_attribute-kind = &3.
-    append ls_attribute to lt_attributes.
-  END-OF-DEFINITION.
+  zzaoc_fill_att mv_errty 'Error Type' ''.                  "#EC NOTEXT
 
-  DEFINE fill_att_rb.
-    clear ls_attribute.
-    get reference of &1 into ls_attribute-ref.
-    ls_attribute-text = &2.
-    ls_attribute-kind = &3.
-    ls_attribute-button_group = &4.
-    append ls_attribute to lt_attributes.
-  END-OF-DEFINITION.
+  zzaoc_fill_att_rb mv_hikey 'Keywords upper case' 'R' 'TYPE'. "#EC NOTEXT
+  zzaoc_fill_att_rb mv_lokey 'Keywords lower case' 'R' 'TYPE'. "#EC NOTEXT
+  zzaoc_fill_att_rb mv_upper 'Upper case' 'R' 'TYPE'.       "#EC NOTEXT
+  zzaoc_fill_att_rb mv_lower 'Lower case' 'R' 'TYPE'.       "#EC NOTEXT
 
+  zzaoc_fill_att mv_one_finding 'Report one finding per include' 'C'. "#EC NOTEXT
 
-  fill_att mv_errty 'Error Type' ''.                        "#EC NOTEXT
-
-  fill_att_rb mv_hikey 'Keywords upper case' 'R' 'TYPE'.    "#EC NOTEXT
-  fill_att_rb mv_lokey 'Keywords lower case' 'R' 'TYPE'.    "#EC NOTEXT
-  fill_att_rb mv_upper 'Upper case' 'R' 'TYPE'.             "#EC NOTEXT
-  fill_att_rb mv_lower 'Lower case' 'R' 'TYPE'.             "#EC NOTEXT
-
-  fill_att mv_one_finding 'Report one finding per include' 'C'. "#EC NOTEXT
-
-  cl_ci_query_attributes=>generic(
-                        p_name       = myname
-                        p_title      = 'Options'
-                        p_attributes = lt_attributes
-                        p_display    = p_display ).         "#EC NOTEXT
-  IF mv_errty = c_error OR mv_errty = c_warning OR mv_errty = c_note.
-    attributes_ok = abap_true.
-  ELSE.
-    attributes_ok = abap_false.
-  ENDIF.
+  zzaoc_popup.
 
 ENDMETHOD.
 

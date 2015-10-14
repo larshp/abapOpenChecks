@@ -148,45 +148,27 @@ ENDMETHOD.
 
 METHOD if_ci_test~query_attributes.
 
-  DATA: lt_attributes TYPE sci_atttab,
-        ls_attribute  LIKE LINE OF lt_attributes.
+  zzaoc_top.
 
-  DEFINE fill_att.
-    get reference of &1 into ls_attribute-ref.
-    ls_attribute-text = &2.
-    ls_attribute-kind = &3.
-    append ls_attribute to lt_attributes.
-  END-OF-DEFINITION.
+  zzaoc_fill_att mv_errty 'Error Type' ''.                  "#EC NOTEXT
 
-
-  fill_att mv_errty 'Error Type' ''.                        "#EC NOTEXT
-
-  fill_att ms_settings-prefix_elementary
+  zzaoc_fill_att ms_settings-prefix_elementary
     'Elementary Type' ''.                                   "#EC NOTEXT
-  fill_att ms_settings-prefix_structure
+  zzaoc_fill_att ms_settings-prefix_structure
     'Structure' ''.                                         "#EC NOTEXT
-  fill_att ms_settings-prefix_table_any
+  zzaoc_fill_att ms_settings-prefix_table_any
     'Table' ''.                                             "#EC NOTEXT
-  fill_att ms_settings-prefix_ref_class
+  zzaoc_fill_att ms_settings-prefix_ref_class
     'Reference to Class' ''.                                "#EC NOTEXT
-  fill_att ms_settings-prefix_ref_interface
+  zzaoc_fill_att ms_settings-prefix_ref_interface
     'Reference to Interface' ''.                            "#EC NOTEXT
 
-  fill_att ms_settings-patterns_prog_data_global
+  zzaoc_fill_att ms_settings-patterns_prog_data_global
     'Global Data' ''.                                       "#EC NOTEXT
-  fill_att ms_settings-patterns_prog_field_symbol_glb
+  zzaoc_fill_att ms_settings-patterns_prog_field_symbol_glb
     'Field Symbols' ''.                                     "#EC NOTEXT
 
-  cl_ci_query_attributes=>generic(
-                        p_name       = myname
-                        p_title      = 'Options'
-                        p_attributes = lt_attributes
-                        p_display    = p_display ).         "#EC NOTEXT
-  IF mv_errty = c_error OR mv_errty = c_warning OR mv_errty = c_note.
-    attributes_ok = abap_true.
-  ELSE.
-    attributes_ok = abap_false.
-  ENDIF.
+  zzaoc_popup.
 
 ENDMETHOD.
 

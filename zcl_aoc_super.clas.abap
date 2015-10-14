@@ -1,37 +1,38 @@
-CLASS zcl_aoc_super DEFINITION
-  PUBLIC
-  INHERITING FROM cl_ci_test_scan
-  ABSTRACT
-  CREATE PUBLIC .
+class ZCL_AOC_SUPER definition
+  public
+  inheriting from CL_CI_TEST_SCAN
+  abstract
+  create public .
 
-  PUBLIC SECTION.
+public section.
+  type-pools ZZAOC .
+
+  types:
 *"* public components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
+    tt_structures TYPE STANDARD TABLE OF sstruc WITH NON-UNIQUE DEFAULT KEY .
 
-    TYPES:
-      tt_structures TYPE STANDARD TABLE OF sstruc WITH NON-UNIQUE DEFAULT KEY.
+  methods CHECK
+    importing
+      !IT_TOKENS type STOKESX_TAB
+      !IT_STATEMENTS type SSTMNT_TAB
+      !IT_LEVELS type SLEVEL_TAB
+      !IT_STRUCTURES type TT_STRUCTURES .
+  methods SET_SOURCE
+    importing
+      !IV_NAME type LEVEL_NAME
+      !IT_CODE type STRING_TABLE .
 
-    METHODS check
-      IMPORTING
-        !it_tokens TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab
-        !it_levels TYPE slevel_tab
-        !it_structures TYPE tt_structures .
-    METHODS set_source
-      IMPORTING
-        !iv_name TYPE level_name
-        !it_code TYPE string_table .
-
-    METHODS get_attributes
-      REDEFINITION .
-    METHODS if_ci_test~query_attributes
-      REDEFINITION .
-    METHODS put_attributes
-      REDEFINITION .
-    METHODS run
-      REDEFINITION .
-    METHODS if_ci_test~display_documentation
-      REDEFINITION .
+  methods GET_ATTRIBUTES
+    redefinition .
+  methods IF_CI_TEST~DISPLAY_DOCUMENTATION
+    redefinition .
+  methods IF_CI_TEST~QUERY_ATTRIBUTES
+    redefinition .
+  methods PUT_ATTRIBUTES
+    redefinition .
+  methods RUN
+    redefinition .
 protected section.
 *"* protected components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
@@ -283,29 +284,11 @@ ENDMETHOD.
 
 METHOD if_ci_test~query_attributes.
 
-  DATA: lt_attributes TYPE sci_atttab,
-        ls_attribute  LIKE LINE OF lt_attributes.
+  zzaoc_top.
 
-  DEFINE fill_att.
-    get reference of &1 into ls_attribute-ref.
-    ls_attribute-text = &2.
-    ls_attribute-kind = &3.
-    append ls_attribute to lt_attributes.
-  END-OF-DEFINITION.
+  zzaoc_fill_att mv_errty 'Error Type' ''.                  "#EC NOTEXT
 
-
-  fill_att mv_errty 'Error Type' ''.                        "#EC NOTEXT
-
-  cl_ci_query_attributes=>generic(
-                        p_name       = myname
-                        p_title      = 'Options'
-                        p_attributes = lt_attributes
-                        p_display    = p_display ).         "#EC NOTEXT
-  IF mv_errty = c_error OR mv_errty = c_warning OR mv_errty = c_note.
-    attributes_ok = abap_true.
-  ELSE.
-    attributes_ok = abap_false.
-  ENDIF.
+  zzaoc_popup.
 
 ENDMETHOD.
 
