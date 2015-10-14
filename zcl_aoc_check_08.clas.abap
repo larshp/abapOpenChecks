@@ -103,6 +103,11 @@ METHOD check.
       lv_code = '017'.
     ELSEIF lv_statement CP 'RANGES *'.
       lv_code = '018'.
+    ELSEIF lv_statement CP 'ADD-CORRESPONDING *'
+        OR lv_statement CP 'SUBTRACT-CORRESPONDING *'
+        OR lv_statement CP 'MULTIPLY-CORRESPONDING *'
+        OR lv_statement CP 'DIVIDE-CORRESPONDING *'.
+      lv_code = '019'.
     ENDIF.
 
     IF NOT lv_code IS INITIAL.
@@ -176,6 +181,8 @@ METHOD get_message_text.
       p_text = 'WITH HEADER LINE is obsolete'.              "#EC NOTEXT
     WHEN '018'.
       p_text = 'RANGES declarations is obsolete'.           "#EC NOTEXT
+    WHEN '019'.
+      p_text = 'Arithmetic CORRESPONDING is obsolete'.      "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
