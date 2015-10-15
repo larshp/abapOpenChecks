@@ -50,7 +50,8 @@ METHOD check.
         OR <ls_token>-str = 'CLASS-DATA'
         OR <ls_token>-str = 'STATICS'
         OR <ls_token>-str = 'WRITE'
-        OR <ls_token>-str = 'MOVE'  " is obsolete anyhow
+        OR <ls_token>-str = 'MOVE'  " anyhow obsolete
+        OR <ls_token>-str = 'RANGES' " anyhow obsolete
         OR <ls_token>-str = 'METHODS'
         OR <ls_token>-str = 'CLEAR'
         OR <ls_token>-str = 'PERFORM'
@@ -63,6 +64,8 @@ METHOD check.
         OR <ls_token>-str = 'INTERFACES'
         OR <ls_token>-str = 'SELECT-OPTIONS'
         OR <ls_token>-str = 'SELECTION-SCREEN'
+        OR <ls_token>-str = 'INCLUDE'
+        OR <ls_token>-str = 'TYPE-POOLS'
         OR <ls_token>-str = 'CLASS-METHODS'
         OR <ls_token>-str = 'FIELD-SYMBOLS'.
       CONTINUE.
