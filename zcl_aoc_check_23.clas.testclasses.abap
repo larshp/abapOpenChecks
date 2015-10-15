@@ -16,7 +16,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
           mo_check  TYPE REF TO zcl_aoc_check_23.
 
     METHODS: setup,
-      test001_01 FOR TESTING.
+      test001_01 FOR TESTING,
+      test001_02 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -39,8 +40,28 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_01.
 * ===========
 
-    RETURN.
+    _code 'IF: 1 = 2.      '.
+    _code '  WRITE ''foo''.'.
+    _code 'ENDIF.          '.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
 
   ENDMETHOD.                    "test1
+
+  METHOD test001_02.
+* ===========
+
+    _code 'DATA: lv_char TYPE c LENGTH 10.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ).
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Test
