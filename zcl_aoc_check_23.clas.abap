@@ -55,6 +55,8 @@ METHOD check.
         OR <ls_token>-str = 'CLEAR'
         OR <ls_token>-str = 'PERFORM'
         OR <ls_token>-str = 'REFRESH'
+        OR <ls_token>-str = 'UNASSIGN'
+        OR <ls_token>-str = 'FREE'
         OR <ls_token>-str = 'CONSTANTS'
         OR <ls_token>-str = 'TABLES'
         OR <ls_token>-str = 'PARAMETERS'
