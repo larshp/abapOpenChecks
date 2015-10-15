@@ -62,6 +62,7 @@ METHOD check.
         OR <ls_token>-str = 'PARAMETERS'
         OR <ls_token>-str = 'INTERFACES'
         OR <ls_token>-str = 'SELECT-OPTIONS'
+        OR <ls_token>-str = 'SELECTION-SCREEN'
         OR <ls_token>-str = 'CLASS-METHODS'
         OR <ls_token>-str = 'FIELD-SYMBOLS'.
       CONTINUE.
