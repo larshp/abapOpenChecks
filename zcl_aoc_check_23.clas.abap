@@ -64,6 +64,7 @@ METHOD check.
         OR <ls_token>-str = 'INTERFACES'
         OR <ls_token>-str = 'SELECT-OPTIONS'
         OR <ls_token>-str = 'SELECTION-SCREEN'
+        OR <ls_token>-str = 'ALIASES'
         OR <ls_token>-str = 'INCLUDE'
         OR <ls_token>-str = 'TYPE-POOLS'
         OR <ls_token>-str = 'CLASS-METHODS'
