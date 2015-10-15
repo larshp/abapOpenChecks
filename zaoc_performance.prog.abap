@@ -17,8 +17,8 @@ PARAMETERS: p_objs   TYPE sci_dynp-i_objs OBLIGATORY,
 
 SELECTION-SCREEN END OF BLOCK b1.
 
-DATA: go_variant   TYPE REF TO cl_ci_checkvariant,
-      go_objectset TYPE REF TO cl_ci_objectset.
+DATA: go_variant   TYPE REF TO cl_ci_checkvariant ##NEEDED,
+      go_objectset TYPE REF TO cl_ci_objectset ##NEEDED.
 
 INITIALIZATION.
   PERFORM initialization.

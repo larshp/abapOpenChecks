@@ -32,7 +32,7 @@ METHOD check.
            exporting  TYPE abap_bool,
            importing  TYPE abap_bool,
            changing   TYPE abap_bool,
-           receiving  TYPE abap_bool,
+           receiv     TYPE abap_bool,
            exceptions TYPE abap_bool,
            row        TYPE token_row,
          END OF ty_stack.
@@ -62,7 +62,7 @@ METHOD check.
       ELSEIF <ls_token>-str(1) = ')'.
         IF ls_stack-exporting = abap_true
             AND ls_stack-importing = abap_false
-            AND ls_stack-receiving = abap_false
+            AND ls_stack-receiv = abap_false
             AND ls_stack-exceptions = abap_false
             AND ls_stack-changing = abap_false.
           lv_include = get_include( p_level = <ls_statement>-level ).
@@ -86,7 +86,7 @@ METHOD check.
       ELSEIF <ls_token>-str = 'IMPORTING'.
         ls_stack-importing = abap_true.
       ELSEIF <ls_token>-str = 'RECEIVING'.
-        ls_stack-receiving = abap_true.
+        ls_stack-receiv = abap_true.
       ELSEIF <ls_token>-str = 'EXCEPTIONS'.
         ls_stack-exceptions = abap_true.
       ELSEIF <ls_token>-str = 'CHANGING'.
