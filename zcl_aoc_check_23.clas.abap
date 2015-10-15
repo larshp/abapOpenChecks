@@ -30,8 +30,7 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lv_include TYPE program,
-        lv_keyword TYPE string.
+  DATA: lv_include TYPE program.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
                  <ls_token>     LIKE LINE OF it_tokens.
@@ -41,7 +40,7 @@ METHOD check.
       WHERE coloncol <> 0
       AND type <> scan_stmnt_type-pragma.
 
-    READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from .
+    READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
     IF sy-subrc <> 0.
       CONTINUE.
     ENDIF.
@@ -51,12 +50,15 @@ METHOD check.
         OR <ls_token>-str = 'CLASS-DATA'
         OR <ls_token>-str = 'STATICS'
         OR <ls_token>-str = 'WRITE'
+        OR <ls_token>-str = 'MOVE'  " is obsolete anyhow
         OR <ls_token>-str = 'METHODS'
         OR <ls_token>-str = 'CLEAR'
+        OR <ls_token>-str = 'PERFORM'
         OR <ls_token>-str = 'REFRESH'
         OR <ls_token>-str = 'CONSTANTS'
         OR <ls_token>-str = 'TABLES'
         OR <ls_token>-str = 'PARAMETERS'
+        OR <ls_token>-str = 'INTERFACES'
         OR <ls_token>-str = 'SELECT-OPTIONS'
         OR <ls_token>-str = 'CLASS-METHODS'
         OR <ls_token>-str = 'FIELD-SYMBOLS'.
@@ -98,7 +100,7 @@ METHOD get_message_text.
 
   CASE p_code.
     WHEN '001'.
-      p_text = 'Restrict use of chained statements'.        "#EC NOTEXT
+      p_text = 'Use chained statements mainly for declarations'. "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
