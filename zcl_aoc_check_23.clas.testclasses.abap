@@ -18,7 +18,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
     METHODS: setup,
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
-      test002_01 for testing.
+      test002_01 FOR TESTING,
+      test002_02 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -75,6 +76,20 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '002'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test002_02.
+* ===========
+
+    _code 'DATA:'.
+    _code '  lv_sel_rep_langu     TYPE sylangu,'.
+    _code '  ls_t002              TYPE t002.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                      io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ).
 
   ENDMETHOD.
 

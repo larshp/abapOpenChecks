@@ -75,7 +75,8 @@ METHOD check.
       lv_code = '001'.
     ENDIF.
 
-    IF strlen( <ls_token>-str ) <> <ls_statement>-coloncol.
+    IF strlen( <ls_token>-str ) + <ls_token>-col <> <ls_statement>-coloncol
+        AND <ls_token>-str <> 'PERFORM'.
       lv_code = '002'.
     ENDIF.
 
