@@ -108,6 +108,8 @@ METHOD check.
         OR lv_statement CP 'MULTIPLY-CORRESPONDING *'
         OR lv_statement CP 'DIVIDE-CORRESPONDING *'.
       lv_code = '019'.
+    ELSEIF lv_statement CP 'SET EXTENDED CHECK *'.
+      lv_code = '020'.
     ENDIF.
 
     IF NOT lv_code IS INITIAL.
@@ -183,6 +185,8 @@ METHOD get_message_text.
       p_text = 'RANGES declarations is obsolete'.           "#EC NOTEXT
     WHEN '019'.
       p_text = 'Arithmetic CORRESPONDING is obsolete'.      "#EC NOTEXT
+    WHEN '020'.
+      p_text = 'Do not use SET EXTENDED CHECK'.             "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
