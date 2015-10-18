@@ -47,6 +47,7 @@ METHOD check.
         lv_text     TYPE string,
         lv_tmp      TYPE string,
         ls_flags    TYPE rslin_test_flags,
+        lv_code     TYPE sci_errc,
         lv_errty    TYPE sci_errty,
         lt_result   TYPE slin_result.
 
@@ -87,14 +88,14 @@ METHOD check.
     ENDIF.
 
     lv_obj_name = <ls_result>-src_incl.
+    lv_code = <ls_result>-code.
     inform( p_sub_obj_type = c_type_include
             p_sub_obj_name = lv_obj_name
             p_line         = <ls_result>-src_line
             p_kind         = lv_errty
             p_test         = myname
-            p_code         = '001'
-            p_param_1      = <ls_result>-code
-            p_param_2      = lv_text ).
+            p_code         = lv_code
+            p_param_1      = lv_text ).
   ENDLOOP.
 
 ENDMETHOD.
@@ -129,12 +130,7 @@ ENDMETHOD.
 
 METHOD get_message_text.
 
-  CASE p_code.
-    WHEN '001'.
-      p_text = '&1 &2'.                                     "#EC NOTEXT
-    WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
-  ENDCASE.
+  p_text = '&1'.                                            "#EC NOTEXT
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
 
