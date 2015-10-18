@@ -97,7 +97,18 @@ METHOD determine_prefix.
 
   CASE is_ssfgdata-typing.
     WHEN 'TYPE'.
-      lo_type = cl_abap_typedescr=>describe_by_name( is_ssfgdata-typename ).
+      cl_abap_typedescr=>describe_by_name(
+        EXPORTING
+          p_name         = is_ssfgdata-typename
+        RECEIVING
+          p_descr_ref    = lo_type
+        EXCEPTIONS
+          type_not_found = 1
+          OTHERS         = 2 ).
+      IF sy-subrc <> 0.
+        RETURN.
+      ENDIF.
+
       CASE lo_type->kind.
         WHEN cl_abap_typedescr=>kind_elem.
           rv_prefix = ms_settings-prefix_elementary.
