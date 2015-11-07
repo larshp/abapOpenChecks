@@ -64,6 +64,7 @@ METHOD check.
         AND <ls_token>-str <> 'CONSTANTS'
         AND <ls_token>-str <> 'TABLES'
         AND <ls_token>-str <> 'PARAMETERS'
+        AND <ls_token>-str <> 'PARAMETER'
         AND <ls_token>-str <> 'INTERFACES'
         AND <ls_token>-str <> 'SELECT-OPTIONS'
         AND <ls_token>-str <> 'SELECTION-SCREEN'
