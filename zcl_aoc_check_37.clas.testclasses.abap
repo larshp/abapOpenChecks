@@ -26,6 +26,10 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test002_01 FOR TESTING,
       test002_02 FOR TESTING.
 
+    METHODS:
+      test003_01 FOR TESTING,
+      test003_02 FOR TESTING.
+
 ENDCLASS.       "lcl_Test
 
 *----------------------------------------------------------------------*
@@ -117,6 +121,32 @@ CLASS ltcl_test IMPLEMENTATION.
                                           io_check = mo_check ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test003_01.
+* ===========
+
+    _code 'MESSAGE x208(00) WITH ''ERROR''.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '003'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test003_02.
+* ===========
+
+    _code 'MESSAGE x001(00) WITH ''ERROR''.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '003'
+                                        act = ms_result-code ).
 
   ENDMETHOD.
 

@@ -15,6 +15,12 @@ public section.
     redefinition .
 protected section.
 private section.
+
+  methods REPORT
+    importing
+      !IS_STATEMENT type SSTMNT
+      !IS_TOKEN type STOKESX
+      !IV_CODE type SCI_ERRC .
 ENDCLASS.
 
 
@@ -28,8 +34,11 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lv_statement TYPE string,
-        lv_include   TYPE sobj_name.
+  DATA: lv_number    TYPE t100-msgnr,
+        lv_class     TYPE t100-arbgb,
+        lv_text      TYPE t100-text,
+        lv_trash     TYPE string ##NEEDED,
+        lv_statement TYPE string.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
                  <ls_token>     LIKE LINE OF it_tokens.
@@ -50,23 +59,31 @@ METHOD check.
 
     IF lv_statement CP 'MESSAGE ''*'
         OR lv_statement CP 'MESSAGE text-+++ *'.
-      lv_include = get_include( p_level = <ls_statement>-level ).
+      report( is_statement = <ls_statement>
+              is_token     = <ls_token>
+              iv_code      = '001' ).
+    ENDIF.
 
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
-              p_line         = <ls_token>-row
-              p_kind         = mv_errty
-              p_test         = myname
-              p_code         = '001' ).
-    ELSEIF lv_statement CP 'MESSAGE *->GET_TEXT( )*'.
-      lv_include = get_include( p_level = <ls_statement>-level ).
+    IF lv_statement CP 'MESSAGE *->GET_TEXT( )*'.
+      report( is_statement = <ls_statement>
+              is_token     = <ls_token>
+              iv_code      = '002' ).
+    ENDIF.
 
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
-              p_line         = <ls_token>-row
-              p_kind         = mv_errty
-              p_test         = myname
-              p_code         = '002' ).
+    IF lv_statement CP 'MESSAGE ++++(*) *'.
+      lv_number = lv_statement+9(3).
+      lv_class = lv_statement+13.
+      SPLIT lv_class AT ')' INTO lv_class lv_trash.
+      SELECT SINGLE text FROM t100
+        INTO lv_text
+        WHERE sprsl = sy-langu
+        AND arbgb = lv_class
+        AND msgnr = lv_number.
+      IF sy-subrc = 0 AND lv_text CO '&12345678 '.
+        report( is_statement = <ls_statement>
+                is_token     = <ls_token>
+                iv_code      = '003' ).
+      ENDIF.
     ENDIF.
 
   ENDLOOP.
@@ -97,10 +114,29 @@ METHOD get_message_text.
     WHEN '001'.
       p_text = 'Define message texts in SE91'.              "#EC NOTEXT
     WHEN '002'.
-      p_text = 'Remove ''->get_text( )'''.              "#EC NOTEXT
+      p_text = 'Remove ''->get_text( )'''.                  "#EC NOTEXT
+    WHEN '003'.
+      p_text = 'Use of generic SE91 message'.               "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
+
+
+METHOD report.
+
+  DATA: lv_include TYPE sobj_name.
+
+
+  lv_include = get_include( p_level = is_statement-level ).
+
+  inform( p_sub_obj_type = c_type_include
+          p_sub_obj_name = lv_include
+          p_line         = is_token-row
+          p_kind         = mv_errty
+          p_test         = myname
+          p_code         = iv_code ).
+
+ENDMETHOD.
 ENDCLASS.
