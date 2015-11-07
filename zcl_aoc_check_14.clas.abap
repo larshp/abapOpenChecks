@@ -139,6 +139,9 @@ METHOD parse.
     IF strlen( <lv_commented> ) > 4 AND <lv_commented>(5) = '*****'.
       RETURN.
     ENDIF.
+    IF lines( it_commented ) = 1 AND <lv_commented> CO '. '.
+      RETURN.
+    ENDIF.
   ENDLOOP.
 
   IF zcl_aoc_parser=>run( it_commented )-match = abap_true.
