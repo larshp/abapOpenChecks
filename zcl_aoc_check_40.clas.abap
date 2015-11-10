@@ -73,7 +73,9 @@ METHOD check.
       CONTINUE.
     ENDIF.
 
-    IF lv_check = abap_true AND NOT lv_statement CP '* SY-SUBRC *'.
+    IF lv_check = abap_true
+        AND NOT lv_statement CP '* SY-SUBRC *'
+        AND NOT lv_statement CP '*CL_ABAP_UNIT_ASSERT=>ASSERT_SUBRC*'.
       lv_include = get_include( p_level = <ls_statement>-level ).
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
