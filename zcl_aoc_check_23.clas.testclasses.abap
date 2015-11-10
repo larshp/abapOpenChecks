@@ -62,7 +62,7 @@ CLASS ltcl_test IMPLEMENTATION.
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
                                           io_check = mo_check ).
 
-    cl_abap_unit_assert=>assert_initial( ).
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
 
@@ -87,9 +87,9 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  ls_t002              TYPE t002.'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                      io_check = mo_check ).
+                                          io_check = mo_check ).
 
-    cl_abap_unit_assert=>assert_initial( ).
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
 
