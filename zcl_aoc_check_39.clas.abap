@@ -4,9 +4,9 @@ class ZCL_AOC_CHECK_39 definition
   create public .
 
 public section.
-
 *"* public components of class ZCL_AOC_CHECK_39
 *"* do not include other source files here!!!
+
   methods CONSTRUCTOR .
 
   methods GET_ATTRIBUTES
@@ -15,19 +15,21 @@ public section.
     redefinition .
   methods IF_CI_TEST~QUERY_ATTRIBUTES
     redefinition .
-  methods RUN
-    redefinition .
   methods PUT_ATTRIBUTES
     redefinition .
+  methods RUN
+    redefinition .
 protected section.
+*"* protected components of class ZCL_AOC_CHECK_39
+*"* do not include other source files here!!!
 
-  data MS_SETTINGS type SCIS_NAMING_CONVENTIONS_SETUP .
+  data MS_SETTINGS type SCI_S_NAMING_CONVENTIONS_SETUP .
 
   methods CHECK_NAME
     importing
       !IV_NAME type TDSFVNAME
       !IV_PREFIX type SCI_E_TYPE_PREFIX
-      !IT_REGULAR type SCIT_REGULAR_EXPRESSIONS .
+      !IT_REGULAR type SCI_T_REGULAR_EXPRESSIONS .
   methods DETERMINE_PREFIX
     importing
       !IS_SSFGDATA type SSFGDATA
@@ -73,7 +75,7 @@ METHOD constructor.
 
   description    = 'Smartforms global definitions naming conventions'. "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '001'.
+  version        = '002'.
   position       = '039'.
 
   has_documentation = c_true.
