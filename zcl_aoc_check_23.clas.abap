@@ -30,14 +30,17 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lv_code    TYPE sci_errc,
-        lv_include TYPE program.
+  DATA: lv_code       TYPE sci_errc,
+        lt_statements LIKE it_statements,
+        lv_include    TYPE program.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
                  <ls_token>     LIKE LINE OF it_tokens.
 
 
-  LOOP AT it_statements ASSIGNING <ls_statement>
+  lt_statements = it_statements.
+
+  LOOP AT lt_statements ASSIGNING <ls_statement>
       WHERE coloncol <> 0
       AND type <> scan_stmnt_type-pragma.
 
@@ -91,6 +94,12 @@ METHOD check.
               p_kind = mv_errty
               p_test = myname
               p_code = lv_code ).
+
+* do not report multiple errors for the same chanined statement
+      DELETE lt_statements
+        WHERE level = <ls_statement>-level
+        AND colonrow = <ls_statement>-colonrow
+        AND coloncol = <ls_statement>-coloncol.
     ENDIF.
 
   ENDLOOP.
