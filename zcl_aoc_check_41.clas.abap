@@ -75,6 +75,11 @@ METHOD check.
         CONTINUE.
       ENDIF.
 
+      IF <ls_token>-str = 'GLOBAL'.
+* global friends in classes are auto generated with newlines
+        EXIT.
+      ENDIF.
+
       lv_comment = abap_false.
       LOOP AT it_statements ASSIGNING <ls_scomment>
           WHERE type = scan_stmnt_type-comment_in_stmnt
