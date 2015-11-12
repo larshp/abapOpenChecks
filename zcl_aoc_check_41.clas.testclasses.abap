@@ -19,7 +19,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
-      test001_04 FOR TESTING.
+      test001_04 FOR TESTING,
+      test001_05 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -95,5 +96,23 @@ CLASS ltcl_test IMPLEMENTATION.
                                         act = ms_result-code ).
 
   ENDMETHOD.                    "test001_04
+
+  METHOD test001_05.
+* ===========
+
+    _code 'SELECT SINGLE'.
+    _code 'bname bcode'.
+    _code 'INTO (lv_bname,'.
+    _code 'lv_bcode)'.
+    _code 'FROM usr01'.
+    _code 'WHERE bname = sy-uname.'.
+
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.                    "test001_05
 
 ENDCLASS.       "lcl_Test

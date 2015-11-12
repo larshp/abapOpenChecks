@@ -42,6 +42,7 @@ METHOD check.
 
   DATA: lv_include TYPE sobj_name,
         lv_comment TYPE abap_bool,
+        lv_len     TYPE i,
         lv_prev    TYPE i.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
@@ -61,6 +62,12 @@ METHOD check.
     CLEAR lv_prev.
 
     LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
+      lv_len = strlen( <ls_token>-str ) - 1.
+      IF <ls_token>-str(1) = '(' AND <ls_token>-str+lv_len(1) = ')'.
+* special case see unit test 05, SAP is fun
+        EXIT.
+      ENDIF.
+
       IF lv_prev IS INITIAL
           OR lv_prev = <ls_token>-row
           OR lv_prev = <ls_token>-row - 1.
