@@ -28,7 +28,24 @@ protected section.
   data MV_LOWER type FLAG .
   data MV_UPPER type FLAG .
   data MV_LOKEY type FLAG .
+  data MV_FLOW type FLAG .
 private section.
+*"* private components of class ZCL_AOC_CHECK_06
+*"* do not include other source files here!!!
+
+  methods BUILD_OPTION
+    returning
+      value(RV_OPTION) type STRING .
+  methods CHECK_FLOW .
+  methods CHECK_SOURCE
+    importing
+      !IT_LEVELS type SLEVEL_TAB
+      !IT_STATEMENTS type SSTMNT_TAB .
+  methods PRETTY_PRINT
+    importing
+      !IT_CODE type STRING_TABLE
+    returning
+      value(RT_PRETTY) type STRING_TABLE .
 ENDCLASS.
 
 
@@ -36,22 +53,10 @@ ENDCLASS.
 CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
 
 
-METHOD check.
+METHOD build_option.
 
-* abapOpenChecks
-* https://github.com/larshp/abapOpenChecks
-* MIT License
+  DATA: ls_rseumod TYPE rseumod.
 
-  DATA: lt_code    TYPE string_table,
-        lt_pretty  TYPE string_table,
-        ls_rseumod TYPE rseumod,
-        lv_level   TYPE i,
-        lv_row     TYPE i,
-        lv_option  TYPE c LENGTH 5.
-
-  FIELD-SYMBOLS: <ls_level>  LIKE LINE OF it_levels,
-                 <lv_code>   LIKE LINE OF lt_code,
-                 <lv_pretty> LIKE LINE OF lt_pretty.
 
 * check workbench settings
   CALL FUNCTION 'RS_WORKBENCH_CUSTOMIZING'
@@ -61,14 +66,28 @@ METHOD check.
     IMPORTING
       setting         = ls_rseumod.
   IF ls_rseumod-lowercase = 'X'.
-    lv_option = 'LOWER'.
+    rv_option = 'LOWER'.
   ELSEIF ls_rseumod-lowercase = 'G'.
-    lv_option = 'HIKEY'.
+    rv_option = 'HIKEY'.
   ELSEIF ls_rseumod-lowercase = 'L'.
-    lv_option = 'LOKEY'.
+    rv_option = 'LOKEY'.
   ELSE.
-    lv_option = 'UPPER'.
+    rv_option = 'UPPER'.
   ENDIF.
+
+ENDMETHOD.
+
+
+METHOD check.
+
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
+  DATA: lv_option  TYPE c LENGTH 5.
+
+
+  lv_option = build_option( ).
 
   IF ( mv_lower = abap_true AND lv_option <> 'LOWER' )
       OR ( mv_hikey = abap_true AND lv_option <> 'HIKEY' )
@@ -81,6 +100,90 @@ METHOD check.
             p_code         = '002' ).
     RETURN.
   ENDIF.
+
+  check_source( it_levels     = it_levels
+                it_statements = it_statements ).
+
+  IF mv_flow = abap_true.
+    check_flow( ).
+  ENDIF.
+
+ENDMETHOD.
+
+
+METHOD check_flow.
+
+  DATA: BEGIN OF ls_dynp_id,
+          prog TYPE d020s-prog,
+          dnum TYPE d020s-dnum,
+        END OF ls_dynp_id.
+
+  DATA: lt_d020s TYPE STANDARD TABLE OF d020s WITH DEFAULT KEY,
+        lv_option TYPE c LENGTH 5,
+        ls_h TYPE d020s,                                    "#EC NEEDED
+        lt_f TYPE TABLE OF d021s,                           "#EC NEEDED
+        lt_e TYPE TABLE OF d022s,
+        lt_m TYPE TABLE OF d023s.                           "#EC NEEDED
+
+  FIELD-SYMBOLS: <ls_e> LIKE LINE OF lt_e,
+                 <ls_d020s> LIKE LINE OF lt_d020s.
+
+
+  lv_option = build_option( ).
+  IF lv_option <> 'HIKEY'.
+* todo, so far it only works partly for keywords upper case
+    RETURN.
+  ENDIF.
+
+  SELECT * FROM d020s INTO TABLE lt_d020s
+    WHERE prog = object_name
+    AND type <> 'S'.
+  IF sy-subrc <> 0.
+    RETURN.
+  ENDIF.
+
+* the pretty_print method does not work for screen flow logic
+
+  LOOP AT lt_d020s ASSIGNING <ls_d020s>.
+    ls_dynp_id-prog = <ls_d020s>-prog.
+    ls_dynp_id-dnum = <ls_d020s>-dnum.
+
+    IMPORT DYNPRO ls_h lt_f lt_e lt_m ID ls_dynp_id.
+    IF sy-subrc <> 0.
+      CONTINUE.
+    ENDIF.
+
+    LOOP AT lt_e ASSIGNING <ls_e>.
+      CONDENSE <ls_e>-line.
+      IF <ls_e>-line CP '#M#o#d#u#l#e*'
+          OR <ls_e>-line CP '#m#o#d#u#l#e*'.
+        inform( p_kind    = mv_errty
+                p_test    = myname
+                p_code    = '003'
+                p_param_1 = <ls_d020s>-dnum ).
+        IF mv_one_finding = abap_true.
+          EXIT. " one finding per screen
+        ENDIF.
+      ENDIF.
+    ENDLOOP.
+
+  ENDLOOP.
+
+ENDMETHOD.
+
+
+METHOD check_source.
+
+  DATA: lt_code    TYPE string_table,
+        lt_pretty  TYPE string_table,
+        lv_level   TYPE i,
+        lv_row     TYPE i.
+
+  FIELD-SYMBOLS: <ls_level>  LIKE LINE OF it_levels,
+                 <lv_code>   LIKE LINE OF lt_code,
+                 <lv_pretty> LIKE LINE OF lt_pretty.
+
+
 
   LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
     lv_level = sy-tabix.
@@ -114,19 +217,7 @@ METHOD check.
     ENDIF.
 
     lt_code = get_source( <ls_level> ).
-
-    lt_pretty = lt_code.
-    CALL FUNCTION 'CREATE_PRETTY_PRINT_FORMAT'
-      EXPORTING
-        mode          = lv_option
-      TABLES
-        source        = lt_pretty
-      EXCEPTIONS
-        syntax_errors = 1
-        OTHERS        = 2.
-    IF sy-subrc <> 0.
-      CONTINUE.
-    ENDIF.
+    lt_pretty = pretty_print( lt_code ).
 
     LOOP AT lt_code ASSIGNING <lv_code>.
       lv_row = sy-tabix.
@@ -157,7 +248,7 @@ METHOD constructor.
 
   description    = 'Check pretty printer use'.              "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '001'.
+  version        = '002'.
   position       = '006'.
 
   has_attributes = abap_true.
@@ -169,6 +260,7 @@ METHOD constructor.
   mv_lower = abap_false.
   mv_upper = abap_false.
   mv_one_finding = abap_true.
+  mv_flow = abap_true.
 
 ENDMETHOD.                    "CONSTRUCTOR
 
@@ -182,6 +274,7 @@ METHOD get_attributes.
     mv_lower = mv_lower
     mv_upper = mv_upper
     mv_one_finding = mv_one_finding
+    mv_flow = mv_flow
     TO DATA BUFFER p_attributes.
 
 ENDMETHOD.
@@ -194,6 +287,8 @@ METHOD get_message_text.
       p_text = 'Use pretty printer'.                        "#EC NOTEXT
     WHEN '002'.
       p_text = 'Pretty printer settings does not match'.    "#EC NOTEXT
+    WHEN '003'.
+      p_text = 'Use pretty printer, screen &1'.             "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
@@ -213,8 +308,30 @@ METHOD if_ci_test~query_attributes.
   zzaoc_fill_att_rb mv_lower 'Lower case' 'R' 'TYPE'.       "#EC NOTEXT
 
   zzaoc_fill_att mv_one_finding 'Report one finding per include' 'C'. "#EC NOTEXT
+  zzaoc_fill_att mv_flow 'Check dynpro flow logic' 'C'.     "#EC NOTEXT
 
   zzaoc_popup.
+
+ENDMETHOD.
+
+
+METHOD pretty_print.
+
+  DATA: lv_option TYPE c LENGTH 5.
+
+
+  lv_option = build_option( ).
+
+  rt_pretty = it_code.
+
+  CALL FUNCTION 'CREATE_PRETTY_PRINT_FORMAT'
+    EXPORTING
+      mode          = lv_option
+    TABLES
+      source        = rt_pretty
+    EXCEPTIONS
+      syntax_errors = 1
+      OTHERS        = 2.                       "#EC FB_RC "#EC CI_SUBRC
 
 ENDMETHOD.
 
@@ -228,6 +345,7 @@ METHOD put_attributes.
     mv_lower = mv_lower
     mv_upper = mv_upper
     mv_one_finding = mv_one_finding
+    mv_flow = mv_flow
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
   ASSERT sy-subrc = 0.
 
