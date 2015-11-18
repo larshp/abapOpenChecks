@@ -19,7 +19,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
       test002_01 FOR TESTING,
-      test002_02 FOR TESTING.
+      test002_02 FOR TESTING,
+      test003_01 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -64,7 +65,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_02
 
   METHOD test002_01.
 * ===========
@@ -77,7 +78,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '002'
                                         act = ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test002_01
 
   METHOD test002_02.
 * ===========
@@ -91,6 +92,19 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test002_02
+
+  METHOD test003_01.
+* ===========
+
+    _code 'DATA:lv_char TYPE c LENGTH 10.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '003'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.                    "test003_01
 
 ENDCLASS.       "lcl_Test

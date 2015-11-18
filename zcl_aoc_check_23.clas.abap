@@ -85,6 +85,17 @@ METHOD check.
       lv_code = '002'.
     ENDIF.
 
+    IF lv_code IS INITIAL.
+      LOOP AT it_tokens ASSIGNING <ls_token>
+          FROM <ls_statement>-from TO <ls_statement>-to
+          WHERE row = <ls_statement>-colonrow.
+        IF <ls_token>-col = <ls_statement>-coloncol + 1.
+          lv_code = '003'.
+          EXIT. " current loop
+        ENDIF.
+      ENDLOOP.
+    ENDIF.
+
     IF NOT lv_code IS INITIAL.
       lv_include = get_include( p_level = <ls_statement>-level ).
 
@@ -131,6 +142,8 @@ METHOD get_message_text.
       p_text = 'Use chained statements mainly for declarations'. "#EC NOTEXT
     WHEN '002'.
       p_text = 'Space before colon'.                        "#EC NOTEXT
+    WHEN '003'.
+      p_text = 'Missing space after colon'.                 "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
