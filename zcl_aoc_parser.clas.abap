@@ -1076,18 +1076,17 @@ METHOD walk_role.
         OR 'ProgramId'
         OR 'ProgramDefId'
         OR 'MacroDefId'
+        OR 'ClassrefFieldId'
         OR 'ClassexcrefFieldId'.
       FIND REGEX '^[a-zA-Z0-9_]+$' IN lv_token.             "#EC NOTEXT
     WHEN 'FieldCompId'.
       FIND REGEX '^\(?[a-zA-Z0-9_]+\)?$' IN lv_token.       "#EC NOTEXT
-    WHEN 'ClassrefFieldId'.
-      FIND REGEX '^[a-zA-Z0-9_]+$' IN lv_token.             "#EC NOTEXT
     WHEN 'FunctionId'.
       FIND REGEX '^''.*''$' IN lv_token.
     WHEN 'MethodId('.
-      FIND REGEX '^[a-zA-Z0-9_\=\-<>~]+\($' IN lv_token.     "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\=\-<>~]+\($' IN lv_token.    "#EC NOTEXT
     WHEN 'MethodId'.
-      FIND REGEX '^[a-zA-Z0-9_\=\-<>~]+\(?$' IN lv_token.    "#EC NOTEXT
+      FIND REGEX '^[a-zA-Z0-9_\=\-<>~]+\(?$' IN lv_token.   "#EC NOTEXT
     WHEN 'LocationId'.
       FIND REGEX '^/?[0-9]*["("0-9")"]*$' IN lv_token.
     WHEN 'SelOptId'.
