@@ -64,7 +64,8 @@ METHOD check.
               iv_code      = '001' ).
     ENDIF.
 
-    IF lv_statement CP 'MESSAGE *->GET_TEXT( )*'.
+    IF lv_statement CP 'MESSAGE *->GET_TEXT( ) *'
+        OR lv_statement CP 'MESSAGE *->IF_MESSAGE~GET_TEXT( ) *'.
       report( is_statement = <ls_statement>
               is_token     = <ls_token>
               iv_code      = '002' ).
