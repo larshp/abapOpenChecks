@@ -11,9 +11,36 @@ public section.
 
   methods CHECK
     redefinition .
+  methods GET_ATTRIBUTES
+    redefinition .
   methods GET_MESSAGE_TEXT
     redefinition .
+  methods PUT_ATTRIBUTES
+    redefinition .
+  methods IF_CI_TEST~QUERY_ATTRIBUTES
+    redefinition .
 protected section.
+
+  data MV_001 type FLAG .
+  data MV_002 type FLAG .
+  data MV_003 type FLAG .
+  data MV_004 type FLAG .
+  data MV_005 type FLAG .
+  data MV_006 type FLAG .
+  data MV_007 type FLAG .
+  data MV_008 type FLAG .
+  data MV_009 type FLAG .
+  data MV_010 type FLAG .
+  data MV_011 type FLAG .
+  data MV_012 type FLAG .
+  data MV_013 type FLAG .
+  data MV_014 type FLAG .
+  data MV_015 type FLAG .
+  data MV_016 type FLAG .
+  data MV_017 type FLAG .
+  data MV_018 type FLAG .
+  data MV_019 type FLAG .
+  data MV_020 type FLAG .
 *"* protected components of class ZCL_AOC_CHECK_08
 *"* do not include other source files here!!!
 private section.
@@ -60,55 +87,58 @@ METHOD check.
 
     CLEAR lv_code.
 
-    IF lv_statement CP 'REFRESH *'.
+    IF mv_001 = abap_true AND lv_statement CP 'REFRESH *'.
       lv_code = '001'.
-    ELSEIF lv_statement CP '* IS REQUESTED*'.
+    ELSEIF mv_002 = abap_true AND lv_statement CP '* IS REQUESTED*'.
       lv_code = '002'.
-    ELSEIF lv_statement = 'LEAVE'.
+    ELSEIF mv_003 = abap_true AND lv_statement = 'LEAVE'.
       lv_code = '003'.
-    ELSEIF lv_statement CP 'COMPUTE *'.
+    ELSEIF mv_004 = abap_true AND lv_statement CP 'COMPUTE *'.
       lv_code = '004'.
-    ELSEIF lv_statement CP 'MOVE *'.
+    ELSEIF mv_005 = abap_true AND lv_statement CP 'MOVE *'.
       lv_code = '005'.
-    ELSEIF lv_statement CP '* >< *'
+    ELSEIF mv_006 = abap_true
+        AND ( lv_statement CP '* >< *'
         OR lv_statement CP '* =< *'
-        OR lv_statement CP '* => *'.
+        OR lv_statement CP '* => *').
       lv_code = '006'.
-    ELSEIF lv_statement CP '* EQ *'
+    ELSEIF mv_007 = abap_true
+        AND ( lv_statement CP '* EQ *'
         OR lv_statement CP '* NE *'
         OR lv_statement CP '* LT *'
         OR lv_statement CP '* GT *'
         OR lv_statement CP '* LE *'
-        OR lv_statement CP '* GE *'.
+        OR lv_statement CP '* GE *' ).
       lv_code = '007'.
-    ELSEIF lv_statement CP 'DEMAND *'.
+    ELSEIF mv_008 = abap_true AND lv_statement CP 'DEMAND *'.
       lv_code = '008'.
-    ELSEIF lv_statement CP 'SUPPLY *'.
+    ELSEIF mv_009 = abap_true AND lv_statement CP 'SUPPLY *'.
       lv_code = '009'.
-    ELSEIF lv_statement CP 'CONTEXTS *'.
+    ELSEIF mv_010 = abap_true AND lv_statement CP 'CONTEXTS *'.
       lv_code = '010'.
-    ELSEIF lv_statement CP 'ADD *'.
+    ELSEIF mv_011 = abap_true AND lv_statement CP 'ADD *'.
       lv_code = '011'.
-    ELSEIF lv_statement CP 'SUBTRACT *'.
+    ELSEIF mv_012 = abap_true AND lv_statement CP 'SUBTRACT *'.
       lv_code = '012'.
-    ELSEIF lv_statement CP 'MULTIPLY *'.
+    ELSEIF mv_013 = abap_true AND lv_statement CP 'MULTIPLY *'.
       lv_code = '013'.
-    ELSEIF lv_statement CP 'DIVIDE *'.
+    ELSEIF mv_014 = abap_true AND lv_statement CP 'DIVIDE *'.
       lv_code = '014'.
-    ELSEIF lv_statement CP 'CALL DIALOG *'.
+    ELSEIF mv_015 = abap_true AND lv_statement CP 'CALL DIALOG *'.
       lv_code = '015'.
-    ELSEIF lv_statement CP '* OCCURS *'.
+    ELSEIF mv_016 = abap_true AND lv_statement CP '* OCCURS *'.
       lv_code = '016'.
-    ELSEIF lv_statement CP '* WITH HEADER LINE *'.
+    ELSEIF mv_017 = abap_true AND lv_statement CP '* WITH HEADER LINE *'.
       lv_code = '017'.
-    ELSEIF lv_statement CP 'RANGES *'.
+    ELSEIF mv_018 = abap_true AND lv_statement CP 'RANGES *'.
       lv_code = '018'.
-    ELSEIF lv_statement CP 'ADD-CORRESPONDING *'
+    ELSEIF mv_019 = abap_true
+        AND ( lv_statement CP 'ADD-CORRESPONDING *'
         OR lv_statement CP 'SUBTRACT-CORRESPONDING *'
         OR lv_statement CP 'MULTIPLY-CORRESPONDING *'
-        OR lv_statement CP 'DIVIDE-CORRESPONDING *'.
+        OR lv_statement CP 'DIVIDE-CORRESPONDING *' ).
       lv_code = '019'.
-    ELSEIF lv_statement CP 'SET EXTENDED CHECK *'.
+    ELSEIF mv_020 = abap_true AND lv_statement CP 'SET EXTENDED CHECK *'.
       lv_code = '020'.
     ENDIF.
 
@@ -133,15 +163,64 @@ METHOD constructor.
 
   description    = 'Obsolete statement'.                    "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '001'.
+  version        = '002'.
   position       = '008'.
 
   has_attributes = abap_true.
   attributes_ok  = abap_true.
 
   mv_errty = c_error.
+  mv_001 = abap_true.
+  mv_002 = abap_true.
+  mv_003 = abap_true.
+  mv_004 = abap_true.
+  mv_005 = abap_true.
+  mv_006 = abap_true.
+  mv_007 = abap_true.
+  mv_008 = abap_true.
+  mv_009 = abap_true.
+  mv_010 = abap_true.
+  mv_011 = abap_true.
+  mv_012 = abap_true.
+  mv_013 = abap_true.
+  mv_014 = abap_true.
+  mv_015 = abap_true.
+  mv_016 = abap_true.
+  mv_017 = abap_true.
+  mv_018 = abap_true.
+  mv_019 = abap_true.
+  mv_020 = abap_true.
 
 ENDMETHOD.                    "CONSTRUCTOR
+
+
+METHOD get_attributes.
+
+  EXPORT
+    mv_errty = mv_errty
+    mv_001 = mv_001
+    mv_002 = mv_002
+    mv_003 = mv_003
+    mv_004 = mv_004
+    mv_005 = mv_005
+    mv_006 = mv_006
+    mv_007 = mv_007
+    mv_008 = mv_008
+    mv_009 = mv_009
+    mv_010 = mv_010
+    mv_011 = mv_011
+    mv_012 = mv_012
+    mv_013 = mv_013
+    mv_014 = mv_014
+    mv_015 = mv_015
+    mv_016 = mv_016
+    mv_017 = mv_017
+    mv_018 = mv_018
+    mv_019 = mv_019
+    mv_020 = mv_020
+    TO DATA BUFFER p_attributes.
+
+ENDMETHOD.
 
 
 METHOD get_message_text.
@@ -192,4 +271,65 @@ METHOD get_message_text.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
+
+
+METHOD if_ci_test~query_attributes.
+
+  zzaoc_top.
+
+  zzaoc_fill_att mv_errty 'Error Type' ''.                  "#EC NOTEXT
+  zzaoc_fill_att mv_001 'REFRESH' ''.                       "#EC NOTEXT
+  zzaoc_fill_att mv_002 'IS REQUESTED' ''.                  "#EC NOTEXT
+  zzaoc_fill_att mv_003 'LEAVE' ''.                         "#EC NOTEXT
+  zzaoc_fill_att mv_004 'COMPUTE' ''.                       "#EC NOTEXT
+  zzaoc_fill_att mv_005 'MOVE' ''.                          "#EC NOTEXT
+  zzaoc_fill_att mv_006 '>< =< =>' ''.                      "#EC NOTEXT
+  zzaoc_fill_att mv_007 'EQ NE LT GT LE GE' ''.             "#EC NOTEXT
+  zzaoc_fill_att mv_008 'DEMAND' ''.                        "#EC NOTEXT
+  zzaoc_fill_att mv_009 'SUPPLY' ''.                        "#EC NOTEXT
+  zzaoc_fill_att mv_010 'CONTEXTS' ''.                      "#EC NOTEXT
+  zzaoc_fill_att mv_011 'ADD' ''.                           "#EC NOTEXT
+  zzaoc_fill_att mv_012 'SUBTRACT' ''.                      "#EC NOTEXT
+  zzaoc_fill_att mv_013 'MULTIPLY' ''.                      "#EC NOTEXT
+  zzaoc_fill_att mv_014 'DIVIDE' ''.                        "#EC NOTEXT
+  zzaoc_fill_att mv_015 'CALL DIALOG' ''.                   "#EC NOTEXT
+  zzaoc_fill_att mv_016 'OCCURS' ''.                        "#EC NOTEXT
+  zzaoc_fill_att mv_017 'WITH HEADER LINE' ''.              "#EC NOTEXT
+  zzaoc_fill_att mv_018 'RANGES' ''.                        "#EC NOTEXT
+  zzaoc_fill_att mv_019 'Arithmetic CORRESPONDING' ''.      "#EC NOTEXT
+  zzaoc_fill_att mv_020 'SET EXTENDED CHECK' ''.            "#EC NOTEXT
+
+  zzaoc_popup.
+
+ENDMETHOD.
+
+
+METHOD put_attributes.
+
+  IMPORT
+    mv_errty = mv_errty
+    mv_001 = mv_001
+    mv_002 = mv_002
+    mv_003 = mv_003
+    mv_004 = mv_004
+    mv_005 = mv_005
+    mv_006 = mv_006
+    mv_007 = mv_007
+    mv_008 = mv_008
+    mv_009 = mv_009
+    mv_010 = mv_010
+    mv_011 = mv_011
+    mv_012 = mv_012
+    mv_013 = mv_013
+    mv_014 = mv_014
+    mv_015 = mv_015
+    mv_016 = mv_016
+    mv_017 = mv_017
+    mv_018 = mv_018
+    mv_019 = mv_019
+    mv_020 = mv_020
+    FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
+  ASSERT sy-subrc = 0.
+
+ENDMETHOD.
 ENDCLASS.
