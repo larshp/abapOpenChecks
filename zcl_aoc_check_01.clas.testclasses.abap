@@ -16,13 +16,18 @@ CLASS ltcl_test DEFINITION FOR TESTING
           mo_check  TYPE REF TO zcl_aoc_check_01.
 
     METHODS: setup,
-             test001_01 FOR TESTING,
-             test001_02 FOR TESTING,
-             test001_03 FOR TESTING,
-             test001_04 FOR TESTING,
-             test001_05 FOR TESTING,
-             test001_06 FOR TESTING,
-             test001_07 FOR TESTING.
+      test001_01 FOR TESTING,
+      test001_02 FOR TESTING,
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING,
+      test001_05 FOR TESTING,
+      test001_06 FOR TESTING,
+      test001_07 FOR TESTING,
+      test001_08 FOR TESTING,
+      test001_09 FOR TESTING,
+      test001_10 FOR TESTING,
+      test001_11 FOR TESTING,
+      test001_12 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -161,5 +166,96 @@ CLASS ltcl_test IMPLEMENTATION.
                                         act = ms_result-code ).
 
   ENDMETHOD.                    "test001_07
+
+  METHOD test001_08.
+
+    _code 'IF 1 = 2.          '.
+    _code '  WRITE: ''foo''.  '.
+    _code 'ELSE.              '.
+    _code '  IF 3 = 4.        '.
+    _code '    WRITE: ''foo''.'.
+    _code '  ELSE.            '.
+    _code '    WRITE: ''foo''.'.
+    _code '  ENDIF.           '.
+    _code 'ENDIF.             '.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_09.
+
+    _code 'IF 1 = 2.          '.
+    _code '  WRITE: ''foo''.  '.
+    _code 'ELSEIF 3 = 4.      '.
+    _code '  WRITE: ''foo''.  '.
+    _code 'ELSE.              '.
+    _code '  WRITE: ''foo''.  '.
+    _code 'ENDIF.             '.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_10.
+
+    _code 'IF 1 = 2.          '.
+    _code '  WRITE: ''foo''.  '.
+    _code 'ELSE.              '.
+    _code '  IF 3 = 4.        '.
+    _code '    WRITE: ''foo''.'.
+    _code '  ELSE.            '.
+    _code '    WRITE: ''foo''.'.
+    _code '  ENDIF.           '.
+    _code '  WRITE: ''foo''.  '.
+    _code 'ENDIF.             '.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_11.
+
+    _code 'LOOP AT lt_foo ASSIGNING <ls_foo>.'.
+    _code '  IF 1 = 2.'.
+    _code '    CONTINUE.'.
+    _code '  ENDIF.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_12.
+
+    _code 'IF 1 = 2.'.
+    _code '  IF 3 = 4.'.
+    _code '    WRITE: ''foo''.'.
+    _code '  ENDIF.'.
+    _code 'ELSEIF 5 = 6.'.
+    _code '  IF 7 = 8.'.
+    _code '    WRITE: ''foo''.'.
+    _code '  ENDIF.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Test
