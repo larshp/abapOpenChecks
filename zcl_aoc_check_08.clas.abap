@@ -20,6 +20,8 @@ public section.
   methods IF_CI_TEST~QUERY_ATTRIBUTES
     redefinition .
 protected section.
+*"* protected components of class ZCL_AOC_CHECK_08
+*"* do not include other source files here!!!
 
   data MV_001 type FLAG .
   data MV_002 type FLAG .
@@ -41,8 +43,7 @@ protected section.
   data MV_018 type FLAG .
   data MV_019 type FLAG .
   data MV_020 type FLAG .
-*"* protected components of class ZCL_AOC_CHECK_08
-*"* do not include other source files here!!!
+  data MV_021 type FLAG .
 private section.
 ENDCLASS.
 
@@ -140,6 +141,8 @@ METHOD check.
       lv_code = '019'.
     ELSEIF mv_020 = abap_true AND lv_statement CP 'SET EXTENDED CHECK *'.
       lv_code = '020'.
+    ELSEIF mv_021 = abap_true AND lv_statement CP 'LOCAL *'.
+      lv_code = '021'.
     ENDIF.
 
     IF NOT lv_code IS INITIAL.
@@ -163,7 +166,7 @@ METHOD constructor.
 
   description    = 'Obsolete statement'.                    "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '002'.
+  version        = '003'.
   position       = '008'.
 
   has_attributes = abap_true.
@@ -190,6 +193,7 @@ METHOD constructor.
   mv_018 = abap_true.
   mv_019 = abap_true.
   mv_020 = abap_true.
+  mv_021 = abap_true.
 
 ENDMETHOD.                    "CONSTRUCTOR
 
@@ -218,6 +222,7 @@ METHOD get_attributes.
     mv_018 = mv_018
     mv_019 = mv_019
     mv_020 = mv_020
+    mv_021 = mv_021
     TO DATA BUFFER p_attributes.
 
 ENDMETHOD.
@@ -266,6 +271,8 @@ METHOD get_message_text.
       p_text = 'Arithmetic CORRESPONDING is obsolete'.      "#EC NOTEXT
     WHEN '020'.
       p_text = 'Do not use SET EXTENDED CHECK'.             "#EC NOTEXT
+    WHEN '021'.
+      p_text = 'LOCAL is obsolete'.                         "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
@@ -298,6 +305,7 @@ METHOD if_ci_test~query_attributes.
   zzaoc_fill_att mv_018 'RANGES' ''.                        "#EC NOTEXT
   zzaoc_fill_att mv_019 'Arithmetic CORRESPONDING' ''.      "#EC NOTEXT
   zzaoc_fill_att mv_020 'SET EXTENDED CHECK' ''.            "#EC NOTEXT
+  zzaoc_fill_att mv_021 'LOCAL' ''.                         "#EC NOTEXT
 
   zzaoc_popup.
 
@@ -328,6 +336,7 @@ METHOD put_attributes.
     mv_018 = mv_018
     mv_019 = mv_019
     mv_020 = mv_020
+    mv_021 = mv_021
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
   ASSERT sy-subrc = 0.
 
