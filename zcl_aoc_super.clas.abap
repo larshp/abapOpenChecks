@@ -296,6 +296,7 @@ ENDMETHOD.
 METHOD inform.
 
   DATA: lv_cnam TYPE reposrc-cnam,
+        lv_area TYPE tvdir-area,
         lv_skip TYPE abap_bool.
 
   FIELD-SYMBOLS: <ls_message> LIKE LINE OF scimessages.
@@ -308,6 +309,14 @@ METHOD inform.
         AND ( lv_cnam = 'SAP'
         OR lv_cnam = 'SAP*'
         OR lv_cnam = 'DDIC' ).
+      RETURN.
+    ENDIF.
+  ENDIF.
+
+  IF object_type = 'FUGR'.
+    SELECT SINGLE area FROM tvdir INTO lv_area
+      WHERE area = object_name.
+    IF sy-subrc = 0.
       RETURN.
     ENDIF.
   ENDIF.
