@@ -137,7 +137,7 @@ CLASS lcl_data DEFINITION FINAL.
     CLASS-METHODS:
       compare
         IMPORTING is_combi        TYPE ty_combi
-        RETURNING VALUE(rv_match) TYPE dec20_2,
+        RETURNING VALUE(rv_match) TYPE i,
       find_methods
         RETURNING VALUE(rt_methods) TYPE seop_methods_w_include,
       delta
@@ -179,7 +179,7 @@ CLASS lcl_data IMPLEMENTATION.
 
   METHOD compare.
 
-    DATA: lv_max     TYPE i,
+    DATA: lv_lines   TYPE i,
           lt_delta   TYPE vxabapt255_tab,
           lt_method1 TYPE TABLE OF abaptxt255,
           lt_method2 TYPE TABLE OF abaptxt255.
@@ -187,18 +187,24 @@ CLASS lcl_data IMPLEMENTATION.
 
 * would be faster to cache the source code, but also take more memory
     READ REPORT is_combi-method1-incname INTO lt_method1.
+    DELETE lt_method1 WHERE line = space.
     READ REPORT is_combi-method2-incname INTO lt_method2.
+    DELETE lt_method2 WHERE line = space.
 
-    lt_delta = delta( it_old = lt_method1
-                      it_new = lt_method2 ).
-
-    lv_max = lines( lt_method1 ).
-    IF lines( lt_method2 ) > lv_max.
-      lv_max = lines( lt_method2 ).
+    IF lines( lt_method1 ) < lines( lt_method2 ).
+      lv_lines = lines( lt_method1 ).
+      lt_delta = delta( it_old = lt_method2
+                        it_new = lt_method1 ).
+    ELSE.
+      lv_lines = lines( lt_method2 ).
+      lt_delta = delta( it_old = lt_method1
+                        it_new = lt_method2 ).
     ENDIF.
 
-* this calculation might not be 100% correct but will give a good indication
-    rv_match = lv_max - lines( lt_delta ).
+    rv_match = lv_lines - lines( lt_delta ).
+    IF rv_match < 0.
+      rv_match = 0.
+    ENDIF.
 
   ENDMETHOD.                    "compare
 
