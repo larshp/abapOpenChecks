@@ -6,6 +6,14 @@ REPORT zaoc_clones.
 
 TABLES: tadir.
 
+TYPES: BEGIN OF ty_combi,
+         method1 TYPE seop_method_w_include,
+         method2 TYPE seop_method_w_include,
+         match   TYPE i,
+       END OF ty_combi.
+
+TYPES: ty_combi_tt TYPE STANDARD TABLE OF ty_combi WITH DEFAULT KEY.
+
 SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE text-001.
 SELECT-OPTIONS: s_devcla FOR tadir-devclass,
                 s_name   FOR tadir-obj_name.
@@ -17,35 +25,121 @@ PARAMETERS: p_top  TYPE i DEFAULT 100 OBLIGATORY,
 SELECTION-SCREEN END OF BLOCK b2.
 
 *----------------------------------------------------------------------*
+*       CLASS lcl_gui DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_alv DEFINITION FINAL.
+
+  PUBLIC SECTION.
+    CLASS-METHODS:
+      output
+        IMPORTING it_combi TYPE ty_combi_tt
+        RAISING   cx_salv_error.
+
+  PRIVATE SECTION.
+    CLASS-DATA:
+      gt_combi TYPE ty_combi_tt.
+
+    CLASS-METHODS:
+      show
+        IMPORTING iv_program TYPE programm,
+      on_link_click
+        FOR EVENT link_click OF cl_salv_events_table
+        IMPORTING
+        row
+        column.
+
+ENDCLASS.
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_gui IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_alv IMPLEMENTATION.
+
+  METHOD show.
+
+    CALL FUNCTION 'RS_TOOL_ACCESS'
+      EXPORTING
+        operation     = 'SHOW'
+        object_name   = iv_program
+        object_type   = 'PROG'
+        in_new_window = abap_true.
+
+  ENDMETHOD.
+
+  METHOD on_link_click.
+
+    DATA: ls_combi LIKE LINE OF gt_combi.
+
+
+    READ TABLE gt_combi INTO ls_combi INDEX row.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+    CASE column.
+      WHEN 'METHOD1-INCNAME'.
+        show( ls_combi-method1-incname ).
+      WHEN 'METHOD2-INCNAME'.
+        show( ls_combi-method2-incname ).
+    ENDCASE.
+
+  ENDMETHOD.
+
+  METHOD output.
+
+    DATA: lo_column TYPE REF TO cl_salv_column_list,
+          lo_events TYPE REF TO cl_salv_events_table,
+          lo_alv    TYPE REF TO cl_salv_table.
+
+
+    gt_combi = it_combi.
+    cl_salv_table=>factory(
+      IMPORTING
+        r_salv_table = lo_alv
+      CHANGING
+        t_table      = gt_combi ).
+
+    lo_alv->get_columns( )->set_optimize( ).
+    lo_column ?= lo_alv->get_columns( )->get_column( 'METHOD1-INCNAME' ).
+    lo_column->set_cell_type( if_salv_c_cell_type=>hotspot ).
+    lo_column ?= lo_alv->get_columns( )->get_column( 'METHOD2-INCNAME' ).
+    lo_column->set_cell_type( if_salv_c_cell_type=>hotspot ).
+
+    lo_alv->get_functions( )->set_all( ).
+
+    lo_events = lo_alv->get_event( ).
+    SET HANDLER lcl_alv=>on_link_click FOR lo_events.
+
+    lo_alv->display( ).
+
+  ENDMETHOD.                    "output
+
+ENDCLASS.
+
+*----------------------------------------------------------------------*
 *       CLASS lcl_app DEFINITION
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_app DEFINITION FINAL.
+CLASS lcl_data DEFINITION FINAL.
 
   PUBLIC SECTION.
     CLASS-METHODS:
-      run
+      fetch
+        RETURNING VALUE(rt_combi) TYPE ty_combi_tt
         RAISING cx_salv_error.
 
   PRIVATE SECTION.
-    TYPES: BEGIN OF ty_combi,
-             method1 TYPE seop_method_w_include,
-             method2 TYPE seop_method_w_include,
-             match   TYPE dec20_2,
-           END OF ty_combi.
-
-    TYPES: ty_combi_tt TYPE STANDARD TABLE OF ty_combi WITH DEFAULT KEY.
-
     CLASS-METHODS:
       compare
         IMPORTING is_combi        TYPE ty_combi
         RETURNING VALUE(rv_match) TYPE dec20_2,
       find_methods
         RETURNING VALUE(rt_methods) TYPE seop_methods_w_include,
-      output
-        IMPORTING it_combi TYPE ty_combi_tt
-        RAISING   cx_salv_error,
       delta
         IMPORTING it_old          TYPE STANDARD TABLE
                   it_new          TYPE STANDARD TABLE
@@ -61,26 +155,7 @@ ENDCLASS.                    "lcl_app DEFINITION
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-CLASS lcl_app IMPLEMENTATION.
-
-  METHOD output.
-
-    DATA: lt_combi LIKE it_combi,
-          lo_alv   TYPE REF TO cl_salv_table.
-
-
-    lt_combi = it_combi.
-    cl_salv_table=>factory(
-      IMPORTING
-        r_salv_table = lo_alv
-      CHANGING
-        t_table      = lt_combi ).
-
-    lo_alv->get_columns( )->set_optimize( ).
-
-    lo_alv->display( ).
-
-  ENDMETHOD.                    "output
+CLASS lcl_data IMPLEMENTATION.
 
   METHOD delta.
 
@@ -127,21 +202,20 @@ CLASS lcl_app IMPLEMENTATION.
 
   ENDMETHOD.                    "compare
 
-  METHOD run.
+  METHOD fetch.
 
-    DATA: lt_combi   TYPE ty_combi_tt,
-          lv_text    TYPE string,
+    DATA: lv_text    TYPE string,
           lt_methods TYPE seop_methods_w_include.
 
-    FIELD-SYMBOLS: <ls_combi> LIKE LINE OF lt_combi.
+    FIELD-SYMBOLS: <ls_combi> LIKE LINE OF rt_combi.
 
 
     lt_methods = find_methods( ).
-    lt_combi = combinations( lt_methods ).
+    rt_combi = combinations( lt_methods ).
 
-    LOOP AT lt_combi ASSIGNING <ls_combi>.
+    LOOP AT rt_combi ASSIGNING <ls_combi>.
       IF sy-tabix MOD p_prog = 0.
-        lv_text = |{ sy-tabix }/{ lines( lt_combi ) }|.
+        lv_text = |{ sy-tabix }/{ lines( rt_combi ) }|.
         CALL FUNCTION 'SAPGUI_PROGRESS_INDICATOR'
           EXPORTING
             percentage = 100
@@ -151,9 +225,8 @@ CLASS lcl_app IMPLEMENTATION.
       <ls_combi>-match = compare( <ls_combi> ).
     ENDLOOP.
 
-    SORT lt_combi BY match DESCENDING.
-    DELETE lt_combi FROM p_top.
-    output( lt_combi ).
+    SORT rt_combi BY match DESCENDING.
+    DELETE rt_combi FROM p_top.
 
   ENDMETHOD.                    "run
 
@@ -217,4 +290,4 @@ CLASS lcl_app IMPLEMENTATION.
 ENDCLASS.                    "lcl_app IMPLEMENTATION
 
 START-OF-SELECTION.
-  lcl_app=>run( ).
+  lcl_alv=>output( lcl_data=>fetch( ) ).
