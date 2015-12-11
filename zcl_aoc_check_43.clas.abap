@@ -56,10 +56,10 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lt_calls TYPE ty_call_tt,
-        lv_index TYPE i,
+  DATA: lt_calls  TYPE ty_call_tt,
+        lv_index  TYPE i,
         lv_foobar TYPE string,                              "#EC NEEDED
-        lv_str   TYPE string.
+        lv_str    TYPE string.
 
   FIELD-SYMBOLS: <ls_top>       LIKE LINE OF it_tokens,
                  <ls_token>     LIKE LINE OF it_tokens,
@@ -68,6 +68,9 @@ METHOD check.
 
 
   lt_calls = get_calls( it_levels ).
+  IF lt_calls IS INITIAL.
+    RETURN.
+  ENDIF.
 
   LOOP AT it_statements ASSIGNING <ls_statement>.
     LOOP AT it_tokens ASSIGNING <ls_top> FROM <ls_statement>-from TO <ls_statement>-to.
@@ -167,6 +170,8 @@ ENDMETHOD.                    "CONSTRUCTOR
 METHOD get_calls.
 
   DATA: lt_result   TYPE scr_refs,
+        lv_name     TYPE program,
+        lv_class    TYPE seoclsname,
         lv_foobar   TYPE string,                            "#EC NEEDED
         ls_call     LIKE LINE OF rt_calls,
         lo_compiler TYPE REF TO cl_abap_compiler.
@@ -174,9 +179,21 @@ METHOD get_calls.
   FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result.
 
 
+  CASE object_type.
+    WHEN 'PROG'.
+      lv_name = object_name.
+    WHEN 'CLAS'.
+      lv_class = object_name.
+      lv_name = cl_oo_classname_service=>get_classpool_name( lv_class ).
+    WHEN 'FUGR'.
+      CONCATENATE 'SAPL' object_name INTO lv_name.
+    WHEN OTHERS.
+      RETURN.
+  ENDCASE.
+
   CREATE OBJECT lo_compiler
     EXPORTING
-      p_name             = object_name
+      p_name             = lv_name
       p_no_package_check = abap_true.
 
   lo_compiler->get_all(
