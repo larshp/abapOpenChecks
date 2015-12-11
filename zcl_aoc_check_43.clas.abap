@@ -58,6 +58,7 @@ METHOD check.
 
   DATA: lt_calls TYPE ty_call_tt,
         lv_index TYPE i,
+        lv_foobar TYPE string,                              "#EC NEEDED
         lv_str   TYPE string.
 
   FIELD-SYMBOLS: <ls_top>       LIKE LINE OF it_tokens,
@@ -70,7 +71,7 @@ METHOD check.
 
   LOOP AT it_statements ASSIGNING <ls_statement>.
     LOOP AT it_tokens ASSIGNING <ls_top> FROM <ls_statement>-from TO <ls_statement>-to.
-      lv_index = sy-tabix + 1.
+      lv_index = sy-tabix.
 
       READ TABLE lt_calls ASSIGNING <ls_call>
         WITH KEY level = <ls_statement>-level
@@ -93,6 +94,7 @@ METHOD check.
         ENDIF.
       ENDLOOP.
 
+      SPLIT lv_str AT '(' INTO lv_foobar lv_str.
       check_parameters(
           is_call = <ls_call>
           iv_code = lv_str ).
@@ -118,13 +120,15 @@ METHOD check_parameters.
   IF lv_foobar IS INITIAL OR lv_foobar CA '='.
     RETURN.
   ENDIF.
+  CONDENSE lv_parameter.
 
   SELECT * FROM seosubcodf
     INTO TABLE lt_parameters
     WHERE clsname = is_call-class
     AND cmpname = is_call-method
     AND ( paroptionl = abap_false AND parvalue = '' )
-    AND pardecltyp = '0'.
+    AND pardecltyp = '0'
+    AND type <> ''.
   IF sy-subrc <> 0 OR sy-dbcnt <> 1.
     RETURN.
   ENDIF.
