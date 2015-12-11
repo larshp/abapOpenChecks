@@ -76,32 +76,33 @@ METHOD check.
     LOOP AT it_tokens ASSIGNING <ls_top> FROM <ls_statement>-from TO <ls_statement>-to.
       lv_index = sy-tabix.
 
-      READ TABLE lt_calls ASSIGNING <ls_call>
-        WITH KEY level = <ls_statement>-level
-        start_line = <ls_top>-row
-        start_column = <ls_top>-col.
-      IF sy-subrc <> 0.
-        CONTINUE.
-      ENDIF.
-      CLEAR lv_str.
-      LOOP AT it_tokens ASSIGNING <ls_token> FROM lv_index TO <ls_statement>-to.
-        IF <ls_token>-row > <ls_call>-end_line
-            OR ( <ls_token>-row = <ls_call>-end_line
-            AND <ls_token>-col + strlen( <ls_token>-str ) >= <ls_call>-end_column ).
-          EXIT.
+      LOOP AT lt_calls ASSIGNING <ls_call>
+          WHERE level = <ls_statement>-level
+          AND start_line = <ls_top>-row
+          AND start_column = <ls_top>-col.
+
+        CLEAR lv_str.
+        LOOP AT it_tokens ASSIGNING <ls_token> FROM lv_index TO <ls_statement>-to.
+          IF <ls_token>-row > <ls_call>-end_line
+              OR ( <ls_token>-row = <ls_call>-end_line
+              AND <ls_token>-col + strlen( <ls_token>-str ) >= <ls_call>-end_column ).
+            EXIT.
+          ENDIF.
+          IF lv_str IS INITIAL.
+            lv_str = <ls_token>-str.
+          ELSE.
+            CONCATENATE lv_str <ls_token>-str INTO lv_str SEPARATED BY space.
+          ENDIF.
+        ENDLOOP.
+
+        SPLIT lv_str AT '(' INTO lv_foobar lv_str.
+        IF lv_str <> ''.
+          check_parameters(
+              is_call = <ls_call>
+              iv_code = lv_str ).
         ENDIF.
-        IF lv_str IS INITIAL.
-          lv_str = <ls_token>-str.
-        ELSE.
-          CONCATENATE lv_str <ls_token>-str INTO lv_str SEPARATED BY space.
-        ENDIF.
+
       ENDLOOP.
-
-      SPLIT lv_str AT '(' INTO lv_foobar lv_str.
-      check_parameters(
-          is_call = <ls_call>
-          iv_code = lv_str ).
-
     ENDLOOP.
   ENDLOOP.
 
@@ -110,29 +111,46 @@ ENDMETHOD.
 
 METHOD check_parameters.
 
-  DATA: lv_parameter  TYPE seosconame,
-        lt_parameters TYPE TABLE OF seosubcodf,
-        lv_foobar     TYPE string.
+  TYPES: BEGIN OF ty_seosubcodf,
+           clsname    TYPE seosubcodf-clsname,
+           cmpname    TYPE seosubcodf-cmpname,
+           sconame    TYPE seosubcodf-sconame,
+           version    TYPE seosubcodf-version,
+           paroptionl TYPE seosubcodf-paroptionl,
+           parvalue   TYPE seosubcodf-parvalue,
+           parpreferd TYPE seosubcodf-parpreferd,
+         END OF ty_seosubcodf.
+
+  DATA: lv_parameter  TYPE seosubcodf-sconame,
+        lt_parameters TYPE TABLE OF ty_seosubcodf,
+        lv_foobar     TYPE string,                          "#EC NEEDED
+        lv_post       TYPE string.
 
 
-  IF iv_code IS INITIAL.
-    RETURN.
-  ENDIF.
-
-  SPLIT iv_code AT '=' INTO lv_parameter lv_foobar.
-  IF lv_foobar IS INITIAL OR lv_foobar CA '='.
+  SPLIT iv_code AT '=' INTO lv_parameter lv_post.
+  SPLIT lv_post AT ')' INTO lv_post lv_foobar.
+  IF lv_post IS INITIAL OR lv_post CA '='.
     RETURN.
   ENDIF.
   CONDENSE lv_parameter.
 
   SELECT * FROM seosubcodf
-    INTO TABLE lt_parameters
+    INTO CORRESPONDING FIELDS OF TABLE lt_parameters
     WHERE clsname = is_call-class
     AND cmpname = is_call-method
-    AND ( paroptionl = abap_false AND parvalue = '' )
     AND pardecltyp = '0'
     AND type <> ''.
-  IF sy-subrc <> 0 OR sy-dbcnt <> 1.
+  IF sy-subrc <> 0.
+    RETURN.
+  ENDIF.
+* in case there are multiple parameters filter out the optional
+* if there is one importing parameter it is okay to be optional
+  IF lines( lt_parameters ) > 1.
+    DELETE lt_parameters WHERE ( paroptionl = abap_true OR parvalue <> '' )
+      AND parpreferd = abap_false.
+  ENDIF.
+
+  IF lines( lt_parameters ) <> 1.
     RETURN.
   ENDIF.
 
@@ -144,7 +162,8 @@ METHOD check_parameters.
             p_line         = is_call-start_line
             p_kind         = mv_errty
             p_test         = myname
-            p_code         = '001' ).
+            p_code         = '001'
+            p_param_1      = lv_parameter ).
   ENDIF.
 
 ENDMETHOD.
@@ -203,8 +222,13 @@ METHOD get_calls.
 
   LOOP AT lt_result ASSIGNING <ls_result>.
     CLEAR ls_call.
-    ls_call-class = <ls_result>-full_name+4.
-    SPLIT ls_call-class AT '\ME:' INTO ls_call-class lv_foobar.
+    <ls_result>-full_name = <ls_result>-full_name+4.
+    SPLIT <ls_result>-full_name AT '\ME:' INTO <ls_result>-full_name lv_foobar.
+    IF <ls_result>-full_name CP '*\IN:*'.
+      SPLIT <ls_result>-full_name AT '\IN:' INTO lv_foobar ls_call-class.
+    ELSE.
+      ls_call-class = <ls_result>-full_name.
+    ENDIF.
     ls_call-method = <ls_result>-name.
 
     ls_call-start_line   = <ls_result>-statement->start_line.
@@ -230,7 +254,7 @@ METHOD get_message_text.
 
   CASE p_code.
     WHEN '001'.
-      p_text = 'Parameter name can be omitted'.             "#EC NOTEXT
+      p_text = 'Parameter name &1 can be omitted'.          "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
