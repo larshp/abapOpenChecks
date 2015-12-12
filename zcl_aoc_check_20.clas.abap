@@ -61,6 +61,15 @@ METHOD check.
       CONTINUE. " current loop
     ENDIF.
 
+    IF <ls_token>-col MOD 2 <> 0.
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = get_include( p_level = <ls_statement>-level )
+              p_line         = <ls_token>-row
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '002' ).
+    ENDIF.
+
     CASE <ls_token>-str.
       WHEN 'IF'
           OR 'LOOP'
@@ -129,6 +138,8 @@ METHOD get_message_text.
   CASE p_code.
     WHEN '001'.
       p_text = 'Bad indentation'.                           "#EC NOTEXT
+    WHEN '002'.
+      p_text = 'Begin statement at tab position'.           "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.

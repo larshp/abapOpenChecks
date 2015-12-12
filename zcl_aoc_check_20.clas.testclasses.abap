@@ -30,7 +30,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
              test001_12 FOR TESTING,
              test001_13 FOR TESTING,
              test001_14 FOR TESTING,
-             test001_15 FOR TESTING.
+             test001_15 FOR TESTING,
+             test002_01 FOR TESTING,
+             test002_02 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -154,7 +156,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_07
 
   METHOD test001_08.
 * ===========
@@ -169,7 +171,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_08
 
   METHOD test001_09.
 * ===========
@@ -186,7 +188,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_09
 
   METHOD test001_10.
 * ===========
@@ -201,7 +203,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_10
 
   METHOD test001_11.
 * ===========
@@ -215,7 +217,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_11
 
 
   METHOD test001_12.
@@ -232,7 +234,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_12
 
   METHOD test001_13.
 * ===========
@@ -246,7 +248,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_13
 
 
   METHOD test001_14.
@@ -263,7 +265,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_14
 
   METHOD test001_15.
 * ===========
@@ -278,6 +280,31 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "test001_15
+
+  METHOD test002_01.
+* ===========
+
+    _code ' DATA lv_foo TYPE c.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '002'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.                    "test002_01
+
+  METHOD test002_02.
+* ===========
+
+    _code '  DATA lv_foo TYPE c.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.                    "test002_02
 
 ENDCLASS.       "lcl_Te

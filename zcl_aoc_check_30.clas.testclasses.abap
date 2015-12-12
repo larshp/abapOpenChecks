@@ -145,15 +145,15 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_08.
 * ===========
 
-   _code '  cl_ci_inspection=>get_ref('.
-   _code '    EXPORTING'.
-   _code '      p_user          = '''''.
-   _code '      p_name          = lv_name'.
-   _code '    RECEIVING'.
-   _code '      p_ref           = lo_ci'.
-   _code '    EXCEPTIONS'.
-   _code '      insp_not_exists = 1'.
-   _code '      OTHERS          = 2 ).'.
+    _code '  cl_ci_inspection=>get_ref('.
+    _code '    EXPORTING'.
+    _code '      p_user          = '''''.
+    _code '      p_name          = lv_name'.
+    _code '    RECEIVING'.
+    _code '      p_ref           = lo_ci'.
+    _code '    EXCEPTIONS'.
+    _code '      insp_not_exists = 1'.
+    _code '      OTHERS          = 2 ).'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
                                           io_check = mo_check ).
@@ -165,13 +165,13 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_09.
 * ===========
 
-   _code '  cl_ci_inspection=>get_ref('.
-   _code '    EXPORTING'.
-   _code '      p_user          = '''''.
-   _code '      p_name          = lv_name'.
-   _code '    EXCEPTIONS'.
-   _code '      insp_not_exists = 1'.
-   _code '      OTHERS          = 2 ).'.
+    _code '  cl_ci_inspection=>get_ref('.
+    _code '    EXPORTING'.
+    _code '      p_user          = '''''.
+    _code '      p_name          = lv_name'.
+    _code '    EXCEPTIONS'.
+    _code '      insp_not_exists = 1'.
+    _code '      OTHERS          = 2 ).'.
 
     ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
                                           io_check = mo_check ).
