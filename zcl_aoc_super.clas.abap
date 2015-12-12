@@ -108,53 +108,46 @@ ENDMETHOD.
 
 METHOD check_class.
 
-  DATA: li_oref     TYPE REF TO if_oo_class_incl_naming,
-        li_clif     TYPE REF TO if_oo_clif_incl_naming,
-        lv_category TYPE seoclassdf-category,
-        lv_method   TYPE seocpdname.
+  DATA: lv_category TYPE seoclassdf-category,
+        lv_method   TYPE seocpdname,
+        lv_proxy    TYPE seoclassdf-clsproxy,
+        ls_mtdkey   TYPE seocpdkey.
 
 
-  IF iv_sub_obj_type <> 'PROG'
-      OR ( strlen( iv_sub_obj_name ) <> 35 AND strlen( iv_sub_obj_name ) <> 32 ).
+  IF object_type <> 'CLAS'
+      AND object_type <> 'INTF'.
     RETURN.
   ENDIF.
 
-  cl_oo_include_naming=>get_instance_by_include(
-    EXPORTING
-      progname = iv_sub_obj_name
-    RECEIVING
-      cifref   = li_clif
-    EXCEPTIONS
-      OTHERS   = 1 ).
-  IF sy-subrc = 0.
-    li_oref ?= li_clif.
-
-    SELECT SINGLE category FROM seoclassdf INTO lv_category
-      WHERE clsname = li_oref->clskey-clsname
-      AND version = '1'.
-    IF sy-subrc <> 0.
-      RETURN.
-    ENDIF.
+  SELECT SINGLE category clsproxy FROM seoclassdf
+    INTO (lv_category, lv_proxy)
+    WHERE clsname = object_name
+    AND version = '1'.
+  IF sy-subrc <> 0.
+    RETURN.
+  ENDIF.
 
 * skip persistent co-classes and web dynpro runtime obects
-    IF lv_category = seoc_category_p_agent
-        OR lv_category = seoc_category_webdynpro_class.
-      rv_skip = abap_true.
-      RETURN.
-    ENDIF.
+  IF lv_category = seoc_category_p_agent
+      OR lv_category = seoc_category_webdynpro_class
+      OR lv_proxy = abap_true.
+    rv_skip = abap_true.
+    RETURN.
+  ENDIF.
 
 * skip constructor in exception classes
-    IF lv_category = seoc_category_exception.
-      li_oref->get_mtdname_by_include(
-        EXPORTING
-          progname = iv_sub_obj_name
-        RECEIVING
-          mtdname  = lv_method
-        EXCEPTIONS
-          OTHERS   = 1 ).
-      IF sy-subrc = 0 AND lv_method = 'CONSTRUCTOR'.
-        rv_skip = abap_true.
-      ENDIF.
+  IF lv_category = seoc_category_exception.
+    cl_oo_classname_service=>get_method_by_include(
+      EXPORTING
+        incname             = iv_sub_obj_name
+      RECEIVING
+        mtdkey              = ls_mtdkey
+      EXCEPTIONS
+        class_not_existing  = 1
+        method_not_existing = 2
+        OTHERS              = 3 ).
+    IF sy-subrc = 0 AND lv_method = 'CONSTRUCTOR'.
+      rv_skip = abap_true.
     ENDIF.
   ENDIF.
 
