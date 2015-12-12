@@ -80,10 +80,14 @@ CLASS lcl_data IMPLEMENTATION.
                    <ls_data>   LIKE LINE OF rt_data.
 
 
+    SORT gt_objects BY include ASCENDING.
+    DELETE ADJACENT DUPLICATES FROM gt_objects COMPARING include.
+
     LOOP AT gt_sci ASSIGNING <ls_sci>.
 
       IF <ls_sci>-sobjtype = 'PROG'.
-        READ TABLE gt_objects ASSIGNING <ls_object> WITH KEY include = <ls_sci>-sobjname.
+        READ TABLE gt_objects ASSIGNING <ls_object>
+          WITH KEY include = <ls_sci>-sobjname BINARY SEARCH.
         IF sy-subrc = 0.
           APPEND INITIAL LINE TO rt_data ASSIGNING <ls_data>.
           MOVE-CORRESPONDING <ls_sci> TO <ls_data>.
