@@ -128,6 +128,10 @@ METHOD check_parameters.
 
 
   SPLIT iv_code AT '=' INTO lv_parameter lv_post.
+  WHILE lv_post CA '('.
+    REPLACE FIRST OCCURRENCE OF '(' IN lv_post WITH space.
+    REPLACE FIRST OCCURRENCE OF ')' IN lv_post WITH space.
+  ENDWHILE.
   SPLIT lv_post AT ')' INTO lv_post lv_foobar.
   IF lv_post IS INITIAL OR lv_post CA '='.
     RETURN.

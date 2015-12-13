@@ -47,6 +47,7 @@ METHOD check.
     INTO TABLE lt_seosubcodf
     WHERE clsname = object_name
     AND ( pardecltyp = '1'
+    OR pardecltyp = '2'
     OR pardecltyp = '3' ).                                "#EC CI_SUBRC
 
   LOOP AT lt_seosubcodf ASSIGNING <ls_data> WHERE pardecltyp = '1'.
