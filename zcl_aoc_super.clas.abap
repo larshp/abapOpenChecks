@@ -109,7 +109,6 @@ ENDMETHOD.
 METHOD check_class.
 
   DATA: lv_category TYPE seoclassdf-category,
-        lv_method   TYPE seocpdname,
         lv_proxy    TYPE seoclassdf-clsproxy,
         ls_mtdkey   TYPE seocpdkey.
 
@@ -146,7 +145,7 @@ METHOD check_class.
         class_not_existing  = 1
         method_not_existing = 2
         OTHERS              = 3 ).
-    IF sy-subrc = 0 AND lv_method = 'CONSTRUCTOR'.
+    IF sy-subrc = 0 AND ls_mtdkey-cpdname = 'CONSTRUCTOR'.
       rv_skip = abap_true.
     ENDIF.
   ENDIF.
