@@ -120,9 +120,18 @@ CLASS lcl_data IMPLEMENTATION.
 
   METHOD check_tabl.
 
-    DATA: lt_find TYPE TABLE OF rsfind,
-          ls_find LIKE LINE OF lt_find.
+    DATA: lt_find     TYPE TABLE OF rsfind,
+          lv_tabclass TYPE dd02l-tabclass,
+          ls_find     LIKE LINE OF lt_find.
 
+
+    SELECT SINGLE tabclass FROM dd02l INTO lv_tabclass
+      WHERE tabname = is_tadir-obj_name
+      AND as4local = 'A'
+      AND as4vers = '000'.
+    IF lv_tabclass = 'APPEND'.
+      RETURN.
+    ENDIF.
 
     ls_find-object = is_tadir-obj_name.
     APPEND ls_find TO lt_find.
