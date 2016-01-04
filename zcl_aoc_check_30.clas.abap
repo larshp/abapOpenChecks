@@ -48,6 +48,7 @@ METHOD check.
 
   LOOP AT it_statements ASSIGNING <ls_statement>
       WHERE type = scan_stmnt_type-standard
+      OR type = scan_stmnt_type-compute_direct
       OR type = scan_stmnt_type-method_direct.
 
     LOOP AT it_tokens ASSIGNING <ls_token>
