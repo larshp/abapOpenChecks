@@ -15,7 +15,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
           mt_tokens     TYPE stokesx_tab,
           mt_statements TYPE sstmnt_tab,
           mt_levels     TYPE slevel_tab,
-          mt_structures TYPE zcl_aoc_super=>tt_structures.
+          mt_structures TYPE zcl_aoc_super=>ty_structures_tt.
 
     METHODS: build FOR TESTING.
 

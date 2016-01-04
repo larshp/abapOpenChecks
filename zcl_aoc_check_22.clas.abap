@@ -4,9 +4,9 @@ class ZCL_AOC_CHECK_22 definition
   create public .
 
 public section.
+
 *"* public components of class ZCL_AOC_CHECK_22
 *"* do not include other source files here!!!
-
   methods CONSTRUCTOR .
 
   methods CHECK
@@ -16,17 +16,6 @@ public section.
 protected section.
 *"* protected components of class ZCL_AOC_CHECK_22
 *"* do not include other source files here!!!
-
-  types:
-    BEGIN OF ty_condition,
-           statements TYPE string_table,
-           level type STMNT_LEVL,
-           row type TOKEN_ROW,
-           STMNT_TYPE TYPE STRU_TYPE,
-           cond type string,
-         END OF ty_condition .
-  types:
-    tt_conditions TYPE STANDARD TABLE OF ty_condition WITH NON-UNIQUE DEFAULT KEY .
 
   methods ANALYZE_CONDITION
     importing

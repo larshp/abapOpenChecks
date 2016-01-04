@@ -10,7 +10,7 @@ CLASS zcl_aoc_parser DEFINITION
     TYPES:
 *"* public components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
-      BEGIN OF st_token,
+      BEGIN OF ty_token,
         statement TYPE i,
         id        TYPE i,
         parent    TYPE i,
@@ -18,14 +18,14 @@ CLASS zcl_aoc_parser DEFINITION
         value     TYPE string,
         code      TYPE string,
         rulename  TYPE string,
-      END OF st_token .
+      END OF ty_token .
     TYPES:
-      tt_tokens TYPE STANDARD TABLE OF st_token WITH NON-UNIQUE DEFAULT KEY .
+      ty_tokens_tt TYPE STANDARD TABLE OF ty_token WITH NON-UNIQUE DEFAULT KEY .
     TYPES:
-      BEGIN OF st_result,
+      BEGIN OF ty_result,
         match  TYPE abap_bool,
-        tokens TYPE tt_tokens,
-      END OF st_result .
+        tokens TYPE ty_tokens_tt,
+      END OF ty_result .
 
     CONSTANTS: BEGIN OF c_type,
                  role        TYPE c VALUE 'R' ##NO_TEXT,
@@ -49,7 +49,7 @@ CLASS zcl_aoc_parser DEFINITION
         !iv_rule           TYPE string DEFAULT 'START'
         !iv_allow_obsolete TYPE abap_bool DEFAULT abap_true
       RETURNING
-        VALUE(rs_result)   TYPE zcl_aoc_parser=>st_result .
+        VALUE(rs_result)   TYPE zcl_aoc_parser=>ty_result .
 protected section.
 
   class-methods DOWNLOAD
@@ -58,7 +58,7 @@ protected section.
       !IV_DATA type STRING .
   class-methods PARENTS
     changing
-      !CT_TOKENS type TT_TOKENS .
+      !CT_TOKENS type ty_tokens_tt .
 *"* protected components of class ZCL_AOC_PARSER
 *"* do not include other source files here!!!
   class-methods XML_FIX
@@ -126,7 +126,7 @@ protected section.
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ty_RESULT .
   class-methods XML_DOWNLOAD
     importing
       !IV_RULENAME type STRING
@@ -155,31 +155,31 @@ protected section.
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ty_RESULT .
   class-methods WALK_ROLE
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ty_RESULT .
   class-methods WALK_NONTERMINAL
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ty_RESULT .
   class-methods WALK_NODE
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ty_RESULT .
   class-methods WALK_END
     importing
       !IO_NODE type ref to LCL_NODE
       !IV_INDEX type I
     returning
-      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ty_RESULT .
   class-methods XML_GET
     importing
       !IV_RULENAME type STRING
@@ -196,7 +196,7 @@ protected section.
       !IT_TOKENS type STOKESX_TAB
       !IT_STATEMENTS type SSTMNT_TAB
     returning
-      value(RS_RESULT) type ZCL_AOC_PARSER=>ST_RESULT .
+      value(RS_RESULT) type ZCL_AOC_PARSER=>ty_RESULT .
 private section.
 
 *"* private components of class ZCL_AOC_PARSER
@@ -467,10 +467,10 @@ ENDMETHOD.
 
 METHOD build_permutation.
 
-  TYPES: BEGIN OF st_pair,
+  TYPES: BEGIN OF ty_pair,
            before TYPE REF TO lcl_node,
            after TYPE REF TO lcl_node,
-         END OF st_pair.
+         END OF ty_pair.
 
   DATA: li_append     TYPE REF TO if_ixml_node_list,
         li_child      TYPE REF TO if_ixml_node,
@@ -480,7 +480,7 @@ METHOD build_permutation.
         lo_after      TYPE REF TO lcl_node,
         lo_seq_before TYPE REF TO lcl_node,
         lo_seq_after  TYPE REF TO lcl_node,
-        lt_pair       TYPE TABLE OF st_pair,
+        lt_pair       TYPE TABLE OF ty_pair,
         lt_per        TYPE TABLE OF REF TO if_ixml_node_list,
         li_children   LIKE LINE OF lt_per.
 
@@ -846,7 +846,7 @@ ENDMETHOD.
 METHOD parse.
 
   DATA: lo_start     TYPE REF TO lcl_node,
-        lt_rt        TYPE tt_tokens,
+        lt_rt        TYPE ty_tokens_tt,
         lv_statement TYPE i,
         lt_res_tok   LIKE rs_result-tokens,
         lv_index     TYPE i.
@@ -1316,7 +1316,7 @@ METHOD xml_get.
            node     TYPE REF TO if_ixml_node,
          END OF ty_cache.
 
-  STATICS: st_syntax TYPE syntax_tt,
+  STATICS: st_syntax TYPE ty_syntax_tt,
            st_cache  TYPE SORTED TABLE OF ty_cache WITH UNIQUE KEY rulename.
 
   DATA: lv_rulename TYPE ssyntaxstructure-rulename,

@@ -7,11 +7,6 @@ class ZCL_AOC_SUPER_ROOT definition
 public section.
   type-pools ZZAOC .
 
-  types:
-*"* public components of class ZCL_AOC_SUPER_ROOT
-*"* do not include other source files here!!!
-    tt_structures TYPE STANDARD TABLE OF sstruc WITH NON-UNIQUE DEFAULT KEY .
-
   methods GET_ATTRIBUTES
     redefinition .
   methods IF_CI_TEST~DISPLAY_DOCUMENTATION
@@ -26,16 +21,6 @@ protected section.
 *"* do not include other source files here!!!
   data MV_ERRTY type SCI_ERRTY .
 private section.
-
-  types:
-*"* private components of class ZCL_AOC_SUPER_ROOT
-*"* do not include other source files here!!!
-    BEGIN OF st_source,
-           name TYPE level_name,
-           code TYPE string_table,
-         END OF st_source .
-  types:
-    tt_source TYPE SORTED TABLE OF st_source WITH UNIQUE KEY name .
 ENDCLASS.
 
 

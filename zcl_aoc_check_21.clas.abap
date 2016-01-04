@@ -140,7 +140,7 @@ ENDMETHOD.                    "CONSTRUCTOR
 METHOD find_parameters.
 
   DATA: lt_code   TYPE TABLE OF string,
-        ls_result TYPE zcl_aoc_parser=>st_result.
+        ls_result TYPE zcl_aoc_parser=>ty_result.
 
   FIELD-SYMBOLS: <ls_res_tok> LIKE LINE OF ls_result-tokens.
 

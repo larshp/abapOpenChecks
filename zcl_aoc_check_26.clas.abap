@@ -43,7 +43,7 @@ METHOD check.
         lv_keyword2  TYPE string,
         lt_code      TYPE string_table,
         lv_as4user   TYPE dd02l-as4user,
-        ls_result    TYPE zcl_aoc_parser=>st_result,
+        ls_result    TYPE zcl_aoc_parser=>ty_result,
         lv_include   TYPE program,
         lv_statement TYPE string.
 

@@ -20,13 +20,13 @@ protected section.
       !IT_TOKENS type STOKESX_TAB
       !IT_STATEMENTS type SSTMNT_TAB
       !IT_LEVELS type SLEVEL_TAB
-      !IT_STRUCTURES type TT_STRUCTURES .
+      !IT_STRUCTURES type Ty_STRUCTURES_tt .
   methods CHECK_NO_CATCH
     importing
       !IT_TOKENS type STOKESX_TAB
       !IT_STATEMENTS type SSTMNT_TAB
       !IT_LEVELS type SLEVEL_TAB
-      !IT_STRUCTURES type TT_STRUCTURES .
+      !IT_STRUCTURES type Ty_STRUCTURES_tt .
 *"* protected components of class ZCL_AOC_CHECK_03
 *"* do not include other source files here!!!
 private section.

@@ -39,7 +39,7 @@ public section.
       !IT_TOKENS type STOKESX_TAB
       !IT_STATEMENTS type SSTMNT_TAB
       !IT_LEVELS type SLEVEL_TAB
-      !IT_STRUCTURES type ZCL_AOC_SUPER=>TT_STRUCTURES
+      !IT_STRUCTURES type ZCL_AOC_SUPER=>Ty_STRUCTURES_tt
     returning
       value(RO_STRUCTURE) type ref to ZCL_AOC_STRUCTURE .
 protected section.

@@ -44,13 +44,13 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  TYPES: BEGIN OF st_name,
+  TYPES: BEGIN OF ty_name,
            name TYPE string,
-         END OF st_name.
+         END OF ty_name.
 
-  DATA: lt_not       TYPE SORTED TABLE OF st_name WITH UNIQUE KEY name,
+  DATA: lt_not       TYPE SORTED TABLE OF ty_name WITH UNIQUE KEY name,
         lv_statement TYPE string,
-        ls_name      TYPE st_name,
+        ls_name      TYPE ty_name,
         lv_name      TYPE string.
 
   FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,

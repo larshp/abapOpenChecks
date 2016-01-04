@@ -154,7 +154,7 @@ CLASS lcl_data IMPLEMENTATION.
           EXCEPTIONS
             class_not_existing  = 1
             method_not_existing = 2
-            OTHERS              = 3 ).
+            OTHERS              = 3 ).                    "#EC CI_SUBRC
       ELSEIF <ls_object>-object = 'PROG'
           OR <ls_object>-object = 'CINC'
           OR <ls_object>-object = 'REPS'.

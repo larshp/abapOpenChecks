@@ -10,14 +10,14 @@ public section.
   types:
 *"* public components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
-    tt_structures TYPE STANDARD TABLE OF sstruc WITH NON-UNIQUE DEFAULT KEY .
+    ty_structures_tt TYPE STANDARD TABLE OF sstruc WITH NON-UNIQUE DEFAULT KEY .
 
   methods CHECK
     importing
       !IT_TOKENS type STOKESX_TAB
       !IT_STATEMENTS type SSTMNT_TAB
       !IT_LEVELS type SLEVEL_TAB
-      !IT_STRUCTURES type TT_STRUCTURES .
+      !IT_STRUCTURES type ty_structures_tt .
   methods SET_SOURCE
     importing
       !IV_NAME type LEVEL_NAME
@@ -68,14 +68,14 @@ private section.
   types:
 *"* private components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
-    BEGIN OF st_source,
+    BEGIN OF ty_source,
            name TYPE level_name,
            code TYPE string_table,
-         END OF st_source .
+         END OF ty_source .
   types:
-    tt_source TYPE SORTED TABLE OF st_source WITH UNIQUE KEY name .
+    ty_source_tt TYPE SORTED TABLE OF ty_source WITH UNIQUE KEY name .
 
-  data MT_SOURCE type TT_SOURCE .
+  data MT_SOURCE type ty_source_tt .
 
   methods CHECK_CLASS
     importing

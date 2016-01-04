@@ -17,7 +17,7 @@
         IMPORTING
           it_tokens     TYPE stokesx_tab
           it_statements TYPE sstmnt_tab
-          it_structures TYPE zcl_aoc_super=>tt_structures.
+          it_structures TYPE zcl_aoc_super=>ty_structures_tt.
 
       METHODS: build
         RETURNING
@@ -26,7 +26,7 @@
     PRIVATE SECTION.
       DATA: mt_tokens     TYPE stokesx_tab,
             mt_statements TYPE sstmnt_tab,
-            mt_structures TYPE zcl_aoc_super=>tt_structures.
+            mt_structures TYPE zcl_aoc_super=>ty_structures_tt.
 
       DATA: mt_sstr TYPE TABLE OF zcl_aoc_structure=>ty_statement.
 

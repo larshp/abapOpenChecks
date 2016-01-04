@@ -15,7 +15,7 @@ CLASS ltcl_test_statements DEFINITION FOR TESTING
 
     DATA: mv_debug  TYPE abap_bool VALUE abap_false,
           mt_code   TYPE string_table,
-          ms_result TYPE zcl_aoc_parser=>st_result.
+          ms_result TYPE zcl_aoc_parser=>ty_result.
 
     METHODS: setup.
 
@@ -1377,7 +1377,7 @@ CLASS ltcl_test_programs IMPLEMENTATION.
 
     DATA: lt_code     TYPE string_table,
           lt_original TYPE string_table,
-          ls_result   TYPE zcl_aoc_parser=>st_result,
+          ls_result   TYPE zcl_aoc_parser=>ty_result,
           lv_string   LIKE LINE OF lt_code.
 
 

@@ -44,7 +44,7 @@ protected section.
              row TYPE token_row,
            END OF ty_code .
   types:
-    tt_code TYPE STANDARD TABLE OF ty_code WITH NON-UNIQUE DEFAULT KEY .
+    ty_code_tt TYPE STANDARD TABLE OF ty_code WITH NON-UNIQUE DEFAULT KEY .
   types:
     BEGIN OF ty_block,
              statements TYPE string,
@@ -53,7 +53,7 @@ protected section.
              row TYPE token_row,
            END OF ty_block .
   types:
-    tt_block TYPE STANDARD TABLE OF ty_block WITH NON-UNIQUE DEFAULT KEY .
+    ty_block_tt TYPE STANDARD TABLE OF ty_block WITH NON-UNIQUE DEFAULT KEY .
 
   data MV_STATEMENTS type I .
 
@@ -64,19 +64,19 @@ protected section.
       value(RV_STRING) type STRING .
   methods ANALYZE
     changing
-      !CT_BLOCKS type TT_BLOCK .
+      !CT_BLOCKS type ty_block_tt .
   methods BUILD_BLOCKS
     importing
-      !IT_CODE type TT_CODE
+      !IT_CODE type ty_code_tt
     returning
-      value(RT_BLOCKS) type TT_BLOCK .
+      value(RT_BLOCKS) type ty_block_tt .
   methods BUILD_CODE
     importing
       !IT_TOKENS type STOKESX_TAB
       !IT_STATEMENTS type SSTMNT_TAB
       !IT_LEVELS type SLEVEL_TAB
     returning
-      value(RT_CODE) type TT_CODE .
+      value(RT_CODE) type ty_code_tt .
 private section.
 ENDCLASS.
 
@@ -241,8 +241,8 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lt_code   TYPE tt_code,
-        lt_blocks TYPE tt_block.
+  DATA: lt_code   TYPE ty_code_tt,
+        lt_blocks TYPE ty_block_tt.
 
 
   lt_code = build_code(

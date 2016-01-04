@@ -35,20 +35,20 @@ CLASS lcl_data DEFINITION FINAL.
       show_progress
         IMPORTING
           iv_current TYPE i
-          iv_total TYPE i,
+          iv_total   TYPE i,
       check_doma
         IMPORTING
-          is_tadir TYPE ty_output
+          is_tadir           TYPE ty_output
         RETURNING
           VALUE(rv_obsolete) TYPE abap_bool,
       check_dtel
         IMPORTING
-          is_tadir TYPE ty_output
+          is_tadir           TYPE ty_output
         RETURNING
           VALUE(rv_obsolete) TYPE abap_bool,
       check_tabl
         IMPORTING
-          is_tadir TYPE ty_output
+          is_tadir           TYPE ty_output
         RETURNING
           VALUE(rv_obsolete) TYPE abap_bool.
 
@@ -128,7 +128,7 @@ CLASS lcl_data IMPLEMENTATION.
     SELECT SINGLE tabclass FROM dd02l INTO lv_tabclass
       WHERE tabname = is_tadir-obj_name
       AND as4local = 'A'
-      AND as4vers = '000'.
+      AND as4vers = '000'.                                "#EC CI_SUBRC
     IF lv_tabclass = 'APPEND'.
       RETURN.
     ENDIF.
@@ -231,7 +231,7 @@ CLASS lcl_alv DEFINITION FINAL.
     CLASS-METHODS:
       show
         IMPORTING it_table TYPE ty_output_tt
-        RAISING cx_salv_error.
+        RAISING   cx_salv_error.
 
   PRIVATE SECTION.
     CLASS-DATA:
@@ -242,10 +242,10 @@ CLASS lcl_alv DEFINITION FINAL.
         IMPORTING
           is_data TYPE ty_output,
       on_link_click
-        FOR EVENT link_click OF cl_salv_events_table
+            FOR EVENT link_click OF cl_salv_events_table
         IMPORTING
-        row
-        column.
+            row
+            column.
 
 ENDCLASS.                    "lcl_alv DEFINITION
 
@@ -260,7 +260,7 @@ CLASS lcl_alv IMPLEMENTATION.
 
     DATA: lo_column TYPE REF TO cl_salv_column_list,
           lo_events TYPE REF TO cl_salv_events_table,
-          lo_alv TYPE REF TO cl_salv_table.
+          lo_alv    TYPE REF TO cl_salv_table.
 
 
     gt_table = it_table.

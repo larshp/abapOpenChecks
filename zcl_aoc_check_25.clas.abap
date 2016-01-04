@@ -30,7 +30,7 @@ protected section.
              row TYPE token_row,
            END OF ty_field .
   types:
-    tt_fields TYPE STANDARD TABLE OF ty_field WITH NON-UNIQUE DEFAULT KEY .
+    ty_fields_tt TYPE STANDARD TABLE OF ty_field WITH NON-UNIQUE DEFAULT KEY .
 
   data MV_SKIP_RADIO type SYCHAR01 .
 
@@ -42,14 +42,14 @@ protected section.
   methods ANALYZE
     importing
       !IT_TOKENS type STOKESX_TAB
-      !IT_FIELDS type TT_FIELDS
+      !IT_FIELDS type ty_fields_tt
       !IT_STATEMENTS type SSTMNT_TAB .
   methods FIND_FIELDS
     importing
       !IT_TOKENS type STOKESX_TAB
       !IT_STATEMENTS type SSTMNT_TAB
     returning
-      value(RT_FIELDS) type TT_FIELDS .
+      value(RT_FIELDS) type ty_fields_tt .
 private section.
 ENDCLASS.
 
@@ -108,7 +108,7 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lt_fields TYPE tt_fields.
+  DATA: lt_fields TYPE ty_fields_tt.
 
 
   lt_fields = find_fields( it_tokens     = it_tokens
@@ -143,7 +143,7 @@ METHOD find_fields.
 
   DATA: lv_keyword   TYPE string,
         lt_code      TYPE string_table,
-        ls_result    TYPE zcl_aoc_parser=>st_result,
+        ls_result    TYPE zcl_aoc_parser=>ty_result,
         ls_field     LIKE LINE OF rt_fields,
         lv_statement TYPE string.
 

@@ -32,16 +32,16 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  TYPES: BEGIN OF st_when,
+  TYPES: BEGIN OF ty_when,
            back TYPE stru_back,
            code TYPE string,
            include TYPE sobj_name,
            row TYPE token_row,
-         END OF st_when.
+         END OF ty_when.
 
   DATA: lv_index TYPE i,
         lv_from  TYPE i,
-        lt_when  TYPE STANDARD TABLE OF st_when WITH DEFAULT KEY,
+        lt_when  TYPE STANDARD TABLE OF ty_when WITH DEFAULT KEY,
         ls_when  LIKE LINE OF lt_when.
 
   FIELD-SYMBOLS: <ls_when>      LIKE LINE OF lt_when,
