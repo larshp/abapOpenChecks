@@ -68,8 +68,8 @@ protected section.
   methods BUILD_BLOCKS
     importing
       !IT_CODE type TT_CODE
-    exporting
-      !ET_BLOCKS type TT_BLOCK .
+    returning
+      value(RT_BLOCKS) type TT_BLOCK .
   methods BUILD_CODE
     importing
       !IT_TOKENS type STOKESX_TAB
@@ -150,7 +150,7 @@ METHOD build_blocks.
 
   DATA: lv_index TYPE i,
         lv_add   TYPE abap_bool,
-        ls_block LIKE LINE OF et_blocks,
+        ls_block LIKE LINE OF rt_blocks,
         lv_level TYPE i.
 
   FIELD-SYMBOLS: <ls_code> LIKE LINE OF it_code,
@@ -182,7 +182,7 @@ METHOD build_blocks.
     ENDDO.
 
     IF lv_add = abap_true.
-      APPEND ls_block TO et_blocks.
+      APPEND ls_block TO rt_blocks.
     ENDIF.
 
   ENDLOOP.
@@ -250,8 +250,7 @@ METHOD check.
       it_statements = it_statements
       it_levels     = it_levels ).
 
-  build_blocks( EXPORTING it_code   = lt_code
-                IMPORTING et_blocks = lt_blocks ).
+  lt_blocks = build_blocks( lt_code ).
 
   analyze( CHANGING ct_blocks = lt_blocks ).
 

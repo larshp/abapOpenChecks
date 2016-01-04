@@ -34,26 +34,26 @@ CLASS lcl_data DEFINITION FINAL.
   PUBLIC SECTION.
     CLASS-METHODS:
       fetch
-        RETURNING value(rt_data) TYPE ty_output_tt.
+        RETURNING VALUE(rt_data) TYPE ty_output_tt.
 
   PRIVATE SECTION.
     TYPES: BEGIN OF ty_objects,
-           trkorr   TYPE e070-trkorr,
-           as4user  TYPE e070-as4user,
-           pgmid    TYPE e071-pgmid,
-           object   TYPE e071-object,
-           obj_name TYPE e071-obj_name,
-           include  TYPE programm,
-         END OF ty_objects.
+             trkorr   TYPE e070-trkorr,
+             as4user  TYPE e070-as4user,
+             pgmid    TYPE e071-pgmid,
+             object   TYPE e071-object,
+             obj_name TYPE e071-obj_name,
+             include  TYPE programm,
+           END OF ty_objects.
 
-    CLASS-DATA: gt_sci TYPE scit_alvlist,
+    CLASS-DATA: gt_sci     TYPE scit_alvlist,
                 gt_objects TYPE TABLE OF ty_objects WITH DEFAULT KEY.
 
     CLASS-METHODS:
       find_objects,
       read_inspection,
       filter
-        RETURNING value(rt_data) TYPE ty_output_tt.
+        RETURNING VALUE(rt_data) TYPE ty_output_tt.
 
 ENDCLASS.                    "lcl_app DEFINITION
 
@@ -177,7 +177,7 @@ CLASS lcl_alv DEFINITION FINAL.
     CLASS-METHODS:
       show
         IMPORTING it_table TYPE ty_output_tt
-        RAISING cx_salv_error.
+        RAISING   cx_salv_error.
 
   PRIVATE SECTION.
     CLASS-DATA:
@@ -188,10 +188,10 @@ CLASS lcl_alv DEFINITION FINAL.
         IMPORTING
           is_data TYPE ty_output,
       on_link_click
-        FOR EVENT link_click OF cl_salv_events_table
+            FOR EVENT link_click OF cl_salv_events_table
         IMPORTING
-        row
-        column.
+            row
+            column.
 
 ENDCLASS.                    "lcl_alv DEFINITION
 
@@ -206,7 +206,7 @@ CLASS lcl_alv IMPLEMENTATION.
 
     DATA: lo_column TYPE REF TO cl_salv_column_list,
           lo_events TYPE REF TO cl_salv_events_table,
-          lo_alv TYPE REF TO cl_salv_table.
+          lo_alv    TYPE REF TO cl_salv_table.
 
 
     gt_table = it_table.
@@ -256,7 +256,7 @@ CLASS lcl_alv IMPLEMENTATION.
       EXCEPTIONS
         not_executed        = 1
         invalid_object_type = 2
-        OTHERS              = 3.                          "#EC CI_SUBRC
+        OTHERS              = 3 ##FM_SUBRC_OK.                          "#EC CI_SUBRC
 
   ENDMETHOD.                    "on_link_click
 

@@ -77,10 +77,8 @@ private section.
 
   data MT_SOURCE type TT_SOURCE .
 
-  type-pools ABAP .
   methods CHECK_CLASS
     importing
-      !IV_SUB_OBJ_TYPE type TROBJTYPE
       !IV_SUB_OBJ_NAME type SOBJ_NAME
     returning
       value(RV_SKIP) type ABAP_BOOL .
@@ -313,8 +311,7 @@ METHOD inform.
     ENDIF.
   ENDIF.
 
-  lv_skip = check_class( iv_sub_obj_type = p_sub_obj_type
-                         iv_sub_obj_name = p_sub_obj_name ).
+  lv_skip = check_class( p_sub_obj_name ).
   IF lv_skip = abap_true.
     RETURN.
   ENDIF.

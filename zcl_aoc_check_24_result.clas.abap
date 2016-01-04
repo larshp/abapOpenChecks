@@ -17,14 +17,13 @@ public section.
 *"* do not include other source files here!!!
 protected section.
 
-  class ZCL_AOC_CHECK_24 definition load .
   data MT_LIST type ZCL_AOC_CHECK_24=>TY_LIST_TT .
 
   methods UNPACK
     importing
       !IV_STRING type STRING
-    exporting
-      !ET_LIST type ZCL_AOC_CHECK_24=>TY_LIST_TT .
+    returning
+      value(RT_LIST) type ZCL_AOC_CHECK_24=>TY_LIST_TT .
 private section.
 
   methods DOUBLE_CLICK
@@ -93,8 +92,7 @@ METHOD if_ci_test~navigate.
     RETURN.
   ENDIF.
 
-  unpack( EXPORTING iv_string = result-param1
-          IMPORTING et_list = mt_list ).
+  mt_list = unpack( result-param1 ).
 
   TRY.
       cl_salv_table=>factory(
@@ -135,7 +133,7 @@ METHOD unpack.
 
 
   lv_xstring = iv_string.
-  IMPORT list = et_list FROM DATA BUFFER lv_xstring.
+  IMPORT list = rt_list FROM DATA BUFFER lv_xstring.
   ASSERT sy-subrc = 0.
 
 ENDMETHOD.
