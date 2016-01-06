@@ -16,11 +16,11 @@ public section.
 protected section.
 *"* protected components of class ZCL_AOC_CHECK_43
 *"* do not include other source files here!!!
-PRIVATE SECTION.
+private section.
+
+  types:
 *"* private components of class ZCL_AOC_CHECK_43
 *"* do not include other source files here!!!
-
-  TYPES:
     BEGIN OF ty_call,
            class TYPE seoclsname,
            method TYPE string,
@@ -31,18 +31,36 @@ PRIVATE SECTION.
            program TYPE programm,
            level TYPE stmnt_levl,
          END OF ty_call .
-  TYPES:
+  types:
     ty_call_tt TYPE SORTED TABLE OF ty_call WITH NON-UNIQUE KEY level start_line .
+  types:
+    BEGIN OF ty_seosubcodf,
+           clsname    TYPE seosubcodf-clsname,
+           cmpname    TYPE seosubcodf-cmpname,
+           sconame    TYPE seosubcodf-sconame,
+           version    TYPE seosubcodf-version,
+           paroptionl TYPE seosubcodf-paroptionl,
+           parvalue   TYPE seosubcodf-parvalue,
+           parpreferd TYPE seosubcodf-parpreferd,
+         END OF ty_seosubcodf .
+  types:
+    ty_seosubcodf_tt TYPE standard TABLE OF ty_seosubcodf WITH default KEY .
 
-  METHODS check_parameters
-    IMPORTING
-      !is_call TYPE ty_call
-      !iv_code TYPE string .
-  METHODS get_calls
-    IMPORTING
-      !it_levels TYPE slevel_tab
-    RETURNING
-      value(rt_calls) TYPE ty_call_tt .
+  methods READ_PARAMETERS
+    importing
+      !IV_CLASS type SEOCLSNAME
+      !IV_METHOD type STRING
+    returning
+      value(RT_PARAMETERS) type TY_SEOSUBCODF_TT .
+  methods CHECK_PARAMETERS
+    importing
+      !IS_CALL type TY_CALL
+      !IV_CODE type STRING .
+  methods GET_CALLS
+    importing
+      !IT_LEVELS type SLEVEL_TAB
+    returning
+      value(RT_CALLS) type TY_CALL_TT .
 ENDCLASS.
 
 
@@ -138,15 +156,10 @@ METHOD check_parameters.
   ENDIF.
   CONDENSE lv_parameter.
 
-  SELECT * FROM seosubcodf
-    INTO CORRESPONDING FIELDS OF TABLE lt_parameters
-    WHERE clsname = is_call-class
-    AND cmpname = is_call-method
-    AND pardecltyp = '0'
-    AND type <> ''.
-  IF sy-subrc <> 0.
-    RETURN.
-  ENDIF.
+  lt_parameters = read_parameters(
+    iv_class  = is_call-class
+    iv_method = is_call-method ).
+
 * in case there are multiple parameters filter out the optional
 * if there is one importing parameter it is okay to be optional
   IF lines( lt_parameters ) > 1.
@@ -262,6 +275,35 @@ METHOD get_message_text.
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
+
+ENDMETHOD.
+
+
+METHOD read_parameters.
+
+  DATA: lv_super TYPE seometarel-refclsname.
+
+
+  SELECT * FROM seosubcodf
+    INTO CORRESPONDING FIELDS OF TABLE rt_parameters
+    WHERE clsname = iv_class
+    AND cmpname = iv_method
+    AND pardecltyp = '0'
+    AND type <> ''.
+  IF sy-subrc <> 0.
+    SELECT SINGLE refclsname
+      FROM seometarel
+      INTO lv_super
+      WHERE clsname = iv_class
+      AND version <> seoc_version_inactive
+      AND reltype = seor_reltype_inheritance.
+    IF sy-subrc = 0 AND NOT lv_super IS INITIAL.
+* try looking in super class
+      rt_parameters = read_parameters(
+          iv_class  = lv_super
+          iv_method = iv_method ).
+    ENDIF.
+  ENDIF.
 
 ENDMETHOD.
 ENDCLASS.
