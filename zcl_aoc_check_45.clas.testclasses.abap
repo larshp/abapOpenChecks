@@ -1,3 +1,6 @@
+CLASS ltcl_test DEFINITION DEFERRED.
+CLASS zcl_aoc_check_45 DEFINITION LOCAL FRIENDS ltcl_test.
+
 *----------------------------------------------------------------------*
 *       CLASS lcl_Test DEFINITION
 *----------------------------------------------------------------------*
@@ -21,6 +24,10 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
       test001_03 FOR TESTING.
+
+    METHODS:
+      test002_01 FOR TESTING,
+      test002_02 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -75,6 +82,39 @@ CLASS ltcl_test IMPLEMENTATION.
                                           io_check = mo_check ).
 
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test002_01.
+* ===========
+
+    IF mo_check->check_new( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'DATA(lo_new) = NEW cl_gui_frontend_services( ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test002_02.
+* ===========
+
+    IF mo_check->check_new( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'CREATE OBJECT lo_new.'.
+
+    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
+                                          io_check = mo_check ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '002'
+                                        act = ms_result-code ).
 
   ENDMETHOD.
 
