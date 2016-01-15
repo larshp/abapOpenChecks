@@ -153,10 +153,10 @@ METHOD check.
         AND mv_new = abap_true
         AND support_new( ) = abap_true.
       lv_code = '002'.
-    ELSEIF ( <ls_statement>-str CP 'LOOP AT * INTO *'
+    ELSEIF ( ( <ls_statement>-str CP 'LOOP AT * INTO *'
         AND NOT <ls_statement>-str CP 'LOOP AT * INTO DATA(*' )
         OR ( <ls_statement>-str CP 'LOOP AT * ASSIGNING *'
-        AND NOT <ls_statement>-str CP 'LOOP AT * ASSIGNING FIELD-SYMBOL(*' )
+        AND NOT <ls_statement>-str CP 'LOOP AT * ASSIGNING FIELD-SYMBOL(*' ) )
         AND mv_loop_decl = abap_true
         AND support_inline_decl( ) = abap_true
         AND check_loop( <ls_statement> ) = abap_true.
