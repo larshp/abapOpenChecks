@@ -214,6 +214,9 @@ METHOD get_calls.
 
 
   lo_compiler = get_compiler( ).
+  IF lo_compiler IS INITIAL.
+    RETURN.
+  ENDIF.
 
   lo_compiler->get_all(
     IMPORTING

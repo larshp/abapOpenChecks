@@ -88,7 +88,7 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test002_01.
 * ===========
 
-    IF mo_check->check_new( ) = abap_false.
+    IF mo_check->support_new( ) = abap_false.
       RETURN.
     ENDIF.
 
@@ -104,7 +104,7 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test002_02.
 * ===========
 
-    IF mo_check->check_new( ) = abap_false.
+    IF mo_check->support_new( ) = abap_false.
       RETURN.
     ENDIF.
 
