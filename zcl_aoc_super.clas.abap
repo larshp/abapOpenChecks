@@ -17,11 +17,14 @@ public section.
       !IT_TOKENS type STOKESX_TAB
       !IT_STATEMENTS type SSTMNT_TAB
       !IT_LEVELS type SLEVEL_TAB
-      !IT_STRUCTURES type ty_structures_tt .
+      !IT_STRUCTURES type TY_STRUCTURES_TT .
   methods SET_SOURCE
     importing
       !IV_NAME type LEVEL_NAME
       !IT_CODE type STRING_TABLE .
+  class-methods GET_COMPILER
+    returning
+      value(RO_COMPILER) type ref to CL_ABAP_COMPILER .
 
   methods GET_ATTRIBUTES
     redefinition .
@@ -199,6 +202,31 @@ ENDMETHOD.
 METHOD get_attributes.
 
   EXPORT mv_errty = mv_errty TO DATA BUFFER p_attributes.
+
+ENDMETHOD.
+
+
+METHOD get_compiler.
+
+  DATA: lv_class TYPE seoclsname,
+        lv_name  TYPE program.
+
+
+  CASE object_type.
+    WHEN 'PROG'.
+      lv_name = object_name.
+    WHEN 'CLAS'.
+      lv_class = object_name.
+      lv_name = cl_oo_classname_service=>get_classpool_name( lv_class ).
+    WHEN 'FUGR'.
+      CONCATENATE 'SAPL' object_name INTO lv_name.
+    WHEN OTHERS.
+      RETURN.
+  ENDCASE.
+
+  ro_compiler = cl_abap_compiler=>create(
+    p_name             = lv_name
+    p_no_package_check = abap_true ).
 
 ENDMETHOD.
 

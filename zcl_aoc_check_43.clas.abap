@@ -206,8 +206,6 @@ ENDMETHOD.                    "CONSTRUCTOR
 METHOD get_calls.
 
   DATA: lt_result   TYPE scr_refs,
-        lv_name     TYPE program,
-        lv_class    TYPE seoclsname,
         lv_foobar   TYPE string,                            "#EC NEEDED
         ls_call     LIKE LINE OF rt_calls,
         lo_compiler TYPE REF TO cl_abap_compiler.
@@ -215,22 +213,7 @@ METHOD get_calls.
   FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result.
 
 
-  CASE object_type.
-    WHEN 'PROG'.
-      lv_name = object_name.
-    WHEN 'CLAS'.
-      lv_class = object_name.
-      lv_name = cl_oo_classname_service=>get_classpool_name( lv_class ).
-    WHEN 'FUGR'.
-      CONCATENATE 'SAPL' object_name INTO lv_name.
-    WHEN OTHERS.
-      RETURN.
-  ENDCASE.
-
-  CREATE OBJECT lo_compiler
-    EXPORTING
-      p_name             = lv_name
-      p_no_package_check = abap_true.
+  lo_compiler = get_compiler( ).
 
   lo_compiler->get_all(
     IMPORTING
