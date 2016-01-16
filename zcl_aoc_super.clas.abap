@@ -333,7 +333,7 @@ METHOD inform.
 
   IF object_type = 'FUGR'.
     SELECT SINGLE area FROM tvdir INTO lv_area
-      WHERE area = object_name.
+      WHERE area = object_name ##WARN_OK.
     IF sy-subrc = 0.
       RETURN.
     ENDIF.

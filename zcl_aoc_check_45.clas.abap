@@ -64,6 +64,8 @@ protected section.
 *"* do not include other source files here!!!
 private section.
 
+  class-data GV_NEW_RUN type ABAP_BOOL .
+  class-data GV_NEW_SUPPORTED type ABAP_BOOL .
   data MV_LINES type FLAG .
   data MV_NEW type FLAG .
   data MV_LOOP_DECL type FLAG .
@@ -329,6 +331,11 @@ METHOD support_new.
         lv_wrd   TYPE string.
 
 
+  IF gv_new_run = abap_true.
+    rv_supported = gv_new_supported.
+    RETURN.
+  ENDIF.
+
   lv_code = 'REPORT zfoobar.' ##NO_TEXT.
   APPEND lv_code TO lt_itab.
   lv_code = 'DATA(lo_new) = NEW cl_gui_frontend_services( ).' ##NO_TEXT.
@@ -346,6 +353,9 @@ METHOD support_new.
   ELSE.
     rv_supported = abap_false.
   ENDIF.
+
+  gv_new_supported = rv_supported.
+  gv_new_run = abap_true.
 
 ENDMETHOD.
 

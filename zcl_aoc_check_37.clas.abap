@@ -111,6 +111,8 @@ ENDMETHOD.                    "CONSTRUCTOR
 
 METHOD get_message_text.
 
+  CLEAR p_text.
+
   CASE p_code.
     WHEN '001'.
       p_text = 'Define message texts in SE91'.              "#EC NOTEXT

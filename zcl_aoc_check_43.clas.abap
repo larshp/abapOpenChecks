@@ -255,6 +255,8 @@ ENDMETHOD.
 
 METHOD get_message_text.
 
+  CLEAR p_text.
+
   CASE p_code.
     WHEN '001'.
       p_text = 'Parameter name &1 can be omitted'.          "#EC NOTEXT
@@ -282,7 +284,7 @@ METHOD read_parameters.
       INTO lv_super
       WHERE clsname = iv_class
       AND version <> seoc_version_inactive
-      AND reltype = seor_reltype_inheritance.
+      AND reltype = seor_reltype_inheritance ##WARN_OK.
     IF sy-subrc = 0 AND NOT lv_super IS INITIAL.
 * try looking in super class
       rt_parameters = read_parameters(
