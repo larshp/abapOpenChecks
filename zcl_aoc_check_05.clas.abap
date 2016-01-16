@@ -88,7 +88,7 @@ METHOD get_message_text.
 
   CASE p_code.
     WHEN '001'.
-      p_text = 'Conatins non 7 bit ASCII'.                  "#EC NOTEXT
+      p_text = 'Contains non 7 bit ASCII'.                  "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 1 + 1.
   ENDCASE.
