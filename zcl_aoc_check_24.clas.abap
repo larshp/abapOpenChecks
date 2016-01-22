@@ -201,7 +201,8 @@ METHOD build_code.
                  <ls_statement> LIKE LINE OF it_statements.
 
 
-  LOOP AT it_levels ASSIGNING <ls_level>.
+  LOOP AT it_levels ASSIGNING <ls_level>
+      WHERE type <> scan_level_type-macro_define.
     lv_level = sy-tabix.
 
     LOOP AT it_statements ASSIGNING <ls_statement> WHERE level = lv_level.
