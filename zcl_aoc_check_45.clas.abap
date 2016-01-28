@@ -187,9 +187,9 @@ METHOD check_loop.
   CONSTANTS: lc_into      TYPE string VALUE 'INTO',
              lc_assigning TYPE string VALUE 'ASSIGNING'.
 
-  DATA: lt_result   TYPE scr_refs,
-        lt_str      TYPE TABLE OF string,
-        lv_var      TYPE string.
+  DATA: lt_result TYPE scr_refs,
+        lt_str    TYPE TABLE OF string,
+        lv_var    TYPE string.
 
   FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result.
 
@@ -212,7 +212,7 @@ METHOD check_loop.
   READ TABLE lt_result WITH KEY
     name = lv_var
     grade = cl_abap_compiler=>grade_definition
-    mode2 = cl_abap_compiler=>mode2_def
+    mode2 = '2'             " downport, cl_abap_compiler=>mode2_def
     statement->source_info->name = is_statement-include
     TRANSPORTING NO FIELDS.
   IF sy-subrc <> 0.
