@@ -4,9 +4,9 @@ class ZCL_AOC_UNIT_TEST definition
   for testing .
 
 public section.
+
 *"* public components of class ZCL_AOC_UNIT_TEST
 *"* do not include other source files here!!!
-
   class-methods HANDLER
     for event MESSAGE of CL_CI_TEST_ROOT
     importing
@@ -28,17 +28,20 @@ public section.
   class-methods CHECK
     importing
       !IT_CODE type STRING_TABLE
-      !IO_CHECK type ref to ZCL_AOC_SUPER
     returning
       value(RS_RESULT) type SCIREST_AD .
+  class-methods SET_CHECK
+    importing
+      !IO_CHECK type ref to ZCL_AOC_SUPER .
 protected section.
 *"* protected components of class ZCL_AOC_UNIT_TEST
 *"* do not include other source files here!!!
 private section.
+
 *"* private components of class ZCL_AOC_UNIT_TEST
 *"* do not include other source files here!!!
-
   class-data GS_RESULT type SCIREST_AD .
+  class-data GO_CHECK type ref to ZCL_AOC_SUPER .
 ENDCLASS.
 
 
@@ -69,12 +72,12 @@ METHOD check.
   cl_abap_unit_assert=>assert_subrc( msg = 'Error while parsing'(001) ).
 
   CLEAR gs_result.
-  SET HANDLER handler FOR io_check.
+  SET HANDLER handler FOR go_check.
 
-  io_check->set_source( iv_name = '----------------------------------------'
+  go_check->set_source( iv_name = '----------------------------------------'
                         it_code = it_code ).
 
-  io_check->check(
+  go_check->check(
       it_tokens     = lt_tokens
       it_statements = lt_statements
       it_levels     = lt_levels
@@ -94,6 +97,13 @@ METHOD handler.
   gs_result-col      = p_column.
   gs_result-kind     = p_kind.
   gs_result-code     = p_code.
+
+ENDMETHOD.
+
+
+METHOD set_check.
+
+  go_check = io_check.
 
 ENDMETHOD.
 ENDCLASS.

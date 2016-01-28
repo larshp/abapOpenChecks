@@ -51,6 +51,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
+    zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
 
   METHOD test001_01.
@@ -60,8 +61,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '      ls_wa TYPE foo.'.
     _code 'READ TABLE lt_table INDEX 1 INTO ls_wa.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -75,8 +75,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '      ls_wa TYPE foo.'.
     _code 'READ TABLE lt_table INTO ls_wa WITH KEY = ''foo''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -91,8 +90,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'LOOP AT lt_table INTO ls_wa.'.
     _code 'ENDLOOP.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -106,8 +104,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'FIELD-SYMBOLS: <ls_wa> TYPE foo.'.
     _code 'READ TABLE lt_table INDEX 1 ASSIGNING <ls_wa>.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -121,8 +118,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'FIELD-SYMBOLS: <ls_wa> TYPE foo.'.
     _code 'READ TABLE lt_table ASSIGNING <ls_wa> WITH KEY = ''foo''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -137,8 +133,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'LOOP AT lt_table ASSIGNING <ls_wa>.'.
     _code 'ENDLOOP.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -152,8 +147,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'FIELD-SYMBOLS: <ls_wa> TYPE foo.'.
     _code 'APPEND INITIAL LINE TO lt_table ASSIGNING <ls_wa>.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -167,8 +161,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '      ls_wa LIKE LINE OF lt_table.'.
     _code 'READ TABLE lt_table INDEX 1 INTO ls_wa.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -181,8 +174,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '      ls_wa LIKE LINE OF lt_table.'.
     _code 'READ TABLE lt_table INTO ls_wa WITH KEY = ''foo''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -196,8 +188,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'LOOP AT lt_table INTO ls_wa.'.
     _code 'ENDLOOP.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -210,8 +201,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'FIELD-SYMBOLS: <ls_wa> LIKE LINE OF lt_table.'.
     _code 'READ TABLE lt_table INDEX 1 ASSIGNING <ls_wa>.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -224,8 +214,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'FIELD-SYMBOLS: <ls_wa> LIKE LINE OF lt_table.'.
     _code 'READ TABLE lt_table ASSIGNING <ls_wa> WITH KEY = ''foo''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -239,8 +228,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'LOOP AT lt_table ASSIGNING <ls_wa>.'.
     _code 'ENDLOOP.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -253,8 +241,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'FIELD-SYMBOLS: <ls_wa> LIKE LINE OF lt_table.'.
     _code 'APPEND INITIAL LINE TO lt_table ASSIGNING <ls_wa>.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -268,8 +255,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  <ls_wa2> LIKE LINE OF lt_foo2.'.
     _code 'READ TABLE lt_list[] ASSIGNING <ls_wa> INDEX 1.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -281,8 +267,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'FIELD-SYMBOLS: <ls_wa> TYPE any.'.
     _code 'READ TABLE lt_list[] ASSIGNING <ls_wa> INDEX 1.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -294,8 +279,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'FIELD-SYMBOLS: <lv_wa> TYPE i.'.
     _code 'READ TABLE lt_list[] ASSIGNING <lv_wa> INDEX 1.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -307,8 +291,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'FIELD-SYMBOLS: <lo_wa> TYPE REF TO cl_foobar.'.
     _code 'READ TABLE lt_list[] ASSIGNING <lo_wa> INDEX 1.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 

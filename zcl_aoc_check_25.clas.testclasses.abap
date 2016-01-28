@@ -40,6 +40,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
+    zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
 
   METHOD test001_01.
@@ -47,8 +48,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'PARAMETERS: p_foo TYPE i OBLIGATORY.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -61,8 +61,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'PARAMETERS: p_foo TYPE c OBLIGATORY.'.
     _code 'WRITE p_foo.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -74,8 +73,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'SELECT-OPTIONS: s_foo FOR zbar-moo.'.
     _code 'lt_moo = s_foo[].'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -89,8 +87,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'lt_moo = s_foo1[].'.
     _code 'lt_boo = s_foo2[].'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -104,8 +101,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'gt_result = zcl_class=>method( it_foo1 = s_foo1[]'.
     _code '                               it_foo2 = s_foo2[] ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -117,8 +113,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'PARAMETERS : p_per(3) TYPE c OBLIGATORY.'.
     _code 'WRITE p_per+2.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -129,8 +124,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'PARAMETERS : p_per(3) TYPE c OBLIGATORY.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).

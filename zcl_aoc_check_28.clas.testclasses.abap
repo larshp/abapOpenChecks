@@ -43,6 +43,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
+    zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
 
   METHOD test001_01.
@@ -50,8 +51,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'lv_foo = lv_bar .'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -63,8 +63,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'lv_foo = lv_bar.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -75,8 +74,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code '.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -88,8 +86,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'DATA: lv_foo TYPE i ,'.
     _code '      lv_bar TYPE i.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -101,8 +98,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code '* comment'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -115,8 +111,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  append &1 to mt_code.'.
     _code 'END-OF-DEFINITION.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -127,8 +122,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'super->constructor( ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -141,8 +135,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  CATCH cx_root ##CATCH_ALL.'.
     _code 'ENDTRY.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -153,8 +146,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'lv_foo = lv_bar    .'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -168,8 +160,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  lc_begin TYPE string VALUE ''* <SIGNATURE>-------------------'''.
     _code '  & ''----------------------------------+''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 

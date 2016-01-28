@@ -47,6 +47,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
+    zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
 
   METHOD test001_01.
@@ -54,8 +55,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'MESSAGE ''Error Creating ALV Grid'' TYPE ''I''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -67,8 +67,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'MESSAGE ''Error Creating ALV Grid''(001) TYPE ''I''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -80,8 +79,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'MESSAGE text-001 TYPE ''I''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -93,8 +91,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'MESSAGE s001(saab).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -105,8 +102,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'MESSAGE lo_cx->get_text( ) TYPE ''S''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '002'
                                         act = ms_result-code ).
@@ -118,8 +114,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'MESSAGE lo_cx TYPE ''S''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -130,8 +125,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'MESSAGE lx_salv->if_message~get_text( ) TYPE ''E''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '002'
                                         act = ms_result-code ).
@@ -143,8 +137,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'MESSAGE x208(00) WITH ''ERROR''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '003'
                                         act = ms_result-code ).
@@ -156,8 +149,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'MESSAGE x001(00) WITH ''ERROR''.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '003'
                                         act = ms_result-code ).

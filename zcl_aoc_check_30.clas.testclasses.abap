@@ -43,6 +43,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
+    zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
 
   METHOD test001_01.
@@ -52,8 +53,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'EXPORTING iv_ref_name = lv_field_name'.
     _code 'iv_ref_index = lv_row ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -67,8 +67,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'iv_ref_name = lv_field_name'.
     _code 'iv_ref_index = lv_row ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -84,8 +83,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'iv_recipient = iv_recipient'.
     _code 'it_body = lt_body_text ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -97,8 +95,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'foo( EXPORTING iv_bar = bar( CHANGING cv_maz = lv_baz ) ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -110,8 +107,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'foo( EXPORTING iv_bar = ''CHANGING'' ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -123,8 +119,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'foo( EXPORTING iv_bar = '')'' CHANGING cv_moo = lv_boo ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -135,8 +130,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'foo( iv_bar = bar( EXPORTING ci_moo = lv_boo ) ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -156,8 +150,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '      insp_not_exists = 1'.
     _code '      OTHERS          = 2 ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -174,8 +167,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '      insp_not_exists = 1'.
     _code '      OTHERS          = 2 ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -186,8 +178,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'lv_foo = bar( EXPORTING ci_moo = lv_boo ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).

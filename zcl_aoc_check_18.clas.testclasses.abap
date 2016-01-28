@@ -40,6 +40,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
+    zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
 
   METHOD test001_01.
@@ -50,8 +51,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  lv_foo = 2.'.
     _code 'ENDIF.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -67,8 +67,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  lv_foo = 2.'.
     _code 'ENDIF.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -83,8 +82,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  WHEN 4.'.
     _code 'ENDCASE.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -101,8 +99,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '    lv_bar = 5.'.
     _code 'ENDCASE.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -116,8 +113,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'ELSEIF mv_lokey = abap_true AND lv_code <> lv_lower.'.
     _code 'ENDIF.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -132,8 +128,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'ELSE.'.
     _code 'ENDIF.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -147,8 +142,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '* todo'.
     _code 'ENDIF.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).

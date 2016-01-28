@@ -45,6 +45,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
+    zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
 
   METHOD test001_01.
@@ -52,8 +53,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'DESCRIBE TABLE lt_fcat.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -65,8 +65,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'DESCRIBE TABLE lt_fcat LINES lv_lines.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -78,8 +77,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'lv_lines = lines( lt_fcat ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
@@ -94,8 +92,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'DATA(lo_new) = NEW cl_gui_frontend_services( ).'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
@@ -110,8 +107,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'CREATE OBJECT lo_new.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '002'
                                         act = ms_result-code ).

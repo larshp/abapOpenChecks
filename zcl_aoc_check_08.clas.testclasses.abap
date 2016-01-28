@@ -60,6 +60,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
+    zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
 
   METHOD test001_01.
@@ -67,8 +68,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'REFRESH lt_foobar.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -80,8 +80,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'CLEAR lt_foobar[].'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -94,8 +93,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  WRITE ''foo''.          '.
     _code 'ENDIF.                    '.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '002'
                                         act = ms_result-code ).
@@ -108,8 +106,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'IF iv_input IS SUPPLIED.  '.
     _code '  WRITE ''foo''.          '.
     _code 'ENDIF.                    '.
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -119,8 +116,7 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     _code 'WRITE: / ''foo IS REQUESTED bar'''.
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -131,8 +127,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'LEAVE.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '003'
                                         act = ms_result-code ).
@@ -143,8 +138,7 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     _code 'LEAVE LIST-PROCESSING.'.
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -155,8 +149,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'COMPUTE lv_foo = lv_bar.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '004'
                                         act = ms_result-code ).
@@ -168,8 +161,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'MOVE lv_foo TO lv_bar.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '005'
                                         act = ms_result-code ).
@@ -181,8 +173,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'MOVE-CORRESPONDING lv_foo TO lv_bar.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -194,8 +185,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'IF lv_foo >< lv_bar.'.
     _code 'ENDIF.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '006'
                                         act = ms_result-code ).
@@ -208,8 +198,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'IF lv_foo EQ lv_bar.'.
     _code 'ENDIF.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '007'
                                         act = ms_result-code ).
@@ -222,8 +211,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'IF lv_foo NE ''asf''.'.
     _code 'ENDIF.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '007'
                                         act = ms_result-code ).

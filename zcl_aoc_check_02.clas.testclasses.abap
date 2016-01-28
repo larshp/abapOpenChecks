@@ -45,6 +45,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
+    zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
 
   METHOD test001_01.
@@ -52,8 +53,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'EXIT.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
@@ -67,8 +67,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  EXIT.                            '.
     _code 'ENDLOOP.                           '.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -81,8 +80,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  EXIT.  '.
     _code 'ENDDO.   '.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -95,8 +93,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  EXIT.    '.
     _code 'ENDWHILE.  '.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -107,8 +104,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'CHECK 1 = 2.'.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '002'
                                         act = ms_result-code ).
@@ -122,8 +118,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  CHECK 1 = 2.                     '.
     _code 'ENDLOOP.                           '.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -136,8 +131,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  CHECK 1 = 2.  '.
     _code 'ENDDO.   '.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
@@ -150,8 +144,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  CHECK 1 = 2.    '.
     _code 'ENDWHILE.  '.
 
-    ms_result = zcl_aoc_unit_test=>check( it_code  = mt_code
-                                          io_check = mo_check ).
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
