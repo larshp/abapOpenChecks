@@ -6,6 +6,7 @@ REPORT zaoc_open_transport.
 
 TABLES: e070.
 
+
 TYPES: BEGIN OF ty_output,
          trkorr      TYPE e070-trkorr,
          as4user     TYPE e070-as4user,
