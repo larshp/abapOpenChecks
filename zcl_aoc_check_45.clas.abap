@@ -189,16 +189,12 @@ METHOD check_loop.
 
   DATA: lt_result   TYPE scr_refs,
         lt_str      TYPE TABLE OF string,
-        lv_var      TYPE string,
-        lo_compiler TYPE REF TO cl_abap_compiler.
+        lv_var      TYPE string.
 
   FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result.
 
 
-  lo_compiler = get_compiler( ).
-  lo_compiler->get_all(
-    IMPORTING
-      p_result = lt_result ).
+  lt_result = get_compiler( ).
   DELETE lt_result WHERE tag <> cl_abap_compiler=>tag_data.
   DELETE lt_result WHERE name = ''.
 

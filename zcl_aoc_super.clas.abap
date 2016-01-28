@@ -22,9 +22,9 @@ public section.
     importing
       !IV_NAME type LEVEL_NAME
       !IT_CODE type STRING_TABLE .
-  class-methods GET_COMPILER
+  methods GET_COMPILER
     returning
-      value(RO_COMPILER) type ref to CL_ABAP_COMPILER .
+      value(RT_RESULT) type SCR_REFS .
 
   methods GET_ATTRIBUTES
     redefinition .
@@ -78,7 +78,9 @@ private section.
   types:
     ty_source_tt TYPE SORTED TABLE OF ty_source WITH UNIQUE KEY name .
 
-  data MT_SOURCE type ty_source_tt .
+  data MT_CACHE_RESULT type SCR_REFS .
+  data MV_CACHE_PROGRAM type PROGRAM .
+  data MT_SOURCE type TY_SOURCE_TT .
 
   methods CHECK_CLASS
     importing
@@ -208,8 +210,9 @@ ENDMETHOD.
 
 METHOD get_compiler.
 
-  DATA: lv_class TYPE seoclsname,
-        lv_name  TYPE program.
+  DATA: lv_class    TYPE seoclsname,
+        lo_compiler TYPE REF TO cl_abap_compiler,
+        lv_name     TYPE program.
 
 
   CASE object_type.
@@ -224,9 +227,23 @@ METHOD get_compiler.
       RETURN.
   ENDCASE.
 
-  ro_compiler = cl_abap_compiler=>create(
+  IF lv_name = mv_cache_program.
+    rt_result = mt_cache_result.
+    RETURN.
+  ENDIF.
+
+  lo_compiler = cl_abap_compiler=>create(
     p_name             = lv_name
     p_no_package_check = abap_true ).
+  IF lo_compiler IS INITIAL.
+    RETURN.
+  ENDIF.
+
+  lo_compiler->get_all(
+    IMPORTING
+      p_result = rt_result ).
+  mt_cache_result = rt_result.
+  mv_cache_program = lv_name.
 
 ENDMETHOD.
 

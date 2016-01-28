@@ -207,20 +207,12 @@ METHOD get_calls.
 
   DATA: lt_result   TYPE scr_refs,
         lv_foobar   TYPE string,                            "#EC NEEDED
-        ls_call     LIKE LINE OF rt_calls,
-        lo_compiler TYPE REF TO cl_abap_compiler.
+        ls_call     LIKE LINE OF rt_calls.
 
   FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result.
 
 
-  lo_compiler = get_compiler( ).
-  IF lo_compiler IS INITIAL.
-    RETURN.
-  ENDIF.
-
-  lo_compiler->get_all(
-    IMPORTING
-      p_result = lt_result ).
+  lt_result = get_compiler( ).
   DELETE lt_result WHERE tag <> cl_abap_compiler=>tag_method.
 
   LOOP AT lt_result ASSIGNING <ls_result>.
