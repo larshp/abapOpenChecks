@@ -101,7 +101,7 @@ METHOD check.
     ELSEIF mv_006 = abap_true
         AND ( lv_statement CP '* >< *'
         OR lv_statement CP '* =< *'
-        OR lv_statement CP '* => *').
+        OR lv_statement CP '* => *' ).
       lv_code = '006'.
     ELSEIF mv_007 = abap_true
         AND ( lv_statement CP '* EQ *'
