@@ -1,0 +1,13 @@
+{
+  "license": "MIT",
+  "scripts": {
+    "test": "abaplint *.abap"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larshp/abapOpenChecks.git"
+  },
+  "devDependencies": {
+    "abaplint": ">=0.0.18"
+  }
+}
