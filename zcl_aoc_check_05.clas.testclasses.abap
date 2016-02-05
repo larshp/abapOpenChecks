@@ -16,9 +16,10 @@ CLASS ltcl_test DEFINITION FOR TESTING
           mo_check  TYPE REF TO zcl_aoc_check_05.
 
     METHODS: setup,
-             test001_01 FOR TESTING,
-             test001_02 FOR TESTING,
-             test001_03 FOR TESTING.
+      test001_01 FOR TESTING
+        RAISING cx_parameter_invalid_range cx_sy_codepage_converter_init,
+      test001_02 FOR TESTING,
+      test001_03 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -31,7 +32,7 @@ CLASS ltcl_test IMPLEMENTATION.
 * ==============================
 
   DEFINE _code.
-    append &1 to mt_code.
+    APPEND &1 TO mt_code.
   END-OF-DEFINITION.
 
   METHOD setup.
@@ -42,7 +43,15 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_01.
 * ===========
 
-    _code 'WRITE ''rød grød''. '.
+    DATA: lo_conv TYPE REF TO cl_abap_conv_in_ce,
+          lv_char TYPE c length 1.
+
+
+    lo_conv = cl_abap_conv_in_ce=>create( encoding = 'UTF-8' ).
+    lo_conv->convert( EXPORTING input = 'C3B8'
+                      IMPORTING data  = lv_char ).
+
+    _code lv_char.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
