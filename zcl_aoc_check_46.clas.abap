@@ -38,7 +38,7 @@ METHOD check.
 
 
   lt_result = get_compiler( ).
-  DELETE lt_result WHERE mode2 <> '2'. " downport, cl_abap_compiler=>mode2_def
+  DELETE lt_result WHERE mode2 <> '2' OR tag <> 'DA'. " downport, cl_abap_compiler=>mode2_def
 
   LOOP AT lt_result ASSIGNING <ls_result>.
     lv_name = <ls_result>-full_name.
