@@ -204,7 +204,7 @@ METHOD get_message_text.
     WHEN '002'.
       p_text = 'Nesting with same exception'.               "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT

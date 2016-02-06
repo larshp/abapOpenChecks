@@ -278,7 +278,7 @@ METHOD get_message_text.
     WHEN '003'.
       p_text = 'Declare variable in LOOP statement'.        "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.

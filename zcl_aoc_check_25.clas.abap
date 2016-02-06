@@ -231,7 +231,7 @@ METHOD get_message_text.
     WHEN '001'.
       p_text = '&1 not referenced statically'. "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT

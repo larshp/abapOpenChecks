@@ -114,7 +114,7 @@ METHOD if_ci_test~navigate.
 
       lo_table->display( ).
     CATCH cx_root ##CATCH_ALL.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDTRY.
 
 ENDMETHOD.

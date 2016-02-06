@@ -50,7 +50,7 @@ METHOD get_message_text.
     WHEN '001'.
       p_text = 'Field name &1 not in customer namespace'.   "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.

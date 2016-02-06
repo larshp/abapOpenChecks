@@ -292,7 +292,7 @@ METHOD get_message_text.
     WHEN '003'.
       p_text = 'Use pretty printer, screen &1'.             "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT

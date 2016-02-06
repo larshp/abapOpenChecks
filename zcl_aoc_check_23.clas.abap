@@ -147,7 +147,7 @@ METHOD get_message_text.
     WHEN '003'.
       p_text = 'Missing space after colon'.                 "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT

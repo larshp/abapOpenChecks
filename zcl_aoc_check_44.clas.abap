@@ -105,7 +105,7 @@ METHOD get_message_text.
     WHEN '001'.
       p_text = 'EXPORTING can be changed to RETURNING, method &1'. "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.

@@ -104,7 +104,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 METHOD check.
 
 * add code here
-  ASSERT 1 = 1 + 1.
+  ASSERT 0 = 1.
 
 ENDMETHOD.
 

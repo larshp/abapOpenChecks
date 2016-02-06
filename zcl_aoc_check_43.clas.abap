@@ -253,7 +253,7 @@ METHOD get_message_text.
     WHEN '001'.
       p_text = 'Parameter name &1 can be omitted'.          "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.

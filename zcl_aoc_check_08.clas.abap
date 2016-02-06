@@ -276,7 +276,7 @@ METHOD get_message_text.
     WHEN '021'.
       p_text = 'LOCAL is obsolete'.                         "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT

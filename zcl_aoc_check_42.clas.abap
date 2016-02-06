@@ -136,7 +136,7 @@ METHOD get_message_text.
     WHEN '001'.
       p_text = 'Identical WHEN code'.                       "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.

@@ -147,7 +147,7 @@ METHOD get_message_text.
     WHEN '001'.
       p_text = 'Empty line in statement'.                   "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.

@@ -126,7 +126,7 @@ METHOD get_message_text.
     WHEN '001'.
       p_text = 'IF in IF, can easily be reduced'.           "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT

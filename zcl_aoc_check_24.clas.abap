@@ -291,7 +291,7 @@ METHOD get_message_text.
     WHEN '001'.
       p_text = 'Identical code blocks, dbl click for details'. "#EC NOTEXT
     WHEN OTHERS.
-      ASSERT 1 = 1 + 1.
+      ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
