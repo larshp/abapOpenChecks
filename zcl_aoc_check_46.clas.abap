@@ -117,6 +117,8 @@ METHOD get_message_text.
   CASE p_code.
     WHEN '001'.
       p_text = 'Shadowing variable &1'.                     "#EC NOTEXT
+    WHEN '002'.
+      p_text = 'Parameter shadowing variable &1'.           "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 1 = 0.
   ENDCASE.
