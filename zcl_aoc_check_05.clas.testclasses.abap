@@ -43,12 +43,14 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_01.
 * ===========
 
+    CONSTANTS: lc_hex TYPE x LENGTH 2 VALUE 'C3B8'.
+
     DATA: lo_conv TYPE REF TO cl_abap_conv_in_ce,
-          lv_char TYPE c length 1.
+          lv_char TYPE c LENGTH 1.
 
 
     lo_conv = cl_abap_conv_in_ce=>create( encoding = 'UTF-8' ).
-    lo_conv->convert( EXPORTING input = 'C3B8'
+    lo_conv->convert( EXPORTING input = lc_hex
                       IMPORTING data  = lv_char ).
 
     _code lv_char.
