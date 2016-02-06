@@ -19,7 +19,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       setup,
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
-      test001_03 FOR TESTING.
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -92,6 +93,25 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_04.
+* ===========
+
+    _code 'CALL FUNCTION ''ZRFC_RFC'''.
+    _code '  DESTINATION ''NONE'''.
+    _code '  TABLES'.
+    _code '    it_where              = lt_where'.
+    _code '    et_data               = rt_data'.
+    _code '  EXCEPTIONS'.
+    _code '    system_failure        = 1'.
+    _code '    communication_failure = 2'.
+    _code '    resource_failure      = 3.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
 

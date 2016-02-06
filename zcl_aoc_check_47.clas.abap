@@ -60,12 +60,10 @@ METHOD check.
 
 * this is wrong, but will work for most cases,
 * DESTINATION might be a parameter name or input
-    IF ( NOT lv_statement CP 'CALL FUNCTION * DESTINATION *' ).
+    IF ( NOT lv_statement CP 'CALL FUNCTION * DESTINATION *' )
+        OR lv_statement CP '* EXCEPTIONS * MESSAGE *'
+        OR lv_statement CP '* DESTINATION ''NONE'' *'.
       CONTINUE. " to next statement
-    ENDIF.
-
-    IF lv_statement CP '* EXCEPTIONS * MESSAGE *'.
-      CONTINUE.
     ENDIF.
 
     lv_include = get_include( p_level = <ls_statement>-level ).
