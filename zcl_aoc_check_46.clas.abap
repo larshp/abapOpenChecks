@@ -77,6 +77,9 @@ METHOD check.
     ELSE.
       CONTINUE. " current loop
     ENDIF.
+    IF sy-subrc <> 0.
+      CONTINUE.
+    ENDIF.
 
     READ TABLE lt_result WITH KEY full_name = lv_name TRANSPORTING NO FIELDS.
     IF sy-subrc = 0.
