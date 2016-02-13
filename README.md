@@ -18,3 +18,4 @@ Open source checks for SAP Code Inspector / ABAP Test Cockpit (SCI/ATC)
 Version requirement: 702 or higher
 
 For description of checks see the [wiki page](https://github.com/larshp/abapOpenChecks/wiki)
+
