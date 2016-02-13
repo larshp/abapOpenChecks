@@ -5,9 +5,9 @@ class ZCL_AOC_CATEGORY definition
   create public .
 
 public section.
+
 *"* public components of class ZCL_AOC_CATEGORY
 *"* do not include other source files here!!!
-
   methods CONSTRUCTOR .
 
   methods IF_CI_TEST~DISPLAY_DOCUMENTATION
