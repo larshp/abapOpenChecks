@@ -15,34 +15,36 @@ CLASS ltcl_test DEFINITION FOR TESTING
           ms_result TYPE scirest_ad,
           mo_check  TYPE REF TO zcl_aoc_check_08.
 
-    METHODS: setup.
-
     METHODS:
+      setup,
+      export_import FOR TESTING,
       test001_01 FOR TESTING,
-      test001_02 FOR TESTING.
-
-    METHODS:
+      test001_02 FOR TESTING,
       test002_01 FOR TESTING,
       test002_02 FOR TESTING,
-      test002_03 FOR TESTING.
-
-    METHODS:
+      test002_03 FOR TESTING,
       test003_01 FOR TESTING,
-      test003_02 FOR TESTING.
-
-    METHODS:
-      test004_01 FOR TESTING.
-
-    METHODS:
+      test003_02 FOR TESTING,
+      test004_01 FOR TESTING,
       test005_01 FOR TESTING,
-      test005_02 FOR TESTING.
-
-    METHODS:
-      test006_01 FOR TESTING.
-
-    METHODS:
+      test005_02 FOR TESTING,
+      test006_01 FOR TESTING,
       test007_01 FOR TESTING,
-      test008_01 FOR TESTING.
+      test007_02 FOR TESTING,
+      test008_01 FOR TESTING,
+      test009_01 FOR TESTING,
+      test010_01 FOR TESTING,
+      test011_01 FOR TESTING,
+      test012_01 FOR TESTING,
+      test013_01 FOR TESTING,
+      test014_01 FOR TESTING,
+      test015_01 FOR TESTING,
+      test016_01 FOR TESTING,
+      test017_01 FOR TESTING,
+      test018_01 FOR TESTING,
+      test019_01 FOR TESTING,
+      test020_01 FOR TESTING,
+      test021_01 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -55,13 +57,17 @@ CLASS ltcl_test IMPLEMENTATION.
 * ==============================
 
   DEFINE _code.
-    append &1 to mt_code.
+    APPEND &1 TO mt_code.
   END-OF-DEFINITION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
+
+  METHOD export_import.
+    zcl_aoc_unit_test=>export_import( ).
+  ENDMETHOD.
 
   METHOD test001_01.
 * ===========
@@ -205,7 +211,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD test008_01.
+  METHOD test007_02.
 * ===========
 
     _code 'IF lv_foo NE ''asf''.'.
@@ -214,6 +220,160 @@ CLASS ltcl_test IMPLEMENTATION.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '007'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test008_01.
+
+    _code 'DEMAND something.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '008'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test009_01.
+
+    _code 'SUPPLY something.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '009'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test010_01.
+
+    _code 'CONTEXTS something.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '010'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test011_01.
+
+    _code 'ADD 2 TO lv_foo.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '011'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test012_01.
+
+    _code 'SUBTRACT 2 FROM lv_foo.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '012'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test013_01.
+
+    _code 'MULTIPLY lv_foo BY 2.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '013'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test014_01.
+
+    _code 'DIVIDE lv_foo BY 4.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '014'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test015_01.
+
+    _code 'CALL DIALOG something.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '015'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test016_01.
+
+    _code 'DATA: lt_foo TYPE c OCCURS 0.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '016'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test017_01.
+
+    _code 'DATA lt_foo TYPE TABLE OF c WITH HEADER LINE.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '017'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test018_01.
+
+    _code 'RANGES: lt_foo TYPE RANGE OF c.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '018'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test019_01.
+
+    _code 'ADD-CORRESPONDING lt_foo TO lt_bar.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '019'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test020_01.
+
+    _code 'SET EXTENDED CHECK OFF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '020'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test021_01.
+
+    _code 'LOCAL lv_foo.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '021'
                                         act = ms_result-code ).
 
   ENDMETHOD.

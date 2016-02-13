@@ -15,7 +15,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
           ms_result TYPE scirest_ad,
           mo_check  TYPE REF TO zcl_aoc_check_06.
 
-    METHODS: setup,
+    METHODS:
+      setup,
+      export_import FOR TESTING,
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
@@ -41,13 +43,17 @@ CLASS ltcl_test IMPLEMENTATION.
 * ==============================
 
   DEFINE _code.
-    append &1 to mt_code.
+    APPEND &1 TO mt_code.
   END-OF-DEFINITION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
+
+  METHOD export_import.
+    zcl_aoc_unit_test=>export_import( ).
+  ENDMETHOD.
 
   METHOD test001_01.
 * ===========
@@ -81,7 +87,13 @@ CLASS ltcl_test IMPLEMENTATION.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
-    cl_abap_unit_assert=>assert_initial( ms_result ).
+    IF sy-saprl = '750'.
+* 750 pretty prints code inside macro definitions
+      cl_abap_unit_assert=>assert_equals( exp = '001'
+                                          act = ms_result-code ).
+    ELSE.
+      cl_abap_unit_assert=>assert_initial( ms_result ).
+    ENDIF.
 
   ENDMETHOD.                    "test001_03
 

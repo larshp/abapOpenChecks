@@ -15,24 +15,26 @@ CLASS ltcl_test DEFINITION FOR TESTING
           ms_result TYPE scirest_ad,
           mo_check  TYPE REF TO zcl_aoc_check_20.
 
-    METHODS: setup,
-             test001_01 FOR TESTING,
-             test001_02 FOR TESTING,
-             test001_03 FOR TESTING,
-             test001_04 FOR TESTING,
-             test001_05 FOR TESTING,
-             test001_06 FOR TESTING,
-             test001_07 FOR TESTING,
-             test001_08 FOR TESTING,
-             test001_09 FOR TESTING,
-             test001_10 FOR TESTING,
-             test001_11 FOR TESTING,
-             test001_12 FOR TESTING,
-             test001_13 FOR TESTING,
-             test001_14 FOR TESTING,
-             test001_15 FOR TESTING,
-             test002_01 FOR TESTING,
-             test002_02 FOR TESTING.
+    METHODS:
+      setup,
+      export_import FOR TESTING,
+      test001_01 FOR TESTING,
+      test001_02 FOR TESTING,
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING,
+      test001_05 FOR TESTING,
+      test001_06 FOR TESTING,
+      test001_07 FOR TESTING,
+      test001_08 FOR TESTING,
+      test001_09 FOR TESTING,
+      test001_10 FOR TESTING,
+      test001_11 FOR TESTING,
+      test001_12 FOR TESTING,
+      test001_13 FOR TESTING,
+      test001_14 FOR TESTING,
+      test001_15 FOR TESTING,
+      test002_01 FOR TESTING,
+      test002_02 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -45,13 +47,17 @@ CLASS ltcl_test IMPLEMENTATION.
 * ==============================
 
   DEFINE _code.
-    append &1 to mt_code.
+    APPEND &1 TO mt_code.
   END-OF-DEFINITION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
+
+  METHOD export_import.
+    zcl_aoc_unit_test=>export_import( ).
+  ENDMETHOD.
 
   METHOD test001_01.
 * ===========

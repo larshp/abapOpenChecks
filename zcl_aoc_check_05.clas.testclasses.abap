@@ -15,7 +15,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
           ms_result TYPE scirest_ad,
           mo_check  TYPE REF TO zcl_aoc_check_05.
 
-    METHODS: setup,
+    METHODS:
+      setup,
+      export_import FOR TESTING,
       test001_01 FOR TESTING
         RAISING cx_parameter_invalid_range cx_sy_codepage_converter_init,
       test001_02 FOR TESTING,
@@ -39,6 +41,10 @@ CLASS ltcl_test IMPLEMENTATION.
     CREATE OBJECT mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
+
+  METHOD export_import.
+    zcl_aoc_unit_test=>export_import( ).
+  ENDMETHOD.
 
   METHOD test001_01.
 * ===========

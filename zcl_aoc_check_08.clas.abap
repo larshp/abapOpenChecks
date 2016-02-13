@@ -129,7 +129,7 @@ METHOD check.
       lv_code = '015'.
     ELSEIF mv_016 = abap_true AND lv_statement CP '* OCCURS *'.
       lv_code = '016'.
-    ELSEIF mv_017 = abap_true AND lv_statement CP '* WITH HEADER LINE *'.
+    ELSEIF mv_017 = abap_true AND lv_statement CP '* WITH HEADER LINE*'.
       lv_code = '017'.
     ELSEIF mv_018 = abap_true AND lv_statement CP 'RANGES *'.
       lv_code = '018'.
