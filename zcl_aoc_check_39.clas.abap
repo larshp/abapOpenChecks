@@ -4,9 +4,9 @@ class ZCL_AOC_CHECK_39 definition
   create public .
 
 public section.
+
 *"* public components of class ZCL_AOC_CHECK_39
 *"* do not include other source files here!!!
-
   methods CONSTRUCTOR .
 
   methods GET_ATTRIBUTES

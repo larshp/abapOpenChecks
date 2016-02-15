@@ -1,3 +1,4 @@
+
 CLASS ltcl_test DEFINITION FOR TESTING
   DURATION SHORT
   RISK LEVEL HARMLESS
@@ -6,7 +7,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
   PRIVATE SECTION.
 * ================
 
-    DATA: mo_check TYPE REF TO zcl_aoc_check_43.
+    DATA: mo_check  TYPE REF TO zcl_aoc_check_36.
 
     METHODS:
       setup,

@@ -49,7 +49,7 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.                    "setup
 
   METHOD export_import.
-    zcl_aoc_unit_test=>export_import( ).
+    zcl_aoc_unit_test=>export_import( mo_check ).
   ENDMETHOD.
 
   METHOD test001_01.

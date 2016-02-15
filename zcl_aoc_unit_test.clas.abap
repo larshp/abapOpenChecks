@@ -33,7 +33,9 @@ public section.
   class-methods SET_CHECK
     importing
       !IO_CHECK type ref to ZCL_AOC_SUPER .
-  class-methods EXPORT_IMPORT .
+  class-methods EXPORT_IMPORT
+    importing
+      !IO_CHECK type ref to CL_CI_TEST_ROOT .
 protected section.
 *"* protected components of class ZCL_AOC_UNIT_TEST
 *"* do not include other source files here!!!
@@ -102,11 +104,11 @@ METHOD export_import.
 * following code will check that the get and put
 * methods does not fail when run
 
-  lv_xstr = go_check->get_attributes( ).
+  lv_xstr = io_check->get_attributes( ).
 
   cl_abap_unit_assert=>assert_not_initial( lv_xstr ).
 
-  go_check->put_attributes( lv_xstr ).
+  io_check->put_attributes( lv_xstr ).
 
 ENDMETHOD.
 

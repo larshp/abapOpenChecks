@@ -6,7 +6,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
   PRIVATE SECTION.
 * ================
 
-    DATA: mo_check TYPE REF TO zcl_aoc_check_43.
+    DATA: mo_check  TYPE REF TO zcl_aoc_check_33.
 
     METHODS:
       setup,
