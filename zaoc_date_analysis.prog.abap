@@ -24,7 +24,7 @@ TYPES: BEGIN OF ty_sub,
          udat        TYPE reposrc-udat,
          cdat        TYPE reposrc-cdat,
          code        TYPE scir_alvlist-code,
-         description TYPE scir_alvlist-description,
+         text        TYPE scir_alvlist-text,
        END OF ty_sub.
 
 TYPES: ty_sub_tt TYPE STANDARD TABLE OF ty_sub WITH DEFAULT KEY.
@@ -33,7 +33,7 @@ TYPES: BEGIN OF ty_output,
          test  TYPE scir_alvlist-test,
          date  TYPE datum,
          count TYPE i,
-         text  TYPE scir_alvlist-text,
+         description TYPE scir_alvlist-description,
          sub   TYPE ty_sub_tt,
        END OF ty_output.
 
@@ -67,16 +67,22 @@ CLASS lcl_data IMPLEMENTATION.
   METHOD aggregate.
 
     DATA: lv_cdat TYPE reposrc-cdat,
+          lv_cnam TYPE reposrc-cnam,
           lv_date TYPE datum,
           lv_udat TYPE reposrc-udat.
 
 
     LOOP AT it_results ASSIGNING FIELD-SYMBOL(<ls_result>) WHERE sobjtype = 'PROG'.
 
-      SELECT SINGLE cdat udat FROM reposrc INTO (lv_cdat, lv_udat)
+      SELECT SINGLE cdat udat cnam FROM reposrc INTO (lv_cdat, lv_udat, lv_cnam)
         WHERE progname = <ls_result>-sobjname
         AND r3state = 'A'.
       IF sy-subrc <> 0.
+        CONTINUE.
+      ENDIF.
+
+      IF lv_cdat IS INITIAL OR lv_cnam = 'SAP'.
+* typically SAP objects
         CONTINUE.
       ENDIF.
 
@@ -94,18 +100,18 @@ CLASS lcl_data IMPLEMENTATION.
         APPEND INITIAL LINE TO rt_data ASSIGNING <ls_data>.
         <ls_data>-test        = <ls_result>-test.
         <ls_data>-date        = lv_date.
-        <ls_data>-text        = <ls_result>-text.
+        <ls_data>-description = <ls_result>-description.
       ENDIF.
       <ls_data>-count = <ls_data>-count + 1.
 
       APPEND INITIAL LINE TO <ls_data>-sub ASSIGNING FIELD-SYMBOL(<ls_sub>).
       <ls_sub>-sobjtype = <ls_result>-sobjtype.
       <ls_sub>-sobjname = <ls_result>-sobjname.
-      <ls_sub>-line = <ls_result>-line.
-      <ls_sub>-udat = lv_udat.
-      <ls_sub>-cdat = lv_cdat.
-      <ls_sub>-code = <ls_result>-code.
-      <ls_sub>-description = <ls_result>-description.
+      <ls_sub>-line     = <ls_result>-line.
+      <ls_sub>-udat     = lv_udat.
+      <ls_sub>-cdat     = lv_cdat.
+      <ls_sub>-code     = <ls_result>-code.
+      <ls_sub>-text     = <ls_result>-text.
 
     ENDLOOP.
 
