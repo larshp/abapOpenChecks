@@ -28,14 +28,14 @@ protected section.
 private section.
 
   types:
-    BEGIN OF ty_statement,
+    BEGIN OF ty_stmnt,
            statement TYPE string,
            row TYPE stmnt_levl,
            level TYPE token_row,
-         END OF ty_statement .
+         END OF ty_stmnt .
 
   data:
-    mt_statements TYPE TABLE OF ty_statement .
+    mt_statements TYPE TABLE OF ty_stmnt .
 ENDCLASS.
 
 

@@ -37,9 +37,25 @@ public section.
   methods RUN
     redefinition .
 protected section.
+
+  types:
+    BEGIN OF ty_position,
+           row TYPE token_row,
+           col TYPE token_col,
+         END OF ty_position .
+  types:
+    BEGIN OF ty_statement,
+      str     TYPE string,
+      start   TYPE ty_position,
+      end     TYPE ty_position,
+      include TYPE programm,
+      count   TYPE i,
+    END OF ty_statement .
+  types:
+    ty_statements TYPE STANDARD TABLE OF ty_statement WITH DEFAULT KEY .
+
 *"* protected components of class ZCL_AOC_SUPER
 *"* do not include other source files here!!!
-
   data MV_ERRTY type SCI_ERRTY .
 
   class-methods STATEMENT_KEYWORD
@@ -61,6 +77,13 @@ protected section.
       !IS_LEVEL type SLEVEL
     returning
       value(RT_CODE) type STRING_TABLE .
+  methods BUILD_STATEMENTS
+    importing
+      !IT_TOKENS type STOKESX_TAB
+      !IT_STATEMENTS type SSTMNT_TAB
+      !IT_LEVELS type SLEVEL_TAB
+    returning
+      value(RT_STATEMENTS) type TY_STATEMENTS .
 
   methods GET_INCLUDE
     redefinition .
@@ -82,6 +105,11 @@ private section.
   data MV_CACHE_PROGRAM type PROGRAM .
   data MT_SOURCE type TY_SOURCE_TT .
 
+  class-methods TOKEN_POSITION
+    importing
+      !IS_TOKEN type STOKESX
+    returning
+      value(RS_POSITION) type TY_POSITION .
   methods CHECK_CLASS
     importing
       !IV_SUB_OBJ_NAME type SOBJ_NAME
@@ -99,6 +127,52 @@ ENDCLASS.
 
 
 CLASS ZCL_AOC_SUPER IMPLEMENTATION.
+
+
+METHOD BUILD_STATEMENTS.
+
+  DATA: lv_str   TYPE string,
+        ls_start TYPE ty_position,
+        ls_end   TYPE ty_position,
+        lv_count TYPE i.
+
+  FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
+                 <ls_token>     LIKE LINE OF it_tokens,
+                 <ls_add>       LIKE LINE OF rt_statements.
+
+
+  LOOP AT it_statements ASSIGNING <ls_statement>
+      WHERE type <> scan_stmnt_type-empty
+      AND type <> scan_stmnt_type-comment
+      AND type <> scan_stmnt_type-comment_in_stmnt
+      AND type <> scan_stmnt_type-pragma.
+
+    CLEAR lv_str.
+    lv_count = 0.
+
+    LOOP AT it_tokens ASSIGNING <ls_token>
+        FROM <ls_statement>-from TO <ls_statement>-to.
+      IF lv_str IS INITIAL.
+        lv_str = <ls_token>-str.
+        ls_start = token_position( <ls_token> ).
+      ELSE.
+        CONCATENATE lv_str <ls_token>-str INTO lv_str SEPARATED BY space.
+      ENDIF.
+      lv_count = lv_count + 1.
+      ls_end = token_position( <ls_token> ).
+    ENDLOOP.
+    IF sy-subrc = 0.
+      APPEND INITIAL LINE TO rt_statements ASSIGNING <ls_add>.
+      <ls_add>-str = lv_str.
+      <ls_add>-include = get_include( p_level = <ls_statement>-level ).
+      <ls_add>-start   = ls_start.
+      <ls_add>-end     = ls_end.
+      <ls_add>-count   = lv_count.
+    ENDIF.
+
+  ENDLOOP.
+
+ENDMETHOD.
 
 
 METHOD check.
@@ -487,6 +561,14 @@ METHOD statement_row.
   ASSERT sy-subrc = 0.
 
   rv_result = <ls_token>-row.
+
+ENDMETHOD.
+
+
+METHOD TOKEN_POSITION.
+
+  rs_position-col = is_token-col.
+  rs_position-row = is_token-row.
 
 ENDMETHOD.
 ENDCLASS.
