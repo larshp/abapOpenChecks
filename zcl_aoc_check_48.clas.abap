@@ -52,7 +52,8 @@ METHOD check.
   LOOP AT lt_statements ASSIGNING <ls_statement>.
     IF ( <ls_statement>-str CP 'DATA* WITH DEFAULT KEY*'
         OR <ls_statement>-str CP 'TYPE* WITH DEFAULT KEY*' )
-        AND support_empty_key( ) = abap_true.
+        AND support_empty_key( ) = abap_true
+        AND <ls_statement>-include(8) <> '/1BCWDY/'.
       inform( p_sub_obj_type = c_type_include
           p_sub_obj_name = <ls_statement>-include
           p_line         = <ls_statement>-start-row
