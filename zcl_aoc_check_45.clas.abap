@@ -40,7 +40,7 @@ private section.
   class-data GV_NEW_SUPPORTED type ABAP_BOOL .
   data MV_LINES type FLAG .
   data MV_NEW type FLAG .
-  data MV_LOOP_DECL type FLAG .
+  data MV_INLINE_DECL type FLAG .
 *"* private components of class ZCL_AOC_CHECK_45
 *"* do not include other source files here!!!
 ENDCLASS.
@@ -70,12 +70,11 @@ METHOD check.
   LOOP AT lt_statements ASSIGNING <ls_statement>.
     CLEAR lv_code.
 
-    IF <ls_statement>-str CP 'DESCRIBE TABLE *'
+    IF ( <ls_statement>-str CP 'DESCRIBE TABLE *'
         AND <ls_statement>-count = 3
-        AND mv_lines = abap_true.
-      lv_code = '001'.
-    ELSEIF <ls_statement>-str CP 'DESCRIBE TABLE * LINES *'
-        AND mv_lines = abap_true.
+        AND mv_lines = abap_true )
+        OR ( <ls_statement>-str CP 'DESCRIBE TABLE * LINES *'
+        AND mv_lines = abap_true ).
       lv_code = '001'.
     ELSEIF <ls_statement>-str CP 'CREATE OBJECT *'
         AND mv_new = abap_true
@@ -84,8 +83,10 @@ METHOD check.
     ELSEIF ( ( <ls_statement>-str CP 'LOOP AT * INTO *'
         AND NOT <ls_statement>-str CP 'LOOP AT * INTO DATA(*' )
         OR ( <ls_statement>-str CP 'LOOP AT * ASSIGNING *'
-        AND NOT <ls_statement>-str CP 'LOOP AT * ASSIGNING FIELD-SYMBOL(*' ) )
-        AND mv_loop_decl = abap_true
+        AND NOT <ls_statement>-str CP 'LOOP AT * ASSIGNING FIELD-SYMBOL(*' )
+        OR ( <ls_statement>-str CP 'CATCH * INTO *'
+        AND NOT <ls_statement>-str CP 'CATCH * INTO DATA(*' ) )
+        AND mv_inline_decl = abap_true
         AND support_inline_decl( ) = abap_true
         AND check_loop( <ls_statement> ) = abap_true.
       lv_code = '003'.
@@ -167,7 +168,7 @@ METHOD constructor.
 
   description    = 'Use expressions'.                       "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '002'.
+  version        = '003'.
   position       = '045'.
 
   has_attributes = abap_true.
@@ -175,9 +176,9 @@ METHOD constructor.
 
   mv_errty = c_error.
 
-  mv_lines     = abap_true.
-  mv_new       = abap_true.
-  mv_loop_decl = abap_true.
+  mv_lines       = abap_true.
+  mv_new         = abap_true.
+  mv_inline_decl = abap_true.
 
 ENDMETHOD.                    "CONSTRUCTOR
 
@@ -202,7 +203,7 @@ METHOD get_message_text.
     WHEN '002'.
       p_text = 'Use NEW abc( ) expression'.                 "#EC NOTEXT
     WHEN '003'.
-      p_text = 'Declare variable in LOOP statement'.        "#EC NOTEXT
+      p_text = 'Declare variable inline'.                   "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 0 = 1.
   ENDCASE.
@@ -217,7 +218,7 @@ METHOD if_ci_test~query_attributes.
   zzaoc_fill_att mv_errty 'Error Type' ''.                  "#EC NOTEXT
   zzaoc_fill_att mv_lines 'lines( )' ''.                    "#EC NOTEXT
   zzaoc_fill_att mv_new 'NEW' ''.                           "#EC NOTEXT
-  zzaoc_fill_att mv_loop_decl 'Declare variable in LOOP' ''. "#EC NOTEXT
+  zzaoc_fill_att mv_inline_decl 'Inline declarations' ''.   "#EC NOTEXT
 
   zzaoc_popup.
 
