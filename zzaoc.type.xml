@@ -1,4 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<abapGit version="v0.2-alpha">
- <DDTEXT>abapOpenChecks</DDTEXT>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_TYPE" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <DDTEXT>abapOpenChecks</DDTEXT>
+  </asx:values>
+ </asx:abap>
 </abapGit>
