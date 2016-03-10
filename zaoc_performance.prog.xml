@@ -57,54 +57,62 @@
     <BIV/>
    </CUA>
    <TPOOL>
-    <TEXTPOOL>
+    <item>
      <ID>I</ID>
      <KEY>001</KEY>
      <ENTRY>Selection</ENTRY>
      <LENGTH>19</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>I</ID>
      <KEY>002</KEY>
      <ENTRY>No classes found</ENTRY>
      <LENGTH>26</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>R</ID>
      <KEY/>
      <ENTRY>abapOpenChecks - Performance Test</ENTRY>
      <LENGTH>33</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>S</ID>
      <KEY>P_GLOBAL</KEY>
-     <ENTRY>        Global</ENTRY>
+     <ENTRY>Global</ENTRY>
      <LENGTH>14</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>S</ID>
      <KEY>P_LOCAL</KEY>
-     <ENTRY>        Local</ENTRY>
+     <ENTRY>Local</ENTRY>
      <LENGTH>13</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>S</ID>
      <KEY>P_OBJS</KEY>
-     <ENTRY>D       .</ENTRY>
+     <ENTRY>.</ENTRY>
      <LENGTH>18</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT>D</SPLIT>
+    </item>
+    <item>
      <ID>S</ID>
      <KEY>P_USER</KEY>
-     <ENTRY>D       .</ENTRY>
+     <ENTRY>.</ENTRY>
      <LENGTH>9</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT>D</SPLIT>
+    </item>
+    <item>
      <ID>S</ID>
      <KEY>S_CLASS</KEY>
-     <ENTRY>D       .</ENTRY>
+     <ENTRY>.</ENTRY>
      <LENGTH>23</LENGTH>
-    </TEXTPOOL>
+     <SPLIT>D</SPLIT>
+    </item>
    </TPOOL>
   </asx:values>
  </asx:abap>

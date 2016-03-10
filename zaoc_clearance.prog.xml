@@ -57,30 +57,34 @@
     <BIV/>
    </CUA>
    <TPOOL>
-    <TEXTPOOL>
+    <item>
      <ID>I</ID>
      <KEY>001</KEY>
      <ENTRY>Selection</ENTRY>
      <LENGTH>9</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>R</ID>
      <KEY/>
      <ENTRY>abapOpenChecks - Clearance</ENTRY>
      <LENGTH>26</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>S</ID>
      <KEY>S_DEVCLA</KEY>
-     <ENTRY>D       .</ENTRY>
+     <ENTRY>.</ENTRY>
      <LENGTH>9</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT>D</SPLIT>
+    </item>
+    <item>
      <ID>S</ID>
      <KEY>S_NAME</KEY>
-     <ENTRY>D       .</ENTRY>
+     <ENTRY>.</ENTRY>
      <LENGTH>9</LENGTH>
-    </TEXTPOOL>
+     <SPLIT>D</SPLIT>
+    </item>
    </TPOOL>
   </asx:values>
  </asx:abap>

@@ -45,12 +45,13 @@
     <WITHIN_PACKAGE/>
    </VSEOCLASS>
    <TPOOL>
-    <TEXTPOOL>
+    <item>
      <ID>I</ID>
      <KEY>001</KEY>
      <ENTRY>Error while parsing</ENTRY>
      <LENGTH>19</LENGTH>
-    </TEXTPOOL>
+     <SPLIT/>
+    </item>
    </TPOOL>
    <LINES>
     <TLINE>

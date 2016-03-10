@@ -57,54 +57,62 @@
     <BIV/>
    </CUA>
    <TPOOL>
-    <TEXTPOOL>
+    <item>
      <ID>I</ID>
      <KEY>001</KEY>
      <ENTRY>Inspection</ENTRY>
      <LENGTH>20</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>I</ID>
      <KEY>002</KEY>
      <ENTRY>Aggregation</ENTRY>
      <LENGTH>21</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>R</ID>
      <KEY/>
      <ENTRY>abapOpenChecks - Date Analysis</ENTRY>
      <LENGTH>30</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>S</ID>
      <KEY>P_CDAT</KEY>
-     <ENTRY>        Created date</ENTRY>
+     <ENTRY>Created date</ENTRY>
      <LENGTH>20</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>S</ID>
      <KEY>P_GLOB</KEY>
-     <ENTRY>        Global</ENTRY>
+     <ENTRY>Global</ENTRY>
      <LENGTH>14</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>S</ID>
      <KEY>P_INSP</KEY>
-     <ENTRY>        Inspection</ENTRY>
+     <ENTRY>Inspection</ENTRY>
      <LENGTH>18</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>S</ID>
      <KEY>P_LOC</KEY>
-     <ENTRY>        Local</ENTRY>
+     <ENTRY>Local</ENTRY>
      <LENGTH>13</LENGTH>
-    </TEXTPOOL>
-    <TEXTPOOL>
+     <SPLIT/>
+    </item>
+    <item>
      <ID>S</ID>
      <KEY>P_UDAT</KEY>
-     <ENTRY>        Updated date</ENTRY>
+     <ENTRY>Updated date</ENTRY>
      <LENGTH>20</LENGTH>
-    </TEXTPOOL>
+     <SPLIT/>
+    </item>
    </TPOOL>
   </asx:values>
  </asx:abap>
