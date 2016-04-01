@@ -130,6 +130,14 @@ METHOD check_code.
       lv_error = '003'.
     ELSEIF lv_code CP 'READ TABLE  *'.
       lv_error = '004'.
+    ELSEIF lv_code CP 'MODIFY  *'.
+      lv_error = '005'.
+    ELSEIF lv_code CP 'DELETE  *'.
+      lv_error = '006'.
+    ELSEIF lv_code CP 'COLLECT  *'.
+      lv_error = '007'.
+    ELSEIF lv_code CP 'CHECK  *'.
+      lv_error = '008'.
     ENDIF.
 
     IF NOT lv_error IS INITIAL.
@@ -175,6 +183,14 @@ METHOD get_message_text.
       p_text = 'Double space after WHEN'.                   "#EC NOTEXT
     WHEN '004'.
       p_text = 'Double space after READ TABLE'.             "#EC NOTEXT
+    WHEN '005'.
+      p_text = 'Double space after MODIFY'.                 "#EC NOTEXT
+    WHEN '006'.
+      p_text = 'Double space after DELETE'.                 "#EC NOTEXT
+    WHEN '007'.
+      p_text = 'Double space after COLLECT'.                "#EC NOTEXT
+    WHEN '008'.
+      p_text = 'Double space after CHECK'.                  "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 0 = 1.
   ENDCASE.
