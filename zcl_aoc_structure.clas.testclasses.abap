@@ -32,7 +32,7 @@ CLASS ltcl_test IMPLEMENTATION.
 * ==============================
 
   DEFINE _code.
-    append &1 to mt_code.
+    APPEND &1 TO mt_code.
   END-OF-DEFINITION.
 
   METHOD parse.

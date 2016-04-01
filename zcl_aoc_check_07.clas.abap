@@ -97,7 +97,7 @@ METHOD check.
               p_code         = '002' ).
     ENDLOOP.
 
-    IF  <ls_token1>-str <> 'CALL' OR  <ls_token2>-str <> 'METHOD'.
+    IF <ls_token1>-str <> 'CALL' OR <ls_token2>-str <> 'METHOD'.
       CONTINUE. " current loop
     ENDIF.
 

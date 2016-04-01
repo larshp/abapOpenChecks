@@ -64,9 +64,9 @@ METHOD run.
 
   DEFINE _check_field.
     READ TABLE lt_comp WITH KEY name = &1 TRANSPORTING NO FIELDS.
-    if sy-subrc <> 0.
-    continue.
-    endif.
+    IF sy-subrc <> 0.
+      CONTINUE.
+    ENDIF.
   END-OF-DEFINITION.
 
   DATA: lo_object   TYPE REF TO cl_abap_objectdescr,

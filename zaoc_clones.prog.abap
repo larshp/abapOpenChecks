@@ -14,12 +14,12 @@ TYPES: BEGIN OF ty_combi,
 
 TYPES: ty_combi_tt TYPE STANDARD TABLE OF ty_combi WITH DEFAULT KEY.
 
-SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE text-001.
+SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-001.
 SELECT-OPTIONS: s_devcla FOR tadir-devclass,
                 s_name   FOR tadir-obj_name.
 SELECTION-SCREEN END OF BLOCK b1.
 
-SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE text-002.
+SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-002.
 PARAMETERS: p_top  TYPE i DEFAULT 100 OBLIGATORY,
             p_prog TYPE i DEFAULT 100 OBLIGATORY.
 SELECTION-SCREEN END OF BLOCK b2.
@@ -45,10 +45,10 @@ CLASS lcl_alv DEFINITION FINAL.
       show
         IMPORTING iv_program TYPE programm,
       on_link_click
-        FOR EVENT link_click OF cl_salv_events_table
+            FOR EVENT link_click OF cl_salv_events_table
         IMPORTING
-        row
-        column.
+            row
+            column.
 
 ENDCLASS.
 
@@ -131,7 +131,7 @@ CLASS lcl_data DEFINITION FINAL.
     CLASS-METHODS:
       fetch
         RETURNING VALUE(rt_combi) TYPE ty_combi_tt
-        RAISING cx_salv_error.
+        RAISING   cx_salv_error.
 
   PRIVATE SECTION.
     CLASS-METHODS:

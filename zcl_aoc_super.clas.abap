@@ -129,7 +129,7 @@ ENDCLASS.
 CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
 
-METHOD BUILD_STATEMENTS.
+METHOD build_statements.
 
   DATA: lv_str   TYPE string,
         ls_start TYPE ty_position,
@@ -565,7 +565,7 @@ METHOD statement_row.
 ENDMETHOD.
 
 
-METHOD TOKEN_POSITION.
+METHOD token_position.
 
   rs_position-col = is_token-col.
   rs_position-row = is_token-row.
