@@ -32,7 +32,15 @@ METHOD check.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lt_seosubcodf TYPE TABLE OF seosubcodf,
+  TYPES: BEGIN OF ty_seosubcodf,
+           clsname    TYPE seosubcodf-clsname,
+           cmpname    TYPE seosubcodf-cmpname,
+           pardecltyp TYPE seosubcodf-pardecltyp,
+           sconame    TYPE seosubcodf-sconame,
+           type       TYPE seosubcodf-type,
+         END OF ty_seosubcodf.
+
+  DATA: lt_seosubcodf TYPE TABLE OF ty_seosubcodf,
         lv_clsname    TYPE seoclsname,
         lv_name       TYPE sobj_name.
 
@@ -44,7 +52,7 @@ METHOD check.
   ENDIF.
 
   SELECT * FROM seosubcodf
-    INTO TABLE lt_seosubcodf
+    INTO CORRESPONDING FIELDS OF TABLE lt_seosubcodf
     WHERE clsname = object_name
     AND ( pardecltyp = '1'
     OR pardecltyp = '2'

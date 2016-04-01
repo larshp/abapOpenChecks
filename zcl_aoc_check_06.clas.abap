@@ -118,14 +118,19 @@ METHOD check_flow.
           dnum TYPE d020s-dnum,
         END OF ls_dynp_id.
 
-  DATA: lt_d020s TYPE STANDARD TABLE OF d020s WITH DEFAULT KEY,
-        lv_option TYPE c LENGTH 5,
-        ls_h TYPE d020s,                                    "#EC NEEDED
-        lt_f TYPE TABLE OF d021s,                           "#EC NEEDED
-        lt_e TYPE TABLE OF d022s,
-        lt_m TYPE TABLE OF d023s.                           "#EC NEEDED
+  TYPES: BEGIN OF ty_d020s,
+           dnum TYPE d020s-dnum,
+           prog TYPE d020s-prog,
+         END OF ty_d020s.
 
-  FIELD-SYMBOLS: <ls_e> LIKE LINE OF lt_e,
+  DATA: lt_d020s  TYPE STANDARD TABLE OF ty_d020s WITH DEFAULT KEY,
+        lv_option TYPE c LENGTH 5,
+        ls_h      TYPE d020s,                               "#EC NEEDED
+        lt_f      TYPE TABLE OF d021s,                      "#EC NEEDED
+        lt_e      TYPE TABLE OF d022s,
+        lt_m      TYPE TABLE OF d023s.                      "#EC NEEDED
+
+  FIELD-SYMBOLS: <ls_e>     LIKE LINE OF lt_e,
                  <ls_d020s> LIKE LINE OF lt_d020s.
 
 
@@ -135,7 +140,8 @@ METHOD check_flow.
     RETURN.
   ENDIF.
 
-  SELECT * FROM d020s INTO TABLE lt_d020s
+  SELECT * FROM d020s
+    INTO CORRESPONDING FIELDS OF TABLE lt_d020s
     WHERE prog = object_name
     AND type <> 'S'.
   IF sy-subrc <> 0.
