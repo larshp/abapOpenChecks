@@ -138,6 +138,8 @@ METHOD check_code.
       lv_error = '007'.
     ELSEIF lv_code CP 'CHECK  *'.
       lv_error = '008'.
+    ELSEIF lv_code CP 'SORT  *'.
+      lv_error = '009'.
     ENDIF.
 
     IF NOT lv_error IS INITIAL.
@@ -191,6 +193,8 @@ METHOD get_message_text.
       p_text = 'Double space after COLLECT'.                "#EC NOTEXT
     WHEN '008'.
       p_text = 'Double space after CHECK'.                  "#EC NOTEXT
+    WHEN '009'.
+      p_text = 'Double space after SORT'.                   "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 0 = 1.
   ENDCASE.
