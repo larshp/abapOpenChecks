@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/larshp/abapOpenChecks.svg?branch=master)](https://travis-ci.org/larshp/abapOpenChecks)
-[![codecov.io](https://codecov.io/github/larshp/abapOpenChecks/coverage.svg?branch=master)](https://codecov.io/github/larshp/abapOpenChecks?branch=master)
 
 abapOpenChecks
 ==============
