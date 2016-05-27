@@ -4,9 +4,9 @@ class ZCL_AOC_CHECK_27 definition
   create public .
 
 public section.
+
 *"* public components of class ZCL_AOC_CHECK_27
 *"* do not include other source files here!!!
-
   methods CONSTRUCTOR .
 
   methods CHECK
@@ -17,8 +17,21 @@ protected section.
 *"* protected components of class ZCL_AOC_CHECK_27
 *"* do not include other source files here!!!
 
+  types:
+    BEGIN OF ty_stmnt,
+           statement TYPE string,
+           row TYPE stmnt_levl,
+           level TYPE token_row,
+         END OF ty_stmnt .
+
   data MT_TABLES type SCIT_TABL .
 
+  type-pools ABAP .
+  methods IS_LOCAL
+    importing
+      !IS_STATEMENT type TY_STMNT
+    returning
+      value(RV_BOOL) type ABAP_BOOL .
   methods ANALYZE .
   methods BUILD
     importing
@@ -26,13 +39,8 @@ protected section.
       !IT_STATEMENTS type SSTMNT_TAB
       !IT_TOKENS type STOKESX_TAB .
 private section.
-
-  types:
-    BEGIN OF ty_stmnt,
-           statement TYPE string,
-           row TYPE stmnt_levl,
-           level TYPE token_row,
-         END OF ty_stmnt .
+*"* private components of class ZCL_AOC_CHECK_27
+*"* do not include other source files here!!!
 
   data:
     mt_statements TYPE TABLE OF ty_stmnt .
@@ -71,6 +79,19 @@ METHOD analyze.
               p_test         = myname
               p_code         = '001' ).
       RETURN.
+    ELSEIF ls_statement-statement CP 'CLEAR *'
+        OR ls_statement-statement CP 'FREE *'.
+      IF is_local( ls_statement ) = abap_true.
+        lv_include = get_include( p_level = ls_statement-level ).
+
+        inform( p_sub_obj_type = c_type_include
+                p_sub_obj_name = lv_include
+                p_line         = ls_statement-row
+                p_kind         = mv_errty
+                p_test         = myname
+                p_code         = '002' ).
+      ENDIF.
+      RETURN.
     ELSE.
       RETURN.
     ENDIF.
@@ -93,7 +114,9 @@ METHOD build.
   LOOP AT it_statements ASSIGNING <ls_statement>
       FROM is_structure-stmnt_from TO is_structure-stmnt_to
       WHERE type <> scan_stmnt_type-comment
-      AND type <> scan_stmnt_type-comment_in_stmnt.
+      AND type <> scan_stmnt_type-comment_in_stmnt
+      AND type <> scan_stmnt_type-macro_call
+      AND trow <> 0. " skip macro calls
 
     CLEAR ls_statement.
     LOOP AT it_tokens ASSIGNING <ls_token>
@@ -147,7 +170,7 @@ METHOD constructor.
 
   super->constructor( ).
 
-  description    = 'Last statement is RETURN'.              "#EC NOTEXT
+  description    = 'Last statement is RETURN or CLEAR'.     "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
   version        = '001'.
   position       = '027'.
@@ -168,9 +191,86 @@ METHOD get_message_text.
   CASE p_code.
     WHEN '001'.
       p_text = 'Last statement is RETURN'.                  "#EC NOTEXT
+    WHEN '002'.
+      p_text = 'Last statement is CLEAR or FREE'.           "#EC NOTEXT
     WHEN OTHERS.
       ASSERT 0 = 1.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
+
+
+METHOD is_local.
+
+  DATA: lv_sconame TYPE seosubcodf-sconame,
+        lv_cmpname TYPE seocompodf-cmpname,
+        lt_result  TYPE scr_refs,
+        ls_mtd     TYPE seocpdkey,
+        lv_before  TYPE string,
+        lv_include TYPE program,
+        lv_var     TYPE string.
+
+  FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result.
+
+
+  lt_result = get_compiler( ).
+  DELETE lt_result WHERE tag <> cl_abap_compiler=>tag_data.
+  DELETE lt_result WHERE name = ''.
+
+  SPLIT is_statement-statement AT space INTO lv_before lv_var.
+
+  lv_include = get_include( p_level = is_statement-level ).
+
+* todo: handle local classes?
+
+* make sure it is a local variable
+  READ TABLE lt_result
+    ASSIGNING <ls_result> WITH KEY
+    name = lv_var
+    line = is_statement-row
+    statement->source_info->name = lv_include.
+  IF sy-subrc = 0
+      AND ( <ls_result>-full_name CP '*\FO:*'
+      OR <ls_result>-full_name CP '*\ME:*' ).
+
+    IF <ls_result>-full_name CP '*\ME:*'.
+      cl_oo_classname_service=>get_method_by_include(
+        EXPORTING
+          incname             = lv_include
+        RECEIVING
+          mtdkey              = ls_mtd
+        EXCEPTIONS
+          class_not_existing  = 1
+          method_not_existing = 2
+          OTHERS              = 3 ).
+      IF sy-subrc <> 0.
+        RETURN.
+      ENDIF.
+
+      SELECT SINGLE sconame FROM seosubcodf
+        INTO lv_sconame
+        WHERE clsname = ls_mtd-clsname
+        AND cmpname = ls_mtd-cpdname
+        AND sconame = lv_var
+        AND version = '1'.
+      IF sy-subrc = 0.
+        RETURN.
+      ENDIF.
+
+      SELECT SINGLE cmpname FROM seocompodf
+        INTO lv_cmpname
+        WHERE clsname = ls_mtd-clsname
+        AND cmpname = lv_var
+        AND version = '1'.
+      IF sy-subrc = 0.
+        RETURN.
+      ENDIF.
+
+      rv_bool = abap_true.
+    ELSE.
+      rv_bool = abap_true.
+    ENDIF.
+  ENDIF.
+
+ENDMETHOD.
 ENDCLASS.
