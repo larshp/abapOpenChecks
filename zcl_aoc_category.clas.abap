@@ -1,21 +1,15 @@
-class ZCL_AOC_CATEGORY definition
-  public
-  inheriting from CL_CI_CATEGORY_ROOT
-  final
-  create public .
+CLASS zcl_aoc_category DEFINITION
+  PUBLIC
+  INHERITING FROM cl_ci_category_root
+  FINAL
+  CREATE PUBLIC.
 
-public section.
+  PUBLIC SECTION.
 
-*"* public components of class ZCL_AOC_CATEGORY
-*"* do not include other source files here!!!
-  methods CONSTRUCTOR .
+    METHODS:
+      constructor,
+      if_ci_test~display_documentation REDEFINITION.
 
-  methods IF_CI_TEST~DISPLAY_DOCUMENTATION
-    redefinition .
-protected section.
-*"* protected components of class ZCL_AOC_CATEGORY
-*"* do not include other source files here!!!
-private section.
 ENDCLASS.
 
 
@@ -23,34 +17,34 @@ ENDCLASS.
 CLASS ZCL_AOC_CATEGORY IMPLEMENTATION.
 
 
-METHOD constructor.
+  METHOD constructor.
 
 * abapOpenChecks
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  super->constructor( ).
-  description = 'abapOpenChecks'.                           "#EC NOTEXT
-  category    = 'CL_CI_CATEGORY_TOP'.
-  position    = '999'.
+    super->constructor( ).
+    description = 'abapOpenChecks'.                         "#EC NOTEXT
+    category    = 'CL_CI_CATEGORY_TOP'.
+    position    = '999'.
 
-ENDMETHOD.
-
-
-METHOD if_ci_test~display_documentation.
-
-  DATA: lv_object TYPE dokhl-object.
+  ENDMETHOD.
 
 
-  lv_object = myname.
+  METHOD if_ci_test~display_documentation.
 
-  CALL FUNCTION 'DOCU_CALL'
-    EXPORTING
-      displ      = abap_true
-      displ_mode = 2
-      id         = 'CL'
-      langu      = 'E'
-      object     = lv_object.
+    DATA: lv_object TYPE dokhl-object.
 
-ENDMETHOD.
+
+    lv_object = myname.
+
+    CALL FUNCTION 'DOCU_CALL'
+      EXPORTING
+        displ      = abap_true
+        displ_mode = 2
+        id         = 'CL'
+        langu      = 'E'
+        object     = lv_object.
+
+  ENDMETHOD.
 ENDCLASS.
