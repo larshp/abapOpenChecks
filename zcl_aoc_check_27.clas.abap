@@ -206,7 +206,7 @@ METHOD is_local.
         lv_cmpname TYPE seocompodf-cmpname,
         lt_result  TYPE scr_refs,
         ls_mtd     TYPE seocpdkey,
-        lv_before  TYPE string,
+        lv_before  TYPE string ##NEEDED,
         lv_include TYPE program,
         lv_var     TYPE string.
 

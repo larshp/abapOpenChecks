@@ -62,8 +62,7 @@ METHOD check.
       ENDIF.
 
       lv_include = get_include( p_level = <ls_statement>-level ).
-      IF lv_include+30(2) = 'CU'      " class public include
-          OR lv_include+30(2) = 'CI'. " class private include
+      IF is_class_definition( lv_include ) = abap_true.
         CONTINUE. " current loop
       ENDIF.
       inform( p_sub_obj_type = c_type_include

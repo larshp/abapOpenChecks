@@ -113,15 +113,15 @@ ENDMETHOD.
 
 METHOD check_flow.
 
-  DATA: BEGIN OF ls_dynp_id,
-          prog TYPE d020s-prog,
-          dnum TYPE d020s-dnum,
-        END OF ls_dynp_id.
-
   TYPES: BEGIN OF ty_d020s,
            dnum TYPE d020s-dnum,
            prog TYPE d020s-prog,
          END OF ty_d020s.
+
+  DATA: BEGIN OF ls_dynp_id,
+          prog TYPE d020s-prog,
+          dnum TYPE d020s-dnum,
+        END OF ls_dynp_id.
 
   DATA: lt_d020s  TYPE STANDARD TABLE OF ty_d020s WITH DEFAULT KEY,
         lv_option TYPE c LENGTH 5,
@@ -180,10 +180,10 @@ ENDMETHOD.
 
 METHOD check_source.
 
-  DATA: lt_code    TYPE string_table,
-        lt_pretty  TYPE string_table,
-        lv_level   TYPE i,
-        lv_row     TYPE i.
+  DATA: lt_code   TYPE string_table,
+        lt_pretty TYPE string_table,
+        lv_level  TYPE i,
+        lv_row    TYPE i.
 
   FIELD-SYMBOLS: <ls_level>  LIKE LINE OF it_levels,
                  <lv_code>   LIKE LINE OF lt_code,
@@ -194,23 +194,12 @@ METHOD check_source.
   LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
     lv_level = sy-tabix.
 
-* skip class definitions, they are auto generated(in most cases)
-* todo: move this to check configuration
-    IF strlen( <ls_level>-name ) = 32
-        AND ( object_type = 'CLAS' OR object_type = 'INTF' )
-        AND ( <ls_level>-name+30(2) = 'CU'
-        OR <ls_level>-name+30(2) = 'CO'
-        OR <ls_level>-name+30(2) = 'CI'
-        OR <ls_level>-name+30(2) = 'CP'
-        OR <ls_level>-name+30(2) = 'IP'
-        OR <ls_level>-name+30(2) = 'IU' ).
+    IF is_class_definition( <ls_level>-name ) = abap_true.
       CONTINUE. " current loop
-    ENDIF.
-    IF <ls_level>-name(8) = '/1BCWDY/'.
+    ELSEIF <ls_level>-name(8) = '/1BCWDY/'.
 * todo, web dynpro
       RETURN.
-    ENDIF.
-    IF <ls_level>-name(4) = 'SAPL'.
+    ELSEIF <ls_level>-name(4) = 'SAPL'.
 * exclude functionpool
       CONTINUE.
     ENDIF.

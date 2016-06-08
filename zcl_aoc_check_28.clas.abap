@@ -41,16 +41,7 @@ METHOD check.
   LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
     lv_level = sy-tabix.
 
-* skip class definitions, they are auto generated(in most cases)
-    IF object_type = 'INTF'.
-      RETURN.
-    ENDIF.
-    IF object_type = 'CLAS'
-        AND strlen( <ls_level>-name ) = 32
-        AND ( <ls_level>-name+30(2) = 'CU'
-        OR <ls_level>-name+30(2) = 'CO'
-        OR <ls_level>-name+30(2) = 'CI'
-        OR <ls_level>-name+30(2) = 'CP' ).
+    IF is_class_definition( <ls_level>-name ) = abap_true.
       CONTINUE. " current loop
     ENDIF.
 

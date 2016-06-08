@@ -84,6 +84,11 @@ protected section.
       !IT_LEVELS type SLEVEL_TAB
     returning
       value(RT_STATEMENTS) type TY_STATEMENTS .
+  methods IS_CLASS_DEFINITION
+    importing
+      !IV_INCLUDE type LEVEL_NAME
+    returning
+      value(RV_BOOL) type ABAP_BOOL .
 
   methods GET_INCLUDE
     redefinition .
@@ -476,6 +481,24 @@ METHOD inform.
 * parameters p_detail and p_checksum_1 does not exist in 730
 
 ENDMETHOD.
+
+
+  METHOD is_class_definition.
+
+    IF strlen( iv_include ) = 32
+        AND ( object_type = 'CLAS' OR object_type = 'INTF' )
+        AND ( iv_include+30(2) = 'CU'
+        OR iv_include+30(2) = 'CO'
+        OR iv_include+30(2) = 'CI'
+        OR iv_include+30(2) = 'CP'
+        OR iv_include+30(2) = 'IP'
+        OR iv_include+30(2) = 'IU' ).
+      rv_bool = abap_true.
+    ELSE.
+      rv_bool = abap_false.
+    ENDIF.
+
+  ENDMETHOD.
 
 
 METHOD put_attributes.
