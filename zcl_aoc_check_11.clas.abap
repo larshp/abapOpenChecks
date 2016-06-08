@@ -4,16 +4,24 @@ class ZCL_AOC_CHECK_11 definition
   create public .
 
 public section.
+
 *"* public components of class ZCL_AOC_CHECK_11
 *"* do not include other source files here!!!
-
   methods CONSTRUCTOR .
 
   methods CHECK
     redefinition .
+  methods GET_ATTRIBUTES
+    redefinition .
   methods GET_MESSAGE_TEXT
     redefinition .
+  methods IF_CI_TEST~QUERY_ATTRIBUTES
+    redefinition .
+  methods PUT_ATTRIBUTES
+    redefinition .
 protected section.
+
+  data MV_SKIPC type FLAG .
 *"* protected components of class ZCL_AOC_CHECK_11
 *"* do not include other source files here!!!
 private section.
@@ -62,7 +70,8 @@ METHOD check.
       ENDIF.
 
       lv_include = get_include( p_level = <ls_statement>-level ).
-      IF is_class_definition( lv_include ) = abap_true.
+      IF mv_skipc = abap_true
+          AND is_class_definition( lv_include ) = abap_true.
         CONTINUE. " current loop
       ENDIF.
       inform( p_sub_obj_type = c_type_include
@@ -87,15 +96,26 @@ METHOD constructor.
 
   description    = 'Max one statement per line'.            "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '001'.
+  version        = '002'.
   position       = '011'.
 
   has_attributes = abap_true.
   attributes_ok  = abap_true.
 
   mv_errty = c_error.
+  mv_skipc = abap_true.
 
 ENDMETHOD.                    "CONSTRUCTOR
+
+
+  METHOD get_attributes.
+
+    EXPORT
+      mv_errty = mv_errty
+      mv_skipc = mv_skipc
+      TO DATA BUFFER p_attributes.
+
+  ENDMETHOD.
 
 
 METHOD get_message_text.
@@ -110,4 +130,27 @@ METHOD get_message_text.
   ENDCASE.
 
 ENDMETHOD.                    "GET_MESSAGE_TEXT
+
+
+  METHOD if_ci_test~query_attributes.
+
+    zzaoc_top.
+
+    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
+    zzaoc_fill_att mv_skipc 'Skip global class definitions' 'C'. "#EC NOTEXT
+
+    zzaoc_popup.
+
+  ENDMETHOD.
+
+
+  METHOD put_attributes.
+
+    IMPORT
+      mv_errty = mv_errty
+      mv_skipc = mv_skipc
+      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
 ENDCLASS.

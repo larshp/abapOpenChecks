@@ -20,9 +20,10 @@ public section.
   methods PUT_ATTRIBUTES
     redefinition .
 protected section.
+
+  data MV_SKIPC type FLAG .
 *"* protected components of class ZCL_AOC_CHECK_04
 *"* do not include other source files here!!!
-
   data MV_MAXLENGTH type MAXFLENGTH .
 private section.
 ENDCLASS.
@@ -49,7 +50,8 @@ METHOD check.
   LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
     lv_level = sy-tabix.
 
-    IF is_class_definition( <ls_level>-name ) = abap_true.
+    IF mv_skipc = abap_true
+        AND is_class_definition( <ls_level>-name ) = abap_true.
       CONTINUE. " current loop
     ENDIF.
 
@@ -81,21 +83,26 @@ METHOD constructor.
 
   description    = 'Line length'.                           "#EC NOTEXT
   category       = 'ZCL_AOC_CATEGORY'.
-  version        = '001'.
+  version        = '002'.
   position       = '004'.
 
   has_attributes = abap_true.
   attributes_ok  = abap_true.
 
-  mv_errty = c_error.
+  mv_errty     = c_error.
   mv_maxlength = 90.
+  mv_skipc     = abap_true.
 
 ENDMETHOD.                    "CONSTRUCTOR
 
 
 METHOD get_attributes.
 
-  EXPORT mv_errty = mv_errty mv_maxlength = mv_maxlength TO DATA BUFFER p_attributes.
+  EXPORT
+    mv_errty = mv_errty
+    mv_maxlength = mv_maxlength
+    mv_skipc = mv_skipc
+    TO DATA BUFFER p_attributes.
 
 ENDMETHOD.
 
@@ -120,6 +127,7 @@ METHOD if_ci_test~query_attributes.
 
   zzaoc_fill_att mv_errty 'Error Type' ''.                  "#EC NOTEXT
   zzaoc_fill_att mv_maxlength 'Line Length' ''.             "#EC NOTEXT
+  zzaoc_fill_att mv_skipc 'Skip global class definitions' 'C'. "#EC NOTEXT
 
   zzaoc_popup.
 
@@ -131,6 +139,7 @@ METHOD put_attributes.
   IMPORT
     mv_errty = mv_errty
     mv_maxlength = mv_maxlength
+    mv_skipc = mv_skipc
     FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
   ASSERT sy-subrc = 0.
 
