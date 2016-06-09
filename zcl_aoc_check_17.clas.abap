@@ -1,48 +1,41 @@
-class ZCL_AOC_CHECK_17 definition
-  public
-  inheriting from ZCL_AOC_SUPER
-  create public .
+CLASS zcl_aoc_check_17 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC.
 
-public section.
-*"* public components of class ZCL_AOC_CHECK_17
-*"* do not include other source files here!!!
+  PUBLIC SECTION.
+    METHODS constructor.
 
-  methods CONSTRUCTOR .
+    METHODS check
+        REDEFINITION.
+    METHODS get_attributes
+        REDEFINITION.
+    METHODS get_message_text
+        REDEFINITION.
+    METHODS put_attributes
+        REDEFINITION.
+    METHODS if_ci_test~query_attributes
+        REDEFINITION.
 
-  methods CHECK
-    redefinition .
-  methods GET_ATTRIBUTES
-    redefinition .
-  methods GET_MESSAGE_TEXT
-    redefinition .
-  methods PUT_ATTRIBUTES
-    redefinition .
-  methods IF_CI_TEST~QUERY_ATTRIBUTES
-    redefinition .
-protected section.
-*"* protected components of class ZCL_AOC_CHECK_17
-*"* do not include other source files here!!!
+  PROTECTED SECTION.
+    DATA mv_types TYPE i.
+    DATA mv_define TYPE i.
+    DATA mv_constants TYPE i.
+    DATA mv_data TYPE i.
+    DATA mv_fs TYPE i.
+    DATA mv_statics TYPE i.
 
-  data MV_TYPES type I .
-  data MV_DEFINE type I .
-  data MV_CONSTANTS type I .
-  data MV_DATA type I .
-  data MV_FS type I .
-  data MV_STATICS type I .
+    TYPE-POOLS abap.
+    METHODS check_mode
+      IMPORTING
+        !iv_type       TYPE i
+      RETURNING
+        VALUE(rv_exit) TYPE abap_bool.
 
-  type-pools ABAP .
-  methods CHECK_MODE
-    importing
-      !IV_TYPE type I
-    returning
-      value(RV_EXIT) type ABAP_BOOL .
-private section.
-
-*"* private components of class ZCL_AOC_CHECK_17
-*"* do not include other source files here!!!
-  data MS_STATEMENT type SSTMNT .
-  data MS_TOKEN type STOKESX .
-  data MV_MODE type I .
+  PRIVATE SECTION.
+    DATA ms_statement TYPE sstmnt.
+    DATA ms_token TYPE stokesx.
+    DATA mv_mode TYPE i.
 ENDCLASS.
 
 
@@ -50,184 +43,184 @@ ENDCLASS.
 CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
 
 
-METHOD check.
+  METHOD check.
 
 * abapOpenChecks
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lv_exit   TYPE abap_bool,
-        lv_define TYPE abap_bool,
-        lv_others TYPE i.
+    DATA: lv_exit   TYPE abap_bool,
+          lv_define TYPE abap_bool,
+          lv_others TYPE i.
 
-  FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures.
+    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures.
 
 
-  lv_others = mv_constants + mv_data + mv_fs + mv_statics + mv_types + mv_define.
+    lv_others = mv_constants + mv_data + mv_fs + mv_statics + mv_types + mv_define.
 
-  LOOP AT it_structures ASSIGNING <ls_structure>
-      WHERE type = scan_struc_type-routine.
+    LOOP AT it_structures ASSIGNING <ls_structure>
+        WHERE type = scan_struc_type-routine.
 
-    mv_mode = 0.
+      mv_mode = 0.
 
-    LOOP AT it_statements INTO ms_statement
-        FROM <ls_structure>-stmnt_from + 1
-        TO <ls_structure>-stmnt_to - 1
-        WHERE type <> scan_stmnt_type-macro_call.
+      LOOP AT it_statements INTO ms_statement
+          FROM <ls_structure>-stmnt_from + 1
+          TO <ls_structure>-stmnt_to - 1
+          WHERE type <> scan_stmnt_type-macro_call.
 
-      READ TABLE it_tokens INTO ms_token INDEX ms_statement-from.
-      IF sy-subrc <> 0
-          OR ms_token-type = scan_token_type-comment
-          OR ms_token-type = scan_token_type-pragma.
-        CONTINUE. " current loop
-      ENDIF.
+        READ TABLE it_tokens INTO ms_token INDEX ms_statement-from.
+        IF sy-subrc <> 0
+            OR ms_token-type = scan_token_type-comment
+            OR ms_token-type = scan_token_type-pragma.
+          CONTINUE. " current loop
+        ENDIF.
 
 * skip INCLUDE if it is part of TYPE definition
-      IF mv_mode = mv_types AND ms_token-str = 'INCLUDE'.
-        CONTINUE.
-      ENDIF.
+        IF mv_mode = mv_types AND ms_token-str = 'INCLUDE'.
+          CONTINUE.
+        ENDIF.
 
-      IF lv_define = abap_true AND ms_token-str = 'END-OF-DEFINITION'.
-        lv_define = abap_false.
-        CONTINUE.
-      ELSEIF lv_define = abap_true.
-        CONTINUE. " current loop.
-      ENDIF.
+        IF lv_define = abap_true AND ms_token-str = 'END-OF-DEFINITION'.
+          lv_define = abap_false.
+          CONTINUE.
+        ELSEIF lv_define = abap_true.
+          CONTINUE. " current loop.
+        ENDIF.
 
-      CASE ms_token-str.
-        WHEN 'TYPE' OR 'TYPES'.
-          lv_exit = check_mode( mv_types ).
-        WHEN 'CONSTANT' OR 'CONSTANTS'.
-          lv_exit = check_mode( mv_constants ).
-        WHEN 'DATA'.
-          lv_exit = check_mode( mv_data ).
-        WHEN 'FIELD-SYMBOLS'.
-          lv_exit = check_mode( mv_fs ).
-        WHEN 'STATICS'.
-          lv_exit = check_mode( mv_statics ).
-        WHEN 'DEFINE'.
-          lv_exit = check_mode( mv_define ).
-          lv_define = abap_true.
-        WHEN OTHERS.
-          lv_exit = check_mode( lv_others ).
-      ENDCASE.
+        CASE ms_token-str.
+          WHEN 'TYPE' OR 'TYPES'.
+            lv_exit = check_mode( mv_types ).
+          WHEN 'CONSTANT' OR 'CONSTANTS'.
+            lv_exit = check_mode( mv_constants ).
+          WHEN 'DATA'.
+            lv_exit = check_mode( mv_data ).
+          WHEN 'FIELD-SYMBOLS'.
+            lv_exit = check_mode( mv_fs ).
+          WHEN 'STATICS'.
+            lv_exit = check_mode( mv_statics ).
+          WHEN 'DEFINE'.
+            lv_exit = check_mode( mv_define ).
+            lv_define = abap_true.
+          WHEN OTHERS.
+            lv_exit = check_mode( lv_others ).
+        ENDCASE.
 
-      IF lv_exit = abap_true.
-        EXIT. " current loop
-      ENDIF.
+        IF lv_exit = abap_true.
+          EXIT. " current loop
+        ENDIF.
+
+      ENDLOOP.
 
     ENDLOOP.
 
-  ENDLOOP.
-
-ENDMETHOD.
+  ENDMETHOD.
 
 
-METHOD check_mode.
+  METHOD check_mode.
 
-  DATA: lv_include TYPE program.
-
-
-  IF mv_mode > iv_type.
-    rv_exit = abap_true.
-
-    lv_include = get_include( p_level = ms_statement-level ).
-
-    inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = lv_include
-            p_line = ms_token-row
-            p_kind = mv_errty
-            p_test = myname
-            p_code = '001' ).
-  ENDIF.
-
-  mv_mode = iv_type.
-
-ENDMETHOD.
+    DATA: lv_include TYPE program.
 
 
-METHOD constructor.
+    IF mv_mode > iv_type.
+      rv_exit = abap_true.
 
-  super->constructor( ).
+      lv_include = get_include( p_level = ms_statement-level ).
 
-  description    = 'Definitions in top of routine'.         "#EC NOTEXT
-  category       = 'ZCL_AOC_CATEGORY'.
-  version        = '001'.
-  position       = '017'.
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = lv_include
+              p_line = ms_token-row
+              p_kind = mv_errty
+              p_test = myname
+              p_code = '001' ).
+    ENDIF.
 
-  has_attributes = abap_true.
-  attributes_ok  = abap_true.
+    mv_mode = iv_type.
 
-  mv_types     = 1.
-  mv_define    = 2.
-  mv_constants = 2.
-  mv_statics   = 2.
-  mv_data      = 2.
-  mv_fs        = 3.
-
-  mv_errty = c_error.
-
-ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
-METHOD get_attributes.
+  METHOD constructor.
 
-  EXPORT
-    mv_errty     = mv_errty
-    mv_constants = mv_constants
-    mv_data      = mv_data
-    mv_fs        = mv_fs
-    mv_statics   = mv_statics
-    mv_types     = mv_types
-    mv_define    = mv_define
-    TO DATA BUFFER p_attributes.
+    super->constructor( ).
 
-ENDMETHOD.
+    description    = 'Definitions in top of routine'.       "#EC NOTEXT
+    category       = 'ZCL_AOC_CATEGORY'.
+    version        = '001'.
+    position       = '017'.
 
+    has_attributes = abap_true.
+    attributes_ok  = abap_true.
 
-METHOD get_message_text.
+    mv_types     = 1.
+    mv_define    = 2.
+    mv_constants = 2.
+    mv_statics   = 2.
+    mv_data      = 2.
+    mv_fs        = 3.
 
-  CLEAR p_text.
+    mv_errty = c_error.
 
-  CASE p_code.
-    WHEN '001'.
-      p_text = 'Reorder definitions to top of routine'.     "#EC NOTEXT
-    WHEN OTHERS.
-      ASSERT 0 = 1.
-  ENDCASE.
-
-ENDMETHOD.                    "GET_MESSAGE_TEXT
+  ENDMETHOD.                    "CONSTRUCTOR
 
 
-METHOD if_ci_test~query_attributes.
+  METHOD get_attributes.
 
-  zzaoc_top.
+    EXPORT
+      mv_errty     = mv_errty
+      mv_constants = mv_constants
+      mv_data      = mv_data
+      mv_fs        = mv_fs
+      mv_statics   = mv_statics
+      mv_types     = mv_types
+      mv_define    = mv_define
+      TO DATA BUFFER p_attributes.
 
-  zzaoc_fill_att mv_errty 'Error Type' ''.                  "#EC NOTEXT
-  zzaoc_fill_att mv_types 'TYPES' ''.                       "#EC NOTEXT
-  zzaoc_fill_att mv_define 'DEFINE' ''.                     "#EC NOTEXT
-  zzaoc_fill_att mv_constants 'CONSTANTS' ''.               "#EC NOTEXT
-  zzaoc_fill_att mv_data 'DATA' ''.                         "#EC NOTEXT
-  zzaoc_fill_att mv_statics 'STATICS' ''.                   "#EC NOTEXT
-  zzaoc_fill_att mv_fs 'FIELD-SYMBOLS' ''.                  "#EC NOTEXT
-
-  zzaoc_popup.
-
-ENDMETHOD.
+  ENDMETHOD.
 
 
-METHOD put_attributes.
+  METHOD get_message_text.
 
-  IMPORT
-    mv_errty     = mv_errty
-    mv_constants = mv_constants
-    mv_data      = mv_data
-    mv_fs        = mv_fs
-    mv_statics   = mv_statics
-    mv_types     = mv_types
-    mv_define    = mv_define
-    FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
-  ASSERT sy-subrc = 0.
+    CLEAR p_text.
 
-ENDMETHOD.
+    CASE p_code.
+      WHEN '001'.
+        p_text = 'Reorder definitions to top of routine'.   "#EC NOTEXT
+      WHEN OTHERS.
+        ASSERT 0 = 1.
+    ENDCASE.
+
+  ENDMETHOD.                    "GET_MESSAGE_TEXT
+
+
+  METHOD if_ci_test~query_attributes.
+
+    zzaoc_top.
+
+    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
+    zzaoc_fill_att mv_types 'TYPES' ''.                     "#EC NOTEXT
+    zzaoc_fill_att mv_define 'DEFINE' ''.                   "#EC NOTEXT
+    zzaoc_fill_att mv_constants 'CONSTANTS' ''.             "#EC NOTEXT
+    zzaoc_fill_att mv_data 'DATA' ''.                       "#EC NOTEXT
+    zzaoc_fill_att mv_statics 'STATICS' ''.                 "#EC NOTEXT
+    zzaoc_fill_att mv_fs 'FIELD-SYMBOLS' ''.                "#EC NOTEXT
+
+    zzaoc_popup.
+
+  ENDMETHOD.
+
+
+  METHOD put_attributes.
+
+    IMPORT
+      mv_errty     = mv_errty
+      mv_constants = mv_constants
+      mv_data      = mv_data
+      mv_fs        = mv_fs
+      mv_statics   = mv_statics
+      mv_types     = mv_types
+      mv_define    = mv_define
+      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
 ENDCLASS.

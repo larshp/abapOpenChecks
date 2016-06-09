@@ -1,50 +1,44 @@
-class ZCL_AOC_UNIT_TEST definition
-  public
-  create public
-  for testing .
+CLASS zcl_aoc_unit_test DEFINITION
+  PUBLIC
+  CREATE PUBLIC
+  FOR TESTING.
 
-public section.
+  PUBLIC SECTION.
 
-*"* public components of class ZCL_AOC_UNIT_TEST
-*"* do not include other source files here!!!
-  class-methods HANDLER
-    for event MESSAGE of CL_CI_TEST_ROOT
-    importing
-      !P_CHECKSUM_1
-      !P_CODE
-      !P_COLUMN
-      !P_ERRCNT
-      !P_KIND
-      !P_LINE
-      !P_PARAM_1
-      !P_PARAM_2
-      !P_PARAM_3
-      !P_PARAM_4
-      !P_SUB_OBJ_NAME
-      !P_SUB_OBJ_TYPE
-      !P_SUPPRESS
-      !P_TEST
-      !P_INCLSPEC .
-  class-methods CHECK
-    importing
-      !IT_CODE type STRING_TABLE
-    returning
-      value(RS_RESULT) type SCIREST_AD .
-  class-methods SET_CHECK
-    importing
-      !IO_CHECK type ref to ZCL_AOC_SUPER .
-  class-methods EXPORT_IMPORT
-    importing
-      !IO_CHECK type ref to CL_CI_TEST_ROOT .
-protected section.
-*"* protected components of class ZCL_AOC_UNIT_TEST
-*"* do not include other source files here!!!
-private section.
+    CLASS-METHODS handler
+          FOR EVENT message OF cl_ci_test_root
+      IMPORTING
+          !p_checksum_1
+          !p_code
+          !p_column
+          !p_errcnt
+          !p_kind
+          !p_line
+          !p_param_1
+          !p_param_2
+          !p_param_3
+          !p_param_4
+          !p_sub_obj_name
+          !p_sub_obj_type
+          !p_suppress
+          !p_test
+          !p_inclspec.
+    CLASS-METHODS check
+      IMPORTING
+        !it_code         TYPE string_table
+      RETURNING
+        VALUE(rs_result) TYPE scirest_ad.
+    CLASS-METHODS set_check
+      IMPORTING
+        !io_check TYPE REF TO zcl_aoc_super.
+    CLASS-METHODS export_import
+      IMPORTING
+        !io_check TYPE REF TO cl_ci_test_root.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-*"* private components of class ZCL_AOC_UNIT_TEST
-*"* do not include other source files here!!!
-  class-data GS_RESULT type SCIREST_AD .
-  class-data GO_CHECK type ref to ZCL_AOC_SUPER .
+    CLASS-DATA gs_result TYPE scirest_ad.
+    CLASS-DATA go_check TYPE REF TO zcl_aoc_super.
 ENDCLASS.
 
 
@@ -52,83 +46,83 @@ ENDCLASS.
 CLASS ZCL_AOC_UNIT_TEST IMPLEMENTATION.
 
 
-METHOD check.
+  METHOD check.
 
 * abapOpenChecks
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lt_tokens     TYPE stokesx_tab,
-        lt_statements TYPE sstmnt_tab,
-        lt_levels     TYPE slevel_tab,
-        lt_structures TYPE zcl_aoc_super=>ty_structures_tt.
+    DATA: lt_tokens     TYPE stokesx_tab,
+          lt_statements TYPE sstmnt_tab,
+          lt_levels     TYPE slevel_tab,
+          lt_structures TYPE zcl_aoc_super=>ty_structures_tt.
 
 
-  SCAN ABAP-SOURCE it_code
-       TOKENS          INTO lt_tokens
-       STATEMENTS      INTO lt_statements
-       LEVELS          INTO lt_levels
-       STRUCTURES      INTO lt_structures
-       WITH ANALYSIS
-       WITH COMMENTS
-       WITH PRAGMAS    abap_true.
-  cl_abap_unit_assert=>assert_subrc( msg = 'Error while parsing'(001) ).
+    SCAN ABAP-SOURCE it_code
+         TOKENS          INTO lt_tokens
+         STATEMENTS      INTO lt_statements
+         LEVELS          INTO lt_levels
+         STRUCTURES      INTO lt_structures
+         WITH ANALYSIS
+         WITH COMMENTS
+         WITH PRAGMAS    abap_true.
+    cl_abap_unit_assert=>assert_subrc( msg = 'Error while parsing'(001) ).
 
-  CLEAR gs_result.
-  SET HANDLER handler FOR go_check.
+    CLEAR gs_result.
+    SET HANDLER handler FOR go_check.
 
-  go_check->set_source( iv_name = '----------------------------------------'
-                        it_code = it_code ).
+    go_check->set_source( iv_name = '----------------------------------------'
+                          it_code = it_code ).
 
-  go_check->check(
-      it_tokens     = lt_tokens
-      it_statements = lt_statements
-      it_levels     = lt_levels
-      it_structures = lt_structures ).
+    go_check->check(
+        it_tokens     = lt_tokens
+        it_statements = lt_statements
+        it_levels     = lt_levels
+        it_structures = lt_structures ).
 
-  IF NOT gs_result-code IS INITIAL.
-    go_check->get_message_text(
-        p_test = ''
-        p_code = gs_result-code ).
-  ENDIF.
+    IF NOT gs_result-code IS INITIAL.
+      go_check->get_message_text(
+          p_test = ''
+          p_code = gs_result-code ).
+    ENDIF.
 
-  rs_result = gs_result.
+    rs_result = gs_result.
 
-ENDMETHOD.
+  ENDMETHOD.
 
 
-METHOD export_import.
+  METHOD export_import.
 
-  DATA: lv_xstr TYPE xstring.
+    DATA: lv_xstr TYPE xstring.
 
 * following code will check that the get and put
 * methods does not fail when run
 
-  lv_xstr = io_check->get_attributes( ).
+    lv_xstr = io_check->get_attributes( ).
 
-  cl_abap_unit_assert=>assert_not_initial( lv_xstr ).
+    cl_abap_unit_assert=>assert_not_initial( lv_xstr ).
 
-  io_check->put_attributes( lv_xstr ).
+    io_check->put_attributes( lv_xstr ).
 
-ENDMETHOD.
+  ENDMETHOD.
 
 
-METHOD handler.
+  METHOD handler.
 
 * assume only one result
-  gs_result-sobjname = p_sub_obj_name.
-  gs_result-sobjtype = p_sub_obj_type.
-  gs_result-line     = p_line.
-  gs_result-col      = p_column.
-  gs_result-kind     = p_kind.
-  gs_result-code     = p_code.
+    gs_result-sobjname = p_sub_obj_name.
+    gs_result-sobjtype = p_sub_obj_type.
+    gs_result-line     = p_line.
+    gs_result-col      = p_column.
+    gs_result-kind     = p_kind.
+    gs_result-code     = p_code.
 
-ENDMETHOD.
+  ENDMETHOD.
 
 
-METHOD set_check.
+  METHOD set_check.
 
-  go_check = io_check.
+    go_check = io_check.
 
-ENDMETHOD.
+  ENDMETHOD.
 ENDCLASS.

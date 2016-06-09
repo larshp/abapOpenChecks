@@ -1,52 +1,44 @@
 CLASS zcl_aoc_check_06 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC .
+  CREATE PUBLIC.
 
   PUBLIC SECTION.
-*"* public components of class ZCL_AOC_CHECK_06
-*"* do not include other source files here!!!
-
-    METHODS constructor .
+    METHODS constructor.
 
     METHODS check
-        REDEFINITION .
+        REDEFINITION.
     METHODS get_attributes
-        REDEFINITION .
+        REDEFINITION.
     METHODS get_message_text
-        REDEFINITION .
+        REDEFINITION.
     METHODS if_ci_test~query_attributes
-        REDEFINITION .
+        REDEFINITION.
     METHODS put_attributes
-        REDEFINITION .
+        REDEFINITION.
   PROTECTED SECTION.
 
-    DATA mv_skipc TYPE flag .
-*"* protected components of class ZCL_AOC_CHECK_06
-*"* do not include other source files here!!!
-    DATA mv_one_finding TYPE flag .
-    DATA mv_hikey TYPE flag .
-    DATA mv_lower TYPE flag .
-    DATA mv_upper TYPE flag .
-    DATA mv_lokey TYPE flag .
-    DATA mv_flow TYPE flag .
+    DATA mv_skipc TYPE flag.
+    DATA mv_one_finding TYPE flag.
+    DATA mv_hikey TYPE flag.
+    DATA mv_lower TYPE flag.
+    DATA mv_upper TYPE flag.
+    DATA mv_lokey TYPE flag.
+    DATA mv_flow TYPE flag.
   PRIVATE SECTION.
-*"* private components of class ZCL_AOC_CHECK_06
-*"* do not include other source files here!!!
-
     METHODS build_option
       RETURNING
-        VALUE(rv_option) TYPE string .
+        VALUE(rv_option) TYPE string.
     METHODS check_flow .
     METHODS check_source
       IMPORTING
         !it_levels     TYPE slevel_tab
-        !it_statements TYPE sstmnt_tab .
+        !it_statements TYPE sstmnt_tab.
     METHODS pretty_print
       IMPORTING
         !it_code         TYPE string_table
       RETURNING
-        VALUE(rt_pretty) TYPE string_table .
+        VALUE(rt_pretty) TYPE string_table.
 ENDCLASS.
 
 

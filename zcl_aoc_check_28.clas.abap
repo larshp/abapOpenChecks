@@ -1,27 +1,25 @@
 CLASS zcl_aoc_check_28 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC .
+  CREATE PUBLIC.
 
   PUBLIC SECTION.
 
-*"* public components of class ZCL_AOC_CHECK_28
-*"* do not include other source files here!!!
-    METHODS constructor .
+    METHODS constructor.
 
     METHODS check
-        REDEFINITION .
+        REDEFINITION.
     METHODS get_attributes
-        REDEFINITION .
+        REDEFINITION.
     METHODS get_message_text
-        REDEFINITION .
+        REDEFINITION.
     METHODS if_ci_test~query_attributes
-        REDEFINITION .
+        REDEFINITION.
     METHODS put_attributes
-        REDEFINITION .
+        REDEFINITION.
   PROTECTED SECTION.
 
-    DATA mv_skipc TYPE flag .
+    DATA mv_skipc TYPE flag.
   PRIVATE SECTION.
 ENDCLASS.
 

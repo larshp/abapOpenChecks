@@ -1,48 +1,42 @@
-class ZCL_AOC_CHECK_45 definition
-  public
-  inheriting from ZCL_AOC_SUPER
-  create public .
+CLASS zcl_aoc_check_45 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC.
 
-public section.
+  PUBLIC SECTION.
 
-*"* public components of class ZCL_AOC_CHECK_45
-*"* do not include other source files here!!!
-  methods CONSTRUCTOR .
+    METHODS constructor.
 
-  methods CHECK
-    redefinition .
-  methods GET_ATTRIBUTES
-    redefinition .
-  methods GET_MESSAGE_TEXT
-    redefinition .
-  methods PUT_ATTRIBUTES
-    redefinition .
-  methods IF_CI_TEST~QUERY_ATTRIBUTES
-    redefinition .
-protected section.
+    METHODS check
+        REDEFINITION.
+    METHODS get_attributes
+        REDEFINITION.
+    METHODS get_message_text
+        REDEFINITION.
+    METHODS put_attributes
+        REDEFINITION.
+    METHODS if_ci_test~query_attributes
+        REDEFINITION.
+  PROTECTED SECTION.
 
-  methods CHECK_LOOP
-    importing
-      !IS_STATEMENT type TY_STATEMENT
-    returning
-      value(RV_BOOL) type ABAP_BOOL .
-  methods SUPPORT_INLINE_DECL
-    returning
-      value(RV_SUPPORTED) type ABAP_BOOL .
-  methods SUPPORT_NEW
-    returning
-      value(RV_SUPPORTED) type ABAP_BOOL .
-*"* protected components of class ZCL_AOC_CHECK_45
-*"* do not include other source files here!!!
-private section.
+    METHODS check_loop
+      IMPORTING
+        !is_statement  TYPE ty_statement
+      RETURNING
+        VALUE(rv_bool) TYPE abap_bool.
+    METHODS support_inline_decl
+      RETURNING
+        VALUE(rv_supported) TYPE abap_bool.
+    METHODS support_new
+      RETURNING
+        VALUE(rv_supported) TYPE abap_bool.
+  PRIVATE SECTION.
 
-  class-data GV_NEW_RUN type ABAP_BOOL .
-  class-data GV_NEW_SUPPORTED type ABAP_BOOL .
-  data MV_LINES type FLAG .
-  data MV_NEW type FLAG .
-  data MV_INLINE_DECL type FLAG .
-*"* private components of class ZCL_AOC_CHECK_45
-*"* do not include other source files here!!!
+    CLASS-DATA gv_new_run TYPE abap_bool.
+    CLASS-DATA gv_new_supported TYPE abap_bool.
+    DATA mv_lines TYPE flag.
+    DATA mv_new TYPE flag.
+    DATA mv_inline_decl TYPE flag.
 ENDCLASS.
 
 
@@ -50,235 +44,235 @@ ENDCLASS.
 CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 
 
-METHOD check.
+  METHOD check.
 
 * abapOpenChecks
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-  DATA: lt_statements TYPE ty_statements,
-        lv_code       TYPE sci_errc.
+    DATA: lt_statements TYPE ty_statements,
+          lv_code       TYPE sci_errc.
 
-  FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
 
 
-  lt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements
-      it_levels     = it_levels ).
+    lt_statements = build_statements(
+        it_tokens     = it_tokens
+        it_statements = it_statements
+        it_levels     = it_levels ).
 
-  LOOP AT lt_statements ASSIGNING <ls_statement>.
-    CLEAR lv_code.
+    LOOP AT lt_statements ASSIGNING <ls_statement>.
+      CLEAR lv_code.
 
-    IF ( <ls_statement>-str CP 'DESCRIBE TABLE *'
-        AND <ls_statement>-count = 3
-        AND mv_lines = abap_true )
-        OR ( <ls_statement>-str CP 'DESCRIBE TABLE * LINES *'
-        AND mv_lines = abap_true ).
-      lv_code = '001'.
-    ELSEIF <ls_statement>-str CP 'CREATE OBJECT *'
-        AND mv_new = abap_true
-        AND support_new( ) = abap_true.
-      lv_code = '002'.
-    ELSEIF ( ( <ls_statement>-str CP 'LOOP AT * INTO *'
-        AND NOT <ls_statement>-str CP 'LOOP AT * INTO DATA(*' )
-        OR ( <ls_statement>-str CP 'LOOP AT * ASSIGNING *'
-        AND NOT <ls_statement>-str CP 'LOOP AT * ASSIGNING FIELD-SYMBOL(*' )
-        OR ( <ls_statement>-str CP 'CATCH * INTO *'
-        AND NOT <ls_statement>-str CP 'CATCH * INTO DATA(*' ) )
-        AND mv_inline_decl = abap_true
-        AND support_inline_decl( ) = abap_true
-        AND check_loop( <ls_statement> ) = abap_true.
-      lv_code = '003'.
-    ENDIF.
+      IF ( <ls_statement>-str CP 'DESCRIBE TABLE *'
+          AND <ls_statement>-count = 3
+          AND mv_lines = abap_true )
+          OR ( <ls_statement>-str CP 'DESCRIBE TABLE * LINES *'
+          AND mv_lines = abap_true ).
+        lv_code = '001'.
+      ELSEIF <ls_statement>-str CP 'CREATE OBJECT *'
+          AND mv_new = abap_true
+          AND support_new( ) = abap_true.
+        lv_code = '002'.
+      ELSEIF ( ( <ls_statement>-str CP 'LOOP AT * INTO *'
+          AND NOT <ls_statement>-str CP 'LOOP AT * INTO DATA(*' )
+          OR ( <ls_statement>-str CP 'LOOP AT * ASSIGNING *'
+          AND NOT <ls_statement>-str CP 'LOOP AT * ASSIGNING FIELD-SYMBOL(*' )
+          OR ( <ls_statement>-str CP 'CATCH * INTO *'
+          AND NOT <ls_statement>-str CP 'CATCH * INTO DATA(*' ) )
+          AND mv_inline_decl = abap_true
+          AND support_inline_decl( ) = abap_true
+          AND check_loop( <ls_statement> ) = abap_true.
+        lv_code = '003'.
+      ENDIF.
 
 * todo, add READ TABLE?
 *           IF can be changed to: boolc()
 *           CONCATENATE -> string templates
 
-    IF NOT lv_code IS INITIAL.
-      inform( p_sub_obj_type = c_type_include
-          p_sub_obj_name = <ls_statement>-include
-          p_line         = <ls_statement>-start-row
-          p_kind         = mv_errty
-          p_test         = myname
-          p_code         = lv_code ).
+      IF NOT lv_code IS INITIAL.
+        inform( p_sub_obj_type = c_type_include
+            p_sub_obj_name = <ls_statement>-include
+            p_line         = <ls_statement>-start-row
+            p_kind         = mv_errty
+            p_test         = myname
+            p_code         = lv_code ).
+      ENDIF.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD check_loop.
+
+    CONSTANTS: lc_into      TYPE string VALUE 'INTO',
+               lc_assigning TYPE string VALUE 'ASSIGNING'.
+
+    DATA: lt_result TYPE scr_refs,
+          lt_str    TYPE TABLE OF string,
+          lv_var    TYPE string.
+
+    FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result.
+
+
+    lt_result = get_compiler( ).
+    DELETE lt_result WHERE tag <> cl_abap_compiler=>tag_data.
+    DELETE lt_result WHERE name = ''.
+
+    SPLIT is_statement-str AT space INTO TABLE lt_str.
+    READ TABLE lt_str FROM lc_into TRANSPORTING NO FIELDS.
+    IF sy-subrc <> 0.
+      READ TABLE lt_str FROM lc_assigning TRANSPORTING NO FIELDS.
     ENDIF.
-  ENDLOOP.
-
-ENDMETHOD.
-
-
-METHOD check_loop.
-
-  CONSTANTS: lc_into      TYPE string VALUE 'INTO',
-             lc_assigning TYPE string VALUE 'ASSIGNING'.
-
-  DATA: lt_result TYPE scr_refs,
-        lt_str    TYPE TABLE OF string,
-        lv_var    TYPE string.
-
-  FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result.
-
-
-  lt_result = get_compiler( ).
-  DELETE lt_result WHERE tag <> cl_abap_compiler=>tag_data.
-  DELETE lt_result WHERE name = ''.
-
-  SPLIT is_statement-str AT space INTO TABLE lt_str.
-  READ TABLE lt_str FROM lc_into TRANSPORTING NO FIELDS.
-  IF sy-subrc <> 0.
-    READ TABLE lt_str FROM lc_assigning TRANSPORTING NO FIELDS.
-  ENDIF.
-  ASSERT sy-subrc = 0.
-  sy-tabix = sy-tabix + 1.
-  READ TABLE lt_str INDEX sy-tabix INTO lv_var.
-  ASSERT sy-subrc = 0.
+    ASSERT sy-subrc = 0.
+    sy-tabix = sy-tabix + 1.
+    READ TABLE lt_str INDEX sy-tabix INTO lv_var.
+    ASSERT sy-subrc = 0.
 
 * this will make sure it is a local variable
-  READ TABLE lt_result WITH KEY
-    name = lv_var
-    grade = cl_abap_compiler=>grade_definition
-    mode2 = '2'             " downport, cl_abap_compiler=>mode2_def
-    statement->source_info->name = is_statement-include
-    TRANSPORTING NO FIELDS.
-  IF sy-subrc <> 0.
-    RETURN.
-  ENDIF.
+    READ TABLE lt_result WITH KEY
+      name = lv_var
+      grade = cl_abap_compiler=>grade_definition
+      mode2 = '2'             " downport, cl_abap_compiler=>mode2_def
+      statement->source_info->name = is_statement-include
+      TRANSPORTING NO FIELDS.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
 
 * find the first use of the variable, this should be the LOOP
-  READ TABLE lt_result ASSIGNING <ls_result> WITH KEY
-    name = lv_var
-    grade = cl_abap_compiler=>grade_direct
-    statement->source_info->name = is_statement-include.
-  IF sy-subrc <> 0.
-    RETURN.
-  ENDIF.
+    READ TABLE lt_result ASSIGNING <ls_result> WITH KEY
+      name = lv_var
+      grade = cl_abap_compiler=>grade_direct
+      statement->source_info->name = is_statement-include.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
 
-  IF <ls_result>-statement->start_line = is_statement-start-row.
-    rv_bool = abap_true.
-  ENDIF.
+    IF <ls_result>-statement->start_line = is_statement-start-row.
+      rv_bool = abap_true.
+    ENDIF.
 
-ENDMETHOD.
-
-
-METHOD constructor.
-
-  super->constructor( ).
-
-  description    = 'Use expressions'.                       "#EC NOTEXT
-  category       = 'ZCL_AOC_CATEGORY'.
-  version        = '003'.
-  position       = '045'.
-
-  has_attributes = abap_true.
-  attributes_ok  = abap_true.
-
-  mv_errty = c_error.
-
-  mv_lines       = abap_true.
-  mv_new         = abap_true.
-  mv_inline_decl = abap_true.
-
-ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
-METHOD get_attributes.
+  METHOD constructor.
 
-  EXPORT
-    mv_lines = mv_lines
-    mv_new = mv_new
-    TO DATA BUFFER p_attributes.
+    super->constructor( ).
 
-ENDMETHOD.
+    description    = 'Use expressions'.                     "#EC NOTEXT
+    category       = 'ZCL_AOC_CATEGORY'.
+    version        = '003'.
+    position       = '045'.
 
+    has_attributes = abap_true.
+    attributes_ok  = abap_true.
 
-METHOD get_message_text.
+    mv_errty = c_error.
 
-  CLEAR p_text.
+    mv_lines       = abap_true.
+    mv_new         = abap_true.
+    mv_inline_decl = abap_true.
 
-  CASE p_code.
-    WHEN '001'.
-      p_text = 'Use lines( ) expression'.                   "#EC NOTEXT
-    WHEN '002'.
-      p_text = 'Use NEW abc( ) expression'.                 "#EC NOTEXT
-    WHEN '003'.
-      p_text = 'Declare variable inline'.                   "#EC NOTEXT
-    WHEN OTHERS.
-      ASSERT 0 = 1.
-  ENDCASE.
-
-ENDMETHOD.
+  ENDMETHOD.                    "CONSTRUCTOR
 
 
-METHOD if_ci_test~query_attributes.
+  METHOD get_attributes.
 
-  zzaoc_top.
+    EXPORT
+      mv_lines = mv_lines
+      mv_new = mv_new
+      TO DATA BUFFER p_attributes.
 
-  zzaoc_fill_att mv_errty 'Error Type' ''.                  "#EC NOTEXT
-  zzaoc_fill_att mv_lines 'lines( )' ''.                    "#EC NOTEXT
-  zzaoc_fill_att mv_new 'NEW' ''.                           "#EC NOTEXT
-  zzaoc_fill_att mv_inline_decl 'Inline declarations' ''.   "#EC NOTEXT
-
-  zzaoc_popup.
-
-ENDMETHOD.
+  ENDMETHOD.
 
 
-METHOD put_attributes.
+  METHOD get_message_text.
 
-  IMPORT
-    mv_lines = mv_lines
-    mv_new = mv_new
-    FROM DATA BUFFER p_attributes.                   "#EC CI_USE_WANTED
-  ASSERT sy-subrc = 0.
+    CLEAR p_text.
 
-ENDMETHOD.
+    CASE p_code.
+      WHEN '001'.
+        p_text = 'Use lines( ) expression'.                 "#EC NOTEXT
+      WHEN '002'.
+        p_text = 'Use NEW abc( ) expression'.               "#EC NOTEXT
+      WHEN '003'.
+        p_text = 'Declare variable inline'.                 "#EC NOTEXT
+      WHEN OTHERS.
+        ASSERT 0 = 1.
+    ENDCASE.
+
+  ENDMETHOD.
 
 
-METHOD support_inline_decl.
+  METHOD if_ci_test~query_attributes.
+
+    zzaoc_top.
+
+    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
+    zzaoc_fill_att mv_lines 'lines( )' ''.                  "#EC NOTEXT
+    zzaoc_fill_att mv_new 'NEW' ''.                         "#EC NOTEXT
+    zzaoc_fill_att mv_inline_decl 'Inline declarations' ''. "#EC NOTEXT
+
+    zzaoc_popup.
+
+  ENDMETHOD.
+
+
+  METHOD put_attributes.
+
+    IMPORT
+      mv_lines = mv_lines
+      mv_new = mv_new
+      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
+
+
+  METHOD support_inline_decl.
 
 * the check for NEW also uses inline data declarations, so just reuse it
-  rv_supported = support_new( ).
+    rv_supported = support_new( ).
 
-ENDMETHOD.
-
-
-METHOD support_new.
-
-  DATA: lt_itab  TYPE STANDARD TABLE OF string,
-        lv_mess  TYPE string,
-        lv_lin   TYPE i,
-        ls_trdir TYPE trdir,
-        lv_code  TYPE string,
-        lv_wrd   TYPE string.
+  ENDMETHOD.
 
 
-  IF gv_new_run = abap_true.
-    rv_supported = gv_new_supported.
-    RETURN.
-  ENDIF.
+  METHOD support_new.
 
-  lv_code = 'REPORT zfoobar.' ##NO_TEXT.
-  APPEND lv_code TO lt_itab.
-  lv_code = 'DATA(lo_new) = NEW cl_gui_frontend_services( ).' ##NO_TEXT.
-  APPEND lv_code TO lt_itab.
+    DATA: lt_itab  TYPE STANDARD TABLE OF string,
+          lv_mess  TYPE string,
+          lv_lin   TYPE i,
+          ls_trdir TYPE trdir,
+          lv_code  TYPE string,
+          lv_wrd   TYPE string.
 
-  ls_trdir-uccheck = abap_true.
 
-  SYNTAX-CHECK FOR lt_itab
-    MESSAGE lv_mess
-    LINE lv_lin
-    WORD lv_wrd
-    DIRECTORY ENTRY ls_trdir.
-  IF sy-subrc = 0.
-    rv_supported = abap_true.
-  ELSE.
-    rv_supported = abap_false.
-  ENDIF.
+    IF gv_new_run = abap_true.
+      rv_supported = gv_new_supported.
+      RETURN.
+    ENDIF.
 
-  gv_new_supported = rv_supported.
-  gv_new_run = abap_true.
+    lv_code = 'REPORT zfoobar.' ##NO_TEXT.
+    APPEND lv_code TO lt_itab.
+    lv_code = 'DATA(lo_new) = NEW cl_gui_frontend_services( ).' ##NO_TEXT.
+    APPEND lv_code TO lt_itab.
 
-ENDMETHOD.
+    ls_trdir-uccheck = abap_true.
+
+    SYNTAX-CHECK FOR lt_itab
+      MESSAGE lv_mess
+      LINE lv_lin
+      WORD lv_wrd
+      DIRECTORY ENTRY ls_trdir.
+    IF sy-subrc = 0.
+      rv_supported = abap_true.
+    ELSE.
+      rv_supported = abap_false.
+    ENDIF.
+
+    gv_new_supported = rv_supported.
+    gv_new_run = abap_true.
+
+  ENDMETHOD.
 ENDCLASS.

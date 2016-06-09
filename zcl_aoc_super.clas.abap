@@ -2,47 +2,45 @@ CLASS zcl_aoc_super DEFINITION
   PUBLIC
   INHERITING FROM cl_ci_test_scan
   ABSTRACT
-  CREATE PUBLIC .
+  CREATE PUBLIC.
 
   PUBLIC SECTION.
-    TYPE-POOLS zzaoc .
+    TYPE-POOLS zzaoc.
 
     TYPES:
-*"* public components of class ZCL_AOC_SUPER
-*"* do not include other source files here!!!
-      ty_structures_tt TYPE STANDARD TABLE OF sstruc WITH NON-UNIQUE DEFAULT KEY .
+      ty_structures_tt TYPE STANDARD TABLE OF sstruc WITH NON-UNIQUE DEFAULT KEY.
 
     METHODS check
       IMPORTING
         !it_tokens     TYPE stokesx_tab
         !it_statements TYPE sstmnt_tab
         !it_levels     TYPE slevel_tab
-        !it_structures TYPE ty_structures_tt .
+        !it_structures TYPE ty_structures_tt.
     METHODS set_source
       IMPORTING
         !iv_name TYPE level_name
-        !it_code TYPE string_table .
+        !it_code TYPE string_table.
     METHODS get_compiler
       RETURNING
-        VALUE(rt_result) TYPE scr_refs .
+        VALUE(rt_result) TYPE scr_refs.
 
     METHODS get_attributes
-        REDEFINITION .
+        REDEFINITION.
     METHODS if_ci_test~display_documentation
-        REDEFINITION .
+        REDEFINITION.
     METHODS if_ci_test~query_attributes
-        REDEFINITION .
+        REDEFINITION.
     METHODS put_attributes
-        REDEFINITION .
+        REDEFINITION.
     METHODS run
-        REDEFINITION .
+        REDEFINITION.
   PROTECTED SECTION.
 
     TYPES:
       BEGIN OF ty_position,
         row TYPE token_row,
         col TYPE token_col,
-      END OF ty_position .
+      END OF ty_position.
     TYPES:
       BEGIN OF ty_statement,
         str     TYPE string,
@@ -50,13 +48,11 @@ CLASS zcl_aoc_super DEFINITION
         end     TYPE ty_position,
         include TYPE programm,
         count   TYPE i,
-      END OF ty_statement .
+      END OF ty_statement.
     TYPES:
-      ty_statements TYPE STANDARD TABLE OF ty_statement WITH DEFAULT KEY .
+      ty_statements TYPE STANDARD TABLE OF ty_statement WITH DEFAULT KEY.
 
-*"* protected components of class ZCL_AOC_SUPER
-*"* do not include other source files here!!!
-    DATA mv_errty TYPE sci_errty .
+    DATA mv_errty TYPE sci_errty.
 
     CLASS-METHODS statement_keyword
       IMPORTING
@@ -64,74 +60,72 @@ CLASS zcl_aoc_super DEFINITION
         !it_statements   TYPE sstmnt_tab
         !it_tokens       TYPE stokesx_tab
       RETURNING
-        VALUE(rv_result) TYPE string .
+        VALUE(rv_result) TYPE string.
     CLASS-METHODS statement_row
       IMPORTING
         !iv_number       TYPE stmnt_nr
         !it_statements   TYPE sstmnt_tab
         !it_tokens       TYPE stokesx_tab
       RETURNING
-        VALUE(rv_result) TYPE token_row .
+        VALUE(rv_result) TYPE token_row.
     METHODS get_source
       IMPORTING
         !is_level      TYPE slevel
       RETURNING
-        VALUE(rt_code) TYPE string_table .
+        VALUE(rt_code) TYPE string_table.
     METHODS build_statements
       IMPORTING
         !it_tokens           TYPE stokesx_tab
         !it_statements       TYPE sstmnt_tab
         !it_levels           TYPE slevel_tab
       RETURNING
-        VALUE(rt_statements) TYPE ty_statements .
+        VALUE(rt_statements) TYPE ty_statements.
     METHODS is_class_pool
       IMPORTING
         !iv_include    TYPE level_name
       RETURNING
-        VALUE(rv_bool) TYPE abap_bool .
+        VALUE(rv_bool) TYPE abap_bool.
     METHODS is_class_definition
       IMPORTING
         !iv_include    TYPE level_name
       RETURNING
-        VALUE(rv_bool) TYPE abap_bool .
+        VALUE(rv_bool) TYPE abap_bool.
 
     METHODS get_include
-        REDEFINITION .
+        REDEFINITION.
     METHODS inform
-        REDEFINITION .
+        REDEFINITION.
   PRIVATE SECTION.
 
     TYPES:
-*"* private components of class ZCL_AOC_SUPER
-*"* do not include other source files here!!!
       BEGIN OF ty_source,
         name TYPE level_name,
         code TYPE string_table,
-      END OF ty_source .
+      END OF ty_source.
     TYPES:
-      ty_source_tt TYPE SORTED TABLE OF ty_source WITH UNIQUE KEY name .
+      ty_source_tt TYPE SORTED TABLE OF ty_source WITH UNIQUE KEY name.
 
-    DATA mt_cache_result TYPE scr_refs .
-    DATA mv_cache_program TYPE program .
-    DATA mt_source TYPE ty_source_tt .
+    DATA mt_cache_result TYPE scr_refs.
+    DATA mv_cache_program TYPE program.
+    DATA mt_source TYPE ty_source_tt.
 
     CLASS-METHODS token_position
       IMPORTING
         !is_token          TYPE stokesx
       RETURNING
-        VALUE(rs_position) TYPE ty_position .
+        VALUE(rs_position) TYPE ty_position.
     METHODS check_class
       IMPORTING
         !iv_sub_obj_name TYPE sobj_name
       RETURNING
-        VALUE(rv_skip)   TYPE abap_bool .
+        VALUE(rv_skip)   TYPE abap_bool.
     METHODS check_wdy
       IMPORTING
         !iv_sub_obj_type TYPE trobjtype
         !iv_sub_obj_name TYPE sobj_name
         !iv_line         TYPE token_row
       RETURNING
-        VALUE(rv_skip)   TYPE abap_bool .
+        VALUE(rv_skip)   TYPE abap_bool.
 ENDCLASS.
 
 

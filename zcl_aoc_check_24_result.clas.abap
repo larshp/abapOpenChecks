@@ -1,36 +1,34 @@
-class ZCL_AOC_CHECK_24_RESULT definition
-  public
-  inheriting from CL_CI_RESULT_PROGRAM
-  create public .
+CLASS zcl_aoc_check_24_result DEFINITION
+  PUBLIC
+  INHERITING FROM cl_ci_result_program
+  CREATE PUBLIC.
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR
-    importing
-      !IV_KIND type SYCHAR01 .
+    METHODS constructor
+      IMPORTING
+        !iv_kind TYPE sychar01.
 
-  methods IF_CI_TEST~NAVIGATE
-    redefinition .
-  methods SET_INFO
-    redefinition .
-*"* protected components of class ZCL_AOC_CHECK_24_RESULT
-*"* do not include other source files here!!!
-protected section.
+    METHODS if_ci_test~navigate
+        REDEFINITION.
+    METHODS set_info
+        REDEFINITION.
+  PROTECTED SECTION.
 
-  data MT_LIST type ZCL_AOC_CHECK_24=>TY_LIST_TT .
+    DATA mt_list TYPE zcl_aoc_check_24=>ty_list_tt.
 
-  methods UNPACK
-    importing
-      !IV_STRING type STRING
-    returning
-      value(RT_LIST) type ZCL_AOC_CHECK_24=>TY_LIST_TT .
-private section.
+    METHODS unpack
+      IMPORTING
+        !iv_string     TYPE string
+      RETURNING
+        VALUE(rt_list) TYPE zcl_aoc_check_24=>ty_list_tt.
+  PRIVATE SECTION.
 
-  methods DOUBLE_CLICK
-    for event DOUBLE_CLICK of CL_SALV_EVENTS_TABLE
-    importing
-      !ROW
-      !COLUMN .
+    METHODS double_click
+          FOR EVENT double_click OF cl_salv_events_table
+      IMPORTING
+          !row
+          !column.
 ENDCLASS.
 
 
@@ -38,103 +36,103 @@ ENDCLASS.
 CLASS ZCL_AOC_CHECK_24_RESULT IMPLEMENTATION.
 
 
-METHOD constructor.
+  METHOD constructor.
 
-  super->constructor( iv_kind ).
+    super->constructor( iv_kind ).
 
-ENDMETHOD.
-
-
-METHOD double_click.
-
-  DATA: lv_include TYPE programm,
-        lv_line    TYPE sci_proc_line.
-
-  FIELD-SYMBOLS: <ls_list> LIKE LINE OF mt_list.
+  ENDMETHOD.
 
 
-  READ TABLE mt_list INDEX row ASSIGNING <ls_list>.
-  ASSERT sy-subrc = 0.
+  METHOD double_click.
 
-  CASE column.
-    WHEN 'PROC_NAME1' OR 'CODE1' OR 'LINE1'.
-      lv_include = <ls_list>-proc_name1.
-      lv_line    = <ls_list>-line1.
-    WHEN 'PROC_NAME2' OR 'CODE2' OR 'LINE2'.
-      lv_include = <ls_list>-proc_name2.
-      lv_line    = <ls_list>-line2.
-    WHEN OTHERS.
+    DATA: lv_include TYPE programm,
+          lv_line    TYPE sci_proc_line.
+
+    FIELD-SYMBOLS: <ls_list> LIKE LINE OF mt_list.
+
+
+    READ TABLE mt_list INDEX row ASSIGNING <ls_list>.
+    ASSERT sy-subrc = 0.
+
+    CASE column.
+      WHEN 'PROC_NAME1' OR 'CODE1' OR 'LINE1'.
+        lv_include = <ls_list>-proc_name1.
+        lv_line    = <ls_list>-line1.
+      WHEN 'PROC_NAME2' OR 'CODE2' OR 'LINE2'.
+        lv_include = <ls_list>-proc_name2.
+        lv_line    = <ls_list>-line2.
+      WHEN OTHERS.
+        RETURN.
+    ENDCASE.
+
+    CALL FUNCTION 'RS_TOOL_ACCESS'
+      EXPORTING
+        operation   = 'SHOW'
+        object_name = lv_include
+        object_type = 'PROG'
+        position    = lv_line
+      EXCEPTIONS
+        OTHERS      = 3. "#EC CI_SUBRC
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
+
+
+  METHOD if_ci_test~navigate.
+
+    DATA: lo_table     TYPE REF TO cl_salv_table,
+          lo_events    TYPE REF TO cl_salv_events_table,
+          lo_columns   TYPE REF TO cl_salv_columns_table,
+          lo_functions TYPE REF TO cl_salv_functions_list.
+
+
+    IF result-param1 IS INITIAL.
       RETURN.
-  ENDCASE.
+    ENDIF.
 
-  CALL FUNCTION 'RS_TOOL_ACCESS'
-    EXPORTING
-      operation   = 'SHOW'
-      object_name = lv_include
-      object_type = 'PROG'
-      position    = lv_line
-    EXCEPTIONS
-      OTHERS      = 3. "#EC CI_SUBRC
-  ASSERT sy-subrc = 0.
+    mt_list = unpack( result-param1 ).
 
-ENDMETHOD.
+    TRY.
+        cl_salv_table=>factory(
+          EXPORTING
+            list_display = abap_true
+          IMPORTING
+            r_salv_table = lo_table
+          CHANGING
+            t_table      = mt_list ).
 
+        lo_columns = lo_table->get_columns( ).
+        lo_columns->set_optimize( abap_true ).
 
-METHOD if_ci_test~navigate.
+        lo_events = lo_table->get_event( ).
+        SET HANDLER double_click FOR lo_events.
 
-  DATA: lo_table     TYPE REF TO cl_salv_table,
-        lo_events    TYPE REF TO cl_salv_events_table,
-        lo_columns   TYPE REF TO cl_salv_columns_table,
-        lo_functions TYPE REF TO cl_salv_functions_list.
+        lo_functions = lo_table->get_functions( ).
+        lo_functions->set_all( ).
 
+        lo_table->display( ).
+      CATCH cx_root ##CATCH_ALL.
+        ASSERT 0 = 1.
+    ENDTRY.
 
-  IF result-param1 IS INITIAL.
-    RETURN.
-  ENDIF.
-
-  mt_list = unpack( result-param1 ).
-
-  TRY.
-      cl_salv_table=>factory(
-        EXPORTING
-          list_display = abap_true
-        IMPORTING
-          r_salv_table = lo_table
-        CHANGING
-          t_table      = mt_list ).
-
-      lo_columns = lo_table->get_columns( ).
-      lo_columns->set_optimize( abap_true ).
-
-      lo_events = lo_table->get_event( ).
-      SET HANDLER double_click FOR lo_events.
-
-      lo_functions = lo_table->get_functions( ).
-      lo_functions->set_all( ).
-
-      lo_table->display( ).
-    CATCH cx_root ##CATCH_ALL.
-      ASSERT 0 = 1.
-  ENDTRY.
-
-ENDMETHOD.
+  ENDMETHOD.
 
 
-METHOD set_info.
+  METHOD set_info.
 
-  p_result = super->set_info( p_info ).
+    p_result = super->set_info( p_info ).
 
-ENDMETHOD.
-
-
-METHOD unpack.
-
-  DATA: lv_xstring TYPE xstring.
+  ENDMETHOD.
 
 
-  lv_xstring = iv_string.
-  IMPORT list = rt_list FROM DATA BUFFER lv_xstring.
-  ASSERT sy-subrc = 0.
+  METHOD unpack.
 
-ENDMETHOD.
+    DATA: lv_xstring TYPE xstring.
+
+
+    lv_xstring = iv_string.
+    IMPORT list = rt_list FROM DATA BUFFER lv_xstring.
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
 ENDCLASS.
