@@ -8,9 +8,9 @@ CLASS zcl_aoc_check_49 DEFINITION
     METHODS constructor.
 
     METHODS check
-        REDEFINITION .
+        REDEFINITION.
     METHODS get_message_text
-        REDEFINITION .
+        REDEFINITION.
   PROTECTED SECTION.
 
   PRIVATE SECTION.
@@ -43,8 +43,7 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
 
   METHOD build.
 
-    DATA: lv_prev   TYPE token_row,
-          lv_offset TYPE i,
+    DATA: lv_offset TYPE i,
           lv_level  LIKE sy-tabix.
 
     FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
@@ -60,16 +59,17 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
           WHERE level = lv_level
           AND coloncol = 0.
 
-        CLEAR lv_prev.
+        UNASSIGN <ls_code>.
         LOOP AT it_tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from TO <ls_statement>-to
             WHERE type <> scan_token_type-comment.
-          IF lv_prev <> <ls_token>-row.
+          IF NOT <ls_code> IS ASSIGNED.
             APPEND INITIAL LINE TO rt_code ASSIGNING <ls_code>.
             <ls_code>-name = <ls_level>-name.
             <ls_code>-row = <ls_token>-row.
-
-            lv_prev = <ls_token>-row.
+          ELSEIF <ls_code>-row <> <ls_token>-row.
+* only the first row of the statement is needed when checking for spaces
+            EXIT.
           ENDIF.
 
           lv_offset = <ls_token>-col.
