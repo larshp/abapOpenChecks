@@ -20,6 +20,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
       export_import FOR TESTING,
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
+      test001_03 FOR TESTING,
       test002_01 FOR TESTING,
       test002_02 FOR TESTING,
       test003_01 FOR TESTING.
@@ -71,6 +72,18 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.                    "test001_02
+
+  METHOD test001_03.
+* ===========
+
+    _code 'CATCH: cx_root.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.                    "test1
 
   METHOD test002_01.
 * ===========
