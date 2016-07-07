@@ -139,6 +139,8 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         lv_error = '010'.
       ELSEIF lv_code CP 'ELSEIF  *'.
         lv_error = '011'.
+      ELSEIF lv_code CP 'DATA  *'.
+        lv_error = '012'.
       ENDIF.
 
       IF NOT lv_error IS INITIAL.
@@ -198,6 +200,8 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         p_text = 'Double space after REPORT'.               "#EC NOTEXT
       WHEN '011'.
         p_text = 'Double space after ELSEIF'.               "#EC NOTEXT
+      WHEN '012'.
+        p_text = 'Double space after DATA'.                 "#EC NOTEXT
       WHEN OTHERS.
         ASSERT 0 = 1.
     ENDCASE.

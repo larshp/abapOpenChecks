@@ -23,7 +23,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_03 FOR TESTING,
       test001_04 FOR TESTING,
       test001_05 FOR TESTING,
-      test001_06 FOR TESTING.
+      test001_06 FOR TESTING,
+      test001_07 FOR TESTING,
+      test001_08 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -113,6 +115,29 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'lo_alv->set_screen_status('.
     _code '  report        = sy-repid'.
     _code '  set_functions = lo_alv->c_functions_all ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_07.
+* ===========
+
+    _code 'DATA  lv_foo TYPE c.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '012'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_08.
+* ===========
+
+    _code 'DATA: lv_foo TYPE c.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
