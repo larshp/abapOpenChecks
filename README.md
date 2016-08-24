@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/larshp/abapOpenChecks.svg?branch=master)](https://travis-ci.org/larshp/abapOpenChecks)
+[![abaplint](http://abaplint.org/badges/larshp/abapOpenChecks)](http://abaplint.org/project/larshp/abapOpenChecks)
 
 abapOpenChecks
 ==============
