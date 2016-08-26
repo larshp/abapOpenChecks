@@ -25,7 +25,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
       test002_01 FOR TESTING,
-      test002_02 FOR TESTING.
+      test002_02 FOR TESTING,
+      test004_01 FOR TESTING,
+      test004_02 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -113,6 +115,27 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '002'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test004_01.
+
+    _code 'CONDENSE lv_foo.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '004'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test004_02.
+
+    _code 'lv_foo = condense( lv_foo ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
   ENDMETHOD.
 

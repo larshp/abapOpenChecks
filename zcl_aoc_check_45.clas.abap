@@ -37,6 +37,12 @@ CLASS zcl_aoc_check_45 DEFINITION
     DATA mv_lines TYPE flag.
     DATA mv_new TYPE flag.
     DATA mv_inline_decl TYPE flag.
+    DATA mv_condense TYPE flag.
+    DATA mv_concat_lines TYPE flag.
+    DATA mv_shift TYPE flag.
+    DATA mv_translate_to TYPE flag.
+    DATA mv_translate_using TYPE flag.
+    DATA mv_templates TYPE flag.
 ENDCLASS.
 
 
@@ -84,11 +90,28 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
           AND support_inline_decl( ) = abap_true
           AND check_loop( <ls_statement> ) = abap_true.
         lv_code = '003'.
+      ELSEIF mv_condense = abap_true
+          AND <ls_statement>-str CP 'CONDENSE *'.
+        lv_code = '004'.
+      ELSEIF mv_concat_lines = abap_true
+          AND <ls_statement>-str CP 'CONCATENATE LINES OF *'.
+        lv_code = '005'.
+      ELSEIF mv_shift = abap_true
+          AND <ls_statement>-str CP 'SHIFT *'.
+        lv_code = '006'.
+      ELSEIF mv_translate_to = abap_true
+          AND <ls_statement>-str CP 'TRANSLATE * TO *'.
+        lv_code = '007'.
+      ELSEIF mv_translate_using = abap_true
+          AND <ls_statement>-str CP 'TRANSLATE * USING *'.
+        lv_code = '008'.
+      ELSEIF mv_templates = abap_true
+          AND <ls_statement>-str CP 'CONCATENATE *'.
+        lv_code = '009'.
       ENDIF.
 
 * todo, add READ TABLE?
 *           IF can be changed to: boolc()
-*           CONCATENATE -> string templates
 
       IF NOT lv_code IS INITIAL.
         inform( p_sub_obj_type = c_type_include
@@ -162,7 +185,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 
     description    = 'Use expressions'.                     "#EC NOTEXT
     category       = 'ZCL_AOC_CATEGORY'.
-    version        = '003'.
+    version        = '004'.
     position       = '045'.
 
     has_attributes = abap_true.
@@ -170,9 +193,14 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 
     mv_errty = c_error.
 
-    mv_lines       = abap_true.
-    mv_new         = abap_true.
-    mv_inline_decl = abap_true.
+    mv_lines           = abap_true.
+    mv_new             = abap_true.
+    mv_inline_decl     = abap_true.
+    mv_condense        = abap_true.
+    mv_concat_lines    = abap_true.
+    mv_shift           = abap_true.
+    mv_translate_to    = abap_true.
+    mv_translate_using = abap_true.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
@@ -180,8 +208,15 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
   METHOD get_attributes.
 
     EXPORT
-      mv_lines = mv_lines
-      mv_new = mv_new
+      mv_lines           = mv_lines
+      mv_new             = mv_new
+      mv_inline_decl     = mv_inline_decl
+      mv_condense        = mv_condense
+      mv_concat_lines    = mv_concat_lines
+      mv_shift           = mv_shift
+      mv_translate_to    = mv_translate_to
+      mv_translate_using = mv_translate_using
+      mv_templates       = mv_templates
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -198,6 +233,18 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
         p_text = 'Use NEW abc( ) expression'.               "#EC NOTEXT
       WHEN '003'.
         p_text = 'Declare variable inline'.                 "#EC NOTEXT
+      WHEN '004'.
+        p_text = 'Use condense( )'.                         "#EC NOTEXT
+      WHEN '005'.
+        p_text = 'Use concate_lines_of( )'.                 "#EC NOTEXT
+      WHEN '006'.
+        p_text = 'Use shift_left( ) or shift_right( )'.     "#EC NOTEXT
+      WHEN '007'.
+        p_text = 'Use to_upper( ) or to_lower( )' .         "#EC NOTEXT
+      WHEN '008'.
+        p_text = 'Use translate( )' .                       "#EC NOTEXT
+      WHEN '009'.
+        p_text = 'Use string templates' .                   "#EC NOTEXT
       WHEN OTHERS.
         ASSERT 0 = 1.
     ENDCASE.
@@ -213,6 +260,12 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     zzaoc_fill_att mv_lines 'lines( )' ''.                  "#EC NOTEXT
     zzaoc_fill_att mv_new 'NEW' ''.                         "#EC NOTEXT
     zzaoc_fill_att mv_inline_decl 'Inline declarations' ''. "#EC NOTEXT
+    zzaoc_fill_att mv_condense 'condense( )' ''.            "#EC NOTEXT
+    zzaoc_fill_att mv_concat_lines 'concate_lines_of( )' ''. "#EC NOTEXT
+    zzaoc_fill_att mv_shift 'shift_left( ) or shift_right( )' ''. "#EC NOTEXT
+    zzaoc_fill_att mv_translate_to 'to_upper( ) or to_lower( )' ''. "#EC NOTEXT
+    zzaoc_fill_att mv_translate_using 'translate( )' ''.    "#EC NOTEXT
+    zzaoc_fill_att mv_templates 'CONCATENATE -> String templates' ''. "#EC NOTEXT
 
     zzaoc_popup.
 
@@ -222,8 +275,15 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
   METHOD put_attributes.
 
     IMPORT
-      mv_lines = mv_lines
-      mv_new = mv_new
+      mv_lines           = mv_lines
+      mv_new             = mv_new
+      mv_inline_decl     = mv_inline_decl
+      mv_condense        = mv_condense
+      mv_concat_lines    = mv_concat_lines
+      mv_shift           = mv_shift
+      mv_translate_to    = mv_translate_to
+      mv_translate_using = mv_translate_using
+      mv_templates       = mv_templates
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
