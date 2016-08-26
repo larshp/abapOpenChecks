@@ -25,7 +25,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_05 FOR TESTING,
       test001_06 FOR TESTING,
       test001_07 FOR TESTING,
-      test001_08 FOR TESTING.
+      test001_08 FOR TESTING,
+      test001_09 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -138,6 +139,22 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     _code 'DATA: lv_foo TYPE c.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_09.
+* ===========
+
+    _code 'CALL FUNCTION ''RS_VARIANT_EXISTS'''.
+    _code '  EXPORTING'.
+    _code '    report  = lv_report'.
+    _code '    variant = lv_variant'.
+    _code '  IMPORTING'.
+    _code '    r_c     = lv_subrc.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
