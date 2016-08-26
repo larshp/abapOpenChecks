@@ -39,6 +39,7 @@ CLASS zcl_aoc_check_08 DEFINITION
     DATA mv_019 TYPE flag.
     DATA mv_020 TYPE flag.
     DATA mv_021 TYPE flag.
+    DATA mv_022 TYPE flag.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -138,6 +139,8 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
         lv_code = '020'.
       ELSEIF mv_021 = abap_true AND lv_statement CP 'LOCAL *'.
         lv_code = '021'.
+      ELSEIF mv_022 = abap_true AND lv_statement CP 'DO 1 TIMES*'.
+        lv_code = '022'.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
@@ -161,7 +164,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
 
     description    = 'Obsolete statement'.                  "#EC NOTEXT
     category       = 'ZCL_AOC_CATEGORY'.
-    version        = '003'.
+    version        = '004'.
     position       = '008'.
 
     has_attributes = abap_true.
@@ -189,6 +192,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
     mv_019 = abap_true.
     mv_020 = abap_true.
     mv_021 = abap_true.
+    mv_022 = abap_true.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
@@ -218,6 +222,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
       mv_019 = mv_019
       mv_020 = mv_020
       mv_021 = mv_021
+      mv_022 = mv_022
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -270,6 +275,8 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
         p_text = 'Do not use SET EXTENDED CHECK'.           "#EC NOTEXT
       WHEN '021'.
         p_text = 'LOCAL is obsolete'.                       "#EC NOTEXT
+      WHEN '022'.
+        p_text = 'DO 1 TIMES'.                              "#EC NOTEXT
       WHEN OTHERS.
         ASSERT 0 = 1.
     ENDCASE.
@@ -303,6 +310,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
     zzaoc_fill_att mv_019 'Arithmetic CORRESPONDING' ''.    "#EC NOTEXT
     zzaoc_fill_att mv_020 'SET EXTENDED CHECK' ''.          "#EC NOTEXT
     zzaoc_fill_att mv_021 'LOCAL' ''.                       "#EC NOTEXT
+    zzaoc_fill_att mv_022 'DO 1 TIMES' ''.                  "#EC NOTEXT
 
     zzaoc_popup.
 
@@ -334,6 +342,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
       mv_019 = mv_019
       mv_020 = mv_020
       mv_021 = mv_021
+      mv_022 = mv_022
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 

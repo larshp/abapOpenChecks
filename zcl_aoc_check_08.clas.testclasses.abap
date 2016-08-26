@@ -44,7 +44,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test018_01 FOR TESTING,
       test019_01 FOR TESTING,
       test020_01 FOR TESTING,
-      test021_01 FOR TESTING.
+      test021_01 FOR TESTING,
+      test022_01 FOR TESTING,
+      test022_02 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -375,6 +377,27 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '021'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test022_01.
+
+    _code 'DO 1 TIMES.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '022'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test022_02.
+
+    _code 'DO lv_count TIMES.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
 
