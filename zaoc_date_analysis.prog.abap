@@ -18,23 +18,23 @@ SELECTION-SCREEN END OF BLOCK b2.
 ************************************
 
 TYPES: BEGIN OF ty_sub,
-         sobjtype    TYPE scir_alvlist-sobjtype,
-         sobjname    TYPE scir_alvlist-sobjname,
-         line        TYPE scir_alvlist-line,
-         udat        TYPE reposrc-udat,
-         cdat        TYPE reposrc-cdat,
-         code        TYPE scir_alvlist-code,
-         text        TYPE scir_alvlist-text,
+         sobjtype TYPE scir_alvlist-sobjtype,
+         sobjname TYPE scir_alvlist-sobjname,
+         line     TYPE scir_alvlist-line,
+         udat     TYPE reposrc-udat,
+         cdat     TYPE reposrc-cdat,
+         code     TYPE scir_alvlist-code,
+         text     TYPE scir_alvlist-text,
        END OF ty_sub.
 
 TYPES: ty_sub_tt TYPE STANDARD TABLE OF ty_sub WITH DEFAULT KEY.
 
 TYPES: BEGIN OF ty_output,
-         test  TYPE scir_alvlist-test,
-         date  TYPE datum,
-         count TYPE i,
+         test        TYPE scir_alvlist-test,
+         date        TYPE datum,
+         count       TYPE i,
          description TYPE scir_alvlist-description,
-         sub   TYPE ty_sub_tt,
+         sub         TYPE ty_sub_tt,
        END OF ty_output.
 
 TYPES: ty_output_tt TYPE STANDARD TABLE OF ty_output WITH DEFAULT KEY.
@@ -71,8 +71,12 @@ CLASS lcl_data IMPLEMENTATION.
           lv_date TYPE datum,
           lv_udat TYPE reposrc-udat.
 
+    FIELD-SYMBOLS: <ls_data>   LIKE LINE OF rt_data,
+                   <ls_sub>    LIKE LINE OF <ls_data>-sub,
+                   <ls_result> LIKE LINE OF it_results.
 
-    LOOP AT it_results ASSIGNING FIELD-SYMBOL(<ls_result>) WHERE sobjtype = 'PROG'.
+
+    LOOP AT it_results ASSIGNING <ls_result> WHERE sobjtype = 'PROG'.
 
       SELECT SINGLE cdat udat cnam FROM reposrc INTO (lv_cdat, lv_udat, lv_cnam)
         WHERE progname = <ls_result>-sobjname
@@ -92,7 +96,7 @@ CLASS lcl_data IMPLEMENTATION.
         lv_date = lv_udat.
       ENDIF.
 
-      READ TABLE rt_data ASSIGNING FIELD-SYMBOL(<ls_data>)
+      READ TABLE rt_data ASSIGNING <ls_data>
         WITH KEY
         test = <ls_result>-test
         date = lv_date.
@@ -104,7 +108,7 @@ CLASS lcl_data IMPLEMENTATION.
       ENDIF.
       <ls_data>-count = <ls_data>-count + 1.
 
-      APPEND INITIAL LINE TO <ls_data>-sub ASSIGNING FIELD-SYMBOL(<ls_sub>).
+      APPEND INITIAL LINE TO <ls_data>-sub ASSIGNING <ls_sub>.
       <ls_sub>-sobjtype = <ls_result>-sobjtype.
       <ls_sub>-sobjname = <ls_result>-sobjname.
       <ls_sub>-line     = <ls_result>-line.
