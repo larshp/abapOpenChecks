@@ -119,7 +119,9 @@ CLASS ZCL_AOC_CHECK_46 IMPLEMENTATION.
       WHEN '002'.
         p_text = 'Parameter shadowing variable &1'.         "#EC NOTEXT
       WHEN OTHERS.
-        ASSERT 1 = 0.
+        super->get_message_text( EXPORTING p_test = p_test
+                                           p_code = p_code
+                                 IMPORTING p_text = p_text ).
     ENDCASE.
 
   ENDMETHOD.

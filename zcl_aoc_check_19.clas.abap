@@ -173,7 +173,9 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
       WHEN '001'.
         p_text = 'Use LINE OF'.                             "#EC NOTEXT
       WHEN OTHERS.
-        ASSERT 0 = 1.
+        super->get_message_text( EXPORTING p_test = p_test
+                                           p_code = p_code
+                                 IMPORTING p_text = p_text ).
     ENDCASE.
 
   ENDMETHOD.                    "GET_MESSAGE_TEXT

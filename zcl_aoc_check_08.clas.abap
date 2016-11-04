@@ -278,7 +278,9 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
       WHEN '022'.
         p_text = 'DO 1 TIMES'.                              "#EC NOTEXT
       WHEN OTHERS.
-        ASSERT 0 = 1.
+        super->get_message_text( EXPORTING p_test = p_test
+                                           p_code = p_code
+                                 IMPORTING p_text = p_text ).
     ENDCASE.
 
   ENDMETHOD.                    "GET_MESSAGE_TEXT

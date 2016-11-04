@@ -100,7 +100,9 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
       WHEN '001'.
         p_text = 'Add RFC call error handling'.             "#EC NOTEXT
       WHEN OTHERS.
-        ASSERT 1 = 0.
+        super->get_message_text( EXPORTING p_test = p_test
+                                           p_code = p_code
+                                 IMPORTING p_text = p_text ).
     ENDCASE.
 
   ENDMETHOD.

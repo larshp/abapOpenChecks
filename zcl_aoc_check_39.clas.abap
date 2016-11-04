@@ -151,7 +151,9 @@ CLASS ZCL_AOC_CHECK_39 IMPLEMENTATION.
       WHEN '001'.
         p_text = 'Wrong naming, &1'.                        "#EC NOTEXT
       WHEN OTHERS.
-        ASSERT 0 = 1.
+        super->get_message_text( EXPORTING p_test = p_test
+                                           p_code = p_code
+                                 IMPORTING p_text = p_text ).
     ENDCASE.
 
   ENDMETHOD.

@@ -107,7 +107,9 @@ CLASS ZCL_AOC_CHECK_44 IMPLEMENTATION.
       WHEN '001'.
         p_text = 'EXPORTING can be changed to RETURNING, method &1'. "#EC NOTEXT
       WHEN OTHERS.
-        ASSERT 0 = 1.
+        super->get_message_text( EXPORTING p_test = p_test
+                                           p_code = p_code
+                                 IMPORTING p_text = p_text ).
     ENDCASE.
 
   ENDMETHOD.
