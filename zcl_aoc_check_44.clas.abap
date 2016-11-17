@@ -36,6 +36,7 @@ CLASS ZCL_AOC_CHECK_44 IMPLEMENTATION.
 
     DATA: lt_seosubcodf TYPE TABLE OF ty_seosubcodf,
           lv_clsname    TYPE seoclsname,
+          lv_cmptype    TYPE seocompo-cmptype,
           lv_name       TYPE sobj_name.
 
     FIELD-SYMBOLS: <ls_data> LIKE LINE OF lt_seosubcodf.
@@ -66,6 +67,14 @@ CLASS ZCL_AOC_CHECK_44 IMPLEMENTATION.
 * generic types cannot be specified as returning
 * todo, add more here
       IF <ls_data>-type = 'ANY'.
+        CONTINUE.
+      ENDIF.
+
+      SELECT SINGLE cmptype FROM seocompo INTO lv_cmptype
+        WHERE clsname = <ls_data>-clsname
+        AND cmpname = <ls_data>-cmpname.
+      IF sy-subrc = 0 AND lv_cmptype = '2'.
+* skip class events, they are always exporting
         CONTINUE.
       ENDIF.
 
