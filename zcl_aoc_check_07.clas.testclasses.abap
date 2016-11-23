@@ -26,7 +26,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_06 FOR TESTING,
       test001_07 FOR TESTING,
       test001_08 FOR TESTING,
-      test001_09 FOR TESTING.
+      test001_09 FOR TESTING,
+      test001_10 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -167,6 +168,17 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '    is_data = is_data'.
     _code '  RECEIVING'.
     _code '    rv_ret  = lv_ret.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+  ENDMETHOD.
+
+  METHOD test001_10.
+* ===========
+
+    _code 'CALL METHOD set_level( ).'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
