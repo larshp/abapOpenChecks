@@ -1,7 +1,4 @@
-CLASS zcl_aoc_check_51 DEFINITION
-  PUBLIC
-  INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+CLASS zcl_aoc_check_51 DEFINITION PUBLIC INHERITING FROM zcl_aoc_super CREATE PUBLIC.
 
   PUBLIC SECTION.
 
@@ -11,6 +8,7 @@ CLASS zcl_aoc_check_51 DEFINITION
          REDEFINITION.
     METHODS get_message_text
          REDEFINITION.
+
   PROTECTED SECTION.
 
     CLASS-DATA gv_run TYPE abap_bool.
@@ -51,9 +49,16 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
 
-      IF <ls_statement>-str CP 'SELECT*INTO +*'
-          AND NOT <ls_statement>-str CP 'SELECT*INTO @*'.
-        lv_code = '001'.
+      IF <ls_statement>-str CP 'SELECT*'.
+        IF <ls_statement>-str CP '* INTO ( @*'
+            OR <ls_statement>-str CP '* INTO @*'
+            OR <ls_statement>-str CP '* INTO TABLE @*'
+            OR <ls_statement>-str CP '* INTO CORRESPONDING FIELDS OF @*'
+            OR <ls_statement>-str CP '* INTO CORRESPONDING FIELDS OF TABLE @*'.
+          CONTINUE.
+        ELSE.
+          lv_code = '001'.
+        ENDIF.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.

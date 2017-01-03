@@ -22,7 +22,11 @@ CLASS ltcl_test DEFINITION FOR TESTING
       setup,
       export_import FOR TESTING,
       test001_01 FOR TESTING,
-      test001_02 FOR TESTING.
+      test001_02 FOR TESTING,
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING,
+      test001_05 FOR TESTING,
+      test001_06 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -71,6 +75,68 @@ CLASS ltcl_test IMPLEMENTATION.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_03.
+* ===========
+
+    IF mo_check->supported( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'SELECT SINGLE foo bar INTO (@<ls_data>-foo, @<ls_data>-bar) FROM zfoo.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_04.
+* ===========
+
+    IF mo_check->supported( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'SELECT * FROM usr02 INTO TABLE lt_data.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_05.
+* ===========
+
+    IF mo_check->supported( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'SELECT * FROM usr02 INTO TABLE @lt_data.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_06.
+* ===========
+
+    IF mo_check->supported( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'SELECT SINGLE foo bar INTO (<ls_data>-foo, <ls_data>-bar) FROM zfoo.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
 
   ENDMETHOD.
 
