@@ -1,25 +1,23 @@
-class ZCL_AOC_CHECK_51 definition
-  public
-  inheriting from ZCL_AOC_SUPER
-  create public .
+CLASS zcl_aoc_check_51 DEFINITION PUBLIC INHERITING FROM zcl_aoc_super CREATE PUBLIC.
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor.
 
-  methods CHECK
-    redefinition .
-  methods GET_MESSAGE_TEXT
-    redefinition .
-protected section.
+    METHODS check
+         REDEFINITION.
+    METHODS get_message_text
+         REDEFINITION.
 
-  class-data GV_RUN type ABAP_BOOL .
-  class-data GV_SUPPORTED type ABAP_BOOL .
+  PROTECTED SECTION.
 
-  methods SUPPORTED
-    returning
-      value(RV_SUPPORTED) type ABAP_BOOL .
-private section.
+    CLASS-DATA gv_run TYPE abap_bool.
+    CLASS-DATA gv_supported TYPE abap_bool.
+
+    METHODS supported
+      RETURNING
+        VALUE(rv_supported) TYPE abap_bool.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -51,9 +49,16 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
 
-      IF <ls_statement>-str CP 'SELECT*INTO +*'
-          AND NOT <ls_statement>-str CP 'SELECT*INTO @*'.
-        lv_code = '001'.
+      IF <ls_statement>-str CP 'SELECT*'.
+        IF <ls_statement>-str CP '* INTO ( @*'
+            OR <ls_statement>-str CP '* INTO @*'
+            OR <ls_statement>-str CP '* INTO TABLE @*'
+            OR <ls_statement>-str CP '* INTO CORRESPONDING FIELDS OF @*'
+            OR <ls_statement>-str CP '* INTO CORRESPONDING FIELDS OF TABLE @*'.
+          CONTINUE.
+        ELSE.
+          lv_code = '001'.
+        ENDIF.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
