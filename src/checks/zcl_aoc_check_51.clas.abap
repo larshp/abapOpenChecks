@@ -54,7 +54,8 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
             OR <ls_statement>-str CP '* INTO @*'
             OR <ls_statement>-str CP '* INTO TABLE @*'
             OR <ls_statement>-str CP '* INTO CORRESPONDING FIELDS OF @*'
-            OR <ls_statement>-str CP '* INTO CORRESPONDING FIELDS OF TABLE @*'.
+            OR <ls_statement>-str CP '* INTO CORRESPONDING FIELDS OF TABLE @*'
+            OR <ls_statement>-str CP '* APPENDING CORRESPONDING FIELDS OF TABLE @*'.
           CONTINUE.
         ELSE.
           lv_code = '001'.
