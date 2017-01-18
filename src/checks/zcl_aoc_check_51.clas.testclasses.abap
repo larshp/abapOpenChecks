@@ -26,7 +26,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_03 FOR TESTING,
       test001_04 FOR TESTING,
       test001_05 FOR TESTING,
-      test001_06 FOR TESTING.
+      test001_06 FOR TESTING,
+      test001_07 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -137,6 +138,21 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_07.
+* ===========
+
+    IF mo_check->supported( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'SELECTION-SCREEN END OF BLOCK b1.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
   ENDMETHOD.
 

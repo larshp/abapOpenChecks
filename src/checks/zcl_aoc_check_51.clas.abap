@@ -49,7 +49,7 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
 
-      IF <ls_statement>-str CP 'SELECT*'.
+      IF <ls_statement>-str CP 'SELECT *'.
         IF <ls_statement>-str CP '* INTO ( @*'
             OR <ls_statement>-str CP '* INTO @*'
             OR <ls_statement>-str CP '* INTO TABLE @*'
