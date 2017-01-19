@@ -51,6 +51,13 @@ CLASS ZCL_AOC_CHECK_16 IMPLEMENTATION.
       ENDIF.
 
       IF lv_ok <> <ls_statement>-trow.
+        READ TABLE it_tokens WITH KEY row = <ls_statement>-trow
+          type = scan_token_type-pragma TRANSPORTING NO FIELDS.
+        IF sy-subrc = 0.
+* allow if line contains pragma
+          CONTINUE.
+        ENDIF.
+
         lv_include = get_include( p_level = <ls_statement>-level ).
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
