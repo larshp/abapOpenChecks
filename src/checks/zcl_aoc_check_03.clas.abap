@@ -26,6 +26,7 @@ CLASS zcl_aoc_check_03 DEFINITION
         !it_levels     TYPE slevel_tab
         !it_structures TYPE ty_structures_tt.
 
+PRIVATE SECTION.
 ENDCLASS.
 
 

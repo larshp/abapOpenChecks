@@ -10,9 +10,14 @@ CLASS zcl_aoc_category DEFINITION
       constructor,
       if_ci_test~display_documentation REDEFINITION.
 
+PROTECTED SECTION.
+PRIVATE SECTION.
 ENDCLASS.
 
-CLASS zcl_aoc_category IMPLEMENTATION.
+
+
+CLASS ZCL_AOC_CATEGORY IMPLEMENTATION.
+
 
   METHOD constructor.
 
