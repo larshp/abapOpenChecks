@@ -49,7 +49,8 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
 
       LOOP AT it_tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
-          WHERE type = scan_token_type-identifier.
+          WHERE type = scan_token_type-identifier
+          OR type = scan_token_type-list.
         IF lv_statement IS INITIAL.
           lv_statement = <ls_token>-str.
         ELSE.
@@ -58,9 +59,11 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
         ENDIF.
       ENDLOOP.
 
-      IF lv_statement CP 'READ TABLE *'
+      IF lv_check = abap_false
+          AND ( lv_statement CP 'READ TABLE *'
           OR lv_statement CP 'IMPORT *'
-          OR lv_statement CP 'ASSIGN COMPONENT *'.
+          OR lv_statement CP 'ASSIGN COMPONENT *'
+          OR lv_statement CP 'ASSIGN (*' ).
         lv_report = lv_position.
         lv_check = abap_true.
         lv_row = <ls_token>-row.
