@@ -26,7 +26,7 @@ CLASS zcl_aoc_check_03 DEFINITION
         !it_levels     TYPE slevel_tab
         !it_structures TYPE ty_structures_tt.
 
-PRIVATE SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -50,7 +50,7 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
                   it_levels     = it_levels
                   it_structures = it_structures ).
 
-  ENDMETHOD.
+  ENDMETHOD.                    "check
 
 
   METHOD check_nested.
@@ -113,7 +113,7 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
     ENDLOOP.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "check_nested
 
 
   METHOD check_no_catch.
@@ -171,7 +171,7 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
     ENDLOOP.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "check_no_catch
 
 
   METHOD constructor.

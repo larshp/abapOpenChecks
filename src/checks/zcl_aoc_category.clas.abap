@@ -10,8 +10,8 @@ CLASS zcl_aoc_category DEFINITION
       constructor,
       if_ci_test~display_documentation REDEFINITION.
 
-PROTECTED SECTION.
-PRIVATE SECTION.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -30,7 +30,7 @@ CLASS ZCL_AOC_CATEGORY IMPLEMENTATION.
     category    = 'CL_CI_CATEGORY_TOP'.
     position    = '999'.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "constructor
 
 
   METHOD if_ci_test~display_documentation.
@@ -48,5 +48,5 @@ CLASS ZCL_AOC_CATEGORY IMPLEMENTATION.
         langu      = 'E'
         object     = lv_object.
 
-  ENDMETHOD.
+  ENDMETHOD.                    "if_ci_test~display_documentation
 ENDCLASS.
