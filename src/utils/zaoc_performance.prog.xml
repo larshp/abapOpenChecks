@@ -5,33 +5,10 @@
    <PROGDIR>
     <NAME>ZAOC_PERFORMANCE</NAME>
     <STATE>A</STATE>
-    <SQLX/>
-    <EDTX/>
     <VARCL>X</VARCL>
-    <DBAPL/>
-    <DBNA/>
-    <CLAS/>
-    <TYPE/>
-    <OCCURS/>
     <SUBC>1</SUBC>
-    <APPL/>
-    <SECU/>
-    <CNAM/>
-    <CDAT>0000-00-00</CDAT>
-    <UNAM/>
-    <UDAT>0000-00-00</UDAT>
-    <VERN/>
-    <LEVL/>
-    <RSTAT/>
-    <RMAND/>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
-    <SSET/>
-    <SDATE>0000-00-00</SDATE>
-    <STIME/>
-    <IDATE>0000-00-00</IDATE>
-    <ITIME/>
-    <LDBNAME/>
     <UCCHECK>X</UCCHECK>
    </PROGDIR>
    <DYNPROS/>
@@ -41,35 +18,29 @@
      <KEY>001</KEY>
      <ENTRY>Selection</ENTRY>
      <LENGTH>19</LENGTH>
-     <SPLIT/>
     </item>
     <item>
      <ID>I</ID>
      <KEY>002</KEY>
      <ENTRY>No classes found</ENTRY>
      <LENGTH>26</LENGTH>
-     <SPLIT/>
     </item>
     <item>
      <ID>R</ID>
-     <KEY/>
      <ENTRY>abapOpenChecks - Performance Test</ENTRY>
      <LENGTH>33</LENGTH>
-     <SPLIT/>
     </item>
     <item>
      <ID>S</ID>
      <KEY>P_GLOBAL</KEY>
      <ENTRY>Global</ENTRY>
      <LENGTH>14</LENGTH>
-     <SPLIT/>
     </item>
     <item>
      <ID>S</ID>
      <KEY>P_LOCAL</KEY>
      <ENTRY>Local</ENTRY>
      <LENGTH>13</LENGTH>
-     <SPLIT/>
     </item>
     <item>
      <ID>S</ID>

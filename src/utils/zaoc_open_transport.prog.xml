@@ -5,43 +5,18 @@
    <PROGDIR>
     <NAME>ZAOC_OPEN_TRANSPORT</NAME>
     <STATE>A</STATE>
-    <SQLX/>
-    <EDTX/>
     <VARCL>X</VARCL>
-    <DBAPL/>
-    <DBNA/>
-    <CLAS/>
-    <TYPE/>
-    <OCCURS/>
     <SUBC>1</SUBC>
-    <APPL/>
-    <SECU/>
-    <CNAM/>
-    <CDAT>0000-00-00</CDAT>
-    <UNAM/>
-    <UDAT>0000-00-00</UDAT>
-    <VERN/>
-    <LEVL/>
-    <RSTAT/>
-    <RMAND/>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
-    <SSET/>
-    <SDATE>0000-00-00</SDATE>
-    <STIME/>
-    <IDATE>0000-00-00</IDATE>
-    <ITIME/>
-    <LDBNAME/>
     <UCCHECK>X</UCCHECK>
    </PROGDIR>
    <DYNPROS/>
    <TPOOL>
     <item>
      <ID>R</ID>
-     <KEY/>
      <ENTRY>abapOpenChecks - Errors in open transports</ENTRY>
      <LENGTH>42</LENGTH>
-     <SPLIT/>
     </item>
     <item>
      <ID>S</ID>
