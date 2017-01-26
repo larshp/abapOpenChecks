@@ -27,6 +27,7 @@ CLASS ZCL_AOC_CHECK_50 IMPLEMENTATION.
 * MIT License
 
     DATA: lt_statements TYPE ty_statements,
+          lv_code       TYPE sci_errc,
           lv_category   TYPE seoclassdf-category.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
@@ -47,6 +48,7 @@ CLASS ZCL_AOC_CHECK_50 IMPLEMENTATION.
         it_levels     = it_levels ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
+      CLEAR lv_code.
 
       IF ( <ls_statement>-str CP 'ASSERT *'
           AND ( <ls_statement>-include CP '*CCAU'
@@ -54,12 +56,18 @@ CLASS ZCL_AOC_CHECK_50 IMPLEMENTATION.
           OR ( <ls_statement>-str CP 'CL_ABAP_UNIT_ASSERT=>ASSERT*'
           AND NOT ( <ls_statement>-include CP '*CCAU'
           OR lv_category = seoc_category_test_class ) ).
+        lv_code = '001'.
+      ELSEIF <ls_statement>-str CP '*CL_AUNIT_ASSERT*'.
+        lv_code = '002'.
+      ENDIF.
+
+      IF NOT lv_code IS INITIAL.
         inform( p_sub_obj_type = c_type_include
             p_sub_obj_name = <ls_statement>-include
             p_line         = <ls_statement>-start-row
             p_kind         = mv_errty
             p_test         = myname
-            p_code         = '001' ).
+            p_code         = lv_code ).
       ENDIF.
 
     ENDLOOP.
@@ -93,6 +101,8 @@ CLASS ZCL_AOC_CHECK_50 IMPLEMENTATION.
     CASE p_code.
       WHEN '001'.
         p_text = 'Use only unit test asserts in unit tests'. "#EC NOTEXT
+      WHEN '002'.
+        p_text = 'CL_AUNIT_ASSERT is obsolete'.             "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
