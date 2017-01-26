@@ -100,6 +100,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
+                p_param_1      = lv_name
                 p_kind         = mv_errty
                 p_test         = myname
                 p_code         = lv_code ).
@@ -156,7 +157,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
 
     CASE p_code.
       WHEN '001'.
-        p_text = '&1 see Wiki'.                             "#EC NOTEXT
+        p_text = 'Function &1 used, see Wiki'.              "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
