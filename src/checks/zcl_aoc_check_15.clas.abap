@@ -52,6 +52,7 @@ CLASS ZCL_AOC_CHECK_15 IMPLEMENTATION.
 
       IF lv_statement CP 'CALL FUNCTION *'
           OR lv_statement CP 'CALL METHOD *'
+          OR lv_statement CP 'CALL CUSTOMER-FUNCTION *'
           OR lv_statement CP 'CALL SCREEN *'
           OR lv_statement CP 'CALL SELECTION-SCREEN *'
           OR lv_statement CP 'CALL TRANSACTION *'
