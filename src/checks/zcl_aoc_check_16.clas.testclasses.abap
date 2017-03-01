@@ -21,7 +21,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
-      test001_04 FOR TESTING.
+      test001_04 FOR TESTING,
+      test001_05 FOR TESTING,
+      test001_06 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -92,6 +94,35 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_05.
+* ===========
+
+    _code 'SELECT *  ##TOO_MANY_ITAB_FIELDS'.
+    _code 'INTO CORRESPONDING FIELDS OF TABLE lt_data'.
+    _code 'FROM zfoobar'.
+    _code 'WHERE ver = lv_ver.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_06.
+* ===========
+
+    _code 'SELECT * '.
+    _code 'INTO CORRESPONDING FIELDS OF TABLE lt_data'.
+    _code 'FROM zfoobar'.
+    _code 'WHERE ver = lv_ver'.
+    _code '##TOO_MANY_ITAB_FIELDS.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
 

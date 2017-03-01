@@ -38,6 +38,7 @@ CLASS ZCL_AOC_CHECK_16 IMPLEMENTATION.
         AND type <> scan_stmnt_type-macro_definition
         AND type <> scan_stmnt_type-comment
         AND type <> scan_stmnt_type-native_sql
+        AND type <> scan_stmnt_type-pragma
         AND type <> scan_stmnt_type-comment_in_stmnt.
 
       LOOP AT it_tokens ASSIGNING <ls_token>
