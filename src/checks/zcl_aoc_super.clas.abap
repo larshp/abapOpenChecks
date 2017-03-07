@@ -43,11 +43,12 @@ CLASS zcl_aoc_super DEFINITION
       END OF ty_position.
     TYPES:
       BEGIN OF ty_statement,
-        str     TYPE string,
-        start   TYPE ty_position,
-        end     TYPE ty_position,
-        include TYPE programm,
-        count   TYPE i,
+        str        TYPE string,
+        start      TYPE ty_position,
+        end        TYPE ty_position,
+        include    TYPE programm,
+        count      TYPE i,
+        terminator TYPE stmnt_term,
       END OF ty_statement.
     TYPES:
       ty_statements TYPE STANDARD TABLE OF ty_statement WITH DEFAULT KEY.
@@ -92,9 +93,9 @@ CLASS zcl_aoc_super DEFINITION
         VALUE(rv_bool) TYPE abap_bool.
 
     METHODS get_include
-        REDEFINITION.
+         REDEFINITION.
     METHODS inform
-        REDEFINITION.
+         REDEFINITION.
   PRIVATE SECTION.
 
     TYPES:
@@ -168,10 +169,11 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       IF sy-subrc = 0.
         APPEND INITIAL LINE TO rt_statements ASSIGNING <ls_add>.
         <ls_add>-str = lv_str.
-        <ls_add>-include = get_include( p_level = <ls_statement>-level ).
-        <ls_add>-start   = ls_start.
-        <ls_add>-end     = ls_end.
-        <ls_add>-count   = lv_count.
+        <ls_add>-include    = get_include( p_level = <ls_statement>-level ).
+        <ls_add>-start      = ls_start.
+        <ls_add>-end        = ls_end.
+        <ls_add>-count      = lv_count.
+        <ls_add>-terminator = <ls_statement>-terminator.
       ENDIF.
 
     ENDLOOP.
