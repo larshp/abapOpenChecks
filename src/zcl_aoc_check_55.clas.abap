@@ -1,32 +1,32 @@
-class ZCL_AOC_CHECK_55 definition
-  public
-  inheriting from ZCL_AOC_SUPER
-  create public .
+CLASS zcl_aoc_check_55 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor .
 
-  methods CHECK
-    redefinition .
-  methods GET_ATTRIBUTES
-    redefinition .
-  methods GET_MESSAGE_TEXT
-    redefinition .
-  methods PUT_ATTRIBUTES
-    redefinition .
-  methods IF_CI_TEST~QUERY_ATTRIBUTES
-    redefinition .
-protected section.
+    METHODS check
+        REDEFINITION .
+    METHODS get_attributes
+        REDEFINITION .
+    METHODS get_message_text
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
+    METHODS if_ci_test~query_attributes
+        REDEFINITION .
+  PROTECTED SECTION.
 
-  data MV_SKIPC type FLAG .
+    DATA mv_skipc TYPE flag .
 
-  methods WORD
-    importing
-      !IS_STATEMENT type TY_STATEMENT
-    returning
-      value(RV_WORD) type STRING .
-private section.
+    METHODS word
+      IMPORTING
+        !is_statement  TYPE ty_statement
+      RETURNING
+        VALUE(rv_word) TYPE string .
+  PRIVATE SECTION.
 ENDCLASS.
 
 
