@@ -47,6 +47,7 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
           lv_code       TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements,
+                   <ls_stmt>      LIKE LINE OF it_statements,
                    <ls_previous>  LIKE LINE OF lt_statements.
 
 
@@ -82,11 +83,19 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
           OR lv_current = 'FIELD-SYMBOL'
           OR lv_current = 'FIELD-SYMBOLS'
           OR lv_current = 'CONSTANT'
-          OR lv_current = 'CONSTANTS' )
-          AND lv_last <> lv_current.
+          OR lv_current = 'CONSTANTS' ).
 
         IF mv_skipc = abap_true
             AND is_class_definition( <ls_statement>-include ) = abap_true.
+          CONTINUE.
+        ENDIF.
+
+        IF lv_last = lv_current.
+          CONTINUE.
+        ENDIF.
+
+        READ TABLE it_statements INDEX <ls_statement>-index - 1 ASSIGNING <ls_stmt>.
+        IF <ls_stmt>-type = scan_stmnt_type-comment.
           CONTINUE.
         ENDIF.
 

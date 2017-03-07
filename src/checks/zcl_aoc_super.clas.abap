@@ -49,6 +49,7 @@ CLASS zcl_aoc_super DEFINITION
         include    TYPE programm,
         count      TYPE i,
         terminator TYPE stmnt_term,
+        index      TYPE i,
       END OF ty_statement.
     TYPES:
       ty_statements TYPE STANDARD TABLE OF ty_statement WITH DEFAULT KEY.
@@ -139,6 +140,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     DATA: lv_str   TYPE string,
           ls_start TYPE ty_position,
           ls_end   TYPE ty_position,
+          lv_index TYPE i,
           lv_count TYPE i.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
@@ -151,6 +153,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
         AND type <> scan_stmnt_type-comment
         AND type <> scan_stmnt_type-comment_in_stmnt
         AND type <> scan_stmnt_type-pragma.
+      lv_index = sy-tabix.
 
       CLEAR lv_str.
       lv_count = 0.
@@ -173,6 +176,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
         <ls_add>-start      = ls_start.
         <ls_add>-end        = ls_end.
         <ls_add>-count      = lv_count.
+        <ls_add>-index      = lv_index.
         <ls_add>-terminator = <ls_statement>-terminator.
       ENDIF.
 
