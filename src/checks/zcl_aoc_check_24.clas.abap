@@ -99,6 +99,12 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
 
     LOOP AT ct_blocks ASSIGNING <ls_block>.
 
+      IF <ls_block>-statements CP '* ENDMETHOD*'
+          AND <ls_block>-statements CP '* METHOD *'.
+* ignore if it is just short methods
+        CONTINUE.
+      ENDIF.
+
       IF <ls_block>-statements = ls_prev-statements.
         lv_include1 = get_include( p_level = ls_prev-level ).
         lv_include2 = get_include( p_level = <ls_block>-level ).

@@ -19,7 +19,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       setup,
       export_import FOR TESTING,
       test001_01 FOR TESTING,
-      test001_02 FOR TESTING.
+      test001_02 FOR TESTING,
+      test001_03 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -58,6 +59,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'CHECK 9 = 2.'.
     _code 'CHECK 10 = 2.'.
 
+* add all code again
     APPEND LINES OF mt_code TO mt_code.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -79,5 +81,30 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.                    "test2
+
+  METHOD test001_03.
+* ===========
+
+    _code 'METHOD zif_foo~bar'.
+    _code 'RETURN.'.
+    _code 'ENDMETHOD.'.
+    _code 'METHOD zif_foo~moo'.
+    _code 'RETURN.'.
+    _code 'ENDMETHOD.'.
+    _code 'METHOD zif_foo~boo'.
+    _code 'RETURN.'.
+    _code 'ENDMETHOD.'.
+    _code 'METHOD zif_foo~bah'.
+    _code 'RETURN.'.
+    _code 'ENDMETHOD.'.
+
+* add all code again
+    APPEND LINES OF mt_code TO mt_code.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Test
