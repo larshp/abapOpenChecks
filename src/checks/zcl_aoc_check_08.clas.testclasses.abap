@@ -46,7 +46,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test020_01 FOR TESTING,
       test021_01 FOR TESTING,
       test022_01 FOR TESTING,
-      test022_02 FOR TESTING.
+      test022_02 FOR TESTING,
+      test023_01 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -398,6 +399,17 @@ CLASS ltcl_test IMPLEMENTATION.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test023_01.
+
+    _code 'DO 5 TIMES VARYING l_meinh FROM alt-uom1 NEXT alt-uom2.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '023'
+                                        act = ms_result-code ).
 
   ENDMETHOD.
 
