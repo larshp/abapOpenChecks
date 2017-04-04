@@ -33,6 +33,12 @@
    <DESCRIPTIONS>
     <SEOCOMPOTX>
      <CLSNAME>ZCL_AOC_CHECK_53</CLSNAME>
+     <CMPNAME>MV_GUI</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Boolean Variable (X=True, Space=False)</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_AOC_CHECK_53</CLSNAME>
      <CMPNAME>MV_JOB</CMPNAME>
      <LANGU>E</LANGU>
      <DESCRIPT>Boolean Variable (X=True, Space=False)</DESCRIPT>

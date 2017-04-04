@@ -5,21 +5,22 @@ CLASS zcl_aoc_check_53 DEFINITION PUBLIC INHERITING FROM zcl_aoc_super CREATE PU
     METHODS constructor .
 
     METHODS check
-      REDEFINITION .
+        REDEFINITION .
     METHODS get_attributes
-      REDEFINITION .
+        REDEFINITION .
     METHODS get_message_text
-      REDEFINITION .
+        REDEFINITION .
     METHODS put_attributes
-      REDEFINITION .
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-      REDEFINITION .
+        REDEFINITION .
   PROTECTED SECTION.
 
     DATA mv_reuse_alv_grid_display TYPE sap_bool .
     DATA mv_so_new_document_att_send TYPE sap_bool .
     DATA mv_sapgui_progress_indicator TYPE sap_bool .
     DATA mv_subst_get_file_list TYPE sap_bool .
+    DATA mv_gui TYPE sap_bool .
     DATA mv_job TYPE sap_bool .
     DATA mv_popup_to_decide TYPE sap_bool .
     DATA mv_round TYPE sap_bool .
@@ -72,27 +73,31 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
           ENDIF.
         WHEN 'SO_NEW_DOCUMENT_ATT_SEND_API1'.
           IF mv_so_new_document_att_send = abap_true.
-            lv_code = '001'.
+            lv_code = '002'.
           ENDIF.
         WHEN 'SAPGUI_PROGRESS_INDICATOR'.
           IF mv_sapgui_progress_indicator = abap_true.
-            lv_code = '001'.
+            lv_code = '003'.
           ENDIF.
         WHEN 'SUBST_GET_FILE_LIST'.
           IF mv_subst_get_file_list = abap_true.
-            lv_code = '001'.
+            lv_code = '004'.
           ENDIF.
         WHEN 'JOB_CREATE' OR 'JOB_SUBMIT'.
           IF mv_job = abap_true.
-            lv_code = '001'.
+            lv_code = '005'.
           ENDIF.
         WHEN 'POPUP_TO_DECIDE'.
           IF mv_popup_to_decide = abap_true.
-            lv_code = '001'.
+            lv_code = '006'.
           ENDIF.
         WHEN 'ROUND'.
           IF mv_round = abap_true.
-            lv_code = '001'.
+            lv_code = '007'.
+          ENDIF.
+        WHEN 'GUI_DOWNLOAD' OR 'GUI_UPLOAD'.
+          IF mv_gui = abap_true.
+            lv_code = '008'.
           ENDIF.
       ENDCASE.
 
@@ -131,6 +136,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     mv_job                       = abap_true.
     mv_popup_to_decide           = abap_true.
     mv_round                     = abap_true.
+    mv_gui                       = abap_true.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
@@ -146,6 +152,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
       mv_job                       = mv_job
       mv_popup_to_decide           = mv_popup_to_decide
       mv_round                     = mv_round
+      mv_gui                       = mv_gui
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -155,14 +162,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
 
     CLEAR p_text.
 
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Function &1 used, see Wiki'.              "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    p_text = 'Function &1 used, see Wiki'.                  "#EC NOTEXT
 
   ENDMETHOD.
 
@@ -183,6 +183,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     zzaoc_fill_att mv_job 'JOB_CREATE, JOB_SUBMIT' ''.      "#EC NOTEXT
     zzaoc_fill_att mv_popup_to_decide 'POPUP_TO_DECIDE' ''. "#EC NOTEXT
     zzaoc_fill_att mv_round 'ROUND' ''.                     "#EC NOTEXT
+    zzaoc_fill_att mv_gui 'GUI_DOWNLOAD and GUI_UPLOAD' ''. "#EC NOTEXT
 
     zzaoc_popup.
 
@@ -200,6 +201,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
       mv_job                       = mv_job
       mv_popup_to_decide           = mv_popup_to_decide
       mv_round                     = mv_round
+      mv_gui                       = mv_gui
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
