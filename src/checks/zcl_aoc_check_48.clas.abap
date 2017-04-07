@@ -33,7 +33,8 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements.
+    DATA: lt_statements TYPE ty_statements,
+          lv_code       TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
 
@@ -44,16 +45,24 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
         it_levels     = it_levels ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
+      CLEAR lv_code.
+
       IF ( <ls_statement>-str CP 'DATA* WITH DEFAULT KEY*'
           OR <ls_statement>-str CP 'TYPE* WITH DEFAULT KEY*' )
           AND support_empty_key( ) = abap_true
           AND <ls_statement>-include(8) <> '/1BCWDY/'.
+        lv_code = '001'.
+      ELSEIF <ls_statement>-str CP '*+[]*' AND object_type = 'CLAS'.
+        lv_code = '002'.
+      ENDIF.
+
+      IF NOT lv_code IS INITIAL.
         inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = <ls_statement>-include
-            p_line         = <ls_statement>-start-row
-            p_kind         = mv_errty
-            p_test         = myname
-            p_code         = '001' ).
+                p_sub_obj_name = <ls_statement>-include
+                p_line         = <ls_statement>-start-row
+                p_kind         = mv_errty
+                p_test         = myname
+                p_code         = lv_code ).
       ENDIF.
 
     ENDLOOP.
@@ -65,7 +74,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Table DEFAULT KEY'.                   "#EC NOTEXT
+    description    = 'Internal tables'.                     "#EC NOTEXT
     category       = 'ZCL_AOC_CATEGORY'.
     version        = '002'.
     position       = '048'.
@@ -84,7 +93,9 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
     CASE p_code.
       WHEN '001'.
-        p_text = 'Add table key or EMPTY KEY'.              "#EC NOTEXT
+        p_text = 'DEFAULT KEY, add table key or EMPTY KEY'. "#EC NOTEXT
+      WHEN '002'.
+        p_text = 'Access table body is obsolete, no headers'. "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
