@@ -111,7 +111,7 @@ CLASS ZCL_AOC_CHECK_29 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     mv_errty = c_error.
-    mv_name = 'LTCL_*'.
+    mv_name = 'LTCL_+*'.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
