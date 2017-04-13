@@ -43,6 +43,10 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
                    <ls_token>     LIKE LINE OF it_tokens.
 
 
+    IF mt_devclass IS INITIAL.
+      RETURN.
+    ENDIF.
+
     LOOP AT it_statements ASSIGNING <ls_statement>
         WHERE type = scan_stmnt_type-standard
         OR type = scan_stmnt_type-method_direct.

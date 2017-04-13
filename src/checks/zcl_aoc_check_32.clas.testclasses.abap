@@ -1,3 +1,6 @@
+CLASS ltcl_test DEFINITION DEFERRED.
+CLASS zcl_aoc_check_32 DEFINITION LOCAL FRIENDS ltcl_test.
+
 *----------------------------------------------------------------------*
 *       CLASS lcl_Test DEFINITION
 *----------------------------------------------------------------------*
@@ -36,8 +39,14 @@ CLASS ltcl_test IMPLEMENTATION.
   END-OF-DEFINITION.
 
   METHOD setup.
+
+    FIELD-SYMBOLS: <ls_class> TYPE LINE OF sver_r_devclass.
+
     CREATE OBJECT mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
+
+    APPEND INITIAL LINE TO mo_check->mt_devclass ASSIGNING <ls_class>.
+
   ENDMETHOD.                    "setup
 
   METHOD export_import.
