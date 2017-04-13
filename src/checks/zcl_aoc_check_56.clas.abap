@@ -180,6 +180,8 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     CASE p_code.
       WHEN '001'.
         p_text = 'Parameter &1 not supplied anywhere'.      "#EC NOTEXT
+      WHEN '002'.
+        p_text = 'Parameter &1 not supplied anywhere, method &2'. "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
@@ -198,18 +200,26 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
 
     LOOP AT it_parameters ASSIGNING <ls_parameter>.
-      IF object_type = 'CLAS'.
-        ls_mtdkey-clsname = is_method-clsname.
-        ls_mtdkey-cpdname = is_method-cmpname.
-        lv_include = cl_oo_classname_service=>get_method_include( ls_mtdkey ).
-      ENDIF.
-
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
-              p_param_1      = <ls_parameter>-sconame
-              p_kind         = mv_errty
-              p_test         = myname
-              p_code         = '001' ).
+      CASE object_type.
+        WHEN 'CLAS'.
+          ls_mtdkey-clsname = is_method-clsname.
+          ls_mtdkey-cpdname = is_method-cmpname.
+          lv_include = cl_oo_classname_service=>get_method_include( ls_mtdkey ).
+          inform( p_sub_obj_type = c_type_include
+                  p_sub_obj_name = lv_include
+                  p_param_1      = <ls_parameter>-sconame
+                  p_kind         = mv_errty
+                  p_test         = myname
+                  p_code         = '001' ).
+        WHEN 'INTF'.
+          inform( p_param_1      = <ls_parameter>-sconame
+                  p_param_2      = is_method-cmpname
+                  p_kind         = mv_errty
+                  p_test         = myname
+                  p_code         = '002' ).
+        WHEN OTHERS.
+          ASSERT 0 = 1.
+      ENDCASE.
     ENDLOOP.
 
   ENDMETHOD.
