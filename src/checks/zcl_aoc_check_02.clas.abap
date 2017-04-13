@@ -11,7 +11,16 @@ CLASS zcl_aoc_check_02 DEFINITION
         REDEFINITION.
     METHODS get_message_text
         REDEFINITION.
+    METHODS if_ci_test~query_attributes
+        REDEFINITION.
+    METHODS put_attributes
+        REDEFINITION.
+    METHODS get_attributes
+        REDEFINITION.
+
   PROTECTED SECTION.
+    DATA mv_check TYPE flag.
+    DATA mv_exit TYPE flag.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -45,9 +54,13 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
 
       CASE lv_keyword.
         WHEN 'EXIT'.
-          lv_error = '001'.
+          IF mv_exit = abap_true.
+            lv_error = '001'.
+          ENDIF.
         WHEN 'CHECK'.
-          lv_error = '002'.
+          IF mv_check = abap_true.
+            lv_error = '002'.
+          ENDIF.
         WHEN OTHERS.
           CONTINUE. " current loop
       ENDCASE.
@@ -95,8 +108,21 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     mv_errty = c_error.
+    mv_check = abap_true.
+    mv_exit  = abap_true.
 
   ENDMETHOD.                    "CONSTRUCTOR
+
+
+  METHOD get_attributes.
+
+    EXPORT
+      mv_errty = mv_errty
+      mv_check = mv_check
+      mv_exit = mv_exit
+      TO DATA BUFFER p_attributes.
+
+  ENDMETHOD.
 
 
   METHOD get_message_text.
@@ -115,4 +141,29 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
     ENDCASE.
 
   ENDMETHOD.                    "GET_MESSAGE_TEXT
+
+
+  METHOD if_ci_test~query_attributes.
+
+    zzaoc_top.
+
+    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
+    zzaoc_fill_att mv_check 'CHECK' 'C'.                    "#EC NOTEXT
+    zzaoc_fill_att mv_exit 'EXIT' 'C'.                      "#EC NOTEXT
+
+    zzaoc_popup.
+
+  ENDMETHOD.
+
+
+  METHOD put_attributes.
+
+    IMPORT
+      mv_errty = mv_errty
+      mv_check = mv_check
+      mv_exit = mv_exit
+      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
 ENDCLASS.
