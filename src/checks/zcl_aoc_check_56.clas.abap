@@ -1,33 +1,33 @@
-class ZCL_AOC_CHECK_56 definition
-  public
-  inheriting from ZCL_AOC_SUPER
-  create public .
+CLASS zcl_aoc_check_56 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC.
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor.
 
-  methods CHECK
-    redefinition .
-  methods GET_MESSAGE_TEXT
-    redefinition .
-protected section.
+    METHODS check
+        REDEFINITION.
+    METHODS get_message_text
+        REDEFINITION.
+  PROTECTED SECTION.
 
-  types:
-    ty_seosubcodf_tt TYPE STANDARD TABLE OF seosubcodf WITH DEFAULT KEY .
+    TYPES:
+      ty_seosubcodf_tt TYPE STANDARD TABLE OF seosubcodf WITH DEFAULT KEY.
 
-  methods CHECK_METHOD
-    importing
-      !IS_METHOD type SEOCOMPODF .
-  methods FIND_WHERE_USED
-    importing
-      !IS_METHOD type SEOCOMPODF
-    returning
-      value(RT_FOUNDS) type SCI_FINDLST .
-  methods REPORT_UNUSED
-    importing
-      !IS_METHOD type SEOCOMPODF
-      !IT_PARAMETERS type TY_SEOSUBCODF_TT .
+    METHODS check_method
+      IMPORTING
+        !is_method TYPE seocompodf.
+    METHODS find_where_used
+      IMPORTING
+        !is_method       TYPE seocompodf
+      RETURNING
+        VALUE(rt_founds) TYPE sci_findlst.
+    METHODS report_unused
+      IMPORTING
+        !is_method     TYPE seocompodf
+        !it_parameters TYPE ty_seosubcodf_tt.
   PRIVATE SECTION.
 ENDCLASS.
 
