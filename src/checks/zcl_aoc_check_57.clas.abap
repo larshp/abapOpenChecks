@@ -21,6 +21,7 @@ CLASS zcl_aoc_check_57 DEFINITION
   PROTECTED SECTION.
 
     DATA mv_into TYPE sap_bool.
+    DATA mv_unreachable TYPE sap_bool.
     DATA mv_raising TYPE sap_bool.
   PRIVATE SECTION.
 ENDCLASS.
@@ -36,7 +37,9 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements.
+    DATA: lt_statements TYPE ty_statements,
+          lv_index      TYPE i,
+          ls_prev       LIKE LINE OF lt_statements.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
 
@@ -46,13 +49,18 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
     ENDIF.
 
     lt_statements = build_statements(
-        it_tokens     = it_tokens
-        it_statements = it_statements
-        it_levels     = it_levels ).
+      it_tokens     = it_tokens
+      it_statements = it_statements
+      it_levels     = it_levels ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
+      lv_index = sy-tabix - 1.
+      CLEAR ls_prev.
+      READ TABLE lt_statements INDEX lv_index INTO ls_prev.
+
       IF <ls_statement>-str NP 'MESSAGE *'
           OR ( mv_into = abap_true AND <ls_statement>-str CP '* INTO *' )
+          OR ( mv_unreachable = abap_true AND ls_prev-str = 'IF 1 = 2' )
           OR ( mv_raising = abap_true AND <ls_statement>-str CP '* RAISING *' ).
         CONTINUE.
       ENDIF.
@@ -83,6 +91,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
     mv_errty   = c_error.
     mv_into    = abap_true.
     mv_raising = abap_true.
+    mv_unreachable = abap_true.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
@@ -93,6 +102,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
       mv_errty = mv_errty
       mv_into = mv_into
       mv_raising = mv_raising
+      mv_unreachable = mv_unreachable
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -121,6 +131,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
     zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
     zzaoc_fill_att mv_into 'Allow INTO' 'C'.                "#EC NOTEXT
     zzaoc_fill_att mv_raising 'Allow RAISING' 'C'.          "#EC NOTEXT
+    zzaoc_fill_att mv_unreachable 'Allow unreachable' 'C'.  "#EC NOTEXT
 
     zzaoc_popup.
 
@@ -133,6 +144,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
       mv_errty = mv_errty
       mv_into = mv_into
       mv_raising = mv_raising
+      mv_unreachable = mv_unreachable
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 

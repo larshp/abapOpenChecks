@@ -17,7 +17,8 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
       export_import FOR TESTING,
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
-      test001_03 FOR TESTING.
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -76,5 +77,18 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
   ENDMETHOD.
+
+  METHOD test001_04.
+* ===========
+
+    _code 'IF 1 = 2.'.
+    _code '  MESSAGE i001(zzz).'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.                    "test1
 
 ENDCLASS.       "lcl_Test
