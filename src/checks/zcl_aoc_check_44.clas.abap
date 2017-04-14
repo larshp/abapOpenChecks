@@ -80,9 +80,24 @@ CLASS ZCL_AOC_CHECK_44 IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      ls_mtdkey-clsname = <ls_data>-clsname.
-      ls_mtdkey-cpdname = <ls_data>-cmpname.
-      lv_include = cl_oo_classname_service=>get_method_include( ls_mtdkey ).
+      CLEAR lv_include.
+      IF object_type = 'CLAS'.
+        ls_mtdkey-clsname = <ls_data>-clsname.
+        ls_mtdkey-cpdname = <ls_data>-cmpname.
+
+        cl_oo_classname_service=>get_method_include(
+          EXPORTING
+            mtdkey              = ls_mtdkey
+          RECEIVING
+            result              = lv_include
+          EXCEPTIONS
+            class_not_existing  = 1
+            method_not_existing = 2
+            OTHERS              = 3 ).
+        IF sy-subrc <> 0.
+          CONTINUE.
+        ENDIF.
+      ENDIF.
 
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
