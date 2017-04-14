@@ -30,14 +30,6 @@
      <TDLINE>MIT License</TDLINE>
     </TLINE>
    </LINES>
-   <DESCRIPTIONS>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_CHECK_57</CLSNAME>
-     <CMPNAME>MV_INTO</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Boolean Variable (X=True, Space=False)</DESCRIPT>
-    </SEOCOMPOTX>
-   </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
 </abapGit>

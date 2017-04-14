@@ -17,9 +17,11 @@ CLASS zcl_aoc_check_57 DEFINITION
         REDEFINITION.
     METHODS put_attributes
         REDEFINITION.
+
   PROTECTED SECTION.
 
     DATA mv_into TYPE sap_bool.
+    DATA mv_raising TYPE sap_bool.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -50,7 +52,8 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       IF <ls_statement>-str NP 'MESSAGE *'
-          OR ( mv_into = abap_true AND <ls_statement>-str CP '* INTO *' ).
+          OR ( mv_into = abap_true AND <ls_statement>-str CP '* INTO *' )
+          OR ( mv_raising = abap_true AND <ls_statement>-str CP '* RAISING *' ).
         CONTINUE.
       ENDIF.
 
@@ -77,8 +80,9 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-    mv_into = abap_true.
+    mv_errty   = c_error.
+    mv_into    = abap_true.
+    mv_raising = abap_true.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
@@ -88,6 +92,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
     EXPORT
       mv_errty = mv_errty
       mv_into = mv_into
+      mv_raising = mv_raising
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -115,6 +120,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 
     zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
     zzaoc_fill_att mv_into 'Allow INTO' 'C'.                "#EC NOTEXT
+    zzaoc_fill_att mv_raising 'Allow RAISING' 'C'.          "#EC NOTEXT
 
     zzaoc_popup.
 
@@ -126,6 +132,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
     IMPORT
       mv_errty = mv_errty
       mv_into = mv_into
+      mv_raising = mv_raising
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
