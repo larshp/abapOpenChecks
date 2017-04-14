@@ -35,9 +35,9 @@ CLASS ZCL_AOC_CHECK_44 IMPLEMENTATION.
            END OF ty_seosubcodf.
 
     DATA: lt_seosubcodf TYPE TABLE OF ty_seosubcodf,
-          lv_clsname    TYPE seoclsname,
           lv_cmptype    TYPE seocompo-cmptype,
-          lv_name       TYPE sobj_name.
+          ls_mtdkey     TYPE seocpdkey,
+          lv_include    TYPE sobj_name.
 
     FIELD-SYMBOLS: <ls_data> LIKE LINE OF lt_seosubcodf.
 
@@ -66,7 +66,9 @@ CLASS ZCL_AOC_CHECK_44 IMPLEMENTATION.
 
 * generic types cannot be specified as returning
 * todo, add more here
-      IF <ls_data>-type = 'ANY'.
+      <ls_data>-type = condense( <ls_data>-type ).
+      IF <ls_data>-type = 'ANY'
+          OR <ls_data>-type = 'STANDARD TABLE'.
         CONTINUE.
       ENDIF.
 
@@ -78,10 +80,12 @@ CLASS ZCL_AOC_CHECK_44 IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      lv_clsname = object_name.
-      lv_name = cl_oo_classname_service=>get_pubsec_name( lv_clsname ).
+      ls_mtdkey-clsname = <ls_data>-clsname.
+      ls_mtdkey-cpdname = <ls_data>-cmpname.
+      lv_include = cl_oo_classname_service=>get_method_include( ls_mtdkey ).
+
       inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_name
+              p_sub_obj_name = lv_include
               p_kind         = mv_errty
               p_test         = myname
               p_code         = '001'
