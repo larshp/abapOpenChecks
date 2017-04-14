@@ -34,7 +34,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_15 FOR TESTING,
       test001_16 FOR TESTING,
       test001_17 FOR TESTING,
-      test001_18 FOR TESTING.
+      test001_18 FOR TESTING,
+      test001_19 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -346,6 +347,28 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '    create_group( ).'.
     _code '    li_tr_mgr->commit( ).'.
     _code 'ENDCASE.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_19.
+* ===========
+
+    _code 'IF NOT mooo IS INITIAL.'.
+    _code '  CLEAR diadr.'.
+    _code '  IF sy-subrc <> 0.'.
+    _code '    WRITE ''hello''.'.
+    _code '  ELSEIF 3 = 2.'.
+    _code '    WRITE ''world''.'.
+    _code '  ELSE.'.
+    _code '    MOVE foo TO bar.'.
+    _code '  ENDIF.'.
+    _code 'ELSE.'.
+    _code '  CLEAR moo.'.
+    _code 'ENDIF.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 

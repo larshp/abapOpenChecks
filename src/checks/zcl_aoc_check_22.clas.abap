@@ -121,7 +121,7 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
       RETURN. " list is empty
     ENDIF.
 
-    IF lv_str1 IS INITIAL.
+    IF lv_str1 IS INITIAL OR lv_str1 = 'ENDIF'.
       RETURN.
     ENDIF.
 
