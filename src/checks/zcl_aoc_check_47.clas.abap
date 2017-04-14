@@ -27,6 +27,8 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
 * MIT License
 
     DATA: lv_include   TYPE sobj_name,
+          lv_count     TYPE i,
+          lv_fourth    TYPE string,
           lv_statement TYPE string.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
@@ -41,11 +43,19 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
         AND type <> scan_stmnt_type-pragma.
 
       CLEAR lv_statement.
+      CLEAR lv_fourth.
+      lv_count = 0.
 
       LOOP AT it_tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
           WHERE type = scan_token_type-identifier
           OR type = scan_token_type-literal.
+        lv_count = lv_count + 1.
+
+        IF lv_count = 4.
+          lv_fourth = <ls_token>-str.
+        ENDIF.
+
         IF lv_statement IS INITIAL.
           lv_statement = <ls_token>-str.
         ELSE.
@@ -54,9 +64,7 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
         ENDIF.
       ENDLOOP.
 
-* this is wrong, but will work for most cases,
-* DESTINATION might be a parameter name or input
-      IF ( NOT lv_statement CP 'CALL FUNCTION * DESTINATION *' )
+      IF lv_fourth <> 'DESTINATION'
           OR lv_statement CP '* EXCEPTIONS * MESSAGE *'
           OR lv_statement CP '* DESTINATION ''NONE'' *'.
         CONTINUE. " to next statement
