@@ -96,7 +96,7 @@ CLASS ZCL_AOC_CHECK_16 IMPLEMENTATION.
 
     CASE p_code.
       WHEN '001'.
-        p_text = 'Line contains only . or ).'.              "#EC NOTEXT
+        p_text = 'Line contains only "." or ")."'.          "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
