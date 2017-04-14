@@ -2,7 +2,8 @@ CLASS zcl_aoc_super DEFINITION
   PUBLIC
   INHERITING FROM cl_ci_test_scan
   ABSTRACT
-  CREATE PUBLIC.
+  CREATE PUBLIC
+  GLOBAL FRIENDS zcl_aoc_unit_test.
 
   PUBLIC SECTION.
     TYPE-POOLS zzaoc.
@@ -94,9 +95,9 @@ CLASS zcl_aoc_super DEFINITION
         VALUE(rv_bool) TYPE abap_bool.
 
     METHODS get_include
-         REDEFINITION.
+        REDEFINITION.
     METHODS inform
-         REDEFINITION.
+        REDEFINITION.
   PRIVATE SECTION.
 
     TYPES:

@@ -34,6 +34,9 @@ CLASS zcl_aoc_unit_test DEFINITION
     CLASS-METHODS export_import
       IMPORTING
         !io_check TYPE REF TO cl_ci_test_root.
+    CLASS-METHODS set_object_type
+      IMPORTING
+        !iv_object_type TYPE trobjtype.
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -123,6 +126,13 @@ CLASS ZCL_AOC_UNIT_TEST IMPLEMENTATION.
   METHOD set_check.
 
     go_check = io_check.
+
+  ENDMETHOD.
+
+
+  METHOD set_object_type.
+
+    go_check->object_type = iv_object_type.
 
   ENDMETHOD.
 ENDCLASS.
