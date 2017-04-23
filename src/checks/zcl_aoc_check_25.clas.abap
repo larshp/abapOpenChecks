@@ -278,5 +278,9 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
       rv_output = rv_output(lv_offset).
     ENDIF.
 
+    IF strlen( rv_output ) > 1 AND rv_output(1) = '@'.
+      rv_output = rv_output+1.
+    ENDIF.
+
   ENDMETHOD.
 ENDCLASS.
