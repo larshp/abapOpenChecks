@@ -28,6 +28,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test004_01 FOR TESTING,
       test005_01 FOR TESTING,
       test005_02 FOR TESTING,
+      test005_03 FOR TESTING,
       test006_01 FOR TESTING,
       test007_01 FOR TESTING,
       test007_02 FOR TESTING,
@@ -181,6 +182,17 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     _code 'MOVE-CORRESPONDING lv_foo TO lv_bar.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test005_03.
+* ===========
+
+    _code 'MOVE EXACT is_status-installed_release TO lv_number.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 

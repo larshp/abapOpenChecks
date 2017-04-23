@@ -94,7 +94,9 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
         lv_code = '003'.
       ELSEIF mv_004 = abap_true AND lv_statement CP 'COMPUTE *'.
         lv_code = '004'.
-      ELSEIF mv_005 = abap_true AND lv_statement CP 'MOVE *'.
+      ELSEIF mv_005 = abap_true
+          AND lv_statement CP 'MOVE *'
+          AND lv_statement NP 'MOVE EXACT *'.
         lv_code = '005'.
       ELSEIF mv_006 = abap_true
           AND ( lv_statement CP '* >< *'
