@@ -52,18 +52,13 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
           it_statements = it_statements
           it_tokens     = it_tokens ).
 
-      CASE lv_keyword.
-        WHEN 'EXIT'.
-          IF mv_exit = abap_true.
-            lv_error = '001'.
-          ENDIF.
-        WHEN 'CHECK'.
-          IF mv_check = abap_true.
-            lv_error = '002'.
-          ENDIF.
-        WHEN OTHERS.
-          CONTINUE. " current loop
-      ENDCASE.
+      IF lv_keyword = 'EXIT' AND mv_exit = abap_true.
+        lv_error = '001'.
+      ELSEIF lv_keyword = 'CHECK' AND mv_check = abap_true.
+        lv_error = '002'.
+      ELSE.
+        CONTINUE. " current loop
+      ENDIF.
 
       LOOP AT it_structures TRANSPORTING NO FIELDS
           WHERE ( stmnt_type = scan_struc_stmnt_type-loop
