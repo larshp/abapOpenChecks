@@ -49,6 +49,7 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
     DATA: lv_index     TYPE i,
           lv_include   TYPE program,
+          lv_code      TYPE sci_errc,
           ls_statement LIKE LINE OF mt_statements.
 
 
@@ -64,6 +65,19 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
           OR ls_statement-statement = 'ENDMETHOD'.
         DELETE mt_statements INDEX lv_index.
       ELSEIF ls_statement-statement = 'RETURN'.
+        lv_code = '001'.
+      ELSEIF ( ls_statement-statement CP 'CLEAR *'
+          OR ls_statement-statement CP 'FREE *' )
+          AND is_local( ls_statement ) = abap_true.
+        lv_code = '002'.
+      ELSEIF ls_statement-statement CP 'EXIT*'
+          OR ls_statement-statement CP 'CHECK *'.
+        lv_code = '003'.
+      ELSE.
+        RETURN.
+      ENDIF.
+
+      IF NOT lv_code IS INITIAL.
         lv_include = get_include( p_level = ls_statement-level ).
 
         inform( p_sub_obj_type = c_type_include
@@ -71,22 +85,7 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
                 p_line         = ls_statement-row
                 p_kind         = mv_errty
                 p_test         = myname
-                p_code         = '001' ).
-        RETURN.
-      ELSEIF ls_statement-statement CP 'CLEAR *'
-          OR ls_statement-statement CP 'FREE *'.
-        IF is_local( ls_statement ) = abap_true.
-          lv_include = get_include( p_level = ls_statement-level ).
-
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = lv_include
-                  p_line         = ls_statement-row
-                  p_kind         = mv_errty
-                  p_test         = myname
-                  p_code         = '002' ).
-        ENDIF.
-        RETURN.
-      ELSE.
+                p_code         = lv_code ).
         RETURN.
       ENDIF.
 
@@ -187,6 +186,8 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
         p_text = 'Last statement is RETURN'.                "#EC NOTEXT
       WHEN '002'.
         p_text = 'Last statement is CLEAR or FREE'.         "#EC NOTEXT
+      WHEN '003'.
+        p_text = 'Last statement is CHECK or EXIT'.         "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
