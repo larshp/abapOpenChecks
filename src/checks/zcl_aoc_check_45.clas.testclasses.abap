@@ -26,6 +26,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_03 FOR TESTING,
       test002_01 FOR TESTING,
       test002_02 FOR TESTING,
+      test002_03 FOR TESTING,
       test004_01 FOR TESTING,
       test004_02 FOR TESTING.
 
@@ -115,6 +116,20 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '002'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test002_03.
+
+    IF mo_check->support_new( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'CREATE OBJECT rr_result TYPE (ls_foo-command_class).'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
   ENDMETHOD.
 

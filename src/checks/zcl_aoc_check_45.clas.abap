@@ -77,6 +77,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
           AND mv_lines = abap_true ).
         lv_code = '001'.
       ELSEIF <ls_statement>-str CP 'CREATE OBJECT *'
+          AND NOT <ls_statement>-str CP '* TYPE (*'
           AND mv_new = abap_true
           AND support_new( ) = abap_true.
         lv_code = '002'.
