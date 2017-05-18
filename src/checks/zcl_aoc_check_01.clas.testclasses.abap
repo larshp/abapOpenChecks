@@ -29,7 +29,11 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_09 FOR TESTING,
       test001_10 FOR TESTING,
       test001_11 FOR TESTING,
-      test001_12 FOR TESTING.
+      test001_12 FOR TESTING,
+      test001_13 FOR TESTING,
+      test001_14 FOR TESTING,
+      test001_15 FOR TESTING,
+      test001_16 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -250,6 +254,67 @@ CLASS ltcl_test IMPLEMENTATION.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_13.
+
+    _code '  IF 1 = ''a''. '.
+    _code '    " comment   '.
+    _code '    IF 1 = 2.   '.
+    _code '    ENDIF.      '.
+    _code '  ENDIF.        '.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_14.
+
+    _code '  IF 1 = ''a''. '.
+    _code '*     comment   '.
+    _code '    IF 1 = 2.   '.
+    _code '    ENDIF.      '.
+    _code '  ENDIF.        '.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_15.
+
+    _code '  IF 1 = ''a''. '.
+    _code '*     comment1  '.
+    _code '*     comment2  '.
+    _code '    IF 1 = 2.   '.
+    _code '    ENDIF.      '.
+    _code '  ENDIF.        '.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_16.
+
+    _code '  IF 1 = " comment'.
+    _code '''a''. '.
+    _code '    IF 1 = 2.   '.
+    _code '    ENDIF.      '.
+    _code '  ENDIF.        '.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
 
   ENDMETHOD.
 

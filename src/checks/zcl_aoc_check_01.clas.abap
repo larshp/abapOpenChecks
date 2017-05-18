@@ -11,6 +11,13 @@ CLASS zcl_aoc_check_01 DEFINITION
     METHODS get_message_text
         REDEFINITION.
   PROTECTED SECTION.
+
+    METHODS remove_comments
+      IMPORTING
+        !it_structures       TYPE ty_structures_tt
+        !it_statements       TYPE sstmnt_tab
+      RETURNING
+        VALUE(rt_structures) TYPE ty_structures_tt.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -25,9 +32,10 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_include  TYPE program,
-          lv_sub_else TYPE abap_bool,
-          lv_top_else TYPE abap_bool.
+    DATA: lv_include    TYPE program,
+          lv_sub_else   TYPE abap_bool,
+          lt_structures LIKE it_structures,
+          lv_top_else   TYPE abap_bool.
 
     FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures,
                    <ls_token>     LIKE LINE OF it_tokens,
@@ -35,13 +43,16 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
                    <ls_sub>       LIKE LINE OF it_structures.
 
 
-    LOOP AT it_structures ASSIGNING <ls_structure>
+    lt_structures = remove_comments( it_structures = it_structures
+                                     it_statements = it_statements ).
+
+    LOOP AT lt_structures ASSIGNING <ls_structure>
         WHERE stmnt_type = scan_struc_stmnt_type-then
         OR stmnt_type = scan_struc_stmnt_type-else.
       IF <ls_structure>-struc_from <> <ls_structure>-struc_to.
         CONTINUE.
       ENDIF.
-      READ TABLE it_structures ASSIGNING <ls_sub> INDEX <ls_structure>-struc_to.
+      READ TABLE lt_structures ASSIGNING <ls_sub> INDEX <ls_structure>-struc_to.
       ASSERT sy-subrc = 0.
 
       IF <ls_sub>-stmnt_type <> scan_struc_stmnt_type-if.
@@ -49,7 +60,7 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
       ENDIF.
 
       lv_sub_else = abap_false.
-      LOOP AT it_structures TRANSPORTING NO FIELDS
+      LOOP AT lt_structures TRANSPORTING NO FIELDS
           WHERE stmnt_from >= <ls_sub>-stmnt_from
           AND stmnt_to <= <ls_sub>-stmnt_to
           AND ( stmnt_type = scan_struc_stmnt_type-elseif
@@ -59,7 +70,7 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
       ENDLOOP.
 
       lv_top_else = abap_false.
-      LOOP AT it_structures TRANSPORTING NO FIELDS
+      LOOP AT lt_structures TRANSPORTING NO FIELDS
           WHERE back = <ls_structure>-back
           AND ( stmnt_type = scan_struc_stmnt_type-elseif
           OR stmnt_type = scan_struc_stmnt_type-else ).
@@ -127,4 +138,52 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
     ENDCASE.
 
   ENDMETHOD.                    "GET_MESSAGE_TEXT
+
+
+  METHOD remove_comments.
+
+    DATA: lv_only  TYPE abap_bool,
+          lv_index TYPE i.
+
+    FIELD-SYMBOLS: <ls_statement>  LIKE LINE OF it_statements,
+                   <ls_structure1> LIKE LINE OF rt_structures,
+                   <ls_structure2> LIKE LINE OF rt_structures.
+
+
+    rt_structures = it_structures.
+
+    LOOP AT rt_structures ASSIGNING <ls_structure1>.
+      lv_index = sy-tabix.
+
+      lv_only = abap_true.
+      LOOP AT it_statements ASSIGNING <ls_statement>
+          FROM <ls_structure1>-stmnt_from TO <ls_structure1>-stmnt_to.
+        IF <ls_statement>-type <> scan_stmnt_type-comment.
+          lv_only = abap_false.
+        ENDIF.
+      ENDLOOP.
+      IF sy-subrc <> 0.
+        lv_only = abap_false.
+      ENDIF.
+
+      IF lv_only = abap_true.
+        LOOP AT rt_structures ASSIGNING <ls_structure2>.
+          IF <ls_structure2>-struc_from > lv_index.
+            <ls_structure2>-struc_from = <ls_structure2>-struc_from - 1.
+          ENDIF.
+          IF <ls_structure2>-struc_to > lv_index.
+            <ls_structure2>-struc_to = <ls_structure2>-struc_to - 1.
+          ENDIF.
+          IF <ls_structure1>-stmnt_from = <ls_structure1>-stmnt_from
+              AND <ls_structure1>-stmnt_from = <ls_structure1>-stmnt_to.
+            <ls_structure2>-stmnt_from = <ls_structure2>-stmnt_from + 1.
+          ENDIF.
+        ENDLOOP.
+
+        DELETE rt_structures INDEX lv_index.
+      ENDIF.
+
+    ENDLOOP.
+
+  ENDMETHOD.
 ENDCLASS.
