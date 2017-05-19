@@ -1,0 +1,115 @@
+CLASS zcl_aoc_check_58 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC.
+
+  PUBLIC SECTION.
+
+    METHODS constructor.
+
+    METHODS check
+        REDEFINITION.
+    METHODS get_message_text
+        REDEFINITION.
+  PROTECTED SECTION.
+
+    TYPES:
+      ty_seosubcodf_tt TYPE STANDARD TABLE OF seosubcodf WITH DEFAULT KEY.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
+
+
+  METHOD check.
+
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
+    DATA: lt_methods TYPE STANDARD TABLE OF seocompodf WITH DEFAULT KEY,
+          lv_name    TYPE wbcrossgt-name,
+          lv_include TYPE programm,
+          ls_mtdkey  TYPE seocpdkey.
+
+    FIELD-SYMBOLS: <ls_method> LIKE LINE OF lt_methods.
+
+
+    IF object_type <> 'CLAS' AND object_type <> 'INTF'.
+      RETURN.
+    ENDIF.
+
+* only look at public and protected methods, as private are covered by standard check
+    SELECT * FROM seocompodf
+      INTO TABLE lt_methods
+      WHERE clsname = object_name
+      AND version = '1'
+      AND ( exposure = '1' OR exposure = '2' )
+      AND type = ''
+      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
+
+    LOOP AT lt_methods ASSIGNING <ls_method>.
+      CONCATENATE <ls_method>-clsname '\ME:' <ls_method>-cmpname INTO lv_name.
+      SELECT SINGLE name FROM wbcrossgt INTO lv_name WHERE otype = 'ME' AND name = lv_name.
+      IF sy-subrc <> 0.
+        ls_mtdkey-clsname = <ls_method>-clsname.
+        ls_mtdkey-cpdname = <ls_method>-cmpname.
+
+        cl_oo_classname_service=>get_method_include(
+          EXPORTING
+            mtdkey              = ls_mtdkey
+          RECEIVING
+            result              = lv_include
+          EXCEPTIONS
+            class_not_existing  = 1
+            method_not_existing = 2
+            OTHERS              = 3 ).
+        IF sy-subrc <> 0.
+          CONTINUE.
+        ENDIF.
+
+        inform( p_sub_obj_type = c_type_include
+                p_sub_obj_name = lv_include
+                p_kind         = mv_errty
+                p_test         = myname
+                p_code         = '001' ).
+      ENDIF.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD constructor.
+
+    super->constructor( ).
+
+    description    = 'Method not referenced statically'.    "#EC NOTEXT
+    category       = 'ZCL_AOC_CATEGORY'.
+    version        = '001'.
+    position       = '058'.
+
+    has_attributes = abap_true.
+    attributes_ok  = abap_true.
+
+    mv_errty = c_error.
+
+  ENDMETHOD.                    "CONSTRUCTOR
+
+
+  METHOD get_message_text.
+
+    CLEAR p_text.
+
+    CASE p_code.
+      WHEN '001'.
+        p_text = 'Method not referenced statically'.        "#EC NOTEXT
+      WHEN OTHERS.
+        super->get_message_text( EXPORTING p_test = p_test
+                                           p_code = p_code
+                                 IMPORTING p_text = p_text ).
+    ENDCASE.
+
+  ENDMETHOD.
+ENDCLASS.
