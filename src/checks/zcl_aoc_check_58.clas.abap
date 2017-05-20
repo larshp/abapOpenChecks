@@ -29,10 +29,11 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_methods TYPE STANDARD TABLE OF seocompodf WITH DEFAULT KEY,
-          lv_name    TYPE wbcrossgt-name,
-          lv_include TYPE programm,
-          ls_mtdkey  TYPE seocpdkey.
+    DATA: lt_methods  TYPE STANDARD TABLE OF seocompodf WITH DEFAULT KEY,
+          lv_name     TYPE wbcrossgt-name,
+          lv_include  TYPE programm,
+          lt_includes TYPE seop_methods_w_include,
+          ls_mtdkey   TYPE seocpdkey.
 
     FIELD-SYMBOLS: <ls_method> LIKE LINE OF lt_methods.
 
@@ -48,6 +49,8 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       AND version = '1'
       AND ( exposure = '1' OR exposure = '2' )
       AND type = ''
+      AND cmpname <> 'CLASS_CONSTRUCTOR'
+      AND cmpname <> 'CONSTRUCTOR'
       ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
 
     LOOP AT lt_methods ASSIGNING <ls_method>.
@@ -66,6 +69,25 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
             class_not_existing  = 1
             method_not_existing = 2
             OTHERS              = 3 ).
+        IF sy-subrc <> 0.
+          CONTINUE.
+        ENDIF.
+
+* sometimes types are found via GET_METHOD_INCLUDE,
+* so added an extra check to make sure it is a method
+        cl_oo_classname_service=>get_all_method_includes(
+          EXPORTING
+            clsname            = <ls_method>-clsname
+          RECEIVING
+            result             = lt_includes
+          EXCEPTIONS
+            class_not_existing = 1
+            OTHERS             = 2 ).
+        IF sy-subrc <> 0.
+          CONTINUE.
+        ENDIF.
+
+        READ TABLE lt_includes WITH KEY incname = lv_include TRANSPORTING NO FIELDS.
         IF sy-subrc <> 0.
           CONTINUE.
         ENDIF.
