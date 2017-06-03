@@ -145,6 +145,8 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         lv_error = '013'.
       ELSEIF lv_code CP 'MOVE-CORRESPONDING  *'.
         lv_error = '014'.
+      ELSEIF lv_code CP 'APPEND  *'.
+        lv_error = '015'.
       ENDIF.
 
       IF NOT lv_error IS INITIAL.
@@ -210,6 +212,8 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         p_text = 'Double space after SET TITLEBAR'.         "#EC NOTEXT
       WHEN '014'.
         p_text = 'Double space after MOVE-CORRESPONDING'.   "#EC NOTEXT
+      WHEN '015'.
+        p_text = 'Double space after APPEND'.               "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
