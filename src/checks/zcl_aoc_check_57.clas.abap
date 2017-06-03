@@ -1,23 +1,22 @@
-CLASS zcl_aoc_check_57 DEFINITION
-  PUBLIC
-  INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+class ZCL_AOC_CHECK_57 definition
+  public
+  inheriting from ZCL_AOC_SUPER
+  create public .
 
-  PUBLIC SECTION.
+public section.
 
-    METHODS constructor.
+  methods CONSTRUCTOR .
 
-    METHODS check
-        REDEFINITION.
-    METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
-    METHODS if_ci_test~query_attributes
-        REDEFINITION.
-    METHODS put_attributes
-        REDEFINITION.
-
+  methods CHECK
+    redefinition .
+  methods GET_ATTRIBUTES
+    redefinition .
+  methods GET_MESSAGE_TEXT
+    redefinition .
+  methods IF_CI_TEST~QUERY_ATTRIBUTES
+    redefinition .
+  methods PUT_ATTRIBUTES
+    redefinition .
   PROTECTED SECTION.
 
     DATA mv_into TYPE sap_bool.
@@ -39,6 +38,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 
     DATA: lt_statements TYPE ty_statements,
           lv_index      TYPE i,
+          lv_code       TYPE sci_errc,
           ls_prev       LIKE LINE OF lt_statements.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
@@ -56,13 +56,32 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       lv_index = sy-tabix - 1.
       CLEAR ls_prev.
-      READ TABLE lt_statements INDEX lv_index INTO ls_prev.
+      READ TABLE lt_statements INDEX lv_index INTO ls_prev. "#EC CI_SUBRC
 
       IF <ls_statement>-str NP 'MESSAGE *'
-          OR ( mv_into = abap_true AND <ls_statement>-str CP '* INTO *' )
-          OR ( mv_unreachable = abap_true AND ls_prev-str = 'IF 1 = 2' )
-          OR ( mv_raising = abap_true AND <ls_statement>-str CP '* RAISING *' ).
+          AND <ls_statement>-str NP 'WRITE *'.
         CONTINUE.
+      ENDIF.
+
+      IF <ls_statement>-str CP 'MESSAGE *'
+          AND ( ( mv_into = abap_true AND <ls_statement>-str CP '* INTO *' )
+          OR ( mv_unreachable = abap_true AND ls_prev-str = 'IF 1 = 2' )
+          OR ( mv_unreachable = abap_true AND ls_prev-str = 'IF 0 = 1' )
+          OR ( mv_raising = abap_true AND <ls_statement>-str CP '* RAISING *' ) ).
+        CONTINUE.
+      ENDIF.
+
+      IF <ls_statement>-str CP 'WRITE *'
+          AND <ls_statement>-str CP '* TO *'.
+        CONTINUE.
+      ENDIF.
+
+      IF <ls_statement>-str CP 'MESSAGE *'.
+        lv_code = '001'.
+      ELSEIF <ls_statement>-str CP 'WRITE *'.
+        lv_code = '002'.
+      ELSE.
+        ASSERT 0 = 1.
       ENDIF.
 
       inform( p_sub_obj_type = c_type_include
@@ -70,7 +89,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
               p_line         = <ls_statement>-start-row
               p_kind         = mv_errty
               p_test         = myname
-              p_code         = '001' ).
+              p_code         = lv_code ).
     ENDLOOP.
 
   ENDMETHOD.
@@ -80,7 +99,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'MESSAGE in global classes'.              "#EC NOTEXT
+    description = 'MESSAGE or WRITE in global classes'.              "#EC NOTEXT
     category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '057'.
@@ -114,7 +133,9 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 
     CASE p_code.
       WHEN '001'.
-        p_text = 'MESSAGE in global classes'.               "#EC NOTEXT
+        p_text = 'MESSAGE in global class'.                 "#EC NOTEXT
+      WHEN '002'.
+        p_text = 'WRITE in global class'.                   "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
