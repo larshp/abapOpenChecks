@@ -1,22 +1,22 @@
-class ZCL_AOC_CHECK_57 definition
-  public
-  inheriting from ZCL_AOC_SUPER
-  create public .
+CLASS zcl_aoc_check_57 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC.
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor.
 
-  methods CHECK
-    redefinition .
-  methods GET_ATTRIBUTES
-    redefinition .
-  methods GET_MESSAGE_TEXT
-    redefinition .
-  methods IF_CI_TEST~QUERY_ATTRIBUTES
-    redefinition .
-  methods PUT_ATTRIBUTES
-    redefinition .
+    METHODS check
+        REDEFINITION.
+    METHODS get_attributes
+        REDEFINITION.
+    METHODS get_message_text
+        REDEFINITION.
+    METHODS if_ci_test~query_attributes
+        REDEFINITION.
+    METHODS put_attributes
+        REDEFINITION.
   PROTECTED SECTION.
 
     DATA mv_into TYPE sap_bool.
@@ -99,7 +99,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'MESSAGE or WRITE in global classes'.              "#EC NOTEXT
+    description = 'MESSAGE or WRITE in global classes'.     "#EC NOTEXT
     category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '057'.
