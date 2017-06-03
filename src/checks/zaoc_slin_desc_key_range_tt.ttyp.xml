@@ -17,8 +17,6 @@
     <CTDATATYPE>CHAR</CTDATATYPE>
     <CTLENG>000004</CTLENG>
    </DD40V>
-   <DD42V/>
-   <DD43V/>
   </asx:values>
  </asx:abap>
 </abapGit>
