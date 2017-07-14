@@ -14,7 +14,11 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
       test008 FOR TESTING,
       test009 FOR TESTING,
       test010 FOR TESTING,
-      test011 FOR TESTING.
+      test011 FOR TESTING,
+      test012 FOR TESTING,
+      test013 FOR TESTING,
+      test014 FOR TESTING,
+      test015 FOR TESTING.
 
 ENDCLASS.       "ltcl_Test
 
@@ -59,15 +63,33 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test002.
-* 'IF foo NE bar.'
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF foo NE bar.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE').
   ENDMETHOD.
 
   METHOD test003.
-* 'IF foo <> bar.'
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF foo <> bar.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE').
   ENDMETHOD.
 
   METHOD test004.
-* 'IF foo( ) = bar( ).'
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF foo( ) = bar( ).' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE').
   ENDMETHOD.
 
   METHOD test005.
@@ -91,11 +113,63 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test010.
-* 'IF method( value ) = 1.'
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF method( value ) = 1.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE').
   ENDMETHOD.
 
   METHOD test011.
-* 'IF method( field = value ) = 1.'
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF method( field = value ) = 1.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE').
+  ENDMETHOD.
+
+  METHOD test012.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF method( VALUE #( foo = bar ) ) = 1.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE').
+  ENDMETHOD.
+
+  METHOD test013.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF foo->method( field = value ) = 1.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE').
+  ENDMETHOD.
+
+  METHOD test014.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF moo-foo->method( field = value ) = 1.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE').
+  ENDMETHOD.
+
+  METHOD test015.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF method1( method2( ) ) = 1.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE').
   ENDMETHOD.
 
 ENDCLASS.
