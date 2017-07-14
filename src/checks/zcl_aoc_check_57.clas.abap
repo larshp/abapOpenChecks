@@ -1,22 +1,22 @@
 CLASS zcl_aoc_check_57 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
     DATA mv_into TYPE sap_bool.
@@ -99,7 +99,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'MESSAGE or WRITE in global classes'.     "#EC NOTEXT
+    description = 'MESSAGE or list processing in global classes'. "#EC NOTEXT
     category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '057'.
