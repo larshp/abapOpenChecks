@@ -265,7 +265,7 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
       WHERE clsname = iv_class
       AND cmpname = iv_method
       AND pardecltyp = '0'
-      AND type <> ''.
+      AND type <> ''.                         "#EC CI_ALL_FIELDS_NEEDED
     IF sy-subrc <> 0.
       SELECT SINGLE refclsname
         FROM seometarel

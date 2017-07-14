@@ -11,10 +11,7 @@ CLASS zcl_aoc_check_58 DEFINITION
         REDEFINITION.
     METHODS get_message_text
         REDEFINITION.
-  PROTECTED SECTION.
-
-    TYPES:
-      ty_seosubcodf_tt TYPE STANDARD TABLE OF seosubcodf WITH DEFAULT KEY.
+protected section.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -51,7 +48,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       AND type = ''
       AND cmpname <> 'CLASS_CONSTRUCTOR'
       AND cmpname <> 'CONSTRUCTOR'
-      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
+      ORDER BY PRIMARY KEY.     "#EC CI_SUBRC "#EC CI_ALL_FIELDS_NEEDED
 
     LOOP AT lt_methods ASSIGNING <ls_method>.
       CONCATENATE <ls_method>-clsname '\ME:' <ls_method>-cmpname INTO lv_name.

@@ -55,7 +55,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       INTO TABLE lt_methods
       WHERE clsname = object_name
       AND version = '1'
-      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
+      ORDER BY PRIMARY KEY.     "#EC CI_SUBRC "#EC CI_ALL_FIELDS_NEEDED
 
     LOOP AT lt_methods ASSIGNING <ls_method>.
       check_method( <ls_method> ).
@@ -79,7 +79,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       AND cmpname = is_method-cmpname
       AND version = '1'
       AND pardecltyp = '0'
-      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
+      ORDER BY PRIMARY KEY.     "#EC CI_SUBRC "#EC CI_ALL_FIELDS_NEEDED
 
     IF lines( lt_parameters ) <= 1.
       RETURN.
