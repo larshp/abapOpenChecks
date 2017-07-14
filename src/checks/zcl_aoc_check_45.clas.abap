@@ -23,26 +23,33 @@ CLASS zcl_aoc_check_45 DEFINITION
       IMPORTING
         !is_statement  TYPE ty_statement
       RETURNING
-        VALUE(rv_bool) TYPE abap_bool.
+        VALUE(rv_bool) TYPE abap_bool .
     METHODS support_inline_decl
       RETURNING
-        VALUE(rv_supported) TYPE abap_bool.
+        VALUE(rv_supported) TYPE abap_bool .
     METHODS support_new
       RETURNING
-        VALUE(rv_supported) TYPE abap_bool.
+        VALUE(rv_supported) TYPE abap_bool .
+    METHODS support_ref
+      RETURNING
+        VALUE(rv_supported) TYPE abap_bool .
+    METHODS find_supported .
   PRIVATE SECTION.
 
-    CLASS-DATA gv_new_run TYPE abap_bool.
-    CLASS-DATA gv_new_supported TYPE abap_bool.
-    DATA mv_lines TYPE flag.
-    DATA mv_new TYPE flag.
-    DATA mv_inline_decl TYPE flag.
-    DATA mv_condense TYPE flag.
-    DATA mv_concat_lines TYPE flag.
-    DATA mv_shift TYPE flag.
-    DATA mv_translate_to TYPE flag.
-    DATA mv_translate_using TYPE flag.
-    DATA mv_templates TYPE flag.
+    CLASS-DATA gv_executed TYPE abap_bool .
+    CLASS-DATA gv_ref_supported TYPE abap_bool .
+    CLASS-DATA gv_new_supported TYPE abap_bool .
+    CLASS-DATA gv_inline_supported TYPE abap_bool .
+    DATA mv_lines TYPE flag .
+    DATA mv_new TYPE flag .
+    DATA mv_inline_decl TYPE flag .
+    DATA mv_ref TYPE flag .
+    DATA mv_condense TYPE flag .
+    DATA mv_concat_lines TYPE flag .
+    DATA mv_shift TYPE flag .
+    DATA mv_translate_to TYPE flag .
+    DATA mv_translate_using TYPE flag .
+    DATA mv_templates TYPE flag .
 ENDCLASS.
 
 
@@ -109,6 +116,10 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       ELSEIF mv_templates = abap_true
           AND <ls_statement>-str CP 'CONCATENATE *'.
         lv_code = '009'.
+      ELSEIF mv_ref = abap_true
+          AND <ls_statement>-str CP 'GET REFERENCE OF *'
+          AND support_ref( ) = abap_true.
+        lv_code = '010'.
       ENDIF.
 
 * todo, add READ TABLE?
@@ -202,8 +213,47 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     mv_shift           = abap_true.
     mv_translate_to    = abap_true.
     mv_translate_using = abap_true.
+    mv_ref             = abap_true.
 
   ENDMETHOD.                    "CONSTRUCTOR
+
+
+  METHOD find_supported.
+
+    DATA: lt_itab  TYPE STANDARD TABLE OF string,
+          lv_mess  TYPE string,
+          lv_lin   TYPE i,
+          ls_trdir TYPE trdir,
+          lv_code  TYPE string,
+          lv_wrd   TYPE string.
+
+
+    IF gv_executed = abap_true.
+      RETURN.
+    ENDIF.
+
+    lv_code = 'REPORT zfoobar.' ##NO_TEXT.
+    APPEND lv_code TO lt_itab.
+    lv_code = 'DATA(lo_new) = NEW cl_gui_frontend_services( ).' ##NO_TEXT.
+    APPEND lv_code TO lt_itab.
+
+    ls_trdir-uccheck = abap_true.
+
+    SYNTAX-CHECK FOR lt_itab
+      MESSAGE lv_mess
+      LINE lv_lin
+      WORD lv_wrd
+      DIRECTORY ENTRY ls_trdir.
+    IF sy-subrc = 0.
+* all supported in 740SP02
+      gv_new_supported = abap_true.
+      gv_ref_supported = abap_true.
+      gv_inline_supported = abap_true.
+    ENDIF.
+
+    gv_executed = abap_true.
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -218,6 +268,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       mv_translate_to    = mv_translate_to
       mv_translate_using = mv_translate_using
       mv_templates       = mv_templates
+      mv_ref             = mv_ref
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -246,6 +297,8 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
         p_text = 'Use translate( )' .                       "#EC NOTEXT
       WHEN '009'.
         p_text = 'Use string templates' .                   "#EC NOTEXT
+      WHEN '010'.
+        p_text = 'Use REF expression' .                     "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
@@ -269,6 +322,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     zzaoc_fill_att mv_translate_to 'to_upper( ) or to_lower( )' ''. "#EC NOTEXT
     zzaoc_fill_att mv_translate_using 'translate( )' ''.    "#EC NOTEXT
     zzaoc_fill_att mv_templates 'CONCATENATE -> String templates' ''. "#EC NOTEXT
+    zzaoc_fill_att mv_ref 'REF' ''.                         "#EC NOTEXT
 
     zzaoc_popup.
 
@@ -287,6 +341,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       mv_translate_to    = mv_translate_to
       mv_translate_using = mv_translate_using
       mv_templates       = mv_templates
+      mv_ref             = mv_ref
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
@@ -295,47 +350,24 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 
   METHOD support_inline_decl.
 
-* the check for NEW also uses inline data declarations, so just reuse it
-    rv_supported = support_new( ).
+    find_supported( ).
+    rv_supported = gv_inline_supported.
 
   ENDMETHOD.
 
 
   METHOD support_new.
 
-    DATA: lt_itab  TYPE STANDARD TABLE OF string,
-          lv_mess  TYPE string,
-          lv_lin   TYPE i,
-          ls_trdir TYPE trdir,
-          lv_code  TYPE string,
-          lv_wrd   TYPE string.
+    find_supported( ).
+    rv_supported = gv_new_supported.
+
+  ENDMETHOD.
 
 
-    IF gv_new_run = abap_true.
-      rv_supported = gv_new_supported.
-      RETURN.
-    ENDIF.
+  METHOD support_ref.
 
-    lv_code = 'REPORT zfoobar.' ##NO_TEXT.
-    APPEND lv_code TO lt_itab.
-    lv_code = 'DATA(lo_new) = NEW cl_gui_frontend_services( ).' ##NO_TEXT.
-    APPEND lv_code TO lt_itab.
-
-    ls_trdir-uccheck = abap_true.
-
-    SYNTAX-CHECK FOR lt_itab
-      MESSAGE lv_mess
-      LINE lv_lin
-      WORD lv_wrd
-      DIRECTORY ENTRY ls_trdir.
-    IF sy-subrc = 0.
-      rv_supported = abap_true.
-    ELSE.
-      rv_supported = abap_false.
-    ENDIF.
-
-    gv_new_supported = rv_supported.
-    gv_new_run = abap_true.
+    find_supported( ).
+    rv_supported = gv_ref_supported.
 
   ENDMETHOD.
 ENDCLASS.

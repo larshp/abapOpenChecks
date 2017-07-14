@@ -28,7 +28,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test002_02 FOR TESTING,
       test002_03 FOR TESTING,
       test004_01 FOR TESTING,
-      test004_02 FOR TESTING.
+      test004_02 FOR TESTING,
+      test010_01 for testing.
 
 ENDCLASS.       "lcl_Test
 
@@ -151,6 +152,17 @@ CLASS ltcl_test IMPLEMENTATION.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test010_01.
+
+    _code 'GET REFERENCE OF i_data INTO lo_data.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '010'
+                                        act = ms_result-code ).
 
   ENDMETHOD.
 
