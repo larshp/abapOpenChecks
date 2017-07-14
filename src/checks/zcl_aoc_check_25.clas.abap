@@ -71,7 +71,8 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
       LOOP AT it_tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from
           TO <ls_statement>-to
-          WHERE type <> scan_token_type-comment.
+          WHERE type <> scan_token_type-comment
+          AND type <> scan_token_type-literal.
         lv_name = strip( <ls_token>-str ).
         DELETE lt_fields
           WHERE name = lv_name
@@ -258,7 +259,8 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
 
   METHOD strip.
 
-    DATA: lv_offset TYPE i.
+    DATA: lv_offset TYPE i,
+          lv_length TYPE i.
 
 
     rv_output = iv_input.
@@ -273,9 +275,15 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
       rv_output = rv_output(lv_offset).
     ENDIF.
 
-    FIND FIRST OCCURRENCE OF '(' IN rv_output MATCH OFFSET lv_offset.
-    IF sy-subrc = 0.
-      rv_output = rv_output(lv_offset).
+    lv_length = strlen( rv_output ) - 1.
+    IF strlen( rv_output ) > 1 AND rv_output(1) = '(' AND rv_output+lv_length(1) = ')'.
+      lv_length = lv_length - 1.
+      rv_output = rv_output+1(lv_length).
+    ELSE.
+      FIND FIRST OCCURRENCE OF '(' IN rv_output MATCH OFFSET lv_offset.
+      IF sy-subrc = 0.
+        rv_output = rv_output(lv_offset).
+      ENDIF.
     ENDIF.
 
     IF strlen( rv_output ) > 1 AND rv_output(1) = '@'.

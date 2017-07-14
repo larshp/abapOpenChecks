@@ -25,7 +25,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_05 FOR TESTING,
       test001_06 FOR TESTING,
       test001_07 FOR TESTING,
-      test001_08 FOR TESTING.
+      test001_08 FOR TESTING,
+      test001_09 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -151,4 +152,104 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD test001_09.
+* ===========
+
+    _code 'PARAMETERS: p_form TYPE text10.'.
+    _code 'PERFORM (p_form) IN PROGRAM zfoobar.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
 ENDCLASS.       "lcl_Test
+
+CLASS ltcl_strip DEFINITION DEFERRED.
+CLASS zcl_aoc_check_25 DEFINITION LOCAL FRIENDS ltcl_strip.
+
+CLASS ltcl_strip DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
+
+  PRIVATE SECTION.
+
+    DATA: mo_check TYPE REF TO zcl_aoc_check_25.
+
+    METHODS:
+      setup,
+      test01 FOR TESTING,
+      test02 FOR TESTING,
+      test03 FOR TESTING,
+      test04 FOR TESTING,
+      test05 FOR TESTING,
+      test06 FOR TESTING.
+
+ENDCLASS.       "ltcl_Strip
+
+CLASS ltcl_strip IMPLEMENTATION.
+
+  METHOD setup.
+    CREATE OBJECT mo_check.
+  ENDMETHOD.
+
+  METHOD test01.
+    DATA: lv_result TYPE string.
+
+    lv_result = mo_check->strip( 'FOO' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'FOO' ).
+  ENDMETHOD.
+
+  METHOD test02.
+    DATA: lv_result TYPE string.
+
+    lv_result = mo_check->strip( 'FOO+2' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'FOO' ).
+  ENDMETHOD.
+
+  METHOD test03.
+    DATA: lv_result TYPE string.
+
+    lv_result = mo_check->strip( '@FOO' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'FOO' ).
+  ENDMETHOD.
+
+  METHOD test04.
+    DATA: lv_result TYPE string.
+
+    lv_result = mo_check->strip( 'FOO[]' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'FOO' ).
+  ENDMETHOD.
+
+  METHOD test05.
+    DATA: lv_result TYPE string.
+
+    lv_result = mo_check->strip( '(FOO)' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'FOO' ).
+  ENDMETHOD.
+
+  METHOD test06.
+    DATA: lv_result TYPE string.
+
+    lv_result = mo_check->strip( 'F' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'F' ).
+  ENDMETHOD.
+
+ENDCLASS.
