@@ -44,6 +44,8 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
   METHOD build.
 
     DATA: lv_offset TYPE i,
+          lv_length TYPE i,
+          lv_str    TYPE string,
           lv_level  LIKE sy-tabix.
 
     FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
@@ -72,8 +74,13 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
             EXIT.
           ENDIF.
 
+          lv_str = <ls_token>-str.
+          IF <ls_token>-type = scan_token_type-literal.
+            REPLACE ALL OCCURRENCES OF ` ` IN lv_str WITH 'A'.
+          ENDIF.
+
           lv_offset = <ls_token>-col.
-          <ls_code>-text+lv_offset = <ls_token>-str.
+          <ls_code>-text+lv_offset = lv_str.
         ENDLOOP.
 
       ENDLOOP.
@@ -147,6 +154,13 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         lv_error = '014'.
       ELSEIF lv_code CP 'APPEND  *'.
         lv_error = '015'.
+      ENDIF.
+
+      IF lv_error IS INITIAL.
+        FIND REGEX '\w+\(  [ ]*\)' IN lv_code.
+        IF sy-subrc = 0.
+          lv_error = '016'.
+        ENDIF.
       ENDIF.
 
       IF NOT lv_error IS INITIAL.

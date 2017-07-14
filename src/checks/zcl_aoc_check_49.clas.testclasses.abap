@@ -26,7 +26,11 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_06 FOR TESTING,
       test001_07 FOR TESTING,
       test001_08 FOR TESTING,
-      test001_09 FOR TESTING.
+      test001_09 FOR TESTING,
+      test016_01 FOR TESTING,
+      test016_02 FOR TESTING,
+      test016_03 FOR TESTING,
+      test016_04 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -155,6 +159,48 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '    variant = lv_variant'.
     _code '  IMPORTING'.
     _code '    r_c     = lv_subrc.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test016_01.
+
+    _code 'call_method(  ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '016'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test016_02.
+
+    _code 'call_method( ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test016_03.
+
+    _code 'call_method(   ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '016'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test016_04.
+
+    _code 'call_method( ''foo(  )'' ).'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 

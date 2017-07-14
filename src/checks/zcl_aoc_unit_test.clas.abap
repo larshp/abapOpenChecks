@@ -38,6 +38,15 @@ CLASS zcl_aoc_unit_test DEFINITION
       IMPORTING
         !iv_object_type TYPE trobjtype.
   PROTECTED SECTION.
+
+    CLASS-METHODS initialize
+      IMPORTING
+        !it_code       TYPE string_table
+      EXPORTING
+        !et_tokens     TYPE stokesx_tab
+        !et_statements TYPE sstmnt_tab
+        !et_levels     TYPE slevel_tab
+        !et_structures TYPE zcl_aoc_super=>ty_structures_tt .
   PRIVATE SECTION.
 
     CLASS-DATA gs_result TYPE scirest_ad.
@@ -61,27 +70,20 @@ CLASS ZCL_AOC_UNIT_TEST IMPLEMENTATION.
           lt_structures TYPE zcl_aoc_super=>ty_structures_tt.
 
 
-    SCAN ABAP-SOURCE it_code
-         TOKENS          INTO lt_tokens
-         STATEMENTS      INTO lt_statements
-         LEVELS          INTO lt_levels
-         STRUCTURES      INTO lt_structures
-         WITH ANALYSIS
-         WITH COMMENTS
-         WITH PRAGMAS    abap_true.
-    cl_abap_unit_assert=>assert_subrc( msg = 'Error while parsing'(001) ).
-
-    CLEAR gs_result.
-    SET HANDLER handler FOR go_check.
-
-    go_check->set_source( iv_name = '----------------------------------------'
-                          it_code = it_code ).
+    initialize(
+      EXPORTING
+        it_code       = it_code
+      IMPORTING
+        et_tokens     = lt_tokens
+        et_statements = lt_statements
+        et_levels     = lt_levels
+        et_structures = lt_structures ).
 
     go_check->check(
-        it_tokens     = lt_tokens
-        it_statements = lt_statements
-        it_levels     = lt_levels
-        it_structures = lt_structures ).
+      it_tokens     = lt_tokens
+      it_statements = lt_statements
+      it_levels     = lt_levels
+      it_structures = lt_structures ).
 
     IF NOT gs_result-code IS INITIAL.
       go_check->get_message_text(
@@ -119,6 +121,27 @@ CLASS ZCL_AOC_UNIT_TEST IMPLEMENTATION.
     gs_result-col      = p_column.
     gs_result-kind     = p_kind.
     gs_result-code     = p_code.
+
+  ENDMETHOD.
+
+
+  METHOD initialize.
+
+    SCAN ABAP-SOURCE it_code
+         TOKENS          INTO et_tokens
+         STATEMENTS      INTO et_statements
+         LEVELS          INTO et_levels
+         STRUCTURES      INTO et_structures
+         WITH ANALYSIS
+         WITH COMMENTS
+         WITH PRAGMAS    abap_true.
+    cl_abap_unit_assert=>assert_subrc( msg = 'Error while parsing'(001) ).
+
+    CLEAR gs_result.
+    SET HANDLER handler FOR go_check.
+
+    go_check->set_source( iv_name = '----------------------------------------'
+                          it_code = it_code ).
 
   ENDMETHOD.
 
