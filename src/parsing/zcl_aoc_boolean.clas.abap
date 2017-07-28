@@ -29,6 +29,8 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
     DATA: lt_tokens TYPE stokesx_tab.
 
     lt_tokens = remove_method_calls( it_tokens ).
+* remove arrows
+* remove dashes
 
 * todo:
 * 2: real paren

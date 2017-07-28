@@ -1,4 +1,4 @@
-CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
+CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
 
   PRIVATE SECTION.
     METHODS:
@@ -22,7 +22,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
 
 ENDCLASS.       "ltcl_Test
 
-CLASS ltcl_test IMPLEMENTATION.
+CLASS ltcl_parse IMPLEMENTATION.
 
   METHOD parse.
 
@@ -170,6 +170,68 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = lv_result
       exp = 'COMPARE').
+  ENDMETHOD.
+
+ENDCLASS.
+
+CLASS ltcl_remove_method_calls DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
+
+  PRIVATE SECTION.
+    METHODS:
+      test_remove
+        IMPORTING iv_code TYPE string
+                  iv_exp  TYPE string,
+      test01 FOR TESTING,
+      test02 FOR TESTING.
+
+ENDCLASS.       "ltcl_Remove_Method_Calls
+
+CLASS ltcl_remove_method_calls IMPLEMENTATION.
+
+  METHOD test_remove.
+
+    DATA: lt_code       TYPE string_table,
+          lt_tokens     TYPE stokesx_tab,
+          lo_node       TYPE REF TO zcl_aoc_boolean_node,
+          lt_statements TYPE sstmnt_tab.
+
+
+    APPEND iv_code TO lt_code.
+
+    SCAN ABAP-SOURCE lt_code
+         TOKENS        INTO lt_tokens
+         STATEMENTS    INTO lt_statements
+         WITH ANALYSIS
+         WITH COMMENTS
+         WITH PRAGMAS  abap_true.
+    cl_abap_unit_assert=>assert_subrc( ).
+
+
+
+*    DELETE lt_tokens TO 1.
+*    cl_abap_unit_assert=>assert_subrc( ).
+*
+*    lo_node = zcl_aoc_boolean=>parse( lt_tokens ).
+*    cl_abap_unit_assert=>assert_bound( lo_node ).
+*
+*    rv_result = lo_node->to_string( ).
+
+  ENDMETHOD.
+
+  METHOD test01.
+
+    test_remove(
+      iv_code = 'foo( )'
+      iv_exp  = 'method' ).
+
+  ENDMETHOD.
+
+  METHOD test02.
+
+    test_remove(
+      iv_code = 'foo( )->bar( )'
+      iv_exp  = 'method' ).
+
   ENDMETHOD.
 
 ENDCLASS.
