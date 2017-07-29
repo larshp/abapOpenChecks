@@ -8,6 +8,11 @@ public section.
   methods CONSTRUCTOR
     importing
       !IT_TOKENS type STOKESX_TAB .
+  methods EAT
+    importing
+      !IV_COUNT type I
+    returning
+      value(RO_TOKENS) type ref to ZCL_AOC_BOOLEAN_TOKENS .
   methods FIND_END_PAREN
     importing
       !IV_START type I
@@ -36,20 +41,18 @@ public section.
       !IV_END type I optional
     returning
       value(RO_TOKENS) type ref to ZCL_AOC_BOOLEAN_TOKENS .
-  methods TO_STRING
-    returning
-      value(RV_STRING) type STRING .
+  methods SET_TOKENS
+    importing
+      !IT_TOKENS type STOKESX_TAB .
   methods SPLIT
     importing
       !IV_START type I
       !IV_END type I default 0
     returning
       value(RO_TOKENS) type ref to ZCL_AOC_BOOLEAN_TOKENS .
-  methods EAT
-    importing
-      !IV_COUNT type I
+  methods TO_STRING
     returning
-      value(RO_TOKENS) type ref to ZCL_AOC_BOOLEAN_TOKENS .
+      value(RV_STRING) type STRING .
 protected section.
 
   data MT_TOKENS type STOKESX_TAB .
@@ -107,8 +110,6 @@ CLASS ZCL_AOC_BOOLEAN_TOKENS IMPLEMENTATION.
       ENDIF.
     ENDLOOP.
 
-    BREAK-POINT.
-
   ENDMETHOD.
 
 
@@ -158,6 +159,13 @@ CLASS ZCL_AOC_BOOLEAN_TOKENS IMPLEMENTATION.
     ENDIF.
 
     ro_tokens = me.
+
+  ENDMETHOD.
+
+
+  METHOD set_tokens.
+
+    mt_tokens = it_tokens.
 
   ENDMETHOD.
 

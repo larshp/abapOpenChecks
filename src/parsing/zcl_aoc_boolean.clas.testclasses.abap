@@ -56,7 +56,13 @@ CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL
       test016 FOR TESTING,
       test017 FOR TESTING,
       test018 FOR TESTING,
-      test019 FOR TESTING.
+      test019 FOR TESTING,
+      test020 FOR TESTING,
+      test021 FOR TESTING,
+      test022 FOR TESTING,
+      test023 FOR TESTING,
+      test024 FOR TESTING,
+      test025 FOR TESTING.
 
 ENDCLASS.       "ltcl_Test
 
@@ -267,6 +273,66 @@ CLASS ltcl_parse IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = lv_result
       exp = 'AND( COMPARE NOT( COMPARE ) )' ).
+  ENDMETHOD.
+
+  METHOD test020.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF 2 = 3 AND NOT 1 = 2 AND 3 = 1.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'AND( COMPARE AND( NOT( COMPARE ) COMPARE ) )' ).
+  ENDMETHOD.
+
+  METHOD test021.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF 2 = 3 OR 3 = 1.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'OR( COMPARE COMPARE )' ).
+  ENDMETHOD.
+
+  METHOD test022.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF foo IS INITLAL.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
+  METHOD test023.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF foo IS NOT INITIAL.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
+  METHOD test024.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF foo = moo + 1.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
+  METHOD test025.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF foo = moo - boo + 1.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
   ENDMETHOD.
 
 ENDCLASS.

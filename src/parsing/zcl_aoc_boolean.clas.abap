@@ -39,6 +39,9 @@ protected section.
       !IT_TOKENS type STOKESX_TAB
     returning
       value(RO_TOKENS) type ref to ZCL_AOC_BOOLEAN_TOKENS .
+  class-methods REMOVE_CALCULATIONS
+    importing
+      !IO_TOKENS type ref to ZCL_AOC_BOOLEAN_TOKENS .
   class-methods REMOVE_STRINGS
     importing
       !IO_TOKENS type ref to ZCL_AOC_BOOLEAN_TOKENS .
@@ -57,6 +60,7 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
     IF iv_str = '='
         OR iv_str = '<>'
         OR iv_str = 'NE'
+        OR iv_str = 'IS' " INITIAL
         OR iv_str = 'EQ'.
 * todo, there is a lot more
       rv_comparator = abap_true.
@@ -66,11 +70,12 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
 
 
   METHOD parse.
+* returns initial RO_NODE in case of parser errors
 
     DATA: lo_tokens TYPE REF TO zcl_aoc_boolean_tokens.
 
 
-lo_tokens = simplify( it_tokens ).
+    lo_tokens = simplify( it_tokens ).
 
     ro_node = parse_internal( lo_tokens ).
 
@@ -82,6 +87,7 @@ lo_tokens = simplify( it_tokens ).
     DATA: lv_token1 TYPE string,
           lv_token2 TYPE string,
           lv_token3 TYPE string,
+          lv_token4 TYPE string,
           lo_node   LIKE ro_node,
           lo_split  LIKE io_tokens.
 
@@ -89,39 +95,22 @@ lo_tokens = simplify( it_tokens ).
     lv_token1 = io_tokens->get_token( 1 )-str.
     lv_token2 = io_tokens->get_token( 2 )-str.
     lv_token3 = io_tokens->get_token( 3 )-str.
+    lv_token4 = io_tokens->get_token( 4 )-str.
 
     IF is_comparator( lv_token2 ) AND io_tokens->get_length( ) >= 3.
       CREATE OBJECT ro_node
         EXPORTING
           iv_type = zcl_aoc_boolean_node=>c_type-compare.
-
-      io_tokens->eat( 3 ).
-
-* parse remaining
-      IF io_tokens->get_length( ) > 0.
-        lo_node = parse_internal( io_tokens ).
-        lo_node->prepend_child( ro_node ).
-        ro_node = lo_node.
+      IF lv_token3 = 'NOT' AND lv_token4 = 'INITIAL'.
+        io_tokens->eat( 4 ).
+      ELSE.
+        io_tokens->eat( 3 ).
       ENDIF.
     ELSEIF lv_token1 = 'NOT'.
       io_tokens->eat( 1 ).
       ro_node = parse_not( io_tokens ).
-
-* parse remaining
-      IF io_tokens->get_length( ) > 0.
-        lo_node = parse_internal( io_tokens ).
-        lo_node->prepend_child( ro_node ).
-        ro_node = lo_node.
-      ENDIF.
     ELSEIF lv_token1 = '('.
       ro_node = parse_paren( io_tokens ).
-
-* parse remaining
-      IF io_tokens->get_length( ) > 0.
-        lo_node = parse_internal( io_tokens ).
-        lo_node->prepend_child( ro_node ).
-        ro_node = lo_node.
-      ENDIF.
     ELSEIF lv_token1 = 'AND'.
       CREATE OBJECT ro_node
         EXPORTING
@@ -130,11 +119,26 @@ lo_tokens = simplify( it_tokens ).
       lo_node = parse_internal( io_tokens ).
       ro_node->append_child( lo_node ).
     ELSEIF lv_token1 = 'OR'.
-* zcl_aoc_boolean_node=>c_type-or
-      BREAK-POINT.
+      CREATE OBJECT ro_node
+        EXPORTING
+          iv_type = zcl_aoc_boolean_node=>c_type-or.
+      io_tokens->eat( 1 ).
+      lo_node = parse_internal( io_tokens ).
+      ro_node->append_child( lo_node ).
     ELSE.
-* todo: parser error?
-      BREAK-POINT.
+* parser error
+      RETURN.
+    ENDIF.
+
+* parse remaining
+    IF io_tokens->get_length( ) > 0.
+      lo_node = parse_internal( io_tokens ).
+      IF lo_node IS INITIAL.
+        CLEAR ro_node.
+        RETURN.
+      ENDIF.
+      lo_node->prepend_child( ro_node ).
+      ro_node = lo_node.
     ENDIF.
 
   ENDMETHOD.
@@ -188,6 +192,30 @@ lo_tokens = simplify( it_tokens ).
 
     lo_node = parse_internal( lo_split ).
     ro_node->append_child( lo_node ).
+
+  ENDMETHOD.
+
+
+  METHOD remove_calculations.
+
+    DATA: ls_token  TYPE stokesx,
+          lt_tokens TYPE stokesx_tab,
+          lv_index  TYPE i.
+
+
+    lt_tokens = io_tokens->get_tokens( ).
+
+    LOOP AT lt_tokens INTO ls_token WHERE type = scan_token_type-identifier.
+      lv_index = sy-tabix.
+
+      CASE ls_token-str.
+        WHEN '+' OR '-' OR '*' OR '/' OR 'MOD'.
+          DELETE lt_tokens INDEX lv_index.
+          DELETE lt_tokens INDEX lv_index.
+      ENDCASE.
+    ENDLOOP.
+
+    io_tokens->set_tokens( lt_tokens ).
 
   ENDMETHOD.
 
@@ -248,6 +276,7 @@ lo_tokens = simplify( it_tokens ).
     CREATE OBJECT ro_tokens EXPORTING it_tokens = it_tokens.
 
     remove_strings( ro_tokens ).
+    remove_calculations( ro_tokens ).
     remove_method_calls( ro_tokens ).
 
   ENDMETHOD.
