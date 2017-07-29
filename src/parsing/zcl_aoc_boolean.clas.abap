@@ -1,51 +1,51 @@
-class ZCL_AOC_BOOLEAN definition
-  public
-  create public .
+CLASS zcl_aoc_boolean DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  class-methods PARSE
-    importing
-      !IT_TOKENS type STOKESX_TAB
-    returning
-      value(RO_NODE) type ref to ZCL_AOC_BOOLEAN_NODE .
-protected section.
+    CLASS-METHODS parse
+      IMPORTING
+        !it_tokens     TYPE stokesx_tab
+      RETURNING
+        VALUE(ro_node) TYPE REF TO zcl_aoc_boolean_node .
+  PROTECTED SECTION.
 
-  class-methods IS_COMPARATOR
-    importing
-      !IO_TOKENS type ref to ZCL_AOC_BOOLEAN_TOKENS
-    returning
-      value(RV_COMPARATOR) type I .
-  class-methods PARSE_INTERNAL
-    importing
-      !IO_TOKENS type ref to ZCL_AOC_BOOLEAN_TOKENS
-    returning
-      value(RO_NODE) type ref to ZCL_AOC_BOOLEAN_NODE .
-  class-methods PARSE_NOT
-    importing
-      !IO_TOKENS type ref to ZCL_AOC_BOOLEAN_TOKENS
-    returning
-      value(RO_NODE) type ref to ZCL_AOC_BOOLEAN_NODE .
-  class-methods PARSE_PAREN
-    importing
-      !IO_TOKENS type ref to ZCL_AOC_BOOLEAN_TOKENS
-    returning
-      value(RO_NODE) type ref to ZCL_AOC_BOOLEAN_NODE .
-  class-methods REMOVE_METHOD_CALLS
-    importing
-      !IO_TOKENS type ref to ZCL_AOC_BOOLEAN_TOKENS .
-  class-methods SIMPLIFY
-    importing
-      !IT_TOKENS type STOKESX_TAB
-    returning
-      value(RO_TOKENS) type ref to ZCL_AOC_BOOLEAN_TOKENS .
-  class-methods REMOVE_CALCULATIONS
-    importing
-      !IO_TOKENS type ref to ZCL_AOC_BOOLEAN_TOKENS .
-  class-methods REMOVE_STRINGS
-    importing
-      !IO_TOKENS type ref to ZCL_AOC_BOOLEAN_TOKENS .
-private section.
+    CLASS-METHODS is_comparator
+      IMPORTING
+        !io_tokens           TYPE REF TO zcl_aoc_boolean_tokens
+      RETURNING
+        VALUE(rv_comparator) TYPE i .
+    CLASS-METHODS parse_internal
+      IMPORTING
+        !io_tokens     TYPE REF TO zcl_aoc_boolean_tokens
+      RETURNING
+        VALUE(ro_node) TYPE REF TO zcl_aoc_boolean_node .
+    CLASS-METHODS parse_not
+      IMPORTING
+        !io_tokens     TYPE REF TO zcl_aoc_boolean_tokens
+      RETURNING
+        VALUE(ro_node) TYPE REF TO zcl_aoc_boolean_node .
+    CLASS-METHODS parse_paren
+      IMPORTING
+        !io_tokens     TYPE REF TO zcl_aoc_boolean_tokens
+      RETURNING
+        VALUE(ro_node) TYPE REF TO zcl_aoc_boolean_node .
+    CLASS-METHODS remove_method_calls
+      IMPORTING
+        !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
+    CLASS-METHODS simplify
+      IMPORTING
+        !it_tokens       TYPE stokesx_tab
+      RETURNING
+        VALUE(ro_tokens) TYPE REF TO zcl_aoc_boolean_tokens .
+    CLASS-METHODS remove_calculations
+      IMPORTING
+        !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
+    CLASS-METHODS remove_strings
+      IMPORTING
+        !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
+  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -190,9 +190,9 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
 
   METHOD parse_paren.
 
-    DATA: lo_node   TYPE REF TO zcl_aoc_boolean_node,
-          lv_end    TYPE i,
-          lo_split  TYPE REF TO zcl_aoc_boolean_tokens.
+    DATA: lo_node  TYPE REF TO zcl_aoc_boolean_node,
+          lv_end   TYPE i,
+          lo_split TYPE REF TO zcl_aoc_boolean_tokens.
 
 
     ASSERT io_tokens->get_token( 1 )-str = '('.
