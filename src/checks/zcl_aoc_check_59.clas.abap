@@ -35,9 +35,16 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
 
 
     READ TABLE it_tokens INDEX 1 ASSIGNING <ls_token>.
-    IF sy-subrc <> 0 OR <ls_token>-str <> 'IF'.
+    IF sy-subrc <> 0.
       RETURN.
     ENDIF.
+
+    CASE <ls_token>-str.
+      WHEN 'IF' OR 'ELSEIF' OR 'WHILE'.
+* nothing
+      WHEN OTHERS.
+        RETURN.
+    ENDCASE.
 
     lt_tokens = it_tokens.
     DELETE lt_tokens INDEX 1.

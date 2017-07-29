@@ -71,7 +71,15 @@ CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL
       test031 FOR TESTING,
       test032 FOR TESTING,
       test033 FOR TESTING,
-      test034 FOR TESTING.
+      test034 FOR TESTING,
+      test035 FOR TESTING,
+      test036 FOR TESTING,
+      test037 FOR TESTING,
+      test038 FOR TESTING,
+      test039 FOR TESTING,
+      test040 FOR TESTING,
+      test041 FOR TESTING,
+      test042 FOR TESTING.
 
 ENDCLASS.       "ltcl_Test
 
@@ -79,8 +87,8 @@ CLASS ltcl_parse IMPLEMENTATION.
 
   METHOD parse.
 
-    DATA: lt_tokens     TYPE stokesx_tab,
-          lo_node       TYPE REF TO zcl_aoc_boolean_node.
+    DATA: lt_tokens TYPE stokesx_tab,
+          lo_node   TYPE REF TO zcl_aoc_boolean_node.
 
 
     lt_tokens = lcl_parse=>parse( iv_string )->remove( 1 )->get_tokens( ).
@@ -432,6 +440,86 @@ CLASS ltcl_parse IMPLEMENTATION.
       exp = 'COMPARE' ).
   ENDMETHOD.
 
+  METHOD test035.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF lv_foo+0(1) EQ foo.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
+  METHOD test036.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF foo EQ |A|.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
+  METHOD test037.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF lv_path = mv_base && mv_swagger_html.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
+  METHOD test038.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF foo < bar * ( moo + 1 ).' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
+  METHOD test039.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF lt_foo[ 1 ]-address CS ''bar''.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
+  METHOD test040.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF boolean_function( bar ).' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
+  METHOD test041.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF boolean_function( bar ) AND another( ).' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'AND( COMPARE COMPARE )' ).
+  ENDMETHOD.
+
+  METHOD test042.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF method( )-field = 2.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
 ENDCLASS.
 
 CLASS ltcl_remove_strings DEFINITION DEFERRED.
@@ -601,7 +689,8 @@ CLASS ltcl_remove_calculations DEFINITION FOR TESTING DURATION SHORT RISK LEVEL 
           iv_exp  TYPE string,
       test01 FOR TESTING,
       test02 FOR TESTING,
-      test03 FOR TESTING.
+      test03 FOR TESTING,
+      test04 FOR TESTING.
 
 ENDCLASS.
 
@@ -639,6 +728,11 @@ CLASS ltcl_remove_calculations IMPLEMENTATION.
   METHOD test03.
     test( iv_code = '( lv_offset + 1 )'
           iv_exp  = 'lv_offset' ).
+  ENDMETHOD.
+
+  METHOD test04.
+    test( iv_code = 'bar * ( moo + 1 )'
+          iv_exp  = 'bar' ).
   ENDMETHOD.
 
 ENDCLASS.

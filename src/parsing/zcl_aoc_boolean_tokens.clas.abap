@@ -18,6 +18,11 @@ CLASS zcl_aoc_boolean_tokens DEFINITION
         !iv_start     TYPE i
       RETURNING
         VALUE(rv_end) TYPE i .
+    METHODS find_end_square
+      IMPORTING
+        !iv_start     TYPE i
+      RETURNING
+        VALUE(rv_end) TYPE i .
     METHODS get_length
       RETURNING
         VALUE(rv_length) TYPE i .
@@ -102,6 +107,32 @@ CLASS ZCL_AOC_BOOLEAN_TOKENS IMPLEMENTATION.
       FIND ALL OCCURRENCES OF '(' IN ls_token-str MATCH COUNT lv_open.
       lv_count = lv_count + lv_open.
       FIND ALL OCCURRENCES OF ')' IN ls_token-str MATCH COUNT lv_close.
+      lv_count = lv_count - lv_close.
+
+      IF lv_count = 0.
+        rv_end = lv_index.
+        RETURN.
+      ENDIF.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD find_end_square.
+
+    DATA: ls_token LIKE LINE OF mt_tokens,
+          lv_open  TYPE i,
+          lv_close TYPE i,
+          lv_index TYPE i,
+          lv_count TYPE i.
+
+
+    LOOP AT mt_tokens FROM iv_start INTO ls_token.
+      lv_index = sy-tabix.
+
+      FIND ALL OCCURRENCES OF '[' IN ls_token-str MATCH COUNT lv_open.
+      lv_count = lv_count + lv_open.
+      FIND ALL OCCURRENCES OF ']' IN ls_token-str MATCH COUNT lv_close.
       lv_count = lv_count - lv_close.
 
       IF lv_count = 0.
