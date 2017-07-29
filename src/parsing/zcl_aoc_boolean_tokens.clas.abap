@@ -1,62 +1,62 @@
-class ZCL_AOC_BOOLEAN_TOKENS definition
-  public
-  final
-  create public .
+CLASS zcl_aoc_boolean_tokens DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR
-    importing
-      !IT_TOKENS type STOKESX_TAB .
-  methods EAT
-    importing
-      !IV_COUNT type I
-    returning
-      value(RO_TOKENS) type ref to ZCL_AOC_BOOLEAN_TOKENS .
-  methods FIND_END_PAREN
-    importing
-      !IV_START type I
-    returning
-      value(RV_END) type I .
-  methods GET_LENGTH
-    returning
-      value(RV_LENGTH) type I .
-  methods GET_TOKEN
-    importing
-      !IV_INDEX type I
-    returning
-      value(RS_TOKEN) type STOKESX .
-  methods GET_TOKENS
-    returning
-      value(RT_TOKENS) type STOKESX_TAB .
-  methods REMOVE
-    importing
-      !IV_INDEX type I
-    returning
-      value(RO_TOKENS) type ref to ZCL_AOC_BOOLEAN_TOKENS .
-  methods REPLACE
-    importing
-      !IV_STR type STRING
-      !IV_START type I
-      !IV_END type I optional
-    returning
-      value(RO_TOKENS) type ref to ZCL_AOC_BOOLEAN_TOKENS .
-  methods SET_TOKENS
-    importing
-      !IT_TOKENS type STOKESX_TAB .
-  methods SPLIT
-    importing
-      !IV_START type I
-      !IV_END type I default 0
-    returning
-      value(RO_TOKENS) type ref to ZCL_AOC_BOOLEAN_TOKENS .
-  methods TO_STRING
-    returning
-      value(RV_STRING) type STRING .
-protected section.
+    METHODS constructor
+      IMPORTING
+        !it_tokens TYPE stokesx_tab .
+    METHODS eat
+      IMPORTING
+        !iv_count        TYPE i
+      RETURNING
+        VALUE(ro_tokens) TYPE REF TO zcl_aoc_boolean_tokens .
+    METHODS find_end_paren
+      IMPORTING
+        !iv_start     TYPE i
+      RETURNING
+        VALUE(rv_end) TYPE i .
+    METHODS get_length
+      RETURNING
+        VALUE(rv_length) TYPE i .
+    METHODS get_token
+      IMPORTING
+        !iv_index       TYPE i
+      RETURNING
+        VALUE(rs_token) TYPE stokesx .
+    METHODS get_tokens
+      RETURNING
+        VALUE(rt_tokens) TYPE stokesx_tab .
+    METHODS remove
+      IMPORTING
+        !iv_index        TYPE i
+      RETURNING
+        VALUE(ro_tokens) TYPE REF TO zcl_aoc_boolean_tokens .
+    METHODS replace
+      IMPORTING
+        !iv_str          TYPE string
+        !iv_start        TYPE i
+        !iv_end          TYPE i OPTIONAL
+      RETURNING
+        VALUE(ro_tokens) TYPE REF TO zcl_aoc_boolean_tokens .
+    METHODS set_tokens
+      IMPORTING
+        !it_tokens TYPE stokesx_tab .
+    METHODS split
+      IMPORTING
+        !iv_start        TYPE i
+        !iv_end          TYPE i DEFAULT 0
+      RETURNING
+        VALUE(ro_tokens) TYPE REF TO zcl_aoc_boolean_tokens .
+    METHODS to_string
+      RETURNING
+        VALUE(rv_string) TYPE string .
+  PROTECTED SECTION.
 
-  data MT_TOKENS type STOKESX_TAB .
-private section.
+    DATA mt_tokens TYPE stokesx_tab .
+  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -191,8 +191,8 @@ CLASS ZCL_AOC_BOOLEAN_TOKENS IMPLEMENTATION.
 
   METHOD to_string.
 
-    DATA: lv_row      TYPE i,
-          ls_token    LIKE LINE OF mt_tokens.
+    DATA: lv_row   TYPE i,
+          ls_token LIKE LINE OF mt_tokens.
 
 
     LOOP AT mt_tokens INTO ls_token.

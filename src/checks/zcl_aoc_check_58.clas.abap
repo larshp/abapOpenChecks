@@ -11,7 +11,7 @@ CLASS zcl_aoc_check_58 DEFINITION
         REDEFINITION.
     METHODS get_message_text
         REDEFINITION.
-protected section.
+  PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 

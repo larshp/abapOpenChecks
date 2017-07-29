@@ -1,16 +1,16 @@
-class ZCL_AOC_BOOLEAN_NODE definition
-  public
-  create public .
+CLASS zcl_aoc_boolean_node DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  types:
-    ty_children_tt TYPE STANDARD TABLE OF REF TO zcl_aoc_boolean_node WITH DEFAULT KEY .
-  types:
-    ty_type        TYPE c LENGTH 1 .
+    TYPES:
+      ty_children_tt TYPE STANDARD TABLE OF REF TO zcl_aoc_boolean_node WITH DEFAULT KEY .
+    TYPES:
+      ty_type        TYPE c LENGTH 1 .
 
-  constants:
-    BEGIN OF c_type,
+    CONSTANTS:
+      BEGIN OF c_type,
         paren   TYPE ty_type VALUE '1',
         compare TYPE ty_type VALUE '2',
         and     TYPE ty_type VALUE '3',
@@ -18,29 +18,29 @@ public section.
         not     TYPE ty_type VALUE '5',
       END OF c_type .
 
-  methods APPEND_CHILD
-    importing
-      !IO_CHILD type ref to ZCL_AOC_BOOLEAN_NODE .
-  methods CONSTRUCTOR
-    importing
-      !IV_TYPE type TY_TYPE .
-  methods GET_CHILDREN
-    returning
-      value(RT_CHILDREN) type TY_CHILDREN_TT .
-  methods GET_TYPE
-    returning
-      value(RV_TYPE) type TY_TYPE .
-  methods PREPEND_CHILD
-    importing
-      !IO_CHILD type ref to ZCL_AOC_BOOLEAN_NODE .
-  methods TO_STRING
-    returning
-      value(RV_STRING) type STRING .
-protected section.
+    METHODS append_child
+      IMPORTING
+        !io_child TYPE REF TO zcl_aoc_boolean_node .
+    METHODS constructor
+      IMPORTING
+        !iv_type TYPE ty_type .
+    METHODS get_children
+      RETURNING
+        VALUE(rt_children) TYPE ty_children_tt .
+    METHODS get_type
+      RETURNING
+        VALUE(rv_type) TYPE ty_type .
+    METHODS prepend_child
+      IMPORTING
+        !io_child TYPE REF TO zcl_aoc_boolean_node .
+    METHODS to_string
+      RETURNING
+        VALUE(rv_string) TYPE string .
+  PROTECTED SECTION.
 
-  data MT_CHILDREN type TY_CHILDREN_TT .
-  data MV_TYPE type TY_TYPE .
-private section.
+    DATA mt_children TYPE ty_children_tt .
+    DATA mv_type TYPE ty_type .
+  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -48,7 +48,7 @@ ENDCLASS.
 CLASS ZCL_AOC_BOOLEAN_NODE IMPLEMENTATION.
 
 
-  METHOD APPEND_CHILD.
+  METHOD append_child.
     APPEND io_child TO mt_children.
   ENDMETHOD.
 

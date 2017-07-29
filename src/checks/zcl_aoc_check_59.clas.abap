@@ -1,23 +1,23 @@
-class ZCL_AOC_CHECK_59 definition
-  public
-  inheriting from ZCL_AOC_SUPER
-  create public .
+CLASS zcl_aoc_check_59 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor .
 
-  methods CHECK
-    redefinition .
-  methods GET_MESSAGE_TEXT
-    redefinition .
-protected section.
+    METHODS check
+        REDEFINITION .
+    METHODS get_message_text
+        REDEFINITION .
+  PROTECTED SECTION.
 
-  methods ANALYZE
-    importing
-      !IT_TOKENS type STOKESX_TAB
-    returning
-      value(RV_CODE) type SCI_ERRC .
+    METHODS analyze
+      IMPORTING
+        !it_tokens     TYPE stokesx_tab
+      RETURNING
+        VALUE(rv_code) TYPE sci_errc .
   PRIVATE SECTION.
 ENDCLASS.
 
