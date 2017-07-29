@@ -13,6 +13,23 @@ CLASS zcl_aoc_check_59 DEFINITION
         REDEFINITION .
   PROTECTED SECTION.
 
+    TYPES:
+      BEGIN OF ty_counts,
+        level TYPE i,
+        paren TYPE i,
+        and   TYPE i,
+        or    TYPE i,
+        not   TYPE i,
+      END OF ty_counts .
+    TYPES:
+      ty_counts_tt TYPE STANDARD TABLE OF ty_counts WITH DEFAULT KEY .
+
+    METHODS walk
+      IMPORTING
+        !io_node         TYPE REF TO zcl_aoc_boolean_node
+        !iv_level        TYPE i DEFAULT 0
+      RETURNING
+        VALUE(rt_counts) TYPE ty_counts_tt .
     METHODS analyze
       IMPORTING
         !it_tokens     TYPE stokesx_tab
@@ -29,6 +46,8 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
   METHOD analyze.
 
     DATA: lt_tokens LIKE it_tokens,
+          lt_counts TYPE ty_counts_tt,
+          ls_count  LIKE LINE OF lt_counts,
           lo_node   TYPE REF TO zcl_aoc_boolean_node.
 
     FIELD-SYMBOLS: <ls_token> LIKE LINE OF it_tokens.
@@ -54,6 +73,27 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
       rv_code = '001'.
       RETURN.
     ENDIF.
+
+    IF lo_node->get_type( ) = zcl_aoc_boolean_node=>c_type-paren.
+      rv_code = '002'.
+      RETURN.
+    ENDIF.
+
+    lt_counts = walk( lo_node ).
+
+    LOOP AT lt_counts INTO ls_count.
+      IF ls_count-paren > 0 AND ls_count-and >= 0 AND ls_count-or = 0 AND ls_count-not = 0.
+        rv_code = '002'.
+        RETURN.
+      ELSEIF ls_count-paren > 0 AND ls_count-and = 0 AND ls_count-or > 0 AND ls_count-not = 0.
+        rv_code = '002'.
+        RETURN.
+      ELSEIF ls_count-paren = 0 AND ls_count-and > 0 AND ls_count-or > 0 AND ls_count-not = 0.
+        rv_code = '003'.
+        RETURN.
+      ENDIF.
+    ENDLOOP.
+
 
   ENDMETHOD.
 
@@ -103,7 +143,7 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Boolean expression structure'.        "#EC NOTEXT
+    description    = 'Logical expression structure'.        "#EC NOTEXT
     category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '059'.
@@ -123,11 +163,66 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
     CASE p_code.
       WHEN '001'.
         p_text = 'abapOpenChecks boolean parser error'.     "#EC NOTEXT
+      WHEN '002'.
+        p_text = 'Superfluous parentheses'.                 "#EC NOTEXT
+      WHEN '003'.
+        p_text = 'Too few parentheses'.                     "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
                                  IMPORTING p_text = p_text ).
     ENDCASE.
+
+  ENDMETHOD.
+
+
+  METHOD walk.
+
+    DATA: lo_child    TYPE REF TO zcl_aoc_boolean_node,
+          ls_child    TYPE ty_counts,
+          lt_children TYPE ty_counts_tt.
+
+    FIELD-SYMBOLS: <ls_count> LIKE LINE OF rt_counts.
+
+
+    IF io_node->get_type( ) = zcl_aoc_boolean_node=>c_type-compare.
+      RETURN.
+    ELSEIF io_node->get_type( ) = zcl_aoc_boolean_node=>c_type-paren.
+      rt_counts = walk( io_node  = io_node->get_child( )
+                        iv_level = iv_level ).
+      RETURN.
+    ENDIF.
+
+    APPEND INITIAL LINE TO rt_counts ASSIGNING <ls_count>.
+    <ls_count>-level = iv_level.
+
+    CASE io_node->get_type( ).
+      WHEN zcl_aoc_boolean_node=>c_type-and.
+        <ls_count>-and = 1.
+      WHEN zcl_aoc_boolean_node=>c_type-or.
+        <ls_count>-or = 1.
+      WHEN zcl_aoc_boolean_node=>c_type-not.
+        <ls_count>-not = 1.
+      WHEN OTHERS.
+        ASSERT 0 = 1.
+    ENDCASE.
+
+    LOOP AT io_node->get_children( ) INTO lo_child.
+      IF lo_child->get_type( ) = zcl_aoc_boolean_node=>c_type-paren.
+        <ls_count>-paren = <ls_count>-paren + 1.
+      ENDIF.
+
+      lt_children = walk( io_node  = lo_child
+                          iv_level = iv_level + 1 ).
+      APPEND LINES OF lt_children TO rt_counts.
+
+      LOOP AT lt_children INTO ls_child WHERE level = iv_level + 1.
+        <ls_count>-paren = <ls_count>-paren + ls_child-paren.
+        <ls_count>-and   = <ls_count>-and   + ls_child-and.
+        <ls_count>-or    = <ls_count>-or    + ls_child-or.
+        <ls_count>-not   = <ls_count>-not   + ls_child-not.
+      ENDLOOP.
+    ENDLOOP.
 
   ENDMETHOD.
 ENDCLASS.

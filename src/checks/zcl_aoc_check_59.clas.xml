@@ -6,7 +6,7 @@
     <CLSNAME>ZCL_AOC_CHECK_59</CLSNAME>
     <VERSION>1</VERSION>
     <LANGU>E</LANGU>
-    <DESCRIPT>Boolean expression structure</DESCRIPT>
+    <DESCRIPT>Logical expression structure</DESCRIPT>
     <EXPOSURE>2</EXPOSURE>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
