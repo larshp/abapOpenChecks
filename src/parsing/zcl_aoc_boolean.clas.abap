@@ -13,9 +13,10 @@ protected section.
 
   class-methods REMOVE_METHOD_CALLS
     importing
-      !IT_TOKENS type STOKESX_TAB
-    returning
-      value(RT_TOKENS) type STOKESX_TAB .
+      !IO_TOKENS type ref to ZCL_AOC_BOOLEAN_TOKENS .
+  class-methods REMOVE_STRINGS
+    importing
+      !IO_TOKENS type ref to ZCL_AOC_BOOLEAN_TOKENS .
 private section.
 ENDCLASS.
 
@@ -26,9 +27,16 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
 
   METHOD parse.
 
-    DATA: lt_tokens TYPE stokesx_tab.
+    DATA: lo_tokens TYPE REF TO zcl_aoc_boolean_tokens.
 
-    lt_tokens = remove_method_calls( it_tokens ).
+
+    CREATE OBJECT lo_tokens EXPORTING it_tokens = it_tokens.
+
+    remove_strings( lo_tokens ).
+    remove_method_calls( lo_tokens ).
+
+* charcter strings
+* string templates
 * remove arrows
 * remove dashes
 
@@ -40,9 +48,51 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
   ENDMETHOD.
 
 
-  method REMOVE_METHOD_CALLS.
+  METHOD remove_method_calls.
+
+    DATA: ls_token   TYPE stokesx,
+          lv_end     TYPE i,
+          lv_restart TYPE abap_bool,
+          lv_index   TYPE i.
 
 
+    DO.
+      lv_restart = abap_false.
+      LOOP AT io_tokens->get_tokens( ) INTO ls_token.
+        lv_index = sy-tabix.
 
-  endmethod.
+        FIND REGEX '^[\w>\-=]+\($' IN ls_token-str.
+        IF sy-subrc = 0.
+          lv_end = io_tokens->find_end_paren( lv_index ).
+
+          io_tokens->replace(
+            iv_str   = 'METHOD'
+            iv_start = lv_index
+            iv_end   = lv_end ).
+
+          lv_restart = abap_true.
+          EXIT.
+        ENDIF.
+      ENDLOOP.
+
+      IF lv_restart = abap_false.
+        EXIT.
+      ENDIF.
+    ENDDO.
+
+  ENDMETHOD.
+
+
+  METHOD remove_strings.
+
+    DATA: ls_token TYPE stokesx.
+
+
+    LOOP AT io_tokens->get_tokens( ) INTO ls_token WHERE type = scan_token_type-literal.
+      io_tokens->replace(
+        iv_str   = 'str'
+        iv_start = sy-tabix ).
+    ENDLOOP.
+
+  ENDMETHOD.
 ENDCLASS.
