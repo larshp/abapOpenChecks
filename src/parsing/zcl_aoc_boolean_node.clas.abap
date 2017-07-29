@@ -24,6 +24,9 @@ CLASS zcl_aoc_boolean_node DEFINITION
     METHODS constructor
       IMPORTING
         !iv_type TYPE ty_type .
+    METHODS get_child
+      RETURNING
+        VALUE(ro_child) TYPE REF TO zcl_aoc_boolean_node .
     METHODS get_children
       RETURNING
         VALUE(rt_children) TYPE ty_children_tt .
@@ -56,6 +59,15 @@ CLASS ZCL_AOC_BOOLEAN_NODE IMPLEMENTATION.
   METHOD constructor.
     ASSERT NOT iv_type IS INITIAL.
     mv_type = iv_type.
+  ENDMETHOD.
+
+
+  METHOD get_child.
+
+    ASSERT lines( mt_children ) = 1.
+
+    READ TABLE mt_children INDEX 1 INTO ro_child.
+
   ENDMETHOD.
 
 

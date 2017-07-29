@@ -17,7 +17,16 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
       export_import FOR TESTING,
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
-      test001_03 FOR TESTING.
+      test001_03 FOR TESTING,
+      test002_01 FOR TESTING,
+      test002_02 FOR TESTING,
+      test002_03 FOR TESTING,
+      test002_04 FOR TESTING,
+      test002_05 FOR TESTING,
+      test002_06 FOR TESTING,
+      test002_07 FOR TESTING,
+      test003_01 FOR TESTING,
+      test003_02 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -68,6 +77,106 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals(
       act = ms_result-code
       exp = '001' ).
+
+  ENDMETHOD.
+
+  METHOD test002_01.
+
+    _code 'IF 2 = 3.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test002_02.
+
+    _code 'IF ( 2 = 3 ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = ms_result-code
+      exp = '002' ).
+
+  ENDMETHOD.
+
+  METHOD test002_03.
+
+    _code 'IF 2 = 3 AND ( a = b ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = ms_result-code
+      exp = '002' ).
+
+  ENDMETHOD.
+
+  METHOD test002_04.
+
+    _code 'IF ( 2 = 3 AND a = b ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = ms_result-code
+      exp = '002' ).
+
+  ENDMETHOD.
+
+  METHOD test002_05.
+
+    _code 'IF 2 = 3 AND foo = boo.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test002_06.
+
+    _code 'IF ( 2 = 3 ) AND a = b.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = ms_result-code
+      exp = '002' ).
+
+  ENDMETHOD.
+
+  METHOD test002_07.
+
+    _code 'IF foo = bar AND ( moo = boo OR baa = laa ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test003_01.
+
+    _code 'IF foo = bar AND moo = boo OR baa = laa.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = ms_result-code
+      exp = '003' ).
+
+  ENDMETHOD.
+
+  METHOD test003_02.
+
+    _code 'IF ( foo = bar AND moo = boo ) OR baa = laa.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
   ENDMETHOD.
 
