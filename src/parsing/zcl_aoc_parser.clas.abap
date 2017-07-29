@@ -1,11 +1,11 @@
 CLASS zcl_aoc_parser DEFINITION
   PUBLIC
   FINAL
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
-    TYPE-POOLS abap.
-    CLASS zcl_aoc_parser DEFINITION LOAD.
+    TYPE-POOLS abap .
+    CLASS zcl_aoc_parser DEFINITION LOAD .
 
     TYPES:
       BEGIN OF ty_token,
@@ -16,29 +16,30 @@ CLASS zcl_aoc_parser DEFINITION
         value     TYPE string,
         code      TYPE string,
         rulename  TYPE string,
-      END OF ty_token.
+      END OF ty_token .
     TYPES:
-      ty_tokens_tt TYPE STANDARD TABLE OF ty_token WITH NON-UNIQUE DEFAULT KEY.
+      ty_tokens_tt TYPE STANDARD TABLE OF ty_token WITH NON-UNIQUE DEFAULT KEY .
     TYPES:
       BEGIN OF ty_result,
         match  TYPE abap_bool,
         tokens TYPE ty_tokens_tt,
-      END OF ty_result.
+      END OF ty_result .
 
-    CONSTANTS: BEGIN OF c_type,
-                 role        TYPE c VALUE 'R' ##NO_TEXT,
-                 terminal    TYPE c VALUE 'T' ##NO_TEXT,
-                 nonterminal TYPE c VALUE 'N' ##NO_TEXT,
-               END OF c_type.
-
-    CONSTANTS: BEGIN OF c_role,
-                 fielddefid     TYPE string VALUE 'FieldDefId' ##NO_TEXT,
-                 fieldid        TYPE string VALUE 'FieldId' ##NO_TEXT,
-                 formid         TYPE string VALUE 'FormId' ##NO_TEXT,
-                 formdefid      TYPE string VALUE 'FormDefId' ##NO_TEXT,
-                 classexctypeid TYPE string VALUE 'ClassexcTypeId' ##NO_TEXT,
-                 typeid         TYPE string VALUE 'TypeId' ##NO_TEXT,
-               END OF c_role.
+    CONSTANTS:
+      BEGIN OF c_type,
+        role        TYPE c VALUE 'R' ##NO_TEXT,
+        terminal    TYPE c VALUE 'T' ##NO_TEXT,
+        nonterminal TYPE c VALUE 'N' ##NO_TEXT,
+      END OF c_type .
+    CONSTANTS:
+      BEGIN OF c_role,
+        fielddefid     TYPE string VALUE 'FieldDefId' ##NO_TEXT,
+        fieldid        TYPE string VALUE 'FieldId' ##NO_TEXT,
+        formid         TYPE string VALUE 'FormId' ##NO_TEXT,
+        formdefid      TYPE string VALUE 'FormDefId' ##NO_TEXT,
+        classexctypeid TYPE string VALUE 'ClassexcTypeId' ##NO_TEXT,
+        typeid         TYPE string VALUE 'TypeId' ##NO_TEXT,
+      END OF c_role .
 
     CLASS-METHODS run
       IMPORTING
@@ -47,7 +48,7 @@ CLASS zcl_aoc_parser DEFINITION
         !iv_rule           TYPE string DEFAULT 'START'
         !iv_allow_obsolete TYPE abap_bool DEFAULT abap_true
       RETURNING
-        VALUE(rs_result)   TYPE zcl_aoc_parser=>ty_result.
+        VALUE(rs_result)   TYPE zcl_aoc_parser=>ty_result .
   PROTECTED SECTION.
 
     CLASS-METHODS download
