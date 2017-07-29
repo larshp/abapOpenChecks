@@ -24,8 +24,8 @@ CLASS ltcl_test IMPLEMENTATION.
       EXPORTING
         iv_type = zcl_aoc_boolean_node=>c_type-compare.
 
-    lo_and->add_child( lo_compare ).
-    lo_and->add_child( lo_compare ).
+    lo_and->append_child( lo_compare ).
+    lo_and->append_child( lo_compare ).
 
     lv_string = lo_and->to_string( ).
 
@@ -50,7 +50,7 @@ CLASS ltcl_test IMPLEMENTATION.
       EXPORTING
         iv_type = zcl_aoc_boolean_node=>c_type-compare.
 
-    lo_not->add_child( lo_compare ).
+    lo_not->append_child( lo_compare ).
 
     lv_string = lo_not->to_string( ).
 

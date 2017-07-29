@@ -13,6 +13,14 @@ public section.
       !IV_START type I
     returning
       value(RV_END) type I .
+  methods GET_LENGTH
+    returning
+      value(RV_LENGTH) type I .
+  methods GET_TOKEN
+    importing
+      !IV_INDEX type I
+    returning
+      value(RS_TOKEN) type STOKESX .
   methods GET_TOKENS
     returning
       value(RT_TOKENS) type STOKESX_TAB .
@@ -31,6 +39,17 @@ public section.
   methods TO_STRING
     returning
       value(RV_STRING) type STRING .
+  methods SPLIT
+    importing
+      !IV_START type I
+      !IV_END type I default 0
+    returning
+      value(RO_TOKENS) type ref to ZCL_AOC_BOOLEAN_TOKENS .
+  methods EAT
+    importing
+      !IV_COUNT type I
+    returning
+      value(RO_TOKENS) type ref to ZCL_AOC_BOOLEAN_TOKENS .
 protected section.
 
   data MT_TOKENS type STOKESX_TAB .
@@ -42,9 +61,25 @@ ENDCLASS.
 CLASS ZCL_AOC_BOOLEAN_TOKENS IMPLEMENTATION.
 
 
-  METHOD CONSTRUCTOR.
+  METHOD constructor.
 
     mt_tokens = it_tokens.
+
+  ENDMETHOD.
+
+
+  METHOD eat.
+
+    DATA: lt_tokens LIKE mt_tokens.
+
+    lt_tokens = mt_tokens.
+    DELETE lt_tokens FROM iv_count + 1.
+
+    DELETE mt_tokens TO iv_count.
+
+    CREATE OBJECT ro_tokens
+      EXPORTING
+        it_tokens = lt_tokens.
 
   ENDMETHOD.
 
@@ -71,6 +106,22 @@ CLASS ZCL_AOC_BOOLEAN_TOKENS IMPLEMENTATION.
         RETURN.
       ENDIF.
     ENDLOOP.
+
+    BREAK-POINT.
+
+  ENDMETHOD.
+
+
+  METHOD get_length.
+
+    rv_length = lines( mt_tokens ).
+
+  ENDMETHOD.
+
+
+  METHOD get_token.
+
+    READ TABLE mt_tokens INDEX iv_index INTO rs_token.
 
   ENDMETHOD.
 
@@ -107,6 +158,25 @@ CLASS ZCL_AOC_BOOLEAN_TOKENS IMPLEMENTATION.
     ENDIF.
 
     ro_tokens = me.
+
+  ENDMETHOD.
+
+
+  METHOD split.
+
+    DATA: lt_tokens LIKE mt_tokens.
+
+    lt_tokens = mt_tokens.
+
+    DELETE lt_tokens TO iv_start.
+
+    IF iv_end > 0.
+      DELETE lt_tokens FROM iv_end - iv_start + 1.
+    ENDIF.
+
+    CREATE OBJECT ro_tokens
+      EXPORTING
+        it_tokens = lt_tokens.
 
   ENDMETHOD.
 

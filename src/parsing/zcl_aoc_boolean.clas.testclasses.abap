@@ -52,7 +52,11 @@ CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL
       test012 FOR TESTING,
       test013 FOR TESTING,
       test014 FOR TESTING,
-      test015 FOR TESTING.
+      test015 FOR TESTING,
+      test016 FOR TESTING,
+      test017 FOR TESTING,
+      test018 FOR TESTING,
+      test019 FOR TESTING.
 
 ENDCLASS.       "ltcl_Test
 
@@ -132,7 +136,7 @@ CLASS ltcl_parse IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals(
       act = lv_result
-      exp = 'AND ( COMPARE COMPARE )' ).
+      exp = 'AND( COMPARE COMPARE )' ).
   ENDMETHOD.
 
   METHOD test007.
@@ -142,7 +146,7 @@ CLASS ltcl_parse IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals(
       act = lv_result
-      exp = '( AND ( COMPARE COMPARE )' ).
+      exp = '( AND( COMPARE COMPARE ) )' ).
   ENDMETHOD.
 
   METHOD test008.
@@ -152,7 +156,7 @@ CLASS ltcl_parse IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals(
       act = lv_result
-      exp = 'AND ( ( COMPARE ) ( COMPARE ) )' ).
+      exp = 'AND( ( COMPARE ) ( COMPARE ) )' ).
   ENDMETHOD.
 
   METHOD test009.
@@ -162,7 +166,7 @@ CLASS ltcl_parse IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals(
       act = lv_result
-      exp = '( AND ( ( COMPARE ) ( COMPARE ) ) )' ).
+      exp = '( AND( ( COMPARE ) ( COMPARE ) ) )' ).
   ENDMETHOD.
 
   METHOD test010.
@@ -225,6 +229,46 @@ CLASS ltcl_parse IMPLEMENTATION.
       exp = 'COMPARE' ).
   ENDMETHOD.
 
+  METHOD test016.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF NOT 2 = 3.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'NOT( COMPARE )' ).
+  ENDMETHOD.
+
+  METHOD test017.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF NOT 2 = 3 AND NOT 1 = 2.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'AND( NOT( COMPARE ) NOT( COMPARE ) )' ).
+  ENDMETHOD.
+
+  METHOD test018.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF NOT ( 2 = 3 AND NOT 1 = 2 ).' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'NOT( ( AND( COMPARE NOT( COMPARE ) ) ) )' ).
+  ENDMETHOD.
+
+  METHOD test019.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF 2 = 3 AND NOT 1 = 2.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'AND( COMPARE NOT( COMPARE ) )' ).
+  ENDMETHOD.
+
 ENDCLASS.
 
 CLASS ltcl_remove_strings DEFINITION DEFERRED.
@@ -269,21 +313,21 @@ CLASS ltcl_remove_strings IMPLEMENTATION.
   METHOD test01.
 
     test( iv_code = 'bar'
-          iv_exp = 'bar' ).
+          iv_exp  = 'bar' ).
 
   ENDMETHOD.
 
   METHOD test02.
 
     test( iv_code = '''bar'''
-          iv_exp = 'str' ).
+          iv_exp  = 'str' ).
 
   ENDMETHOD.
 
   METHOD test03.
 
     test( iv_code = '`bar`'
-          iv_exp = 'str' ).
+          iv_exp  = 'str' ).
 
   ENDMETHOD.
 

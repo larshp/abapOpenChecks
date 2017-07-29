@@ -18,7 +18,7 @@ public section.
         not     TYPE ty_type VALUE '5',
       END OF c_type .
 
-  methods ADD_CHILD
+  methods APPEND_CHILD
     importing
       !IO_CHILD type ref to ZCL_AOC_BOOLEAN_NODE .
   methods CONSTRUCTOR
@@ -30,6 +30,9 @@ public section.
   methods GET_TYPE
     returning
       value(RV_TYPE) type TY_TYPE .
+  methods PREPEND_CHILD
+    importing
+      !IO_CHILD type ref to ZCL_AOC_BOOLEAN_NODE .
   methods TO_STRING
     returning
       value(RV_STRING) type STRING .
@@ -45,14 +48,14 @@ ENDCLASS.
 CLASS ZCL_AOC_BOOLEAN_NODE IMPLEMENTATION.
 
 
-  METHOD add_child.
+  METHOD APPEND_CHILD.
     APPEND io_child TO mt_children.
   ENDMETHOD.
 
 
   METHOD constructor.
     ASSERT NOT iv_type IS INITIAL.
-    mv_type  = iv_type.
+    mv_type = iv_type.
   ENDMETHOD.
 
 
@@ -63,6 +66,11 @@ CLASS ZCL_AOC_BOOLEAN_NODE IMPLEMENTATION.
 
   METHOD get_type.
     rv_type = mv_type.
+  ENDMETHOD.
+
+
+  METHOD prepend_child.
+    INSERT io_child INTO mt_children INDEX 1.
   ENDMETHOD.
 
 
