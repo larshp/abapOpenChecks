@@ -81,6 +81,7 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
             OR lv_token2 = '<='
             OR lv_token2 = 'LE'
             OR lv_token2 = 'NE'
+            OR lv_token2 = 'NA'
             OR lv_token2 = 'CO'
             OR lv_token2 = 'CA'
             OR lv_token2 = 'CS'
@@ -112,11 +113,13 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
   METHOD parse_internal.
 
     DATA: lv_token1     TYPE string,
+          lv_token2     TYPE string,
           lo_node       LIKE ro_node,
           lv_comparator TYPE i.
 
 
     lv_token1 = io_tokens->get_token( 1 )-str.
+    lv_token2 = io_tokens->get_token( 2 )-str.
 
     lv_comparator = is_comparator( io_tokens ).
 
@@ -125,6 +128,12 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
         EXPORTING
           iv_type = zcl_aoc_boolean_node=>c_type-compare.
       io_tokens->eat( 2 + lv_comparator ).
+    ELSEIF io_tokens->get_length( ) = 1 OR lv_token2 = 'AND' OR lv_token2 = 'OR'.
+* Predicative method call, 740SP08 logical expression
+      CREATE OBJECT ro_node
+        EXPORTING
+          iv_type = zcl_aoc_boolean_node=>c_type-compare.
+      io_tokens->eat( 1 ).
     ELSEIF lv_token1 = 'NOT'.
       io_tokens->eat( 1 ).
       ro_node = parse_not( io_tokens ).
@@ -220,32 +229,50 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
     DATA: ls_token  TYPE stokesx,
           ls_prev   LIKE ls_token,
           ls_next   LIKE ls_token,
+          lv_before TYPE i,
           lt_tokens TYPE stokesx_tab,
           lv_index  TYPE i.
 
 
     lt_tokens = io_tokens->get_tokens( ).
 
-    LOOP AT lt_tokens INTO ls_token WHERE type = scan_token_type-identifier.
-      lv_index = sy-tabix.
+    DO.
+      lv_before = lines( lt_tokens ).
 
-      CASE ls_token-str.
-        WHEN '+' OR '-' OR '*' OR '/' OR 'MOD' OR 'BIT-AND' OR 'BIT-OR'.
-          DO 2 TIMES.
-            DELETE lt_tokens INDEX lv_index.
-          ENDDO.
-          lv_index = lv_index - 1.
-      ENDCASE.
+      LOOP AT lt_tokens INTO ls_token.
+        lv_index = sy-tabix.
+
+        CLEAR: ls_prev, ls_next.
+        READ TABLE lt_tokens INDEX lv_index - 1 INTO ls_prev. "#EC CI_SUBRC
+        READ TABLE lt_tokens INDEX lv_index + 1 INTO ls_next. "#EC CI_SUBRC
+
+        CASE ls_token-str.
+          WHEN '+' OR '-' OR '*' OR '/' OR 'MOD' OR 'DIV' OR 'BIT-AND' OR 'BIT-OR' OR '&&'.
+            IF ls_next-str <> '('.
+              DO 2 TIMES.
+                DELETE lt_tokens INDEX lv_index.
+              ENDDO.
+              EXIT.
+            ENDIF.
+        ENDCASE.
 
 * remove paren introduced by calculations
-      CLEAR: ls_prev, ls_next.
-      READ TABLE lt_tokens INDEX lv_index - 1 INTO ls_prev. "#EC CI_SUBRC
-      READ TABLE lt_tokens INDEX lv_index + 1 INTO ls_next. "#EC CI_SUBRC
-      IF ls_prev-str = '(' AND ls_next-str = ')'.
-        DELETE lt_tokens INDEX lv_index + 1.
-        DELETE lt_tokens INDEX lv_index - 1.
+        IF ls_prev-str = '(' AND ls_next-str = ')'.
+          DELETE lt_tokens INDEX lv_index + 1.
+          DELETE lt_tokens INDEX lv_index - 1.
+          EXIT.
+        ELSEIF ls_prev-str = '|' AND ls_next-str = '|'.
+* quick workaround for string templates, todo
+          DELETE lt_tokens INDEX lv_index + 1.
+          DELETE lt_tokens INDEX lv_index - 1.
+          EXIT.
+        ENDIF.
+      ENDLOOP.
+
+      IF lines( lt_tokens ) = lv_before.
+        EXIT.
       ENDIF.
-    ENDLOOP.
+    ENDDO.
 
     io_tokens->set_tokens( lt_tokens ).
 
@@ -271,6 +298,20 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
 
           io_tokens->replace(
             iv_str   = 'METHOD'
+            iv_start = lv_index
+            iv_end   = lv_end ).
+
+          lv_restart = abap_true.
+          EXIT.
+        ENDIF.
+
+* table comprehensions
+        FIND REGEX '^[\w<>~\-=]+\[$' IN ls_token-str.
+        IF sy-subrc = 0.
+          lv_end = io_tokens->find_end_square( lv_index ).
+
+          io_tokens->replace(
+            iv_str   = 'TABLEC'
             iv_start = lv_index
             iv_end   = lv_end ).
 
