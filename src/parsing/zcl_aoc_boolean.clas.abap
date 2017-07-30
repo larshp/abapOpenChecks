@@ -226,11 +226,11 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
 
   METHOD remove_calculations.
 
-    DATA: ls_token  TYPE stokesx,
-          ls_prev   LIKE ls_token,
-          ls_next   LIKE ls_token,
-          lv_before TYPE i,
+    DATA: lv_before TYPE i,
           lt_tokens TYPE stokesx_tab,
+          ls_token  LIKE LINE OF lt_tokens,
+          ls_prev   LIKE LINE OF lt_tokens,
+          ls_next   LIKE LINE OF lt_tokens,
           lv_index  TYPE i.
 
 
