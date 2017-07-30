@@ -9,7 +9,13 @@ CLASS zcl_aoc_check_59 DEFINITION
 
     METHODS check
         REDEFINITION .
+    METHODS get_attributes
+        REDEFINITION .
     METHODS get_message_text
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
+    METHODS if_ci_test~query_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
@@ -23,6 +29,8 @@ CLASS zcl_aoc_check_59 DEFINITION
       END OF ty_counts .
     TYPES:
       ty_counts_tt TYPE STANDARD TABLE OF ty_counts WITH DEFAULT KEY .
+
+    DATA mv_parser_errors TYPE flag .
 
     METHODS walk
       IMPORTING
@@ -70,7 +78,9 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
 
     lo_node = zcl_aoc_boolean=>parse( lt_tokens ).
     IF lo_node IS INITIAL.
-      rv_code = '001'.
+      IF mv_parser_errors = abap_true.
+        rv_code = '001'.
+      ENDIF.
       RETURN.
     ENDIF.
 
@@ -152,8 +162,19 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     mv_errty = c_error.
+    mv_parser_errors = abap_true.
 
   ENDMETHOD.                    "CONSTRUCTOR
+
+
+  METHOD get_attributes.
+
+    EXPORT
+      mv_errty = mv_errty
+      mv_parser_errors = mv_parser_errors
+      TO DATA BUFFER p_attributes.
+
+  ENDMETHOD.
 
 
   METHOD get_message_text.
@@ -172,6 +193,29 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
                                            p_code = p_code
                                  IMPORTING p_text = p_text ).
     ENDCASE.
+
+  ENDMETHOD.
+
+
+  METHOD if_ci_test~query_attributes.
+
+    zzaoc_top.
+
+    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
+    zzaoc_fill_att mv_parser_errors 'Show parser errors' ''. "#EC NOTEXT
+
+    zzaoc_popup.
+
+  ENDMETHOD.
+
+
+  METHOD put_attributes.
+
+    IMPORT
+      mv_errty = mv_errty
+      mv_parser_errors = mv_parser_errors
+      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
+    ASSERT sy-subrc = 0.
 
   ENDMETHOD.
 
