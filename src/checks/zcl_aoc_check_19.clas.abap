@@ -45,6 +45,7 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
     DATA: lt_not       TYPE SORTED TABLE OF ty_name WITH UNIQUE KEY name,
           lv_statement TYPE string,
           ls_name      TYPE ty_name,
+          lv_source    TYPE string,
           lv_name      TYPE string.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
@@ -86,11 +87,13 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
         ENDIF.
       ENDIF.
 
+      CLEAR lv_source.
+
       FIND REGEX 'READ TABLE .* INTO ([^ .]*).*'
         IN lv_statement SUBMATCHES lv_name.
       IF sy-subrc <> 0.
-        FIND REGEX 'LOOP AT .* INTO ([^ .]*).*'
-          IN lv_statement SUBMATCHES lv_name.
+        FIND REGEX 'LOOP AT (.*) INTO ([^ .]*).*'
+          IN lv_statement SUBMATCHES lv_source lv_name.
       ENDIF.
       IF sy-subrc <> 0.
         FIND REGEX 'READ TABLE .* ASSIGNING ([^ .]*).*'
@@ -107,6 +110,10 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
 
 * todo, report error where the variable is defined instead of used
       IF sy-subrc = 0.
+
+        IF lv_source CA '()'.
+          CONTINUE.
+        ENDIF.
 
 * dont report for class member variables
         IF object_type = 'CLAS'.

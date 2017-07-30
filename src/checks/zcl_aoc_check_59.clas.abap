@@ -223,8 +223,8 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
   METHOD walk.
 
     DATA: lo_child    TYPE REF TO zcl_aoc_boolean_node,
-          ls_child    TYPE ty_counts,
-          lt_children TYPE ty_counts_tt.
+          lt_children TYPE ty_counts_tt,
+          ls_child    LIKE LINE OF lt_children.
 
     FIELD-SYMBOLS: <ls_count> LIKE LINE OF rt_counts.
 

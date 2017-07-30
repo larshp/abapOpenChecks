@@ -35,7 +35,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_15 FOR TESTING,
       test001_16 FOR TESTING,
       test001_17 FOR TESTING,
-      test001_18 FOR TESTING.
+      test001_18 FOR TESTING,
+      test001_19 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -296,6 +297,18 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'FIELD-SYMBOLS: <lo_wa> TYPE REF TO cl_foobar.'.
     _code 'READ TABLE lt_list[] ASSIGNING <lo_wa> INDEX 1.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_19.
+* ===========
+
+    _code 'DATA: ls_token TYPE stokesx.'.
+    _code 'LOOP AT io_tokens->get_tokens( ) INTO ls_token.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
