@@ -292,9 +292,14 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
       LOOP AT io_tokens->get_tokens( ) INTO ls_token.
         lv_index = sy-tabix.
 
-        FIND REGEX '^[\w<>~\-=]+\($' IN ls_token-str.
+        FIND REGEX '^[\w<>~\-=#]+\($' IN ls_token-str.
         IF sy-subrc = 0.
           lv_end = io_tokens->find_end_paren( lv_index ).
+
+          CASE io_tokens->get_token( lv_index - 1 )-str.
+            WHEN 'NEW' OR 'CONV' OR 'COND' OR 'VALUE'.
+              lv_index = lv_index - 1.
+          ENDCASE.
 
           io_tokens->replace(
             iv_str   = 'METHOD'

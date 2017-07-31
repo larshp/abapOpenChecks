@@ -600,7 +600,10 @@ CLASS ltcl_remove_method_calls DEFINITION FOR TESTING DURATION SHORT RISK LEVEL 
       test04 FOR TESTING,
       test05 FOR TESTING,
       test06 FOR TESTING,
-      test07 FOR TESTING.
+      test07 FOR TESTING,
+      test08 FOR TESTING,
+      test09 FOR TESTING,
+      test10 FOR TESTING.
 
 ENDCLASS.       "ltcl_Remove_Method_Calls
 
@@ -671,6 +674,27 @@ CLASS ltcl_remove_method_calls IMPLEMENTATION.
 
     test( iv_code = 'foo( ) = bar( )'
           iv_exp  = 'method = method' ).
+
+  ENDMETHOD.
+
+  METHOD test08.
+
+    test( iv_code = 'NEW zcl_foo( )->bar( )'
+          iv_exp  = 'method' ).
+
+  ENDMETHOD.
+
+  METHOD test09.
+
+    test( iv_code = 'CONV integer( lv_date )'
+          iv_exp  = 'method' ).
+
+  ENDMETHOD.
+
+  METHOD test10.
+
+    test( iv_code = 'VALUE #( lt_tab[ id = 2 ] OPTIONAL )'
+          iv_exp  = 'method' ).
 
   ENDMETHOD.
 
