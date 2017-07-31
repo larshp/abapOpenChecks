@@ -1,33 +1,52 @@
 CLASS zcl_aoc_check_56 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
+    METHODS get_attributes
+        REDEFINITION .
     METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
+    METHODS if_ci_test~query_attributes
+        REDEFINITION .
   PROTECTED SECTION.
 
     TYPES:
-      ty_seosubcodf_tt TYPE STANDARD TABLE OF seosubcodf WITH DEFAULT KEY.
+      ty_seosubcodf_tt TYPE STANDARD TABLE OF seosubcodf WITH DEFAULT KEY .
 
+    DATA mv_supplied TYPE flag .
+    DATA mv_referenced TYPE flag .
+
+    METHODS check_supplied
+      IMPORTING
+        !is_method TYPE seocompo .
+    METHODS check_locally_referenced
+      IMPORTING
+        !is_method TYPE seocompo .
     METHODS check_method
       IMPORTING
-        !is_method TYPE seocompodf.
+        !is_method TYPE seocompo .
     METHODS find_where_used
       IMPORTING
-        !is_method       TYPE seocompodf
+        !is_method       TYPE seocompo
       RETURNING
-        VALUE(rt_founds) TYPE sci_findlst.
+        VALUE(rt_founds) TYPE sci_findlst .
+    METHODS report_unreferenced
+      IMPORTING
+        !is_method     TYPE seocompo
+        !it_parameters TYPE ty_seosubcodf_tt .
     METHODS report_unused
       IMPORTING
-        !is_method     TYPE seocompodf
-        !it_parameters TYPE ty_seosubcodf_tt.
+        !is_method     TYPE seocompo
+        !it_parameters TYPE ty_seosubcodf_tt .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -42,7 +61,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_methods TYPE STANDARD TABLE OF seocompodf WITH DEFAULT KEY.
+    DATA: lt_methods TYPE STANDARD TABLE OF seocompo WITH DEFAULT KEY.
 
     FIELD-SYMBOLS: <ls_method> LIKE LINE OF lt_methods.
 
@@ -51,10 +70,11 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    SELECT * FROM seocompodf
+* SEOCOMPO
+    SELECT * FROM seocompo
       INTO TABLE lt_methods
       WHERE clsname = object_name
-      AND version = '1'
+      AND cmptype = '1'
       ORDER BY PRIMARY KEY.     "#EC CI_SUBRC "#EC CI_ALL_FIELDS_NEEDED
 
     LOOP AT lt_methods ASSIGNING <ls_method>.
@@ -64,7 +84,51 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD check_locally_referenced.
+
+    DATA: lt_compiler   TYPE scr_refs,
+          ls_compiler   LIKE LINE OF lt_compiler,
+          ls_mtdkey     TYPE seocpdkey,
+          lv_include    TYPE programm,
+          lt_parameters TYPE STANDARD TABLE OF seosubcodf WITH DEFAULT KEY.
+
+
+    SELECT * FROM seosubcodf INTO TABLE lt_parameters
+      WHERE clsname = is_method-clsname
+      AND cmpname = is_method-cmpname
+      AND version = '1'
+      ORDER BY PRIMARY KEY.     "#EC CI_SUBRC "#EC CI_ALL_FIELDS_NEEDED
+
+    lt_compiler = get_compiler( ).
+
+    ls_mtdkey-clsname = is_method-clsname.
+    ls_mtdkey-cpdname = is_method-cmpname.
+    lv_include = cl_oo_classname_service=>get_method_include( ls_mtdkey ).
+
+    LOOP AT lt_compiler INTO ls_compiler WHERE tag = cl_abap_compiler=>tag_data
+        AND statement->source_info->name = lv_include.
+      DELETE lt_parameters WHERE sconame = ls_compiler-name.
+    ENDLOOP.
+
+    report_unreferenced(
+      is_method     = is_method
+      it_parameters = lt_parameters ).
+
+  ENDMETHOD.
+
+
   METHOD check_method.
+
+    check_supplied( is_method ).
+
+    IF object_type = 'CLAS'.
+      check_locally_referenced( is_method ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD check_supplied.
 
     DATA: lt_found      TYPE sci_findlst,
           lv_index      TYPE i,
@@ -173,6 +237,17 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD get_attributes.
+
+    EXPORT
+      mv_errty = mv_errty
+      mv_referenced = mv_referenced
+      mv_supplied = mv_supplied
+      TO DATA BUFFER p_attributes.
+
+  ENDMETHOD.
+
+
   METHOD get_message_text.
 
     CLEAR p_text.
@@ -182,11 +257,66 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
         p_text = 'Parameter &1 not supplied anywhere'.      "#EC NOTEXT
       WHEN '002'.
         p_text = 'Parameter &1 not supplied anywhere, method &2'. "#EC NOTEXT
+      WHEN '003'.
+        p_text = 'Parameter &1 not referenced in method'.   "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
                                  IMPORTING p_text = p_text ).
     ENDCASE.
+
+  ENDMETHOD.
+
+
+  METHOD if_ci_test~query_attributes.
+
+    zzaoc_top.
+
+    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
+    zzaoc_fill_att mv_referenced 'Check referenced' ''.     "#EC NOTEXT
+    zzaoc_fill_att mv_supplied 'Check supplied' ''.         "#EC NOTEXT
+
+    zzaoc_popup.
+
+  ENDMETHOD.
+
+
+  METHOD put_attributes.
+
+    IMPORT
+      mv_errty = mv_errty
+      mv_referenced = mv_referenced
+      mv_supplied = mv_supplied
+      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
+
+
+  METHOD report_unreferenced.
+
+    DATA: lv_include TYPE programm,
+          ls_mtdkey  TYPE seocpdkey.
+
+    FIELD-SYMBOLS: <ls_parameter> LIKE LINE OF it_parameters.
+
+
+    LOOP AT it_parameters ASSIGNING <ls_parameter>.
+      CASE object_type.
+        WHEN 'CLAS'.
+          ls_mtdkey-clsname = is_method-clsname.
+          ls_mtdkey-cpdname = is_method-cmpname.
+          lv_include = cl_oo_classname_service=>get_method_include( ls_mtdkey ).
+          inform( p_sub_obj_type = c_type_include
+                  p_sub_obj_name = lv_include
+                  p_param_1      = <ls_parameter>-sconame
+                  p_kind         = mv_errty
+                  p_test         = myname
+                  p_code         = '003' ).
+        WHEN OTHERS.
+          ASSERT 0 = 1.
+      ENDCASE.
+    ENDLOOP.
 
   ENDMETHOD.
 
