@@ -134,10 +134,21 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
   METHOD check_method.
 
+    DATA: lv_clsname TYPE seometarel-clsname.
+
+
     check_supplied( is_method ).
 
     IF object_type = 'CLAS'.
-      check_locally_referenced( is_method ).
+      SELECT SINGLE clsname INTO lv_clsname
+        FROM seometarel
+        WHERE clsname = is_method-clsname
+        AND refclsname = 'IF_AMDP_MARKER_HDB'
+        AND version = '1'
+        AND reltype = '1'.
+      IF sy-subrc <> 0.
+        check_locally_referenced( is_method ).
+      ENDIF.
     ENDIF.
 
   ENDMETHOD.
