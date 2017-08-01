@@ -198,7 +198,9 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
+    mv_errty      = c_error.
+    mv_referenced = abap_true.
+    mv_supplied   = abap_true.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
