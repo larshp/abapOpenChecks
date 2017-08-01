@@ -21,6 +21,8 @@ CLASS zcl_aoc_check_56 DEFINITION
 
     TYPES:
       ty_seosubcodf_tt TYPE STANDARD TABLE OF seosubcodf WITH DEFAULT KEY .
+    TYPES:
+      ty_vseosubcdf_tt TYPE STANDARD TABLE OF vseosubcdf WITH DEFAULT KEY .
 
     DATA mv_supplied TYPE flag .
     DATA mv_referenced TYPE flag .
@@ -42,7 +44,7 @@ CLASS zcl_aoc_check_56 DEFINITION
     METHODS report_unreferenced
       IMPORTING
         !is_method     TYPE seocompo
-        !it_parameters TYPE ty_seosubcodf_tt .
+        !it_parameters TYPE ty_vseosubcdf_tt .
     METHODS report_unused
       IMPORTING
         !is_method     TYPE seocompo
@@ -90,20 +92,33 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           ls_compiler   LIKE LINE OF lt_compiler,
           ls_mtdkey     TYPE seocpdkey,
           lv_include    TYPE programm,
-          lt_parameters TYPE STANDARD TABLE OF seosubcodf WITH DEFAULT KEY.
+          lt_parameters TYPE ty_vseosubcdf_tt.
 
 
-    SELECT * FROM seosubcodf INTO TABLE lt_parameters
+    SELECT * FROM vseosubcdf INTO TABLE lt_parameters
       WHERE clsname = is_method-clsname
       AND cmpname = is_method-cmpname
       AND version = '1'
+      AND cmptype <> '1'
       ORDER BY PRIMARY KEY.     "#EC CI_SUBRC "#EC CI_ALL_FIELDS_NEEDED
 
     lt_compiler = get_compiler( ).
 
     ls_mtdkey-clsname = is_method-clsname.
     ls_mtdkey-cpdname = is_method-cmpname.
-    lv_include = cl_oo_classname_service=>get_method_include( ls_mtdkey ).
+
+    cl_oo_classname_service=>get_method_include(
+      EXPORTING
+        mtdkey                = ls_mtdkey
+      RECEIVING
+        result                = lv_include
+      EXCEPTIONS
+        class_not_existing    = 1
+        method_not_existing   = 2
+        OTHERS                = 3 ).
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
 
     LOOP AT lt_compiler INTO ls_compiler WHERE tag = cl_abap_compiler=>tag_data
         AND statement->source_info->name = lv_include.
