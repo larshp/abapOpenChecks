@@ -20,14 +20,15 @@ CLASS zcl_aoc_check_31 DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-    DATA mt_error TYPE zaoc_slin_desc_key_range_tt.
-    DATA mt_warn TYPE zaoc_slin_desc_key_range_tt.
-    DATA mt_info TYPE zaoc_slin_desc_key_range_tt.
-    DATA mt_ignore TYPE zaoc_slin_desc_key_range_tt.
+    DATA mt_error TYPE zaoc_slin_desc_key_range_tt .
+    DATA mt_warn TYPE zaoc_slin_desc_key_range_tt .
+    DATA mt_info TYPE zaoc_slin_desc_key_range_tt .
+    DATA mt_ignore TYPE zaoc_slin_desc_key_range_tt .
+    DATA mv_default_error TYPE flag .
 
     METHODS set_flags
       RETURNING
-        VALUE(rs_flags) TYPE rslin_test_flags.
+        VALUE(rs_flags) TYPE rslin_test_flags .
 ENDCLASS.
 
 
@@ -81,8 +82,17 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
         lv_errty = c_note.
       ELSEIF lines( mt_ignore ) > 0 AND <ls_result>-code IN mt_ignore.
         CONTINUE.
-      ELSE.
+      ELSEIF mv_default_error = abap_true.
         lv_errty = c_error.
+      ELSE.
+        CASE <ls_result>-kind.
+          WHEN slin_errlv-warn.
+            lv_errty = c_warning.
+          WHEN slin_errlv-info.
+            lv_errty = c_note.
+          WHEN OTHERS.
+            lv_errty = c_error.
+        ENDCASE.
       ENDIF.
 
       lv_obj_name = <ls_result>-src_incl.
@@ -111,6 +121,8 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
+    mv_default_error = abap_true.
+
   ENDMETHOD.                    "CONSTRUCTOR
 
 
@@ -121,6 +133,7 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
       mt_warn = mt_warn
       mt_info = mt_info
       mt_ignore = mt_ignore
+      mv_default_error = mv_default_error
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -141,6 +154,7 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
     zzaoc_fill_att mt_warn 'Warning' 'S'.                   "#EC NOTEXT
     zzaoc_fill_att mt_info 'Info' 'S'.                      "#EC NOTEXT
     zzaoc_fill_att mt_ignore 'Ignore' 'S'.                  "#EC NOTEXT
+    zzaoc_fill_att mv_default_error 'Default error' 'C'.    "#EC NOTEXT
 
     zzaoc_popup.
     attributes_ok = abap_true.
@@ -155,6 +169,7 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
       mt_warn = mt_warn
       mt_info = mt_info
       mt_ignore = mt_ignore
+      mv_default_error = mv_default_error
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
