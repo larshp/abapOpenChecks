@@ -100,6 +100,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       AND cmpname = is_method-cmpname
       AND version = '1'
       AND cmptype = '1'
+      AND scotype <> '1'
       ORDER BY PRIMARY KEY.                   "#EC CI_ALL_FIELDS_NEEDED
     IF sy-subrc <> 0.
       RETURN.
