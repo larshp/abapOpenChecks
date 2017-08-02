@@ -99,8 +99,11 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       WHERE clsname = is_method-clsname
       AND cmpname = is_method-cmpname
       AND version = '1'
-      AND cmptype <> '1'
-      ORDER BY PRIMARY KEY.     "#EC CI_SUBRC "#EC CI_ALL_FIELDS_NEEDED
+      AND cmptype = '1'
+      ORDER BY PRIMARY KEY.                   "#EC CI_ALL_FIELDS_NEEDED
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
 
     lt_compiler = get_compiler( ).
 
