@@ -47,10 +47,9 @@ CLASS ZCL_AOC_CHECK_46 IMPLEMENTATION.
 
 
     lt_result = get_compiler( ).
-* downport, cl_abap_compiler=>mode2_def
-    DELETE lt_result WHERE mode2 <> '2' OR tag <> 'DA'.
+    DELETE lt_result WHERE tag <> 'DA'.
 
-    LOOP AT lt_result ASSIGNING <ls_result>.
+    LOOP AT lt_result ASSIGNING <ls_result> WHERE mode2 = '2' OR mode2 = '3' OR mode2 = '4'.
       lv_name = <ls_result>-full_name.
       lv_code = '001'.
       lv_include = <ls_result>-statement->source_info->name.
