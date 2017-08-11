@@ -1,17 +1,17 @@
-class ZCL_AOC_CHECK_60 definition
-  public
-  inheriting from ZCL_AOC_SUPER
-  create public .
+CLASS zcl_aoc_check_60 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor .
 
-  methods CHECK
-    redefinition .
-  methods GET_MESSAGE_TEXT
-    redefinition .
-protected section.
+    METHODS check
+        REDEFINITION .
+    METHODS get_message_text
+        REDEFINITION .
+  PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -66,11 +66,11 @@ CLASS ZCL_AOC_CHECK_60 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD CONSTRUCTOR.
+  METHOD constructor.
 
     super->constructor( ).
 
-    description = 'Concatenation of string templates'. "#EC NOTEXT
+    description = 'Concatenation of string templates'.      "#EC NOTEXT
     category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '060'.
