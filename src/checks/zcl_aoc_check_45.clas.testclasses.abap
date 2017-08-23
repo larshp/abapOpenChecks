@@ -29,6 +29,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test002_03 FOR TESTING,
       test004_01 FOR TESTING,
       test004_02 FOR TESTING,
+      test005_01 FOR TESTING,
+      test005_02 FOR TESTING,
       test010_01 for testing.
 
 ENDCLASS.       "lcl_Test
@@ -148,6 +150,27 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test004_02.
 
     _code 'lv_foo = condense( lv_foo ).'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test005_01.
+
+    _code 'CONCATENATE LINES OF foo INTO bar.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '005'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test005_02.
+
+    _code 'CONCATENATE LINES OF lt_data INTO lv_xstr IN BYTE MODE.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
