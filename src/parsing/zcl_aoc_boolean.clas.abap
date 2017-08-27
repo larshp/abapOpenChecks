@@ -34,6 +34,9 @@ CLASS zcl_aoc_boolean DEFINITION
     CLASS-METHODS remove_method_calls
       IMPORTING
         !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
+    CLASS-METHODS remove_templates
+      IMPORTING
+        !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
     CLASS-METHODS simplify
       IMPORTING
         !it_tokens       TYPE stokesx_tab
@@ -344,6 +347,38 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD remove_templates.
+
+    DATA: lv_start   TYPE i,
+          lv_escaped TYPE i,
+          lv_index   TYPE i,
+          lt_tokens  TYPE stokesx_tab.
+
+    FIELD-SYMBOLS: <ls_token> LIKE LINE OF lt_tokens.
+
+
+    lt_tokens = io_tokens->get_tokens( ).
+
+    LOOP AT lt_tokens ASSIGNING <ls_token>.
+      lv_index = sy-tabix.
+
+      IF <ls_token>-str = '|' AND lv_start IS INITIAL.
+        <ls_token>-str = 'TEMPLATE'.
+        lv_start = lv_index.
+      ELSEIF <ls_token>-str = '{' AND NOT lv_start IS INITIAL.
+        lv_escaped = lv_escaped + 1.
+      ELSEIF <ls_token>-str = '}' AND NOT lv_start IS INITIAL.
+        lv_escaped = lv_escaped - 1.
+      ELSEIF <ls_token>-str = '|' AND lv_escaped = 0.
+        DELETE lt_tokens FROM lv_start + 1 TO lv_index.
+      ENDIF.
+    ENDLOOP.
+
+    io_tokens->set_tokens( lt_tokens ).
+
+  ENDMETHOD.
+
+
   METHOD simplify.
 
 * todo: string templates?
@@ -351,6 +386,7 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
 
     CREATE OBJECT ro_tokens EXPORTING it_tokens = it_tokens.
 
+    remove_templates( ro_tokens ).
     remove_strings( ro_tokens ).
     remove_method_calls( ro_tokens ).
     remove_calculations( ro_tokens ).

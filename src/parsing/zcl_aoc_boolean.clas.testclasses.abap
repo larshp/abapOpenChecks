@@ -79,7 +79,8 @@ CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL
       test039 FOR TESTING,
       test040 FOR TESTING,
       test041 FOR TESTING,
-      test042 FOR TESTING.
+      test042 FOR TESTING,
+      test043 FOR TESTING.
 
 ENDCLASS.       "ltcl_Test
 
@@ -520,6 +521,16 @@ CLASS ltcl_parse IMPLEMENTATION.
       exp = 'COMPARE' ).
   ENDMETHOD.
 
+  METHOD test043.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF lv_line CS |FOO({ lv_name })|.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
 ENDCLASS.
 
 CLASS ltcl_remove_strings DEFINITION DEFERRED.
@@ -695,6 +706,75 @@ CLASS ltcl_remove_method_calls IMPLEMENTATION.
 
     test( iv_code = 'VALUE #( lt_tab[ id = 2 ] OPTIONAL )'
           iv_exp  = 'method' ).
+
+  ENDMETHOD.
+
+ENDCLASS.
+
+CLASS ltcl_remove_templates DEFINITION DEFERRED.
+CLASS zcl_aoc_boolean DEFINITION LOCAL FRIENDS ltcl_remove_templates.
+
+CLASS ltcl_remove_templates DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
+
+  PRIVATE SECTION.
+    METHODS:
+      test
+        IMPORTING
+          iv_code TYPE string
+          iv_exp  TYPE string,
+      test01 FOR TESTING,
+      test02 FOR TESTING,
+      test03 FOR TESTING,
+      test04 FOR TESTING.
+
+ENDCLASS.
+
+CLASS ltcl_remove_templates IMPLEMENTATION.
+
+  METHOD test.
+
+    DATA: lv_result TYPE string,
+          lo_tokens TYPE REF TO zcl_aoc_boolean_tokens.
+
+
+    lo_tokens = lcl_parse=>parse( iv_code ).
+
+    zcl_aoc_boolean=>remove_templates( lo_tokens ).
+    cl_abap_unit_assert=>assert_bound( lo_tokens ).
+
+    lv_result = lo_tokens->to_string( ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = to_upper( iv_exp ) ).
+
+  ENDMETHOD.
+
+  METHOD test01.
+
+    test( iv_code = 'lv_offset'
+          iv_exp  = 'lv_offset' ).
+
+  ENDMETHOD.
+
+  METHOD test02.
+
+    test( iv_code = '|foobar|'
+          iv_exp  = 'TEMPLATE' ).
+
+  ENDMETHOD.
+
+  METHOD test03.
+
+    test( iv_code = '|foobar { bar }|'
+          iv_exp  = 'TEMPLATE' ).
+
+  ENDMETHOD.
+
+  METHOD test04.
+
+    test( iv_code = '|foobar { moo( |blah| ) }|'
+          iv_exp  = 'TEMPLATE' ).
 
   ENDMETHOD.
 
