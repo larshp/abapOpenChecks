@@ -58,7 +58,7 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Exception caught but not raised'.     "#EC NOTEXT
+    description    = 'WIP, Exception caught but not raised'. "#EC NOTEXT
     category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '061'.
