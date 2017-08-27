@@ -228,6 +228,8 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         p_text = 'Double space after MOVE-CORRESPONDING'.   "#EC NOTEXT
       WHEN '015'.
         p_text = 'Double space after APPEND'.               "#EC NOTEXT
+      WHEN '016'.
+        p_text = 'Double space in method call'.             "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
