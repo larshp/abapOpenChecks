@@ -67,7 +67,7 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
     ENDIF.
 
     CASE <ls_token>-str.
-      WHEN 'IF' OR 'ELSEIF' OR 'WHILE' OR 'ASSERT'.
+      WHEN 'IF' OR 'ELSEIF' OR 'WHILE' OR 'ASSERT' OR 'CHECK'.
 * nothing
       WHEN OTHERS.
         RETURN.
