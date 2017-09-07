@@ -5,8 +5,9 @@ REPORT zaoc_date_analysis.
 * MIT License
 
 SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-001.
-PARAMETERS: p_insp TYPE sciins_inf-inspecname OBLIGATORY.
-PARAMETERS: p_glob TYPE c RADIOBUTTON GROUP g1 DEFAULT 'X',
+PARAMETERS: p_insp TYPE sciins_inf-inspecname OBLIGATORY,
+            p_vers TYPE sci_vers OBLIGATORY DEFAULT '001',
+            p_glob TYPE c RADIOBUTTON GROUP g1 DEFAULT 'X',
             p_loc  TYPE c RADIOBUTTON GROUP g1.
 SELECTION-SCREEN END OF BLOCK b1.
 
@@ -135,6 +136,7 @@ CLASS lcl_data IMPLEMENTATION.
       EXPORTING
         p_user          = lv_user
         p_name          = p_insp
+        p_vers          = p_vers
       RECEIVING
         p_ref           = lo_ci
       EXCEPTIONS
