@@ -80,7 +80,8 @@ CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL
       test040 FOR TESTING,
       test041 FOR TESTING,
       test042 FOR TESTING,
-      test043 FOR TESTING.
+      test043 FOR TESTING,
+      test044 FOR TESTING.
 
 ENDCLASS.       "ltcl_Test
 
@@ -525,6 +526,16 @@ CLASS ltcl_parse IMPLEMENTATION.
     DATA: lv_result TYPE string.
 
     lv_result = parse( 'IF lv_line CS |FOO({ lv_name })|.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
+  METHOD test044.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF lv_blah IS INSTANCE OF if_sxml_value_node.' ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lv_result
