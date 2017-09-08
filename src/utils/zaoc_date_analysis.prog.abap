@@ -16,6 +16,12 @@ PARAMETERS: p_cdat TYPE c RADIOBUTTON GROUP g2 DEFAULT 'X',
             p_udat TYPE c RADIOBUTTON GROUP g2.
 SELECTION-SCREEN END OF BLOCK b2.
 
+SELECTION-SCREEN BEGIN OF BLOCK b3 WITH FRAME TITLE TEXT-003.
+PARAMETERS: p_erro TYPE c AS CHECKBOX DEFAULT 'X',
+            p_warn TYPE c AS CHECKBOX DEFAULT 'X',
+            p_info TYPE c AS CHECKBOX DEFAULT 'X'.
+SELECTION-SCREEN END OF BLOCK b3.
+
 ************************************
 
 TYPES: BEGIN OF ty_sub,
@@ -78,6 +84,12 @@ CLASS lcl_data IMPLEMENTATION.
 
 
     LOOP AT it_results ASSIGNING <ls_result> WHERE sobjtype = 'PROG'.
+
+      IF ( p_erro = abap_false AND <ls_result>-kind = 'E' )
+          OR ( p_warn = abap_false AND <ls_result>-kind = 'W' )
+          OR ( p_info = abap_false AND <ls_result>-kind = 'N' ).
+        CONTINUE.
+      ENDIF.
 
       SELECT SINGLE cdat udat cnam FROM reposrc INTO (lv_cdat, lv_udat, lv_cnam)
         WHERE progname = <ls_result>-sobjname
