@@ -54,6 +54,7 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
             OR <ls_statement>-str CP '* INTO @*'
             OR <ls_statement>-str CP '* INTO TABLE @*'
             OR <ls_statement>-str CP '* INTO CORRESPONDING FIELDS OF @*'
+            OR <ls_statement>-str CP 'SELECT COUNT( #* ) FROM *'
             OR <ls_statement>-str CP '* INTO CORRESPONDING FIELDS OF TABLE @*'
             OR <ls_statement>-str CP '* APPENDING TABLE @*'
             OR <ls_statement>-str CP '* APPENDING CORRESPONDING FIELDS OF TABLE @*'.
