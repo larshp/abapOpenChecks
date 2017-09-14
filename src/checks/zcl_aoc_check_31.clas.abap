@@ -25,6 +25,8 @@ CLASS zcl_aoc_check_31 DEFINITION
     DATA mt_info TYPE zaoc_slin_desc_key_range_tt .
     DATA mt_ignore TYPE zaoc_slin_desc_key_range_tt .
     DATA mv_default_error TYPE flag .
+    DATA mv_default_standard TYPE flag .
+    DATA mv_default_atc TYPE flag .
 
     METHODS set_flags
       RETURNING
@@ -48,6 +50,7 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
           ls_flags    TYPE rslin_test_flags,
           lv_code     TYPE sci_errc,
           lv_errty    TYPE sci_errty,
+          lv_todo     TYPE slin_desc-todo_overlay,
           lt_result   TYPE slin_result.
 
     FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result,
@@ -82,16 +85,35 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
         lv_errty = c_note.
       ELSEIF lines( mt_ignore ) > 0 AND <ls_result>-code IN mt_ignore.
         CONTINUE.
-      ELSEIF mv_default_error = abap_true.
-        lv_errty = c_error.
       ELSE.
-        CASE <ls_result>-kind.
-          WHEN slin_errlv-warn.
-            lv_errty = c_warning.
-          WHEN slin_errlv-info.
-            lv_errty = c_note.
-          WHEN OTHERS.
+        CASE abap_true.
+          WHEN mv_default_error.
             lv_errty = c_error.
+          WHEN mv_default_standard.
+            CASE <ls_result>-kind.
+              WHEN slin_errlv-warn.
+                lv_errty = c_warning.
+              WHEN slin_errlv-info.
+                lv_errty = c_note.
+              WHEN OTHERS.
+                lv_errty = c_error.
+            ENDCASE.
+          WHEN mv_default_atc.
+            SELECT SINGLE todo_overlay
+              FROM slin_desc INTO lv_todo
+              WHERE code_nr = <ls_result>-code.
+            CASE lv_todo.
+              WHEN slin_todo-prio1.
+                lv_errty = c_error.
+              WHEN slin_todo-prio2.
+                lv_errty = c_warning.
+              WHEN slin_todo-prio3.
+                lv_errty = c_note.
+              WHEN slin_todo-noprio.
+                CONTINUE. " current loop
+            ENDCASE.
+          WHEN OTHERS.
+            ASSERT 0 = 1.
         ENDCASE.
       ENDIF.
 
@@ -115,7 +137,7 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
 
     description    = 'Extended Program Check, Filterable'.  "#EC NOTEXT
     category       = 'ZCL_AOC_CATEGORY'.
-    version        = '002'.
+    version        = '003'.
     position       = '031'.
 
     has_attributes = abap_true.
@@ -134,6 +156,8 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
       mt_info = mt_info
       mt_ignore = mt_ignore
       mv_default_error = mv_default_error
+      mv_default_standard = mv_default_standard
+      mv_default_atc = mv_default_atc
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -154,7 +178,9 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
     zzaoc_fill_att mt_warn 'Warning' 'S'.                   "#EC NOTEXT
     zzaoc_fill_att mt_info 'Info' 'S'.                      "#EC NOTEXT
     zzaoc_fill_att mt_ignore 'Ignore' 'S'.                  "#EC NOTEXT
-    zzaoc_fill_att mv_default_error 'Default error' 'C'.    "#EC NOTEXT
+    zzaoc_fill_att_rb mv_default_error 'Default error' 'R' 'RADIO'. "#EC NOTEXT
+    zzaoc_fill_att_rb mv_default_standard 'Default standard' 'R' 'RADIO'. "#EC NOTEXT
+    zzaoc_fill_att_rb mv_default_atc 'Default ATC' 'R' 'RADIO'. "#EC NOTEXT
 
     zzaoc_popup.
     attributes_ok = abap_true.
@@ -170,6 +196,8 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
       mt_info = mt_info
       mt_ignore = mt_ignore
       mv_default_error = mv_default_error
+      mv_default_standard = mv_default_standard
+      mv_default_atc = mv_default_atc
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
