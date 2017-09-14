@@ -69,6 +69,7 @@ CLASS ZCL_AOC_CHECK_44 IMPLEMENTATION.
       <ls_data>-type = condense( <ls_data>-type ).
       IF <ls_data>-type = 'ANY'
           OR <ls_data>-type = 'DATA'
+          OR <ls_data>-type = 'ANY TABLE'
           OR <ls_data>-type = 'STANDARD TABLE'.
         CONTINUE.
       ENDIF.
