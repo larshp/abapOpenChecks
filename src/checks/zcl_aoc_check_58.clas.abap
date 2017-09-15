@@ -1,17 +1,20 @@
 CLASS zcl_aoc_check_58 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
+
+    METHODS check_constants .
+    METHODS check_methods .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -26,6 +29,57 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
+    IF object_type <> 'CLAS' AND object_type <> 'INTF'.
+      RETURN.
+    ENDIF.
+
+    check_methods( ).
+    check_constants( ).
+
+  ENDMETHOD.
+
+
+  METHOD check_constants.
+
+    DATA: lv_name      TYPE wbcrossgt-name,
+          lv_include   TYPE programm,
+          lt_constants TYPE STANDARD TABLE OF seocompodf WITH DEFAULT KEY.
+
+    FIELD-SYMBOLS: <ls_constant> LIKE LINE OF lt_constants.
+
+
+    SELECT * FROM seocompodf
+      INTO TABLE lt_constants
+      WHERE clsname = object_name
+      AND version = '1'
+      AND exposure = '2'
+      AND attdecltyp = '2'
+      ORDER BY PRIMARY KEY.
+
+    LOOP AT lt_constants ASSIGNING <ls_constant>.
+      CONCATENATE <ls_constant>-clsname '\DA:' <ls_constant>-cmpname INTO lv_name.
+      SELECT SINGLE name FROM wbcrossgt INTO lv_name WHERE otype = 'DA' AND name = lv_name.
+      IF sy-subrc <> 0.
+        IF object_type = 'CLAS'.
+          lv_include = cl_oo_classname_service=>get_pubsec_name( <ls_constant>-clsname ).
+        ELSE.
+          lv_include = cl_oo_classname_service=>get_interfacepool_name( <ls_constant>-clsname ).
+        ENDIF.
+
+        inform( p_sub_obj_type = c_type_include
+                p_sub_obj_name = lv_include
+                p_kind         = mv_errty
+                p_test         = myname
+                p_code         = '002'
+                p_param_1      = <ls_constant>-cmpname ).
+      ENDIF.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD check_methods.
+
     DATA: lt_methods  TYPE STANDARD TABLE OF seocompodf WITH DEFAULT KEY,
           lv_name     TYPE wbcrossgt-name,
           lv_include  TYPE programm,
@@ -34,10 +88,6 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
     FIELD-SYMBOLS: <ls_method> LIKE LINE OF lt_methods.
 
-
-    IF object_type <> 'CLAS' AND object_type <> 'INTF'.
-      RETURN.
-    ENDIF.
 
 * only look at public and protected methods, as private are covered by standard check
     SELECT * FROM seocompodf
@@ -104,7 +154,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Method not referenced statically'.    "#EC NOTEXT
+    description    = 'Method or constant not referenced statically'. "#EC NOTEXT
     category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '058'.
@@ -124,6 +174,8 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
     CASE p_code.
       WHEN '001'.
         p_text = 'Method not referenced statically'.        "#EC NOTEXT
+      WHEN '002'.
+        p_text = 'Constant &1 not referenced statically'.   "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
