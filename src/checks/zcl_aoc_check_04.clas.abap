@@ -74,6 +74,8 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
 
   METHOD constructor.
 
+    FIELD-SYMBOLS: <lv_rfc> TYPE abap_bool.
+
     super->constructor( ).
 
     description    = 'Line length'.                         "#EC NOTEXT
@@ -83,6 +85,11 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
+
+    ASSIGN ('REMOTE_RFC_ENABLED') TO <lv_rfc>.
+    IF sy-subrc = 0.
+      <lv_rfc> = abap_true.
+    ENDIF.
 
     mv_errty     = c_error.
     mv_maxlength = 90.

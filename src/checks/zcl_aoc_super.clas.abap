@@ -561,8 +561,11 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    set_source( iv_name = ref_include->trdir-name
-                it_code = ref_include->lines ).
+    IF ref_include IS BOUND.
+* ref_include is not set when running checks via RFC
+      set_source( iv_name = ref_include->trdir-name
+                  it_code = ref_include->lines ).
+    ENDIF.
 
     check( it_tokens     = ref_scan->tokens
            it_statements = ref_scan->statements
