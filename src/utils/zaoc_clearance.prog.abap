@@ -9,6 +9,7 @@ TABLES: tadir.
 TYPES: BEGIN OF ty_output,
          object   TYPE tadir-object,
          obj_name TYPE tadir-obj_name,
+         devclass TYPE tadir-devclass,
        END OF ty_output.
 
 TYPES: ty_output_tt TYPE STANDARD TABLE OF ty_output WITH DEFAULT KEY.
@@ -84,7 +85,7 @@ CLASS lcl_data IMPLEMENTATION.
                    <ls_tadir> LIKE LINE OF lt_tadir.
 
 
-    SELECT object obj_name FROM tadir
+    SELECT object obj_name devclass FROM tadir
       INTO TABLE lt_tadir
       WHERE pgmid = 'R3TR'
       AND ( object = 'DOMA'
