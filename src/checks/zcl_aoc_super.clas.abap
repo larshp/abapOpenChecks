@@ -41,7 +41,7 @@ CLASS zcl_aoc_super DEFINITION
       BEGIN OF ty_position,
         row TYPE token_row,
         col TYPE token_col,
-      END OF ty_position.
+      END OF ty_position .
     TYPES:
       BEGIN OF ty_statement,
         str        TYPE string,
@@ -51,53 +51,54 @@ CLASS zcl_aoc_super DEFINITION
         count      TYPE i,
         terminator TYPE stmnt_term,
         index      TYPE i,
-      END OF ty_statement.
+      END OF ty_statement .
     TYPES:
-      ty_statements TYPE STANDARD TABLE OF ty_statement WITH DEFAULT KEY.
+      ty_statements TYPE STANDARD TABLE OF ty_statement WITH DEFAULT KEY .
 
-    DATA mv_errty TYPE sci_errty.
+    DATA mv_errty TYPE sci_errty .
 
+    METHODS enable_rfc .
     CLASS-METHODS statement_keyword
       IMPORTING
         !iv_number       TYPE stmnt_nr
         !it_statements   TYPE sstmnt_tab
         !it_tokens       TYPE stokesx_tab
       RETURNING
-        VALUE(rv_result) TYPE string.
+        VALUE(rv_result) TYPE string .
     CLASS-METHODS statement_row
       IMPORTING
         !iv_number       TYPE stmnt_nr
         !it_statements   TYPE sstmnt_tab
         !it_tokens       TYPE stokesx_tab
       RETURNING
-        VALUE(rv_result) TYPE token_row.
+        VALUE(rv_result) TYPE token_row .
     METHODS get_source
       IMPORTING
         !is_level      TYPE slevel
       RETURNING
-        VALUE(rt_code) TYPE string_table.
+        VALUE(rt_code) TYPE string_table .
     METHODS build_statements
       IMPORTING
         !it_tokens           TYPE stokesx_tab
         !it_statements       TYPE sstmnt_tab
         !it_levels           TYPE slevel_tab
       RETURNING
-        VALUE(rt_statements) TYPE ty_statements.
+        VALUE(rt_statements) TYPE ty_statements .
     METHODS is_class_pool
       IMPORTING
         !iv_include    TYPE level_name
       RETURNING
-        VALUE(rv_bool) TYPE abap_bool.
+        VALUE(rv_bool) TYPE abap_bool .
     METHODS is_class_definition
       IMPORTING
         !iv_include    TYPE level_name
       RETURNING
-        VALUE(rv_bool) TYPE abap_bool.
+        VALUE(rv_bool) TYPE abap_bool .
 
     METHODS get_include
-        REDEFINITION.
+        REDEFINITION .
     METHODS inform
-        REDEFINITION.
+        REDEFINITION .
   PRIVATE SECTION.
 
     TYPES:
@@ -297,6 +298,20 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
         p_tool_state               = lo_tool_state ).
     IF lv_no_codepos = abap_true OR lo_tool_state IS INITIAL.
       rv_skip = abap_true.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD enable_rfc.
+* RFC enable the check, new feature for central ATC on 7.51
+
+    FIELD-SYMBOLS: <lv_rfc> TYPE abap_bool.
+
+
+    ASSIGN ('REMOTE_RFC_ENABLED') TO <lv_rfc>.
+    IF sy-subrc = 0.
+      <lv_rfc> = abap_true.
     ENDIF.
 
   ENDMETHOD.

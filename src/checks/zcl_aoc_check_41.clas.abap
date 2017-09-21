@@ -118,6 +118,8 @@ CLASS ZCL_AOC_CHECK_41 IMPLEMENTATION.
     attributes_ok  = abap_true.
     mv_ignore      = abap_false.
 
+    enable_rfc( ).
+
     mv_errty = c_error.
 
   ENDMETHOD.                    "CONSTRUCTOR

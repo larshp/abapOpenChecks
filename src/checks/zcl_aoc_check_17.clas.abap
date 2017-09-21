@@ -151,6 +151,8 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
+    enable_rfc( ).
+
     mv_types     = 1.
     mv_define    = 2.
     mv_constants = 2.
