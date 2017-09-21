@@ -95,6 +95,8 @@ CLASS ZCL_AOC_CHECK_12 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
+    enable_rfc( ).
+
     mv_errty = c_error.
 
   ENDMETHOD.                    "CONSTRUCTOR

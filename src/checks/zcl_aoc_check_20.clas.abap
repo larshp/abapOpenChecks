@@ -110,6 +110,8 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
+    enable_rfc( ).
+
     mv_errty       = c_error.
     mv_offset      = 2.
     mv_nest_offset = 4.

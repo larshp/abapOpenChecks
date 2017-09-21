@@ -161,6 +161,8 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
+    enable_rfc( ).
+
     mv_errty = c_error.
     mv_parser_errors = abap_true.
 
