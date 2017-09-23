@@ -121,7 +121,7 @@ CLASS lcl_logic IMPLEMENTATION.
 
   METHOD find_subpackages.
 
-    cl_pak_package_queries=>get_all_subpackages(
+    cl_pak_package_queries=>get_direct_subpackages(
       EXPORTING
         im_package                    = iv_devclass
         im_also_local_packages        = abap_true
