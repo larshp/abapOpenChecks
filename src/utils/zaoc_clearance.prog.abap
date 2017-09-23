@@ -51,6 +51,11 @@ CLASS lcl_data DEFINITION FINAL.
         IMPORTING
           is_tadir           TYPE ty_output
         RETURNING
+          VALUE(rv_obsolete) TYPE abap_bool,
+      check_intf
+        IMPORTING
+          is_tadir           TYPE ty_output
+        RETURNING
           VALUE(rv_obsolete) TYPE abap_bool.
 
 ENDCLASS.                    "lcl_app DEFINITION
@@ -90,6 +95,7 @@ CLASS lcl_data IMPLEMENTATION.
       WHERE pgmid = 'R3TR'
       AND ( object = 'DOMA'
       OR object = 'TABL'
+      OR object = 'INTF'
       OR object = 'DTEL' )
       AND obj_name IN s_name
       AND devclass IN s_devcla.           "#EC CI_SUBRC "#EC CI_GENBUFF
@@ -108,6 +114,8 @@ CLASS lcl_data IMPLEMENTATION.
           lv_obsolete = check_dtel( <ls_tadir> ).
         WHEN 'TABL'.
           lv_obsolete = check_tabl( <ls_tadir> ).
+        WHEN 'INTF'.
+          lv_obsolete = check_intf( <ls_tadir> ).
         WHEN OTHERS.
           ASSERT 1 = 0.
       ENDCASE.
@@ -118,6 +126,19 @@ CLASS lcl_data IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.                    "run
+
+  METHOD check_intf.
+
+    DATA: lv_name TYPE wbcrossgt-name.
+
+    SELECT SINGLE name FROM wbcrossgt INTO lv_name
+      WHERE otype = 'TY'
+      AND name = is_tadir-obj_name.
+    IF sy-subrc <> 0.
+      rv_obsolete = abap_true.
+    ENDIF.
+
+  ENDMETHOD.
 
   METHOD check_tabl.
 
