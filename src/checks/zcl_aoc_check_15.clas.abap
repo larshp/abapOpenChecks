@@ -59,7 +59,8 @@ CLASS ZCL_AOC_CHECK_15 IMPLEMENTATION.
           OR lv_statement CP 'CALL TRANSFORMATION *'
           OR lv_statement CP 'CALL BADI *'.
         CONTINUE.
-      ELSEIF lv_statement CP 'CALL *'.
+      ELSEIF lv_statement CP 'CALL *'
+          OR lv_statement CP 'SYSTEM-CALL *'.
         lv_include = get_include( p_level = <ls_statement>-level ).
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
