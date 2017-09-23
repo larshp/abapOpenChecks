@@ -65,9 +65,16 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
 
     CALL FUNCTION 'RS_GET_ALL_INCLUDES'
       EXPORTING
-        program    = lv_main
+        program      = lv_main
       TABLES
-        includetab = rt_programs.
+        includetab   = rt_programs
+      EXCEPTIONS
+        not_existent = 1
+        no_program   = 2
+        OTHERS       = 3.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
 
   ENDMETHOD.
 
