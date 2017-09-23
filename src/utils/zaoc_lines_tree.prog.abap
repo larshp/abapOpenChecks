@@ -4,7 +4,9 @@ REPORT zaoc_lines_tree.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-PARAMETERS: p_devc TYPE devclass DEFAULT '$AOC' OBLIGATORY.
+PARAMETERS: p_devc TYPE devclass DEFAULT '$AOC' OBLIGATORY,
+            p_comm TYPE c AS CHECKBOX DEFAULT 'X',
+            p_vfug TYPE c AS CHECKBOX DEFAULT 'X'.
 
 DATA: gv_ok_code LIKE sy-ucomm.
 
@@ -61,7 +63,9 @@ CLASS lcl_logic IMPLEMENTATION.
           lv_include  LIKE LINE OF lt_includes.
 
 
-    lt_includes = zcl_aoc_util_programs=>get_programs_in_package( iv_devclass ).
+    lt_includes = zcl_aoc_util_programs=>get_programs_in_package(
+      iv_devclass          = iv_devclass
+      iv_ignore_mview_fugr = p_vfug ).
 
     LOOP AT lt_includes INTO lv_include.
       IF sy-tabix MOD 100 = 0.
@@ -87,6 +91,10 @@ CLASS lcl_logic IMPLEMENTATION.
           OTHERS           = 4.
       IF sy-subrc <> 0.
         RETURN.
+      ENDIF.
+
+      IF p_comm = abap_true.
+        DELETE lt_source WHERE line CP '#**'.
       ENDIF.
 
       rv_lines = rv_lines + lines( lt_source ).

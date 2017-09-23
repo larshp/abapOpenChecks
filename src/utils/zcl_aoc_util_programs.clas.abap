@@ -6,9 +6,10 @@ CLASS zcl_aoc_util_programs DEFINITION
 
     CLASS-METHODS get_programs_in_package
       IMPORTING
-        !iv_devclass       TYPE devclass
+        !iv_devclass          TYPE devclass
+        !iv_ignore_mview_fugr TYPE abap_bool DEFAULT abap_false
       RETURNING
-        VALUE(rt_programs) TYPE scit_program .
+        VALUE(rt_programs)    TYPE scit_program .
   PROTECTED SECTION.
 
     CLASS-METHODS class_includes
@@ -123,7 +124,8 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
              obj_name TYPE tadir-obj_name,
            END OF ty_tadir.
 
-    DATA: lt_tadir TYPE STANDARD TABLE OF ty_tadir WITH DEFAULT KEY.
+    DATA: lv_area  TYPE tvdir-area,
+          lt_tadir TYPE STANDARD TABLE OF ty_tadir WITH DEFAULT KEY.
 
     FIELD-SYMBOLS: <ls_tadir> LIKE LINE OF lt_tadir.
 
@@ -141,6 +143,12 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
         WHEN 'PROG'.
           APPEND <ls_tadir>-obj_name TO rt_programs.
         WHEN 'FUGR'.
+          IF iv_ignore_mview_fugr = abap_true.
+            SELECT SINGLE area FROM tvdir INTO lv_area WHERE area = <ls_tadir>-obj_name.
+            IF sy-subrc = 0.
+              CONTINUE.
+            ENDIF.
+          ENDIF.
           APPEND LINES OF function_group_includes( <ls_tadir>-obj_name ) TO rt_programs.
         WHEN OTHERS.
           ASSERT 0 = 1.
