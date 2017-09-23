@@ -17,8 +17,7 @@ SELECTION-SCREEN END OF BLOCK b2.
 ******************************************************************
 
 TYPES: BEGIN OF ty_result,
-         from  TYPE i,
-         to    TYPE i,
+         from  TYPE string,
          count TYPE i,
        END OF ty_result.
 
@@ -72,8 +71,7 @@ CLASS lcl_app IMPLEMENTATION.
 
     WHILE lv_length < 255.
       APPEND INITIAL LINE TO mt_result ASSIGNING <ls_result>.
-      <ls_result>-from = lv_length.
-      <ls_result>-to = lv_length + p_split - 1.
+      <ls_result>-from = |{ lv_length } to { lv_length + p_split - 1 } characters|.
 
       lv_length = lv_length + p_split.
     ENDWHILE.
@@ -160,8 +158,8 @@ CLASS lcl_gui IMPLEMENTATION.
       CHANGING
         t_table      = it_result ).
 
+    lo_salv->get_columns( )->set_optimize( ).
     lo_salv->get_functions( )->set_all( ).
-
     lo_salv->display( ).
 
   ENDMETHOD.
