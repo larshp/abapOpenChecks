@@ -13,6 +13,9 @@ CLASS zcl_aoc_check_58 DEFINITION
         REDEFINITION .
   PROTECTED SECTION.
 
+    METHODS is_bopf_interface
+      RETURNING
+        VALUE(rv_boolean) TYPE abap_bool .
     METHODS check_constants .
     METHODS check_methods .
   PRIVATE SECTION.
@@ -47,6 +50,10 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
     FIELD-SYMBOLS: <ls_constant> LIKE LINE OF lt_constants.
 
+
+    IF is_bopf_interface( ) = abap_true.
+      RETURN.
+    ENDIF.
 
     SELECT * FROM seocompodf
       INTO TABLE lt_constants
@@ -181,6 +188,27 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
                                            p_code = p_code
                                  IMPORTING p_text = p_text ).
     ENDCASE.
+
+  ENDMETHOD.
+
+
+  METHOD is_bopf_interface.
+
+    DATA: lv_clsname TYPE seometarel-clsname.
+
+    IF object_type <> 'INTF'.
+      RETURN.
+    ENDIF.
+
+    SELECT SINGLE clsname INTO lv_clsname FROM seometarel
+      WHERE clsname = object_name
+      AND refclsname = '/BOBF/IF_LIB_CONSTANTS'
+      AND version = '1'
+      AND state = '1'
+      AND reltype = '0'.
+    IF sy-subrc = 0.
+      rv_boolean = abap_true.
+    ENDIF.
 
   ENDMETHOD.
 ENDCLASS.
