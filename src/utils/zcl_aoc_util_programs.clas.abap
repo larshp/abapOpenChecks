@@ -6,17 +6,19 @@ CLASS zcl_aoc_util_programs DEFINITION
 
     CLASS-METHODS get_programs_in_package
       IMPORTING
-        !iv_devclass          TYPE devclass
-        !iv_ignore_mview_fugr TYPE abap_bool DEFAULT abap_false
+        !iv_devclass           TYPE devclass
+        !iv_ignore_mview_fugr  TYPE abap_bool DEFAULT abap_false
+        !iv_ignore_local_tests TYPE abap_bool DEFAULT abap_false
       RETURNING
-        VALUE(rt_programs)    TYPE scit_program .
+        VALUE(rt_programs)     TYPE scit_program .
   PROTECTED SECTION.
 
     CLASS-METHODS class_includes
       IMPORTING
-        !iv_class          TYPE tadir-obj_name
+        !iv_class              TYPE tadir-obj_name
+        !iv_ignore_local_tests TYPE abap_bool
       RETURNING
-        VALUE(rt_programs) TYPE scit_program .
+        VALUE(rt_programs)     TYPE scit_program .
     CLASS-METHODS function_group_includes
       IMPORTING
         !iv_group          TYPE tadir-obj_name
@@ -37,7 +39,8 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
 
   METHOD class_includes.
 
-    DATA: lv_class TYPE seoclsname.
+    DATA: lv_class   TYPE seoclsname,
+          lv_program TYPE program.
 
 
     lv_class = iv_class.
@@ -52,6 +55,11 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
         OTHERS        = 2 ).
     IF sy-subrc <> 0.
       RETURN.
+    ENDIF.
+
+    IF iv_ignore_local_tests = abap_true.
+      lv_program = cl_oo_classname_service=>get_ccau_name( lv_class ).
+      DELETE rt_programs WHERE table_line = lv_program.
     ENDIF.
 
   ENDMETHOD.
@@ -139,7 +147,9 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
     LOOP AT lt_tadir ASSIGNING <ls_tadir>.
       CASE <ls_tadir>-object.
         WHEN 'CLAS'.
-          APPEND LINES OF class_includes( <ls_tadir>-obj_name ) TO rt_programs.
+          APPEND LINES OF class_includes(
+            iv_class = <ls_tadir>-obj_name
+            iv_ignore_local_tests = iv_ignore_local_tests ) TO rt_programs.
         WHEN 'PROG'.
           APPEND <ls_tadir>-obj_name TO rt_programs.
         WHEN 'FUGR'.

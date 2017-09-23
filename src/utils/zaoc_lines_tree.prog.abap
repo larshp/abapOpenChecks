@@ -6,7 +6,8 @@ REPORT zaoc_lines_tree.
 
 PARAMETERS: p_devc TYPE devclass DEFAULT '$AOC' OBLIGATORY,
             p_comm TYPE c AS CHECKBOX DEFAULT 'X',
-            p_vfug TYPE c AS CHECKBOX DEFAULT 'X'.
+            p_vfug TYPE c AS CHECKBOX DEFAULT 'X',
+            p_loca TYPE c AS CHECKBOX DEFAULT 'X'.
 
 DATA: gv_ok_code LIKE sy-ucomm.
 
@@ -64,8 +65,9 @@ CLASS lcl_logic IMPLEMENTATION.
 
 
     lt_includes = zcl_aoc_util_programs=>get_programs_in_package(
-      iv_devclass          = iv_devclass
-      iv_ignore_mview_fugr = p_vfug ).
+      iv_devclass           = iv_devclass
+      iv_ignore_mview_fugr  = p_vfug
+      iv_ignore_local_tests = p_loca ).
 
     LOOP AT lt_includes INTO lv_include.
       IF sy-tabix MOD 100 = 0.
