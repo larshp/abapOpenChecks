@@ -90,7 +90,7 @@ CLASS lcl_logic IMPLEMENTATION.
           permission_error = 3
           OTHERS           = 4.
       IF sy-subrc <> 0.
-        RETURN.
+        CONTINUE.
       ENDIF.
 
       IF p_comm = abap_true.
@@ -184,7 +184,7 @@ CLASS lcl_gui IMPLEMENTATION.
     ASSERT sy-subrc = 0.
 
     ls_hierarchy_header-heading = 'Package'(c01).
-    ls_hierarchy_header-width = 50.
+    ls_hierarchy_header-width = 100.
 
     CREATE OBJECT mo_tree
       EXPORTING
@@ -284,17 +284,19 @@ CLASS lcl_gui IMPLEMENTATION.
         table_structure_name_not_found = 6 ).
     ASSERT sy-subrc = 0.
 
-    lv_key = 1.
-    mo_tree->expand_node(
-      EXPORTING
-        node_key            = lv_key
-      EXCEPTIONS
-        failed              = 1
-        illegal_level_count = 2
-        cntl_system_error   = 3
-        node_not_found      = 4
-        cannot_expand_leaf  = 5 ).
-    ASSERT sy-subrc = 0.
+    IF lines( node_table ) > 1.
+      lv_key = 1.
+      mo_tree->expand_node(
+        EXPORTING
+          node_key            = lv_key
+        EXCEPTIONS
+          failed              = 1
+          illegal_level_count = 2
+          cntl_system_error   = 3
+          node_not_found      = 4
+          cannot_expand_leaf  = 5 ).
+      ASSERT sy-subrc = 0.
+    ENDIF.
 
   ENDMETHOD.
 
