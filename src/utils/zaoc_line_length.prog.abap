@@ -160,6 +160,8 @@ CLASS lcl_gui IMPLEMENTATION.
       CHANGING
         t_table      = it_result ).
 
+    lo_salv->get_functions( )->set_all( ).
+
     lo_salv->display( ).
 
   ENDMETHOD.
