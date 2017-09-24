@@ -98,6 +98,7 @@ CLASS lcl_data IMPLEMENTATION.
       OR object = 'INTF'
       OR object = 'DTEL' )
       AND obj_name IN s_name
+      AND delflag = abap_false
       AND devclass IN s_devcla.           "#EC CI_SUBRC "#EC CI_GENBUFF
 
     lv_lines = lines( lt_tadir ).
