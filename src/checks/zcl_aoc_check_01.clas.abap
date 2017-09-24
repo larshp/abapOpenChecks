@@ -53,7 +53,9 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
         CONTINUE.
       ENDIF.
       READ TABLE lt_structures ASSIGNING <ls_sub> INDEX <ls_structure>-struc_to.
-      ASSERT sy-subrc = 0.
+      IF sy-subrc <> 0.
+        CONTINUE.
+      ENDIF.
 
       IF <ls_sub>-stmnt_type <> scan_struc_stmnt_type-if.
         CONTINUE.

@@ -33,7 +33,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_13 FOR TESTING,
       test001_14 FOR TESTING,
       test001_15 FOR TESTING,
-      test001_16 FOR TESTING.
+      test001_16 FOR TESTING,
+      test001_17 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -315,6 +316,21 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_17.
+
+    _code 'IF sy-subrc <> 0.'.
+    _code '  MESSAGE ''foobar'' TYPE ''E''.'.
+    _code 'ENDIF.'.
+    _code 'IF 1 = 2.'.
+    _code '  " blah'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
 
