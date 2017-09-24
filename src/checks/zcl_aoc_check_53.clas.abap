@@ -16,15 +16,16 @@ CLASS zcl_aoc_check_53 DEFINITION PUBLIC INHERITING FROM zcl_aoc_super CREATE PU
         REDEFINITION.
   PROTECTED SECTION.
 
-    DATA mv_reuse_alv_grid_display TYPE sap_bool.
-    DATA mv_so_new_document_att_send TYPE sap_bool.
-    DATA mv_sapgui_progress_indicator TYPE sap_bool.
-    DATA mv_subst_get_file_list TYPE sap_bool.
-    DATA mv_gui TYPE sap_bool.
-    DATA mv_job TYPE sap_bool.
-    DATA mv_popup_to_decide TYPE sap_bool.
-    DATA mv_round TYPE sap_bool.
-    DATA mv_guid TYPE sap_bool.
+    DATA mv_reuse_alv_grid_display TYPE sap_bool .
+    DATA mv_so_new_document_att_send TYPE sap_bool .
+    DATA mv_sapgui_progress_indicator TYPE sap_bool .
+    DATA mv_subst_get_file_list TYPE sap_bool .
+    DATA mv_gui TYPE sap_bool .
+    DATA mv_job TYPE sap_bool .
+    DATA mv_popup_to_decide TYPE sap_bool .
+    DATA mv_round TYPE sap_bool .
+    DATA mv_ws_filename TYPE sap_bool .
+    DATA mv_guid TYPE sap_bool .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -104,6 +105,10 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
           IF mv_guid = abap_true.
             lv_code = '009'.
           ENDIF.
+        WHEN 'WS_FILENAME_GET'.
+          IF mv_ws_filename = abap_true.
+            lv_code = '010'.
+          ENDIF.
       ENDCASE.
 
       IF NOT lv_code IS INITIAL.
@@ -145,6 +150,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     mv_round                     = abap_true.
     mv_gui                       = abap_true.
     mv_guid                      = abap_true.
+    mv_ws_filename               = abap_true.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
@@ -162,6 +168,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
       mv_round                     = mv_round
       mv_gui                       = mv_gui
       mv_guid                      = mv_guid
+      mv_ws_filename               = mv_ws_filename
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -194,6 +201,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     zzaoc_fill_att mv_round 'ROUND' ''.                     "#EC NOTEXT
     zzaoc_fill_att mv_gui 'GUI_DOWNLOAD and GUI_UPLOAD' ''. "#EC NOTEXT
     zzaoc_fill_att mv_guid 'GUID_CREATE' ''.                "#EC NOTEXT
+    zzaoc_fill_att mv_ws_filename 'WS_FILENAME_GET' ''.     "#EC NOTEXT
 
     zzaoc_popup.
 
@@ -213,6 +221,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
       mv_round                     = mv_round
       mv_gui                       = mv_gui
       mv_guid                      = mv_guid
+      mv_ws_filename               = mv_ws_filename
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
