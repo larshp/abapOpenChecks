@@ -9,11 +9,20 @@ CLASS zcl_aoc_check_64 DEFINITION
 
     METHODS get_message_text
         REDEFINITION .
+    METHODS if_ci_test~query_attributes
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
     METHODS run
         REDEFINITION .
+    METHODS get_attributes
+        REDEFINITION .
   PROTECTED SECTION.
+
     DATA mv_covered TYPE abap_bool .
     DATA mi_result TYPE REF TO if_scv_result .
+    DATA mv_risk TYPE saunit_d_allowed_risk_level .
+    DATA mv_duration TYPE saunit_d_allowed_rt_duration .
 
     METHODS node
       IMPORTING
@@ -21,7 +30,6 @@ CLASS zcl_aoc_check_64 DEFINITION
     METHODS walk
       IMPORTING
         !ir_node TYPE REF TO if_scv_result_node .
-
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -43,11 +51,24 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
+    mv_errty    = c_error.
+    mv_duration = if_aunit_attribute_enums=>c_duration-medium.
+    mv_risk     = if_aunit_attribute_enums=>c_risk_level-harmless.
 
     add_obj_type( 'CLAS' ).
 
   ENDMETHOD.                    "CONSTRUCTOR
+
+
+  METHOD get_attributes.
+
+    EXPORT
+      mv_errty = mv_errty
+      mv_duration = mv_duration
+      mv_risk = mv_risk
+      TO DATA BUFFER p_attributes.
+
+  ENDMETHOD.
 
 
   METHOD get_message_text.
@@ -62,6 +83,19 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
                                            p_code = p_code
                                  IMPORTING p_text = p_text ).
     ENDCASE.
+
+  ENDMETHOD.
+
+
+  METHOD if_ci_test~query_attributes.
+
+    zzaoc_top.
+
+    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
+    zzaoc_fill_att mv_duration 'Duration' ''.               "#EC NOTEXT
+    zzaoc_fill_att mv_risk 'Risk' ''.                       "#EC NOTEXT
+
+    zzaoc_popup.
 
   ENDMETHOD.
 
@@ -121,6 +155,18 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD put_attributes.
+
+    IMPORT
+      mv_errty = mv_errty
+      mv_duration = mv_duration
+      mv_risk = mv_risk
+      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
+
+
   METHOD run.
 
 * abapOpenChecks
@@ -133,6 +179,8 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
           lv_clsname  TYPE seoclsname,
           lo_runner   TYPE REF TO cl_aucv_test_runner_abstract,
           li_coverage TYPE REF TO if_aucv_cvrg_rslt_provider,
+          li_aunit    TYPE REF TO if_saunit_internal_result,
+          lo_aunit    TYPE REF TO cl_saunit_internal_result,
           lo_passport TYPE REF TO object.
 
 
@@ -160,11 +208,18 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
 
     lo_runner->run_for_program_keys(
       EXPORTING
-        i_limit_on_duration_category = if_aunit_attribute_enums=>c_duration-medium
-        i_limit_on_risk_level        = if_aunit_attribute_enums=>c_risk_level-harmless
+        i_limit_on_duration_category = mv_duration
+        i_limit_on_risk_level        = mv_risk
         i_program_keys               = lt_keys
       IMPORTING
-        e_coverage_result            = li_coverage ).
+        e_coverage_result            = li_coverage
+        e_aunit_result               = li_aunit ).
+
+    lo_aunit ?= li_aunit.
+    IF lo_aunit->f_task_data-info-has_skipped = abap_true.
+* Some or all unit tests skipped, could not determine coverage
+      RETURN.
+    ENDIF.
 
     TRY.
         mi_result = li_coverage->build_coverage_result( ).
