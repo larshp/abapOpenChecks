@@ -2,6 +2,49 @@
 *"* local helper classes, interface definitions and type
 *"* declarations
 
+CLASS lcl_simplify DEFINITION DEFERRED.
+CLASS zcl_aoc_structure DEFINITION LOCAL FRIENDS lcl_simplify.
+
+CLASS lcl_simplify DEFINITION FINAL.
+
+  PUBLIC SECTION.
+    CLASS-METHODS:
+      simplify
+        IMPORTING io_structure        TYPE REF TO zcl_aoc_structure
+        RETURNING VALUE(ro_structure) TYPE REF TO zcl_aoc_structure.
+
+ENDCLASS.
+
+CLASS lcl_simplify IMPLEMENTATION.
+
+  METHOD simplify.
+
+    DATA: lt_copy      LIKE ro_structure->mt_structure,
+          lo_structure TYPE REF TO zcl_aoc_structure.
+
+    ro_structure = io_structure.
+
+    IF io_structure->mv_type = scan_struc_type-sequence AND lines( io_structure->mt_structure ) = 1.
+* simplify sequences with one statement
+      READ TABLE io_structure->mt_structure INDEX 1 INTO ro_structure.
+    ENDIF.
+
+    lt_copy = ro_structure->mt_structure.
+    CLEAR ro_structure->mt_structure.
+    LOOP AT lt_copy INTO lo_structure.
+      lo_structure = simplify( lo_structure ).
+      IF lo_structure->ms_statement-statement = '' AND lo_structure->mv_stmnt_type IS INITIAL.
+* skip the comment statements
+        CONTINUE.
+      ENDIF.
+      APPEND lo_structure TO ro_structure->mt_structure.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+ENDCLASS.
+
+
 CLASS lcl_build DEFINITION DEFERRED.
 CLASS zcl_aoc_structure DEFINITION LOCAL FRIENDS lcl_build.
 
@@ -94,8 +137,10 @@ CLASS lcl_build IMPLEMENTATION.
           lo_structure->ms_statement = <ls_sstr>.
         ENDIF.
       ENDIF.
+
       APPEND lo_structure TO ro_structure->mt_structure.
     ENDLOOP.
+
     IF sy-subrc <> 0.
       lv_index = is_structure-stmnt_from.
       IF is_structure-key_start = abap_true.
@@ -125,9 +170,10 @@ CLASS lcl_build IMPLEMENTATION.
       LOOP AT mt_tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from
           TO <ls_statement>-to
-          WHERE type <> scan_token_type-comment
-          AND type <> scan_token_type-pragma.
-        IF lv_string IS INITIAL.
+          WHERE type <> scan_token_type-pragma.
+        IF <ls_token>-type = scan_token_type-comment.
+* nothing, but make sure to add to mt_sstr
+        ELSEIF lv_string IS INITIAL.
           lv_string = <ls_token>-str.
         ELSE.
           CONCATENATE lv_string <ls_token>-str INTO lv_string SEPARATED BY space.

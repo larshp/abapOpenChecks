@@ -78,7 +78,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals(
       act = lines( lt_string )
-      exp = 15 ).
+      exp = 14 ).
 
   ENDMETHOD.       "build
 

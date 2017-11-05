@@ -34,7 +34,10 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_14 FOR TESTING,
       test001_15 FOR TESTING,
       test001_16 FOR TESTING,
-      test001_17 FOR TESTING.
+      test001_17 FOR TESTING,
+      test001_18 FOR TESTING,
+      test001_19 FOR TESTING,
+      test001_20 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -326,6 +329,55 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'ENDIF.'.
     _code 'IF 1 = 2.'.
     _code '  " blah'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_18.
+
+    _code '  IF 1 = ''a''. '.
+    _code '    IF 1 = 2.   '.
+    _code '      WRITE foo.'.
+    _code '      WRITE bar.'.
+    _code '    ENDIF.      '.
+    _code '*     comment1  '.
+    _code '  ENDIF.        '.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_19.
+
+    _code 'IF 1 = 2.      '.
+    _code '  WRITE foo.   '.
+    _code 'ELSE.          '.
+    _code '  IF 1 = 2.    '.
+    _code '    WRITE foo. '.
+    _code '  ELSEIF 1 = 2.'.
+    _code '    WRITE foo. '.
+    _code '  ENDIF.       '.
+    _code '*  comment     '.
+    _code 'ENDIF.         '.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_20.
+
+    _code 'IF 1 = 2.'.
+    _code 'ELSEIF lv_string IS INITIAL.'.
     _code 'ENDIF.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).

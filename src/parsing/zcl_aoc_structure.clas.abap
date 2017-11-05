@@ -62,6 +62,8 @@ CLASS ZCL_AOC_STRUCTURE IMPLEMENTATION.
 
     ro_structure = lo_build->build( ).
 
+    ro_structure = lcl_simplify=>simplify( ro_structure ).
+
   ENDMETHOD.
 
 
