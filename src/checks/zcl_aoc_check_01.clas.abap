@@ -119,7 +119,7 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
         LOOP AT io_structure->mt_structure INTO lo_structure.
           CASE lo_structure->mv_stmnt_type.
-            WHEN scan_struc_stmnt_type-elseif.
+            WHEN scan_struc_stmnt_type-elseif OR scan_struc_stmnt_type-else.
               lv_if = lv_if + 2.
           ENDCASE.
         ENDLOOP.

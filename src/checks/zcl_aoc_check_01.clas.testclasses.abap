@@ -37,7 +37,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_17 FOR TESTING,
       test001_18 FOR TESTING,
       test001_19 FOR TESTING,
-      test001_20 FOR TESTING.
+      test001_20 FOR TESTING,
+      test001_21 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -378,6 +379,22 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'IF 1 = 2.'.
     _code 'ELSEIF lv_string IS INITIAL.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_21.
+
+    _code 'IF ws_layo-cwidth_opt IS INITIAL.'.
+    _code '  IF ls_fcat-col_opt IS NOT INITIAL.'.
+    _code '    ls_fieldcatalog-is_optimized = abap_true.'.
+    _code '  ENDIF.'.
+    _code 'ELSE.'.
+    _code '  ls_fieldcatalog-is_optimized = abap_true.'.
     _code 'ENDIF.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
