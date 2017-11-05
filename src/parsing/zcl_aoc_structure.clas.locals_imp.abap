@@ -104,7 +104,7 @@ CLASS lcl_build IMPLEMENTATION.
       LOOP AT mt_sstr ASSIGNING <ls_sstr>
           FROM lv_index TO is_structure-stmnt_to.
         CREATE OBJECT lo_structure.
-        lo_structure->ms_statement =  <ls_sstr>.
+        lo_structure->ms_statement = <ls_sstr>.
         APPEND lo_structure TO ro_structure->mt_structure.
       ENDLOOP.
     ENDIF.

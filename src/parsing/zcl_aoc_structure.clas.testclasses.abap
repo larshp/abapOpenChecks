@@ -17,7 +17,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
           mt_levels     TYPE slevel_tab,
           mt_structures TYPE zcl_aoc_super=>ty_structures_tt.
 
-    METHODS: build FOR TESTING.
+    METHODS:
+      build01 FOR TESTING,
+      build02 FOR TESTING.
 
     METHODS: parse.
 
@@ -45,7 +47,7 @@ CLASS ltcl_test IMPLEMENTATION.
          WITH COMMENTS.
   ENDMETHOD.                    "parse
 
-  METHOD build.
+  METHOD build01.
 
     DATA: lt_string TYPE zcl_aoc_structure=>ty_string_tt,
           lo_stru   TYPE REF TO zcl_aoc_structure.
@@ -66,15 +68,48 @@ CLASS ltcl_test IMPLEMENTATION.
     parse( ).
 
     lo_stru = zcl_aoc_structure=>build(
-                it_tokens     = mt_tokens
-                it_statements = mt_statements
-                it_levels     = mt_levels
-                it_structures = mt_structures ).
+      it_tokens     = mt_tokens
+      it_statements = mt_statements
+      it_levels     = mt_levels
+      it_structures = mt_structures ).
 
     lt_string = zcl_aoc_structure=>to_string( lo_stru ).
-
     cl_abap_unit_assert=>assert_not_initial( lt_string ).
 
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_string )
+      exp = 15 ).
+
   ENDMETHOD.       "build
+
+  METHOD build02.
+
+    DATA: lt_string TYPE zcl_aoc_structure=>ty_string_tt,
+          lo_stru   TYPE REF TO zcl_aoc_structure.
+
+
+    _code 'CASE lv_foo.'.
+    _code '  WHEN ''a''.'.
+    _code '    lv_moo = lv_boo.'.
+    _code '  WHEN OTHERS.'.
+    _code '    lv_moo = lv_boo.'.
+    _code 'ENDCASE.'.
+
+    parse( ).
+
+    lo_stru = zcl_aoc_structure=>build(
+      it_tokens     = mt_tokens
+      it_statements = mt_statements
+      it_levels     = mt_levels
+      it_structures = mt_structures ).
+
+    lt_string = zcl_aoc_structure=>to_string( lo_stru ).
+    cl_abap_unit_assert=>assert_not_initial( lt_string ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lines( lt_string )
+      exp = 6 ).
+
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Test
