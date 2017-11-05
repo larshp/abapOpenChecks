@@ -1,16 +1,16 @@
 CLASS zcl_aoc_check_27 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
     TYPES:
@@ -163,7 +163,7 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Last statement is RETURN or CLEAR'.   "#EC NOTEXT
+    description    = 'Last statement is obsolete'.          "#EC NOTEXT
     category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '027'.
