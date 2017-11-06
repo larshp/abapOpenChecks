@@ -38,7 +38,10 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_18 FOR TESTING,
       test001_19 FOR TESTING,
       test001_20 FOR TESTING,
-      test001_21 FOR TESTING.
+      test001_21 FOR TESTING,
+      test001_22 FOR TESTING,
+      test001_23 FOR TESTING,
+      test001_24 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -395,6 +398,70 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  ENDIF.'.
     _code 'ELSE.'.
     _code '  ls_fieldcatalog-is_optimized = abap_true.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+ METHOD test001_22.
+
+    _code 'IF iv_mode = blah.'.
+    _code '  lv_count = lines( lt_dates ). " sdf'.
+    _code '  IF lv_count = 1. " dsf'.
+    _code '    EXIT.'.
+    _code '  ELSEIF lv_count > 1. " sdf'.
+    _code '    WRITE foo.'.
+    _code '  ENDIF.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_23.
+
+    _code 'IF iv_mode = blah.'.
+    _code '  IF lv_count = 1. " dsf'.
+    _code '    EXIT.'.
+    _code '  ELSEIF lv_count > 1. " sdf'.
+    _code '    WRITE foo.'.
+    _code '  ENDIF.'.
+    _code 'ELSE.'.
+    _code '  lv_count = lines( lt_dates ). " sdf'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_24.
+
+    _code 'DATA: iv_commit  TYPE zcommit_type,'.
+    _code '      lv_message TYPE string,'.
+    _code '      lv_dummy_message TYPE string ##NEEDED.'.
+    _code ''.
+    _code 'IF iv_commit IS INITIAL.'.
+    _code '  lv_message = ''foobar'' ##NO_TEXT.'.
+    _code 'ENDIF.'.
+    _code ''.
+    _code 'IF 2 = 2.'.
+    _code '  WRITE iv_commit.'.
+    _code '  IF sy-subrc EQ 0.'.
+    _code '    WRITE iv_commit.'.
+    _code '  ELSE.'.
+    _code '    WRITE iv_commit.'.
+    _code '    IF sy-subrc NE 0.'.
+    _code '      " blah blah'.
+    _code '      WRITE iv_commit.'.
+    _code '    ENDIF.'.
+    _code '  ENDIF.'.
     _code 'ENDIF.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).

@@ -136,9 +136,9 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
             ENDIF.
             lv_if = lv_if + 1.
           WHEN OTHERS.
-            IF lo_structure->ms_statement-statement = 'ENDIF'.
-              CONTINUE.
-            ENDIF.
+*            IF lo_structure->ms_statement-statement = 'ENDIF'.
+*              CONTINUE.
+*            ENDIF.
             lv_other = lv_other + 1.
         ENDCASE.
       ENDLOOP.

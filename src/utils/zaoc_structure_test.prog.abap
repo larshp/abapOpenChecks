@@ -81,7 +81,8 @@ CLASS lcl_gui IMPLEMENTATION.
          LEVELS          INTO lt_levels
          STRUCTURES      INTO lt_structures
          WITH ANALYSIS
-         WITH COMMENTS.
+         WITH COMMENTS
+         WITH PRAGMAS    abap_true.
     ASSERT sy-subrc = 0.
 
     lo_structure = zcl_aoc_structure=>build(

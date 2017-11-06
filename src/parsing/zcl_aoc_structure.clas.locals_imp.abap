@@ -169,9 +169,8 @@ CLASS lcl_build IMPLEMENTATION.
       CLEAR lv_string.
       LOOP AT mt_tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from
-          TO <ls_statement>-to
-          WHERE type <> scan_token_type-pragma.
-        IF <ls_token>-type = scan_token_type-comment.
+          TO <ls_statement>-to.
+        IF <ls_token>-type = scan_token_type-comment OR <ls_token>-type = scan_token_type-pragma.
 * nothing, but make sure to add to mt_sstr
         ELSEIF lv_string IS INITIAL.
           lv_string = <ls_token>-str.
