@@ -124,14 +124,17 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    LOOP AT lt_compiler INTO ls_compiler WHERE tag = cl_abap_compiler=>tag_data
+    LOOP AT lt_compiler INTO ls_compiler
+        WHERE ( tag = cl_abap_compiler=>tag_data OR tag = cl_abap_compiler=>tag_method )
         AND statement->source_info->name = lv_include.
       DELETE lt_parameters WHERE sconame = ls_compiler-name.
     ENDLOOP.
 
-    report_unreferenced(
-      is_method     = is_method
-      it_parameters = lt_parameters ).
+    IF lines( lt_parameters ) > 0.
+      report_unreferenced(
+        is_method     = is_method
+        it_parameters = lt_parameters ).
+    ENDIF.
 
   ENDMETHOD.
 
