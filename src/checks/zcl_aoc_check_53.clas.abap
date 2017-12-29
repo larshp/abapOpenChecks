@@ -27,6 +27,7 @@ CLASS zcl_aoc_check_53 DEFINITION PUBLIC INHERITING FROM zcl_aoc_super CREATE PU
     DATA mv_ws_filename TYPE sap_bool .
     DATA mv_guid TYPE sap_bool .
     DATA mv_f4_filename TYPE sap_bool .
+    DATA mv_base64 TYPE sap_bool .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -114,6 +115,10 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
           IF mv_f4_filename = abap_true.
             lv_code = '011'.
           ENDIF.
+        WHEN 'SSFC_BASE64_DECODE' OR 'SSFC_BASE64_ENCODE' OR 'SCMS_BASE64_DECODE_STR'.
+          IF mv_f4_filename = abap_true.
+            lv_code = '012'.
+          ENDIF.
       ENDCASE.
 
       IF NOT lv_code IS INITIAL.
@@ -157,6 +162,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     mv_guid                      = abap_true.
     mv_ws_filename               = abap_true.
     mv_f4_filename               = abap_true.
+    mv_base64                    = abap_true.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
@@ -176,6 +182,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
       mv_guid                      = mv_guid
       mv_ws_filename               = mv_ws_filename
       mv_f4_filename               = mv_f4_filename
+      mv_base64                    = mv_base64
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -210,6 +217,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     zzaoc_fill_att mv_guid 'GUID_CREATE' ''.                "#EC NOTEXT
     zzaoc_fill_att mv_ws_filename 'WS_FILENAME_GET' ''.     "#EC NOTEXT
     zzaoc_fill_att mv_f4_filename 'F4_FILENAME' ''.         "#EC NOTEXT
+    zzaoc_fill_att mv_base64 'Base 64' ''.                  "#EC NOTEXT
 
     zzaoc_popup.
 
@@ -231,6 +239,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
       mv_guid                      = mv_guid
       mv_ws_filename               = mv_ws_filename
       mv_f4_filename               = mv_f4_filename
+      mv_base64                    = mv_base64
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
