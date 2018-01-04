@@ -15,7 +15,7 @@ TYPES: BEGIN OF ty_output,
 TYPES: ty_output_tt TYPE STANDARD TABLE OF ty_output WITH DEFAULT KEY.
 
 SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-001.
-SELECT-OPTIONS: s_devcla FOR tadir-devclass,
+SELECT-OPTIONS: s_devcla FOR tadir-devclass OBLIGATORY,
                 s_name   FOR tadir-obj_name.
 SELECTION-SCREEN END OF BLOCK b1.
 
