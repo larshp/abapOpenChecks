@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+{% include head.html %}
+<body>
+<div class="wrap">
+{% include header.html %}
+<div class="content">
+<h1>{% if page.cNumber %}{{ page.cNumber }} - {{ page.title }}{% else %}{{ page.title }}{% endif %}</h1>
+{{ content }}
+</div>
+</div>
+</body>
+</html>

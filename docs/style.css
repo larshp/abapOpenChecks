@@ -1,0 +1,28 @@
+body {
+  font-family: Arial,Helvetica,sans-serif;
+  background:  #F8F8F8;
+  margin: auto;
+}
+
+.content {
+  width: 100%;
+  max-width: 650px;
+}
+
+.wrap {
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+a, a:visited {
+  color:            #4078c0;
+  text-decoration:  none;
+}
+
+a:hover, a:active {
+  cursor: pointer;
+  text-decoration: underline;
+}
