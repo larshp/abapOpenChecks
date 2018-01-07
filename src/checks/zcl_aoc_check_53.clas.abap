@@ -192,7 +192,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
 
     CLEAR p_text.
 
-    p_text = 'Function &1 used, see Wiki'.                  "#EC NOTEXT
+    p_text = 'Function &1 used, see documentation'.         "#EC NOTEXT
 
   ENDMETHOD.
 

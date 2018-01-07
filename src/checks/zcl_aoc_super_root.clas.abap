@@ -35,12 +35,28 @@ CLASS ZCL_AOC_SUPER_ROOT IMPLEMENTATION.
 
   METHOD if_ci_test~display_documentation.
 
-    DATA: lv_url TYPE string VALUE 'https://github.com/larshp/abapOpenChecks/wiki/'.
+    DATA: lv_url TYPE string VALUE 'http://docs.abapopenchecks.org/checks/',
+          lv_len TYPE i.
 
 
-    CONCATENATE lv_url myname INTO lv_url.
+    lv_len = strlen( myname ) - 2.
 
-    cl_gui_frontend_services=>execute( document = lv_url ).
+    CONCATENATE lv_url myname+lv_len(2) INTO lv_url.
+
+    cl_gui_frontend_services=>execute(
+      EXPORTING
+        document               = lv_url
+      EXCEPTIONS
+        cntl_error             = 1
+        error_no_gui           = 2
+        bad_parameter          = 3
+        file_not_found         = 4
+        path_not_found         = 5
+        file_extension_unknown = 6
+        error_execute_failed   = 7
+        synchronous_failed     = 8
+        not_supported_by_gui   = 9
+        OTHERS                 = 10 ).                    "#EC CI_SUBRC
 
   ENDMETHOD.
 

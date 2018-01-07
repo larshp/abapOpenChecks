@@ -410,10 +410,13 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
   METHOD if_ci_test~display_documentation.
 
-    DATA: lv_url TYPE string VALUE 'https://github.com/larshp/abapOpenChecks/wiki/'.
+    DATA: lv_url TYPE string VALUE 'http://docs.abapopenchecks.org/checks/',
+          lv_len TYPE i.
 
 
-    CONCATENATE lv_url myname INTO lv_url.
+    lv_len = strlen( myname ) - 2.
+
+    CONCATENATE lv_url myname+lv_len(2) INTO lv_url.
 
     cl_gui_frontend_services=>execute(
       EXPORTING
