@@ -1,5 +1,6 @@
 title: abapOpenChecks
 highlighter: rouge
+permalink: pretty
 collections:
   checks:
     output: true

@@ -4,10 +4,10 @@ title: Welcome
 
 abapOpenChecks is a collection of checks for [SAP Code Inspector](http://wiki.scn.sap.com/wiki/display/ABAP/Code+Inspector). The checks can be customized to match your scenario and requirements, some checks might not be applicable for your applications.
 
-Do note that some checks might give wrong results or be [very slow](/performance.html), submit an [issue](https://github.com/larshp/abapOpenChecks/issues) if you find an error, pull requests are also welcome.
+Do note that some checks might give wrong results or be [very slow](/performance), submit an [issue](https://github.com/larshp/abapOpenChecks/issues) if you find an error, pull requests are also welcome.
 
-## [Installation](/installation.html)
+## [Installation](/installation)
 
-## [Checks](/checks.html)
+## [Checks](/checks)
 
-## [Utilities](/utilities.html)
+## [Utilities](/utilities)
