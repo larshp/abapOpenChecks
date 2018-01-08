@@ -34,9 +34,11 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_include    TYPE program,
-          lv_prev_row   TYPE token_row,
-          lv_prev_level TYPE stmnt_levl.
+    DATA: lv_include           TYPE program,
+          lv_prev_row          TYPE token_row,
+          lv_prev_level        TYPE stmnt_levl,
+          lv_prev_inform_row   TYPE token_row,
+          lv_prev_inform_level TYPE stmnt_levl.
 
     FIELD-SYMBOLS: <ls_statement>  LIKE LINE OF it_statements,
                    <ls_token_to>   LIKE LINE OF it_tokens,
@@ -70,12 +72,17 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
             AND is_class_definition( lv_include ) = abap_true.
           CONTINUE. " current loop
         ENDIF.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
-                p_line         = <ls_token_from>-row
-                p_kind         = mv_errty
-                p_test         = myname
-                p_code         = '001' ).
+        IF lv_prev_inform_row <> <ls_token_from>-row
+            OR lv_prev_inform_level <> <ls_statement>-level.
+          inform( p_sub_obj_type = c_type_include
+                  p_sub_obj_name = lv_include
+                  p_line         = <ls_token_from>-row
+                  p_kind         = mv_errty
+                  p_test         = myname
+                  p_code         = '001' ).
+        ENDIF.
+        lv_prev_inform_row   = <ls_token_from>-row.
+        lv_prev_inform_level = <ls_statement>-level.
       ENDIF.
 
       lv_prev_row   = <ls_token_to>-row.
@@ -84,7 +91,6 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
-
 
   METHOD constructor.
 
