@@ -1,23 +1,34 @@
 CLASS zcl_aoc_check_14 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
-    METHODS constructor.
+
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
+    METHODS get_attributes
+        REDEFINITION .
     METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
+    METHODS if_ci_test~query_attributes
+        REDEFINITION .
   PROTECTED SECTION.
+
+    DATA mv_one_per_include TYPE sap_bool .
   PRIVATE SECTION.
 
     METHODS parse
       IMPORTING
-        !it_commented TYPE string_table
-        !is_level     TYPE slevel
-        !iv_line      TYPE token_row.
+        !it_commented      TYPE string_table
+        !is_level          TYPE slevel
+        !iv_line           TYPE token_row
+      RETURNING
+        VALUE(rv_informed) TYPE abap_bool .
 ENDCLASS.
 
 
@@ -33,6 +44,7 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
 
     DATA: lt_code      TYPE string_table,
           lt_commented TYPE string_table,
+          lv_informed  TYPE abap_bool,
           lv_line      TYPE token_row.
 
     FIELD-SYMBOLS: <ls_level> LIKE LINE OF it_levels,
@@ -50,13 +62,21 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
           ENDIF.
           APPEND <lv_code>+1 TO lt_commented.
         ELSE.
-          parse( it_commented = lt_commented
-                 is_level     = <ls_level>
-                 iv_line      = lv_line ).
+          lv_informed = parse( it_commented = lt_commented
+                               is_level     = <ls_level>
+                               iv_line      = lv_line ).
           CLEAR lt_commented.
+
+          IF lv_informed = abap_true AND mv_one_per_include = abap_true.
+            EXIT. " current loop
+          ENDIF.
         ENDIF.
 
       ENDLOOP.
+
+      IF lv_informed = abap_true AND mv_one_per_include = abap_true.
+        CONTINUE.
+      ENDIF.
 
       parse( it_commented = lt_commented
              is_level     = <ls_level>
@@ -79,9 +99,20 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
+    mv_errty           = c_error.
+    mv_one_per_include = abap_false.
 
   ENDMETHOD.                    "CONSTRUCTOR
+
+
+  METHOD get_attributes.
+
+    EXPORT
+      mv_errty           = mv_errty
+      mv_one_per_include = mv_one_per_include
+      TO DATA BUFFER p_attributes.
+
+  ENDMETHOD.
 
 
   METHOD get_message_text.
@@ -98,6 +129,18 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
     ENDCASE.
 
   ENDMETHOD.                    "GET_MESSAGE_TEXT
+
+
+  METHOD if_ci_test~query_attributes.
+
+    zzaoc_top.
+
+    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
+    zzaoc_fill_att mv_one_per_include 'One finding per include' 'C'. "#EC NOTEXT
+
+    zzaoc_popup.
+
+  ENDMETHOD.
 
 
   METHOD parse.
@@ -150,7 +193,19 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
               p_kind         = mv_errty
               p_test         = myname
               p_code         = '001' ).
+      rv_informed = abap_true.
     ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD put_attributes.
+
+    IMPORT
+      mv_errty           = mv_errty
+      mv_one_per_include = mv_one_per_include
+      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
+    ASSERT sy-subrc = 0.
 
   ENDMETHOD.
 ENDCLASS.
