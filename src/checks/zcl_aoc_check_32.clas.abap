@@ -20,7 +20,7 @@ CLASS zcl_aoc_check_32 DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-    DATA mt_devclass TYPE sver_r_devclass.
+    DATA mt_devclass TYPE packrange.
     DATA mv_ignore_ltcl TYPE boolean.
 ENDCLASS.
 
