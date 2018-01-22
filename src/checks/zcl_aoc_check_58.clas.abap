@@ -12,18 +12,30 @@ CLASS zcl_aoc_check_58 DEFINITION
     METHODS get_message_text
         REDEFINITION .
   PROTECTED SECTION.
+    TYPES:
+      BEGIN OF gty_reference_s,
+        clsname TYPE seocompodf-clsname,
+        cmpname TYPE seocompodf-cmpname,
+      END OF gty_reference_s.
+    TYPES gty_reference_t TYPE STANDARD TABLE OF gty_reference_s WITH EMPTY KEY.
+    TYPES gty_include_t TYPE STANDARD TABLE OF wbcrossgt-include WITH EMPTY KEY.
 
     METHODS is_bopf_interface
       RETURNING
         VALUE(rv_boolean) TYPE abap_bool .
     METHODS check_constants .
     METHODS check_methods .
+    METHODS filter_self_references
+      IMPORTING
+        iv_clsname TYPE gty_reference_s-clsname
+      CHANGING
+        ct_include TYPE gty_include_t.
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
+CLASS zcl_aoc_check_58 IMPLEMENTATION.
 
 
   METHOD check.
@@ -46,7 +58,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
     DATA: lv_name      TYPE wbcrossgt-name,
           lv_include   TYPE programm,
-          lt_constants TYPE STANDARD TABLE OF seocompodf WITH DEFAULT KEY.
+          lt_constants TYPE gty_reference_t.
 
     FIELD-SYMBOLS: <ls_constant> LIKE LINE OF lt_constants.
 
@@ -55,7 +67,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    SELECT * FROM seocompodf
+    SELECT clsname cmpname FROM seocompodf
       INTO TABLE lt_constants
       WHERE clsname = object_name
       AND version = '1'
@@ -65,7 +77,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
     LOOP AT lt_constants ASSIGNING <ls_constant>.
       CONCATENATE <ls_constant>-clsname '\DA:' <ls_constant>-cmpname INTO lv_name.
-      SELECT SINGLE name FROM wbcrossgt INTO lv_name WHERE otype = 'DA' AND name = lv_name.
+      SELECT SINGLE name FROM wbcrossgt INTO lv_name WHERE otype = 'DA' AND name = lv_name ##WARN_OK.
       IF sy-subrc <> 0.
         IF object_type = 'CLAS'.
           lv_include = cl_oo_classname_service=>get_pubsec_name( <ls_constant>-clsname ).
@@ -87,17 +99,19 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
   METHOD check_methods.
 
-    DATA: lt_methods  TYPE STANDARD TABLE OF seocompodf WITH DEFAULT KEY,
-          lv_name     TYPE wbcrossgt-name,
-          lv_include  TYPE programm,
-          lt_includes TYPE seop_methods_w_include,
-          ls_mtdkey   TYPE seocpdkey.
+    DATA: lt_methods     TYPE gty_reference_t,
+          lv_name        TYPE wbcrossgt-name,
+          lt_ref_include TYPE gty_include_t,
+          lv_err_code    TYPE sci_errc,
+          lv_include     TYPE programm,
+          lt_includes    TYPE seop_methods_w_include,
+          ls_mtdkey      TYPE seocpdkey.
 
     FIELD-SYMBOLS: <ls_method> LIKE LINE OF lt_methods.
 
 
 * only look at public and protected methods, as private are covered by standard check
-    SELECT * FROM seocompodf
+    SELECT clsname cmpname FROM seocompodf
       INTO TABLE lt_methods
       WHERE clsname = object_name
       AND version = '1'
@@ -108,9 +122,25 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       ORDER BY PRIMARY KEY.     "#EC CI_SUBRC "#EC CI_ALL_FIELDS_NEEDED
 
     LOOP AT lt_methods ASSIGNING <ls_method>.
+      CLEAR lv_err_code.
+
       CONCATENATE <ls_method>-clsname '\ME:' <ls_method>-cmpname INTO lv_name.
-      SELECT SINGLE name FROM wbcrossgt INTO lv_name WHERE otype = 'ME' AND name = lv_name.
+      SELECT include FROM wbcrossgt INTO TABLE lt_ref_include WHERE otype = 'ME' AND name = lv_name.
       IF sy-subrc <> 0.
+        lv_err_code = '001'.
+      ELSE.
+        me->filter_self_references(
+          EXPORTING
+            iv_clsname = <ls_method>-clsname
+          CHANGING
+            ct_include = lt_ref_include ).
+
+        IF lines( lt_ref_include ) = 0.
+          lv_err_code = '003'.
+        ENDIF.
+      ENDIF.
+
+      IF lv_err_code IS NOT INITIAL.
         ls_mtdkey-clsname = <ls_method>-clsname.
         ls_mtdkey-cpdname = <ls_method>-cmpname.
 
@@ -150,7 +180,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
                 p_sub_obj_name = lv_include
                 p_kind         = mv_errty
                 p_test         = myname
-                p_code         = '001' ).
+                p_code         = lv_err_code ).
       ENDIF.
     ENDLOOP.
 
@@ -183,6 +213,8 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
         p_text = 'Method not referenced statically'.        "#EC NOTEXT
       WHEN '002'.
         p_text = 'Constant &1 not referenced statically'.   "#EC NOTEXT
+      WHEN '003'.
+        p_text = 'Method is only referenced locally. Should be changed to private or protected.'. "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
@@ -209,6 +241,31 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
     IF sy-subrc = 0.
       rv_boolean = abap_true.
     ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD filter_self_references.
+
+    DATA: ls_mtdkey TYPE seocpdkey.
+
+    FIELD-SYMBOLS: <lv_include> LIKE LINE OF ct_include.
+
+
+    LOOP AT ct_include ASSIGNING <lv_include>.
+      cl_oo_classname_service=>get_method_by_include(
+        EXPORTING
+          incname             = <lv_include>
+        RECEIVING
+          mtdkey              = ls_mtdkey
+        EXCEPTIONS
+          class_not_existing  = 1
+          method_not_existing = 2
+          OTHERS              = 3 ).
+      IF sy-subrc = 0 AND ls_mtdkey-clsname = iv_clsname.
+        DELETE ct_include.
+      ENDIF.
+    ENDLOOP.
 
   ENDMETHOD.
 ENDCLASS.
