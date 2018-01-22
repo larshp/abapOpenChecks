@@ -49,7 +49,7 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
 
     DELETE lt_compiler WHERE tag <> 'ME' OR mode2 <> '5'.
 
-    BREAK-POINT.
+*    BREAK-POINT.
 
   ENDMETHOD.
 

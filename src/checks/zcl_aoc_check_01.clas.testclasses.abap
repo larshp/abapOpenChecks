@@ -406,7 +406,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
- METHOD test001_22.
+  METHOD test001_22.
 
     _code 'IF iv_mode = blah.'.
     _code '  lv_count = lines( lt_dates ). " sdf'.
