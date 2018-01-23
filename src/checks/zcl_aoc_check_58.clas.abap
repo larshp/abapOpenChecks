@@ -14,8 +14,9 @@ CLASS zcl_aoc_check_58 DEFINITION
   PROTECTED SECTION.
     TYPES:
       BEGIN OF gty_reference_s,
-        clsname TYPE seocompodf-clsname,
-        cmpname TYPE seocompodf-cmpname,
+        clsname  TYPE seocompodf-clsname,
+        cmpname  TYPE seocompodf-cmpname,
+        exposure TYPE seocompodf-cmpname,
       END OF gty_reference_s.
     TYPES gty_reference_t TYPE STANDARD TABLE OF gty_reference_s WITH EMPTY KEY.
     TYPES gty_include_t TYPE STANDARD TABLE OF wbcrossgt-include WITH EMPTY KEY.
@@ -35,7 +36,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_check_58 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
 
   METHOD check.
@@ -99,6 +100,8 @@ CLASS zcl_aoc_check_58 IMPLEMENTATION.
 
   METHOD check_methods.
 
+    CONSTANTS: c_public TYPE seocompodf-exposure VALUE '2'.
+
     DATA: lt_methods     TYPE gty_reference_t,
           lv_name        TYPE wbcrossgt-name,
           lt_ref_include TYPE gty_include_t,
@@ -111,11 +114,11 @@ CLASS zcl_aoc_check_58 IMPLEMENTATION.
 
 
 * only look at public and protected methods, as private are covered by standard check
-    SELECT clsname cmpname FROM seocompodf
+    SELECT clsname cmpname exposure FROM seocompodf
       INTO TABLE lt_methods
       WHERE clsname = object_name
       AND version = '1'
-      AND ( exposure = '1' OR exposure = '2' )
+      AND ( exposure = '1' OR exposure = c_public )
       AND type = ''
       AND cmpname <> 'CLASS_CONSTRUCTOR'
       AND cmpname <> 'CONSTRUCTOR'
@@ -128,7 +131,7 @@ CLASS zcl_aoc_check_58 IMPLEMENTATION.
       SELECT include FROM wbcrossgt INTO TABLE lt_ref_include WHERE otype = 'ME' AND name = lv_name.
       IF sy-subrc <> 0.
         lv_err_code = '001'.
-      ELSE.
+      ELSEIF <ls_method>-exposure = c_public.
         me->filter_self_references(
           EXPORTING
             iv_clsname = <ls_method>-clsname
@@ -204,6 +207,31 @@ CLASS zcl_aoc_check_58 IMPLEMENTATION.
   ENDMETHOD.                    "CONSTRUCTOR
 
 
+  METHOD filter_self_references.
+
+    DATA: ls_mtdkey TYPE seocpdkey.
+
+    FIELD-SYMBOLS: <lv_include> LIKE LINE OF ct_include.
+
+
+    LOOP AT ct_include ASSIGNING <lv_include>.
+      cl_oo_classname_service=>get_method_by_include(
+        EXPORTING
+          incname             = <lv_include>
+        RECEIVING
+          mtdkey              = ls_mtdkey
+        EXCEPTIONS
+          class_not_existing  = 1
+          method_not_existing = 2
+          OTHERS              = 3 ).
+      IF sy-subrc = 0 AND ls_mtdkey-clsname = iv_clsname.
+        DELETE ct_include.
+      ENDIF.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
   METHOD get_message_text.
 
     CLEAR p_text.
@@ -241,31 +269,6 @@ CLASS zcl_aoc_check_58 IMPLEMENTATION.
     IF sy-subrc = 0.
       rv_boolean = abap_true.
     ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD filter_self_references.
-
-    DATA: ls_mtdkey TYPE seocpdkey.
-
-    FIELD-SYMBOLS: <lv_include> LIKE LINE OF ct_include.
-
-
-    LOOP AT ct_include ASSIGNING <lv_include>.
-      cl_oo_classname_service=>get_method_by_include(
-        EXPORTING
-          incname             = <lv_include>
-        RECEIVING
-          mtdkey              = ls_mtdkey
-        EXCEPTIONS
-          class_not_existing  = 1
-          method_not_existing = 2
-          OTHERS              = 3 ).
-      IF sy-subrc = 0 AND ls_mtdkey-clsname = iv_clsname.
-        DELETE ct_include.
-      ENDIF.
-    ENDLOOP.
 
   ENDMETHOD.
 ENDCLASS.
