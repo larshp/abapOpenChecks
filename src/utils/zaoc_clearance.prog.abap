@@ -1,8 +1,9 @@
 REPORT zaoc_clearance.
-
 * abapOpenChecks
 * https://github.com/larshp/abapOpenChecks
 * MIT License
+
+* Finds objects that are not statically referenced
 
 TABLES: tadir.
 
@@ -16,7 +17,8 @@ TYPES: ty_output_tt TYPE STANDARD TABLE OF ty_output WITH DEFAULT KEY.
 
 SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-001.
 SELECT-OPTIONS: s_devcla FOR tadir-devclass OBLIGATORY,
-                s_name   FOR tadir-obj_name.
+                s_name   FOR tadir-obj_name,
+                s_type   FOR tadir-object.
 SELECTION-SCREEN END OF BLOCK b1.
 
 *----------------------------------------------------------------------*
@@ -52,6 +54,11 @@ CLASS lcl_data DEFINITION FINAL.
           is_tadir           TYPE ty_output
         RETURNING
           VALUE(rv_obsolete) TYPE abap_bool,
+      check_clas
+        IMPORTING
+          is_tadir           TYPE ty_output
+        RETURNING
+          VALUE(rv_obsolete) TYPE abap_bool,
       check_intf
         IMPORTING
           is_tadir           TYPE ty_output
@@ -69,13 +76,16 @@ CLASS lcl_data IMPLEMENTATION.
 
   METHOD show_progress.
 
-    DATA: lv_text TYPE string.
+    DATA: lv_percentage TYPE i,
+          lv_text       TYPE string.
 
+
+    lv_percentage = ( iv_current * 100 ) / iv_total.
 
     lv_text = |{ iv_current }/{ iv_total }|.
     CALL FUNCTION 'SAPGUI_PROGRESS_INDICATOR'
       EXPORTING
-        percentage = 99
+        percentage = lv_percentage
         text       = lv_text.
 
   ENDMETHOD.
@@ -96,7 +106,9 @@ CLASS lcl_data IMPLEMENTATION.
       AND ( object = 'DOMA'
       OR object = 'TABL'
       OR object = 'INTF'
+      OR object = 'CLAS'
       OR object = 'DTEL' )
+      AND object IN s_type
       AND obj_name IN s_name
       AND delflag = abap_false
       AND devclass IN s_devcla.           "#EC CI_SUBRC "#EC CI_GENBUFF
@@ -117,6 +129,8 @@ CLASS lcl_data IMPLEMENTATION.
           lv_obsolete = check_tabl( <ls_tadir> ).
         WHEN 'INTF'.
           lv_obsolete = check_intf( <ls_tadir> ).
+        WHEN 'CLAS'.
+          lv_obsolete = check_clas( <ls_tadir> ).
         WHEN OTHERS.
           ASSERT 1 = 0.
       ENDCASE.
@@ -127,6 +141,21 @@ CLASS lcl_data IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.                    "run
+
+  METHOD check_clas.
+
+    DATA: lv_name TYPE wbcrossgt-name.
+
+    SELECT SINGLE name FROM wbcrossgt
+      INTO lv_name
+      WHERE otype = 'TY'
+      AND name = is_tadir-obj_name
+      AND direct = 'X'.
+    IF sy-subrc <> 0.
+      rv_obsolete = abap_true.
+    ENDIF.
+
+  ENDMETHOD.
 
   METHOD check_intf.
 
