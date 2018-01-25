@@ -8,9 +8,10 @@ REPORT zaoc_clearance.
 TABLES: tadir.
 
 TYPES: BEGIN OF ty_output,
-         object   TYPE tadir-object,
-         obj_name TYPE tadir-obj_name,
-         devclass TYPE tadir-devclass,
+         object     TYPE tadir-object,
+         obj_name   TYPE tadir-obj_name,
+         devclass   TYPE tadir-devclass,
+         created_on TYPE tadir-created_on,
        END OF ty_output.
 
 TYPES: ty_output_tt TYPE STANDARD TABLE OF ty_output WITH DEFAULT KEY.
@@ -18,7 +19,8 @@ TYPES: ty_output_tt TYPE STANDARD TABLE OF ty_output WITH DEFAULT KEY.
 SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-001.
 SELECT-OPTIONS: s_devcla FOR tadir-devclass OBLIGATORY,
                 s_name   FOR tadir-obj_name,
-                s_type   FOR tadir-object.
+                s_type   FOR tadir-object,
+                s_cdat   FOR tadir-created_on.
 SELECTION-SCREEN END OF BLOCK b1.
 
 *----------------------------------------------------------------------*
@@ -105,7 +107,8 @@ CLASS lcl_data IMPLEMENTATION.
                    <ls_tadir> LIKE LINE OF lt_tadir.
 
 
-    SELECT object obj_name devclass FROM tadir
+    SELECT object obj_name devclass created_on
+      FROM tadir
       INTO TABLE lt_tadir
       WHERE pgmid = 'R3TR'
       AND ( object = 'DOMA'
@@ -116,6 +119,7 @@ CLASS lcl_data IMPLEMENTATION.
       OR object = 'DTEL' )
       AND object IN s_type
       AND obj_name IN s_name
+      AND created_on IN s_cdat
       AND delflag = abap_false
       AND devclass IN s_devcla.           "#EC CI_SUBRC "#EC CI_GENBUFF
 
