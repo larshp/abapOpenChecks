@@ -49,6 +49,11 @@ CLASS lcl_data DEFINITION FINAL.
           is_tadir           TYPE ty_output
         RETURNING
           VALUE(rv_obsolete) TYPE abap_bool,
+      check_ttyp
+        IMPORTING
+          is_tadir           TYPE ty_output
+        RETURNING
+          VALUE(rv_obsolete) TYPE abap_bool,
       check_tabl
         IMPORTING
           is_tadir           TYPE ty_output
@@ -106,6 +111,7 @@ CLASS lcl_data IMPLEMENTATION.
       AND ( object = 'DOMA'
       OR object = 'TABL'
       OR object = 'INTF'
+      OR object = 'TTYP'
       OR object = 'CLAS'
       OR object = 'DTEL' )
       AND object IN s_type
@@ -131,6 +137,8 @@ CLASS lcl_data IMPLEMENTATION.
           lv_obsolete = check_intf( <ls_tadir> ).
         WHEN 'CLAS'.
           lv_obsolete = check_clas( <ls_tadir> ).
+        WHEN 'TTYP'.
+          lv_obsolete = check_ttyp( <ls_tadir> ).
         WHEN OTHERS.
           ASSERT 1 = 0.
       ENDCASE.
@@ -165,6 +173,38 @@ CLASS lcl_data IMPLEMENTATION.
       WHERE otype = 'TY'
       AND name = is_tadir-obj_name.
     IF sy-subrc <> 0.
+      rv_obsolete = abap_true.
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD check_ttyp.
+
+    DATA: lt_find TYPE TABLE OF rsfind,
+          ls_find LIKE LINE OF lt_find.
+
+
+    ls_find-object = is_tadir-obj_name.
+    APPEND ls_find TO lt_find.
+
+    CALL FUNCTION 'RS_EU_CROSSREF'
+      EXPORTING
+        i_find_obj_cls           = 'DA'
+        rekursiv                 = abap_true
+        no_dialog                = abap_true
+      TABLES
+        i_findstrings            = lt_find
+      EXCEPTIONS
+        not_executed             = 1
+        not_found                = 2
+        illegal_object           = 3
+        no_cross_for_this_object = 4
+        batch                    = 5
+        batchjob_error           = 6
+        wrong_type               = 7
+        object_not_exist         = 8
+        OTHERS                   = 9.
+    IF sy-subrc = 2.
       rv_obsolete = abap_true.
     ENDIF.
 
