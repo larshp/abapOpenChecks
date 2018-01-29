@@ -35,6 +35,7 @@ FORM run RAISING cx_salv_msg.
     AND delflag = abap_false.
 
   LOOP AT lt_tadir INTO DATA(ls_tadir).
+    CLEAR ls_alv.
     DATA(ls_aunit_info) = cl_aunit_prog_info=>get_program_info(
       allow_commit = abap_true
       obj_type     = ls_tadir-object
