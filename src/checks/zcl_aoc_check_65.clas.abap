@@ -1,19 +1,19 @@
-class ZCL_AOC_CHECK_65 definition
-  public
-  inheriting from ZCL_AOC_SUPER_ROOT
-  create public .
+CLASS zcl_aoc_check_65 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super_root
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor .
 
-  methods GET_MESSAGE_TEXT
-    redefinition .
-  methods RUN
-    redefinition .
-protected section.
+    METHODS get_message_text
+        REDEFINITION .
+    METHODS run
+        REDEFINITION .
+  PROTECTED SECTION.
 
-  data MS_SETTINGS type SCI_S_NAMING_CONVENTIONS_SETUP .
+    DATA ms_settings TYPE sci_s_naming_conventions_setup .
   PRIVATE SECTION.
 ENDCLASS.
 
