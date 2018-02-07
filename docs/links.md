@@ -9,3 +9,5 @@ title: Links
 Report RS_CI_COMPARE
 
 [How to get contracted developers to read, accept and adhere to development guidelines?](https://answers.sap.com/questions/425130/how-to-get-contracted-developers-to-read-accept-an.html)
+
+[Kevlin Henney - Seven Ineffective Coding Habits of Many Programmers](https://www.youtube.com/watch?v=ZsHMHukIlJY)
