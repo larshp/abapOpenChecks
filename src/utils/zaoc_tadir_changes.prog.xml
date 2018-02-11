@@ -3,7 +3,7 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <PROGDIR>
-    <NAME>ZAOC_TADIR_CHECKS</NAME>
+    <NAME>ZAOC_TADIR_CHANGES</NAME>
     <STATE>A</STATE>
     <VARCL>X</VARCL>
     <SUBC>1</SUBC>
@@ -14,24 +14,25 @@
    <TPOOL>
     <item>
      <ID>R</ID>
-     <ENTRY>abapOpenChecks - TADIR checks</ENTRY>
-     <LENGTH>29</LENGTH>
+     <ENTRY>abapOpenChecks - Show who/when TADIR-DEVCLASS was changed</ENTRY>
+     <LENGTH>57</LENGTH>
     </item>
     <item>
      <ID>S</ID>
-     <KEY>P_DEL</KEY>
-     <ENTRY>Deletion flag</ENTRY>
-     <LENGTH>21</LENGTH>
+     <KEY>P_DAYS</KEY>
+     <ENTRY>Days back</ENTRY>
+     <LENGTH>17</LENGTH>
     </item>
     <item>
      <ID>S</ID>
-     <KEY>P_PACK</KEY>
-     <ENTRY>Package exists</ENTRY>
-     <LENGTH>22</LENGTH>
+     <KEY>P_NAM</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>9</LENGTH>
+     <SPLIT>D</SPLIT>
     </item>
     <item>
      <ID>S</ID>
-     <KEY>S_DEVC</KEY>
+     <KEY>P_OBJ</KEY>
      <ENTRY>.</ENTRY>
      <LENGTH>9</LENGTH>
      <SPLIT>D</SPLIT>
