@@ -369,13 +369,29 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
         WHEN 'CLAS'.
           ls_mtdkey-clsname = is_method-clsname.
           ls_mtdkey-cpdname = is_method-cmpname.
-          lv_include = cl_oo_classname_service=>get_method_include( ls_mtdkey ).
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = lv_include
-                  p_param_1      = <ls_parameter>-sconame
-                  p_kind         = mv_errty
-                  p_test         = myname
-                  p_code         = '001' ).
+          CLEAR lv_include.
+          CALL METHOD cl_oo_classname_service=>get_method_include
+            EXPORTING
+              mtdkey = ls_mtdkey
+            RECEIVING
+              result = lv_include
+            EXCEPTIONS
+              OTHERS = 0.
+
+          IF lv_include IS NOT INITIAL.
+            inform( p_sub_obj_type = c_type_include
+                    p_sub_obj_name = lv_include
+                    p_param_1      = <ls_parameter>-sconame
+                    p_kind         = mv_errty
+                    p_test         = myname
+                    p_code         = '001' ).
+          ELSE.
+            inform( p_param_1      = <ls_parameter>-sconame
+                    p_param_2      = is_method-cmpname
+                    p_kind         = mv_errty
+                    p_test         = myname
+                    p_code         = '002' ).
+          ENDIF.
         WHEN 'INTF'.
           inform( p_param_1      = <ls_parameter>-sconame
                   p_param_2      = is_method-cmpname
