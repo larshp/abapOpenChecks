@@ -298,7 +298,7 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
       LOOP AT io_tokens->get_tokens( ) INTO ls_token.
         lv_index = sy-tabix.
 
-        FIND REGEX '^[\w<>~\-=#]+\($' IN ls_token-str.
+        FIND REGEX '^[\w<>\/~\-=#]+\($' IN ls_token-str.
         IF sy-subrc = 0.
           lv_end = io_tokens->find_end_paren( lv_index ).
 

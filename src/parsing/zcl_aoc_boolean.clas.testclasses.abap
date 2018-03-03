@@ -81,7 +81,9 @@ CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL
       test041 FOR TESTING,
       test042 FOR TESTING,
       test043 FOR TESTING,
-      test044 FOR TESTING.
+      test044 FOR TESTING,
+      test045 FOR TESTING,
+      test046 FOR TESTING.
 
 ENDCLASS.       "ltcl_Test
 
@@ -542,6 +544,26 @@ CLASS ltcl_parse IMPLEMENTATION.
       exp = 'COMPARE' ).
   ENDMETHOD.
 
+  METHOD test045.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF moo EQ foo OR ( baa EQ bar AND lr_object->/ui2/moo~method( ) = space ).' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'OR( COMPARE ( AND( COMPARE COMPARE ) ) )' ).
+  ENDMETHOD.
+
+  METHOD test046.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF lr_object->/ui2/if_edm_model_entity~get_entity_name( ) = space.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
 ENDCLASS.
 
 CLASS ltcl_remove_strings DEFINITION DEFERRED.
@@ -625,7 +647,8 @@ CLASS ltcl_remove_method_calls DEFINITION FOR TESTING DURATION SHORT RISK LEVEL 
       test07 FOR TESTING,
       test08 FOR TESTING,
       test09 FOR TESTING,
-      test10 FOR TESTING.
+      test10 FOR TESTING,
+      test11 FOR TESTING.
 
 ENDCLASS.       "ltcl_Remove_Method_Calls
 
@@ -716,6 +739,13 @@ CLASS ltcl_remove_method_calls IMPLEMENTATION.
   METHOD test10.
 
     test( iv_code = 'VALUE #( lt_tab[ id = 2 ] OPTIONAL )'
+          iv_exp  = 'method' ).
+
+  ENDMETHOD.
+
+  METHOD test11.
+
+    test( iv_code = 'lr_object->/ui2/if_edm_model_entity~get_entity_name( )'
           iv_exp  = 'method' ).
 
   ENDMETHOD.
