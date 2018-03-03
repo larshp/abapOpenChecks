@@ -475,6 +475,9 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ENDIF.
 
     IF object_type = 'FUGR'.
+      IF p_sub_obj_name CP 'LY*UXX' OR p_sub_obj_name CP 'LZ*UXX'.
+        RETURN.
+      ENDIF.
       SELECT SINGLE area FROM tvdir INTO lv_area
         WHERE area = object_name ##WARN_OK.             "#EC CI_GENBUFF
       IF sy-subrc = 0.
