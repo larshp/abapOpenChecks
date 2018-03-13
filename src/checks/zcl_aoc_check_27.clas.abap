@@ -246,6 +246,11 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
           RETURN.
         ENDIF.
 
+        IF ls_mtd-cpdname CA '~'.
+* handle methods from  interfaces
+          SPLIT ls_mtd-cpdname AT '~' INTO ls_mtd-clsname ls_mtd-cpdname.
+        ENDIF.
+
         SELECT SINGLE sconame FROM seosubcodf
           INTO lv_sconame
           WHERE clsname = ls_mtd-clsname
