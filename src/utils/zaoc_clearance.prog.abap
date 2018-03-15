@@ -171,11 +171,18 @@ CLASS lcl_data IMPLEMENTATION.
 
   METHOD check_intf.
 
-    DATA: lv_name TYPE wbcrossgt-name.
+    DATA: lv_found   TYPE wbcrossgt-include,
+          lv_clsname TYPE seoclsname,
+          lv_include TYPE program.
 
-    SELECT SINGLE name FROM wbcrossgt INTO lv_name
+
+    lv_clsname = is_tadir-obj_name.
+    lv_include = cl_oo_classname_service=>get_intfsec_name( lv_clsname ).
+
+    SELECT SINGLE include FROM wbcrossgt INTO lv_found
       WHERE otype = 'TY'
-      AND name = is_tadir-obj_name.
+      AND name = is_tadir-obj_name
+      AND include <> lv_include.
     IF sy-subrc <> 0.
       rv_obsolete = abap_true.
     ENDIF.
