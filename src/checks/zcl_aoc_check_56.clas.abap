@@ -370,13 +370,13 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           ls_mtdkey-clsname = is_method-clsname.
           ls_mtdkey-cpdname = is_method-cmpname.
           CLEAR lv_include.
-          CALL METHOD cl_oo_classname_service=>get_method_include
+          cl_oo_classname_service=>get_method_include(
             EXPORTING
               mtdkey = ls_mtdkey
             RECEIVING
               result = lv_include
             EXCEPTIONS
-              OTHERS = 0.
+              OTHERS = 0 ).
 
           IF lv_include IS NOT INITIAL.
             inform( p_sub_obj_type = c_type_include
