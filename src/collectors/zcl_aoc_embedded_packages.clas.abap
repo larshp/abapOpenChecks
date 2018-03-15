@@ -1,29 +1,29 @@
-class ZCL_AOC_EMBEDDED_PACKAGES definition
-  public
-  inheriting from CL_CI_COLLECTOR_ROOT
-  create public .
+CLASS zcl_aoc_embedded_packages DEFINITION
+  PUBLIC
+  INHERITING FROM cl_ci_collector_root
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor .
 
-  methods IF_CI_COLLECTOR~COLLECT
-    redefinition .
-  methods IF_CI_COLLECTOR~GET_ATTRIBUTES
-    redefinition .
-  methods IF_CI_COLLECTOR~PUT_ATTRIBUTES
-    redefinition .
-  methods IF_CI_COLLECTOR~QUERY_ATTRIBUTES
-    redefinition .
-PROTECTED SECTION.
+    METHODS if_ci_collector~collect
+        REDEFINITION .
+    METHODS if_ci_collector~get_attributes
+        REDEFINITION .
+    METHODS if_ci_collector~put_attributes
+        REDEFINITION .
+    METHODS if_ci_collector~query_attributes
+        REDEFINITION .
+  PROTECTED SECTION.
 
-  TYPES ty_package_list_tt TYPE STANDARD TABLE OF devclass WITH DEFAULT KEY.
+    TYPES ty_package_list_tt TYPE STANDARD TABLE OF devclass WITH DEFAULT KEY.
 
-  METHODS find_embedded
-    RETURNING VALUE(rt_embedded) TYPE ty_package_list_tt.
-private section.
+    METHODS find_embedded
+      RETURNING VALUE(rt_embedded) TYPE ty_package_list_tt.
+  PRIVATE SECTION.
 
-  data MT_PACKAGES type SCIT_DEVC .
+    DATA mt_packages TYPE scit_devc .
 ENDCLASS.
 
 
