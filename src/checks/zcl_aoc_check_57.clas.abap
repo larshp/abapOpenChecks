@@ -79,6 +79,10 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
       IF <ls_statement>-str CP 'MESSAGE *'.
         lv_code = '001'.
       ELSEIF <ls_statement>-str CP 'WRITE *'.
+        IF ls_prev-str CP 'WRITE *' AND ls_prev-start-row = <ls_statement>-start-row.
+* only report one finding for chained statements
+          CONTINUE.
+        ENDIF.
         lv_code = '002'.
       ELSE.
         ASSERT 0 = 1.
