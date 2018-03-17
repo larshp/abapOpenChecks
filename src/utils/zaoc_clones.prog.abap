@@ -21,7 +21,9 @@ SELECTION-SCREEN END OF BLOCK b1.
 
 SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-002.
 PARAMETERS: p_top  TYPE i DEFAULT 100 OBLIGATORY,
-            p_prog TYPE i DEFAULT 100 OBLIGATORY.
+            p_prog TYPE i DEFAULT 100 OBLIGATORY,
+            p_igno TYPE i DEFAULT 10 OBLIGATORY,
+            p_incl TYPE i DEFAULT 5 OBLIGATORY.
 SELECTION-SCREEN END OF BLOCK b2.
 
 *----------------------------------------------------------------------*
@@ -136,7 +138,8 @@ CLASS lcl_data DEFINITION FINAL.
   PRIVATE SECTION.
     CLASS-METHODS:
       compare
-        IMPORTING is_combi        TYPE ty_combi
+        IMPORTING iv_include1     TYPE programm
+                  iv_include2     TYPE programm
         RETURNING VALUE(rv_match) TYPE i,
       find_methods
         RETURNING VALUE(rt_methods) TYPE seop_methods_w_include,
@@ -186,10 +189,14 @@ CLASS lcl_data IMPLEMENTATION.
 
 
 * would be faster to cache the source code, but also take more memory
-    READ REPORT is_combi-method1-incname INTO lt_method1.
+    READ REPORT iv_include1 INTO lt_method1.
     DELETE lt_method1 WHERE line = space.
-    READ REPORT is_combi-method2-incname INTO lt_method2.
+    READ REPORT iv_include2 INTO lt_method2.
     DELETE lt_method2 WHERE line = space.
+
+    IF lines( lt_method1 ) < p_incl OR lines( lt_method2 ) < p_incl.
+      RETURN.
+    ENDIF.
 
     IF lines( lt_method1 ) < lines( lt_method2 ).
       lv_lines = lines( lt_method1 ).
@@ -219,18 +226,6 @@ CLASS lcl_data IMPLEMENTATION.
     lt_methods = find_methods( ).
     rt_combi = combinations( lt_methods ).
 
-    LOOP AT rt_combi ASSIGNING <ls_combi>.
-      IF sy-tabix MOD p_prog = 0.
-        lv_text = |{ sy-tabix }/{ lines( rt_combi ) }|.
-        CALL FUNCTION 'SAPGUI_PROGRESS_INDICATOR'
-          EXPORTING
-            percentage = 100
-            text       = lv_text.
-      ENDIF.
-
-      <ls_combi>-match = compare( <ls_combi> ).
-    ENDLOOP.
-
     SORT rt_combi BY match DESCENDING.
     DELETE rt_combi FROM p_top.
 
@@ -238,21 +233,51 @@ CLASS lcl_data IMPLEMENTATION.
 
   METHOD combinations.
 
-    DATA: lv_index TYPE i.
+    DATA: lv_index TYPE i,
+          lv_count TYPE i,
+          ls_combi LIKE LINE OF rt_combi,
+          lv_total TYPE i.
 
-    FIELD-SYMBOLS: <ls_combi>   LIKE LINE OF rt_combi,
-                   <ls_method1> LIKE LINE OF it_methods,
+    FIELD-SYMBOLS: <ls_method1> LIKE LINE OF it_methods,
                    <ls_method2> LIKE LINE OF it_methods.
 
 
+    lv_count = lines( it_methods ) - 1.
+    WHILE lv_count > 0.
+      lv_total = lv_total + lv_count.
+      lv_count = lv_count - 1.
+    ENDWHILE.
+
+    lv_count = 1.
+
     LOOP AT it_methods ASSIGNING <ls_method1>.
+
       lv_index = sy-tabix + 1.
 
       LOOP AT it_methods ASSIGNING <ls_method2> FROM lv_index.
-        APPEND INITIAL LINE TO rt_combi ASSIGNING <ls_combi>.
-        <ls_combi>-method1 = <ls_method1>.
-        <ls_combi>-method2 = <ls_method2>.
+
+        IF lv_count MOD p_prog = 0.
+          cl_progress_indicator=>progress_indicate(
+            i_text               = |Processing, { lv_count }/{ lv_total }|
+            i_processed          = lv_count
+            i_total              = lv_total
+            i_output_immediately = abap_true ).
+        ENDIF.
+        lv_count = lv_count + 1.
+
+        CLEAR ls_combi.
+        ls_combi-method1 = <ls_method1>.
+        ls_combi-method2 = <ls_method2>.
+        ls_combi-match = compare(
+          iv_include1 = <ls_method1>-incname
+          iv_include2 = <ls_method2>-incname ).
+
+        IF ls_combi-match >= p_igno.
+          APPEND ls_combi TO rt_combi.
+        ENDIF.
+
       ENDLOOP.
+
     ENDLOOP.
 
   ENDMETHOD.                    "combinations
