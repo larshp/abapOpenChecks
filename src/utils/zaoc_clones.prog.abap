@@ -21,7 +21,7 @@ SELECTION-SCREEN END OF BLOCK b1.
 
 SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-002.
 PARAMETERS: p_top  TYPE i DEFAULT 100 OBLIGATORY,
-            p_prog TYPE i DEFAULT 100 OBLIGATORY,
+            p_prog TYPE i DEFAULT 1000 OBLIGATORY,
             p_igno TYPE i DEFAULT 10 OBLIGATORY,
             p_incl TYPE i DEFAULT 5 OBLIGATORY.
 SELECTION-SCREEN END OF BLOCK b2.
@@ -136,6 +136,12 @@ CLASS lcl_data DEFINITION FINAL.
         RAISING   cx_salv_error.
 
   PRIVATE SECTION.
+    CLASS-DATA:
+      BEGIN OF gs_previous,
+        include TYPE programm,
+        method  TYPE TABLE OF abaptxt255,
+      END OF gs_previous.
+
     CLASS-METHODS:
       compare
         IMPORTING iv_include1     TYPE programm
@@ -188,9 +194,13 @@ CLASS lcl_data IMPLEMENTATION.
           lt_method2 TYPE TABLE OF abaptxt255.
 
 
-* would be faster to cache the source code, but also take more memory
-    READ REPORT iv_include1 INTO lt_method1.
-    DELETE lt_method1 WHERE line = space.
+    IF iv_include1 <> gs_previous-include.
+      READ REPORT iv_include1 INTO gs_previous-method.
+      DELETE gs_previous-method WHERE line = space.
+      gs_previous-include = iv_include1.
+    ENDIF.
+    lt_method1 = gs_previous-method.
+
     READ REPORT iv_include2 INTO lt_method2.
     DELETE lt_method2 WHERE line = space.
 
@@ -217,10 +227,7 @@ CLASS lcl_data IMPLEMENTATION.
 
   METHOD fetch.
 
-    DATA: lv_text    TYPE string,
-          lt_methods TYPE seop_methods_w_include.
-
-    FIELD-SYMBOLS: <ls_combi> LIKE LINE OF rt_combi.
+    DATA: lt_methods TYPE seop_methods_w_include.
 
 
     lt_methods = find_methods( ).
@@ -300,6 +307,7 @@ CLASS lcl_data IMPLEMENTATION.
       WHERE devclass IN s_devcla
       AND obj_name IN s_name
       AND object = 'CLAS'
+      AND delflag = abap_false
       ORDER BY PRIMARY KEY.               "#EC CI_GENBUFF "#EC CI_SUBRC
 
     LOOP AT lt_tadir ASSIGNING <ls_tadir>.
