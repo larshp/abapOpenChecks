@@ -200,11 +200,13 @@ CLASS lcl_data IMPLEMENTATION.
       gs_previous-include = iv_include1.
     ENDIF.
     lt_method1 = gs_previous-method.
+    IF lines( lt_method1 ) < p_incl.
+      RETURN.
+    ENDIF.
 
     READ REPORT iv_include2 INTO lt_method2.
     DELETE lt_method2 WHERE line = space.
-
-    IF lines( lt_method1 ) < p_incl OR lines( lt_method2 ) < p_incl.
+    IF lines( lt_method2 ) < p_incl.
       RETURN.
     ENDIF.
 
