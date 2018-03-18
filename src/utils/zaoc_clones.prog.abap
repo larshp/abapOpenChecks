@@ -153,7 +153,9 @@ CLASS lcl_data DEFINITION FINAL.
         IMPORTING it_old          TYPE STANDARD TABLE
                   it_new          TYPE STANDARD TABLE
         RETURNING VALUE(rt_delta) TYPE vxabapt255_tab,
-      combinations
+      remove_short
+        CHANGING ct_methods TYPE seop_methods_w_include,
+      analyze
         IMPORTING it_methods      TYPE seop_methods_w_include
         RETURNING VALUE(rt_combi) TYPE ty_combi_tt.
 
@@ -165,6 +167,42 @@ ENDCLASS.                    "lcl_app DEFINITION
 *
 *----------------------------------------------------------------------*
 CLASS lcl_data IMPLEMENTATION.
+
+  METHOD remove_short.
+
+    DATA: lv_index  TYPE i,
+          lv_total  TYPE i,
+          lv_count  TYPE i,
+          lt_method TYPE TABLE OF abaptxt255.
+
+    FIELD-SYMBOLS: <ls_method> LIKE LINE OF ct_methods.
+
+
+    lv_total = lines( ct_methods ).
+    lv_count = 0.
+
+    LOOP AT ct_methods ASSIGNING <ls_method>.
+      lv_index = sy-tabix.
+
+      IF lv_count MOD p_prog = 0.
+        cl_progress_indicator=>progress_indicate(
+          i_text               = |Removing short includes, { lv_count }/{ lv_total }|
+          i_processed          = lv_count
+          i_total              = lv_total
+          i_output_immediately = abap_true ).
+      ENDIF.
+      lv_count = lv_count + 1.
+
+    READ REPORT <ls_method>-incname INTO lt_method.
+      DELETE lt_method WHERE line = space.
+
+      IF lines( lt_method ) < p_incl.
+        DELETE ct_methods INDEX lv_index.
+      ENDIF.
+
+    ENDLOOP.
+
+  ENDMETHOD.
 
   METHOD delta.
 
@@ -200,15 +238,9 @@ CLASS lcl_data IMPLEMENTATION.
       gs_previous-include = iv_include1.
     ENDIF.
     lt_method1 = gs_previous-method.
-    IF lines( lt_method1 ) < p_incl.
-      RETURN.
-    ENDIF.
 
     READ REPORT iv_include2 INTO lt_method2.
     DELETE lt_method2 WHERE line = space.
-    IF lines( lt_method2 ) < p_incl.
-      RETURN.
-    ENDIF.
 
     IF lines( lt_method1 ) < lines( lt_method2 ).
       lv_lines = lines( lt_method1 ).
@@ -233,14 +265,15 @@ CLASS lcl_data IMPLEMENTATION.
 
 
     lt_methods = find_methods( ).
-    rt_combi = combinations( lt_methods ).
+    remove_short( CHANGING ct_methods = lt_methods ).
+    rt_combi = analyze( lt_methods ).
 
     SORT rt_combi BY match DESCENDING.
     DELETE rt_combi FROM p_top.
 
   ENDMETHOD.                    "run
 
-  METHOD combinations.
+  METHOD analyze.
 
     DATA: lv_index TYPE i,
           lv_count TYPE i,
