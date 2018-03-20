@@ -20,6 +20,18 @@
      <ENTRY>AOC - Objects from Embedded Packages</ENTRY>
      <LENGTH>72</LENGTH>
     </item>
+    <item>
+     <ID>I</ID>
+     <KEY>001</KEY>
+     <ENTRY>Packages</ENTRY>
+     <LENGTH>18</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>002</KEY>
+     <ENTRY>Local objects only</ENTRY>
+     <LENGTH>28</LENGTH>
+    </item>
    </TPOOL>
    <DESCRIPTIONS>
     <SEOCOMPOTX>
@@ -27,6 +39,12 @@
      <CMPNAME>MT_PACKAGES</CMPNAME>
      <LANGU>E</LANGU>
      <DESCRIPT>Code Inspector: Selection Options for the Package</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_AOC_EMBEDDED_PACKAGES</CLSNAME>
+     <CMPNAME>MV_LOCAL</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>General Flag</DESCRIPT>
     </SEOCOMPOTX>
    </DESCRIPTIONS>
   </asx:values>

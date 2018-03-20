@@ -24,6 +24,7 @@ CLASS zcl_aoc_embedded_packages DEFINITION
   PRIVATE SECTION.
 
     DATA mt_packages TYPE scit_devc .
+    DATA mv_local TYPE flag .
 ENDCLASS.
 
 
@@ -47,7 +48,7 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
 
   METHOD find_embedded.
 
-    DATA: lt_packages TYPE ty_package_list_tt.
+    DATA: lt_packages  TYPE ty_package_list_tt.
 
 
     IF lines( mt_packages ) = 0.
@@ -78,9 +79,11 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
 
   METHOD if_ci_collector~collect.
 
-    DATA: lt_embedded TYPE ty_package_list_tt,
-          lt_objects  TYPE STANDARD TABLE OF scir_objs_s,
-          ls_object   LIKE LINE OF p_objslist.
+    DATA: lt_embedded  TYPE ty_package_list_tt,
+          lt_objects   TYPE STANDARD TABLE OF scir_objs_s,
+          ls_object    LIKE LINE OF p_objslist,
+          lt_srcsystem TYPE RANGE OF tadir-srcsystem,
+          ls_srcsystem LIKE LINE OF lt_srcsystem.
 
     FIELD-SYMBOLS: <ls_object> LIKE LINE OF lt_objects.
 
@@ -88,6 +91,13 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
     lt_embedded = find_embedded( ).
     IF lines( lt_embedded ) = 0.
       RETURN.
+    ENDIF.
+
+    IF mv_local = abap_true.
+      ls_srcsystem-option = 'EQ'.
+      ls_srcsystem-sign   = 'I'.
+      ls_srcsystem-low    = sy-sysid.
+      APPEND ls_srcsystem TO lt_srcsystem.
     ENDIF.
 
     SELECT object obj_name FROM tadir
@@ -99,6 +109,7 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
       AND obj_name IN p_confine_objnames
       AND devclass IN p_confine_devclasses
       AND author IN p_confine_responsibles
+      AND srcsystem IN lt_srcsystem
       AND delflag = abap_false ##TOO_MANY_ITAB_FIELDS.  "#EC CI_GENBUFF
 
     LOOP AT lt_objects ASSIGNING <ls_object>.
@@ -111,14 +122,20 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
 
   METHOD if_ci_collector~get_attributes.
 
-    EXPORT mt_packages = mt_packages TO DATA BUFFER p_attributes.
+    EXPORT
+      mt_packages = mt_packages
+      mv_local = mv_local
+      TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
 
 
   METHOD if_ci_collector~put_attributes.
 
-    IMPORT mt_packages = mt_packages FROM DATA BUFFER p_attributes.
+    IMPORT
+      mt_packages = mt_packages
+      mv_local = mv_local
+      FROM DATA BUFFER p_attributes.
 
   ENDMETHOD.
 
@@ -128,23 +145,25 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
     DATA:
       lt_attributes TYPE sci_atttab,
       ls_attribute  LIKE LINE OF lt_attributes,
-*      l_message(72) TYPE c,
       lv_break      TYPE abap_bool,
       lv_ok         TYPE abap_bool.
 
 
     GET REFERENCE OF mt_packages INTO ls_attribute-ref.
-    ls_attribute-text = 'Packages'.
+    ls_attribute-text = 'Packages'(001).
     ls_attribute-kind = 'S'.
+    APPEND ls_attribute TO lt_attributes.
+
+    GET REFERENCE OF mv_local INTO ls_attribute-ref.
+    ls_attribute-text = 'Local objects only'(002).
     APPEND ls_attribute TO lt_attributes.
 
     DO.
       lv_break = cl_ci_query_attributes=>generic(
-                      p_name       = myname
-                      p_title      = 'Settings'
-                      p_attributes = lt_attributes
-*                    p_message    = l_message
-                      p_display    = p_display ).
+        p_name       = myname
+        p_title      = 'Settings'
+        p_attributes = lt_attributes
+        p_display    = p_display ).
       IF lv_break = abap_true.
         RETURN.
       ENDIF.
