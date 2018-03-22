@@ -44,7 +44,6 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
   METHOD build.
 
     DATA: lv_offset TYPE i,
-          lv_length TYPE i,
           lv_str    TYPE string,
           lv_level  LIKE sy-tabix.
 

@@ -36,8 +36,7 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_include   TYPE program,
-          lo_structure TYPE REF TO zcl_aoc_structure.
+    DATA: lo_structure TYPE REF TO zcl_aoc_structure.
 
 
     lo_structure = zcl_aoc_structure=>build(

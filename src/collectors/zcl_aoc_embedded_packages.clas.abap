@@ -145,8 +145,7 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
     DATA:
       lt_attributes TYPE sci_atttab,
       ls_attribute  LIKE LINE OF lt_attributes,
-      lv_break      TYPE abap_bool,
-      lv_ok         TYPE abap_bool.
+      lv_break      TYPE abap_bool.
 
 
     GET REFERENCE OF mt_packages INTO ls_attribute-ref.

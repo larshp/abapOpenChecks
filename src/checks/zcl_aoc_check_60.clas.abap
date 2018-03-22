@@ -27,7 +27,6 @@ CLASS ZCL_AOC_CHECK_60 IMPLEMENTATION.
 * MIT License
 
     DATA: lt_statements TYPE ty_statements,
-          lv_index      TYPE i,
           lt_tokens     LIKE it_tokens,
           lv_code       TYPE sci_errc.
 

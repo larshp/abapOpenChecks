@@ -71,8 +71,6 @@ CLASS ZCL_AOC_CHECK_65 IMPLEMENTATION.
           ls_error TYPE ssfmsgerr,
           lo_sf    TYPE REF TO cl_ssf_fb_smart_form.
 
-    FIELD-SYMBOLS: <ls_data> LIKE LINE OF lo_sf->fsymbols.
-
 
     IF object_type <> 'SSFO'.
       RETURN.

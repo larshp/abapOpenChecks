@@ -31,7 +31,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test004_02 FOR TESTING,
       test005_01 FOR TESTING,
       test005_02 FOR TESTING,
-      test010_01 for testing.
+      test010_01 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 

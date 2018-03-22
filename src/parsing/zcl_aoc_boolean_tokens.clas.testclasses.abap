@@ -14,7 +14,6 @@ CLASS lcl_parse IMPLEMENTATION.
 
     DATA: lt_code       TYPE string_table,
           lt_tokens     TYPE stokesx_tab,
-          lo_node       TYPE REF TO zcl_aoc_boolean_node,
           lt_statements TYPE sstmnt_tab.
 
 

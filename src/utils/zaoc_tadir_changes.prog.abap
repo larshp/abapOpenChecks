@@ -32,7 +32,6 @@ FORM run RAISING cx_salv_msg.
         ls_key     LIKE LINE OF lt_keys,
         lt_log     TYPE stprt_log_stable_type.
 
-  FIELD-SYMBOLS: <any> TYPE any.
 
   lv_from = sy-datum - p_days.
 

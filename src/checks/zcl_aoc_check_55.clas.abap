@@ -43,8 +43,7 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
     DATA: lt_statements TYPE ty_statements,
           lv_current    TYPE string,
           lv_previous   TYPE string,
-          lv_last       TYPE string,
-          lv_code       TYPE sci_errc.
+          lv_last       TYPE string.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements,
                    <ls_stmt>      LIKE LINE OF it_statements,
