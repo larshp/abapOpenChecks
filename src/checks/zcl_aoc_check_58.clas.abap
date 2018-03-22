@@ -12,15 +12,22 @@ CLASS zcl_aoc_check_58 DEFINITION
     METHODS get_message_text
         REDEFINITION .
   PROTECTED SECTION.
+
     TYPES:
       BEGIN OF gty_reference_s,
         clsname  TYPE seocompodf-clsname,
         cmpname  TYPE seocompodf-cmpname,
         exposure TYPE seocompodf-cmpname,
-      END OF gty_reference_s.
-    TYPES gty_reference_t TYPE STANDARD TABLE OF gty_reference_s WITH EMPTY KEY.
-    TYPES gty_include_t TYPE STANDARD TABLE OF wbcrossgt-include WITH EMPTY KEY.
+      END OF gty_reference_s .
+    TYPES:
+      gty_reference_t TYPE STANDARD TABLE OF gty_reference_s WITH EMPTY KEY .
+    TYPES:
+      gty_include_t TYPE STANDARD TABLE OF wbcrossgt-include WITH EMPTY KEY .
 
+    METHODS report
+      IMPORTING
+        !is_method   TYPE gty_reference_s
+        !lv_err_code TYPE sci_errc .
     METHODS is_bopf_interface
       RETURNING
         VALUE(rv_boolean) TYPE abap_bool .
@@ -28,9 +35,9 @@ CLASS zcl_aoc_check_58 DEFINITION
     METHODS check_methods .
     METHODS filter_self_references
       IMPORTING
-        iv_clsname TYPE gty_reference_s-clsname
+        !iv_clsname TYPE gty_reference_s-clsname
       CHANGING
-        ct_include TYPE gty_include_t.
+        !ct_include TYPE gty_include_t .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -105,10 +112,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
     DATA: lt_methods     TYPE gty_reference_t,
           lv_name        TYPE wbcrossgt-name,
           lt_ref_include TYPE gty_include_t,
-          lv_err_code    TYPE sci_errc,
-          lv_include     TYPE programm,
-          lt_includes    TYPE seop_methods_w_include,
-          ls_mtdkey      TYPE seocpdkey.
+          lv_err_code    TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_method> LIKE LINE OF lt_methods.
 
@@ -129,7 +133,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
       CONCATENATE <ls_method>-clsname '\ME:' <ls_method>-cmpname INTO lv_name.
       SELECT include FROM wbcrossgt INTO TABLE lt_ref_include WHERE otype = 'ME' AND name = lv_name.
-      IF sy-subrc <> 0.
+      IF lines( lt_ref_include ) = 0.
         lv_err_code = '001'.
       ELSEIF <ls_method>-exposure = c_public.
         me->filter_self_references(
@@ -144,47 +148,11 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       ENDIF.
 
       IF lv_err_code IS NOT INITIAL.
-        ls_mtdkey-clsname = <ls_method>-clsname.
-        ls_mtdkey-cpdname = <ls_method>-cmpname.
-
-        cl_oo_classname_service=>get_method_include(
-          EXPORTING
-            mtdkey              = ls_mtdkey
-          RECEIVING
-            result              = lv_include
-          EXCEPTIONS
-            class_not_existing  = 1
-            method_not_existing = 2
-            OTHERS              = 3 ).
-        IF sy-subrc <> 0.
-          CONTINUE.
-        ENDIF.
-
-* sometimes types are found via GET_METHOD_INCLUDE,
-* so added an extra check to make sure it is a method
-        cl_oo_classname_service=>get_all_method_includes(
-          EXPORTING
-            clsname            = <ls_method>-clsname
-          RECEIVING
-            result             = lt_includes
-          EXCEPTIONS
-            class_not_existing = 1
-            OTHERS             = 2 ).
-        IF sy-subrc <> 0.
-          CONTINUE.
-        ENDIF.
-
-        READ TABLE lt_includes WITH KEY incname = lv_include TRANSPORTING NO FIELDS.
-        IF sy-subrc <> 0.
-          CONTINUE.
-        ENDIF.
-
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
-                p_kind         = mv_errty
-                p_test         = myname
-                p_code         = lv_err_code ).
+        report(
+          is_method   = <ls_method>
+          lv_err_code = lv_err_code ).
       ENDIF.
+
     ENDLOOP.
 
   ENDMETHOD.
@@ -269,6 +237,57 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
     IF sy-subrc = 0.
       rv_boolean = abap_true.
     ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD report.
+
+    DATA: lv_include  TYPE programm,
+          lt_includes TYPE seop_methods_w_include,
+          ls_mtdkey   TYPE seocpdkey.
+
+
+    ls_mtdkey-clsname = is_method-clsname.
+    ls_mtdkey-cpdname = is_method-cmpname.
+
+    cl_oo_classname_service=>get_method_include(
+      EXPORTING
+        mtdkey              = ls_mtdkey
+      RECEIVING
+        result              = lv_include
+      EXCEPTIONS
+        class_not_existing  = 1
+        method_not_existing = 2
+        OTHERS              = 3 ).
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+* sometimes types are found via GET_METHOD_INCLUDE,
+* so added an extra check to make sure it is a method
+    cl_oo_classname_service=>get_all_method_includes(
+      EXPORTING
+        clsname            = is_method-clsname
+      RECEIVING
+        result             = lt_includes
+      EXCEPTIONS
+        class_not_existing = 1
+        OTHERS             = 2 ).
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+    READ TABLE lt_includes WITH KEY incname = lv_include TRANSPORTING NO FIELDS.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+    inform( p_sub_obj_type = c_type_include
+            p_sub_obj_name = lv_include
+            p_kind         = mv_errty
+            p_test         = myname
+            p_code         = lv_err_code ).
 
   ENDMETHOD.
 ENDCLASS.
