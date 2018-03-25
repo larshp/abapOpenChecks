@@ -22,7 +22,8 @@ DATA: gt_result TYPE STANDARD TABLE OF ty_result WITH DEFAULT KEY,
       gt_sum    TYPE STANDARD TABLE OF ty_sum WITH DEFAULT KEY.
 
 
-SELECT-OPTIONS: s_devc FOR tadir-devclass.
+SELECT-OPTIONS: s_devc FOR tadir-devclass,
+                s_objn FOR tadir-obj_name.
 
 PARAMETERS: p_det   TYPE c RADIOBUTTON GROUP g1 DEFAULT 'X',
             p_sum   TYPE c RADIOBUTTON GROUP g1,
@@ -95,6 +96,7 @@ FORM run RAISING cx_salv_error.
     INTO TABLE lt_tadir
     WHERE devclass IN s_devc
     AND object = 'CLAS'
+    AND obj_name IN s_objn
     AND delflag = abap_false.                           "#EC CI_GENBUFF
 
   LOOP AT lt_tadir INTO ls_tadir.
