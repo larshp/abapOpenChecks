@@ -74,7 +74,7 @@ FORM run RAISING cx_salv_msg.
           cx_sy_codepage_converter_init
           cx_parameter_invalid_type
           cx_parameter_invalid_range.
-        BREAK-POINT.
+        ASSERT 0 = 1.
     ENDTRY.
 
     APPEND VALUE #(

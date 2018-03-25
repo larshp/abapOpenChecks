@@ -193,7 +193,7 @@ CLASS lcl_data IMPLEMENTATION.
       ENDIF.
       lv_count = lv_count + 1.
 
-    READ REPORT <ls_method>-incname INTO lt_method.
+      READ REPORT <ls_method>-incname INTO lt_method.
       DELETE lt_method WHERE line = space.
 
       IF lines( lt_method ) < p_incl.
