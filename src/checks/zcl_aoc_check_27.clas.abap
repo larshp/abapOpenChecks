@@ -68,7 +68,8 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
         lv_code = '001'.
       ELSEIF ( ls_statement-statement CP 'CLEAR *'
           OR ls_statement-statement CP 'FREE *' )
-          AND is_local( ls_statement ) = abap_true.
+          AND is_local( ls_statement ) = abap_true
+          AND NOT ls_statement-statement CP 'CLEAR <*'.
         lv_code = '002'.
       ELSEIF ls_statement-statement CP 'EXIT*'
           OR ls_statement-statement CP 'CHECK *'.
