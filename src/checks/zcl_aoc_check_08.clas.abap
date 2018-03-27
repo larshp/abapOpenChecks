@@ -127,7 +127,8 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
         lv_code = '014'.
       ELSEIF mv_015 = abap_true AND lv_statement CP 'CALL DIALOG *'.
         lv_code = '015'.
-      ELSEIF mv_016 = abap_true AND lv_statement CP '* OCCURS *'.
+      ELSEIF mv_016 = abap_true AND lv_statement CP '* OCCURS *'
+          AND NOT lv_statement CP '* OCCURS TYPE *'.
         lv_code = '016'.
       ELSEIF mv_017 = abap_true AND lv_statement CP '* WITH HEADER LINE*'.
         lv_code = '017'.

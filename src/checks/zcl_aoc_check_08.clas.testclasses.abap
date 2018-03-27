@@ -41,6 +41,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test014_01 FOR TESTING,
       test015_01 FOR TESTING,
       test016_01 FOR TESTING,
+      test016_02 FOR TESTING,
       test017_01 FOR TESTING,
       test018_01 FOR TESTING,
       test019_01 FOR TESTING,
@@ -335,6 +336,16 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '016'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test016_02.
+
+    _code 'DATA occurs TYPE c.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
   ENDMETHOD.
 
