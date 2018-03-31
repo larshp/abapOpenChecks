@@ -93,7 +93,7 @@ CLASS ZCL_AOC_CHECK_66 IMPLEMENTATION.
       SUBMATCHES lv_msgnr lv_arbgb ##NO_TEXT.
     IF sy-subrc = 0.
       SELECT SINGLE arbgb FROM t100 INTO lv_arbgb
-        WHERE arbgb = lv_msgnr
+        WHERE arbgb = lv_arbgb
         AND msgnr = lv_msgnr ##WARN_OK.                 "#EC CI_GENBUFF
       IF sy-subrc <> 0.
         rv_code = '002'.
