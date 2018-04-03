@@ -12,7 +12,7 @@ SELECT-OPTIONS: s_devc FOR tadir-devclass OBLIGATORY.
 START-OF-SELECTION.
   PERFORM run.
 
-FORM run.
+FORM run RAISING cx_salv_msg.
 
   DATA: lt_tadir  TYPE STANDARD TABLE OF tadir WITH DEFAULT KEY,
         lv_subc   TYPE reposrc-subc,
