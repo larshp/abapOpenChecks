@@ -1,16 +1,16 @@
-class ZCL_AOC_CHECK_67 definition
-  public
-  inheriting from ZCL_AOC_SUPER_ROOT
-  create public .
+CLASS zcl_aoc_check_67 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super_root
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor .
 
-  methods GET_MESSAGE_TEXT
-    redefinition .
-  methods RUN
-    redefinition .
+    METHODS get_message_text
+        REDEFINITION .
+    METHODS run
+        REDEFINITION .
   PROTECTED SECTION.
 
     DATA ms_settings TYPE sci_s_naming_conventions_setup .
@@ -76,7 +76,6 @@ CLASS ZCL_AOC_CHECK_67 IMPLEMENTATION.
 * TODO, downport
         cl_dd_ddl_handler_factory=>create( )->check( object_name ).
       CATCH cx_dd_ddl_check INTO DATA(lx_check).
-        BREAK dk8lahpe.
         LOOP AT lx_check->get_errors( ) INTO DATA(ls_error).
           MESSAGE ID ls_error-arbgb TYPE 'E'
             NUMBER ls_error-msgnr WITH ls_error-var1 ls_error-var2 ls_error-var3 ls_error-var4
