@@ -291,7 +291,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       WHEN '004'.
         p_text = 'Use condense( )'.                         "#EC NOTEXT
       WHEN '005'.
-        p_text = 'Use concate_lines_of( )'.                 "#EC NOTEXT
+        p_text = 'Use concat_lines_of( )'.                  "#EC NOTEXT
       WHEN '006'.
         p_text = 'Use shift_left( ) or shift_right( )'.     "#EC NOTEXT
       WHEN '007'.
