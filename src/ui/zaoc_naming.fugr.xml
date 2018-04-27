@@ -11,8 +11,35 @@
    </INCLUDES>
    <FUNCTIONS>
     <item>
-     <FUNCNAME>Y_AOC_NAMING</FUNCNAME>
+     <FUNCNAME>Z_AOC_NAMING</FUNCNAME>
      <SHORT_TEXT>abapOpenChecks - Naming</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IV_READ_ONLY</PARAMETER>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>ABAP_BOOL</TYP>
+      </RSIMP>
+     </IMPORT>
+     <CHANGING>
+      <RSCHA>
+       <PARAMETER>CS_DATA</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>ZAOC_NAMING</TYP>
+      </RSCHA>
+     </CHANGING>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IV_READ_ONLY</PARAMETER>
+       <KIND>P</KIND>
+       <INDEX> 001</INDEX>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>CS_DATA</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Naming</STEXT>
+       <INDEX> 002</INDEX>
+      </RSFDO>
+     </DOCUMENTATION>
     </item>
    </FUNCTIONS>
    <DYNPROS>
@@ -21,10 +48,10 @@
       <PROGRAM>SAPLZAOC_NAMING</PROGRAM>
       <SCREEN>2000</SCREEN>
       <LANGUAGE>E</LANGUAGE>
-      <DESCRIPT>SEL_SCREEN 2000 INFO:170000360000000000000000000126948449052</DESCRIPT>
+      <DESCRIPT>SEL_SCREEN 2000 INFO:170000870000000000000000000703962388965</DESCRIPT>
       <TYPE>W</TYPE>
       <NEXTSCREEN>2000</NEXTSCREEN>
-      <CURSOR_POS>SEL_SCREEN 2000 INFO:170000360000000000000000000126948449052</CURSOR_POS>
+      <CURSOR_POS>SEL_SCREEN 2000 INFO:170000870000000000000000000703962388965</CURSOR_POS>
       <LINES>200</LINES>
       <COLUMNS>120</COLUMNS>
       <KEEP_SCPOS>X</KEEP_SCPOS>
@@ -283,10 +310,10 @@
       <PROGRAM>SAPLZAOC_NAMING</PROGRAM>
       <SCREEN>3000</SCREEN>
       <LANGUAGE>E</LANGUAGE>
-      <DESCRIPT>SEL_SCREEN 3000 INFO:170000360000000000000000000126948449052</DESCRIPT>
+      <DESCRIPT>SEL_SCREEN 3000 INFO:170000870000000000000000000703962388965</DESCRIPT>
       <TYPE>J</TYPE>
       <NEXTSCREEN>3000</NEXTSCREEN>
-      <CURSOR_POS>SEL_SCREEN 3000 INFO:170000360000000000000000000126948449052</CURSOR_POS>
+      <CURSOR_POS>SEL_SCREEN 3000 INFO:170000870000000000000000000703962388965</CURSOR_POS>
       <LINES>200</LINES>
       <COLUMNS>120</COLUMNS>
       <KEEP_SCPOS>X</KEEP_SCPOS>
@@ -301,17 +328,35 @@
       <RPY_DYFATC>
        <CONT_TYPE>SCREEN</CONT_TYPE>
        <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>FRAME_TMPL</TYPE>
+       <NAME>%BPRE001_BLOCK_3000</NAME>
+       <TEXT>___________________________________________________________________________________________________________________</TEXT>
+       <LINE>001</LINE>
+       <COLUMN>001</COLUMN>
+       <LENGTH>116</LENGTH>
+       <VISLENGTH>116</VISLENGTH>
+       <HEIGHT>015</HEIGHT>
+       <GROUP3>BLK</GROUP3>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_ELEMEN_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>001</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>002</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>001</GROUP4>
+       <GROUP4>002</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -325,15 +370,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_ELEMEN</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>001</LINE>
+       <LINE>002</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>001</GROUP4>
+       <GROUP4>002</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -343,14 +389,14 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_GENERI_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>002</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>003</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>002</GROUP4>
+       <GROUP4>003</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -364,15 +410,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_GENERI</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>002</LINE>
+       <LINE>003</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>002</GROUP4>
+       <GROUP4>003</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -382,14 +429,14 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_STRUCT_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>003</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>004</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>003</GROUP4>
+       <GROUP4>004</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -403,15 +450,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_STRUCT</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>003</LINE>
+       <LINE>004</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>003</GROUP4>
+       <GROUP4>004</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -421,14 +469,14 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_TANY_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>004</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>005</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>004</GROUP4>
+       <GROUP4>005</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -442,15 +490,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_TANY</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>004</LINE>
+       <LINE>005</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>004</GROUP4>
+       <GROUP4>005</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -460,14 +509,14 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_THASH_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>005</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>006</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>005</GROUP4>
+       <GROUP4>006</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -481,15 +530,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_THASH</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>005</LINE>
+       <LINE>006</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>005</GROUP4>
+       <GROUP4>006</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -499,14 +549,14 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_TINDEX_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>006</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>007</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>006</GROUP4>
+       <GROUP4>007</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -520,15 +570,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_TINDEX</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>006</LINE>
+       <LINE>007</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>006</GROUP4>
+       <GROUP4>007</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -538,14 +589,14 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_TSTAND_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>007</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>008</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>007</GROUP4>
+       <GROUP4>008</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -559,15 +610,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_TSTAND</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>007</LINE>
+       <LINE>008</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>007</GROUP4>
+       <GROUP4>008</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -577,14 +629,14 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_TSORT_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>008</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>009</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>008</GROUP4>
+       <GROUP4>009</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -598,15 +650,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_TSORT</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>008</LINE>
+       <LINE>009</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>008</GROUP4>
+       <GROUP4>009</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -616,14 +669,14 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_RDATA_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>009</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>010</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>009</GROUP4>
+       <GROUP4>010</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -637,15 +690,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_RDATA</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>009</LINE>
+       <LINE>010</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>009</GROUP4>
+       <GROUP4>010</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -655,14 +709,14 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_RCLASS_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>010</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>011</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>010</GROUP4>
+       <GROUP4>011</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -676,15 +730,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_RCLASS</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>010</LINE>
+       <LINE>011</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>010</GROUP4>
+       <GROUP4>011</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -694,14 +749,14 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_RBADI_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>011</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>012</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>011</GROUP4>
+       <GROUP4>012</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -715,15 +770,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_RBADI</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>011</LINE>
+       <LINE>012</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>011</GROUP4>
+       <GROUP4>012</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -733,14 +789,14 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_REXCEP_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>012</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>013</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>012</GROUP4>
+       <GROUP4>013</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -754,15 +810,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_REXCEP</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>012</LINE>
+       <LINE>013</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>012</GROUP4>
+       <GROUP4>013</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -772,14 +829,14 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>%_P_RINTER_%_APP_%-TEXT</NAME>
        <TEXT>______________________________</TEXT>
-       <LINE>013</LINE>
-       <COLUMN>001</COLUMN>
+       <LINE>014</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>013</GROUP4>
+       <GROUP4>014</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -793,15 +850,16 @@
        <TYPE>TEMPLATE</TYPE>
        <NAME>P_RINTER</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>013</LINE>
+       <LINE>014</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>013</GROUP4>
+       <GROUP4>014</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -811,7 +869,7 @@
        <TYPE>TEXT</TYPE>
        <NAME>%_17NNJ0002322136_%_%_%_%_%_%_</NAME>
        <TEXT>-</TEXT>
-       <LINE>014</LINE>
+       <LINE>016</LINE>
        <COLUMN>001</COLUMN>
        <LENGTH>001</LENGTH>
        <VISLENGTH>001</VISLENGTH>
@@ -916,6 +974,56 @@
        <LINE>FIELD !P_RINTER MODULE %_P_RINTER .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW/>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>CHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_ELEMEN .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_GENERI .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_STRUCT .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_TANY .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_THASH .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_TINDEX .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_TSTAND .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_TSORT .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_RDATA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_RCLASS .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_RBADI .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_REXCEP .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_RINTER .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>MODULE %_BLOCK_3000001.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>ENDCHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
       <RPY_DYFLOW>
        <LINE>CHAIN.</LINE>
       </RPY_DYFLOW>
@@ -1010,6 +1118,24 @@
       <item>0</item>
       <item>0</item>
       <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>4</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
       <item>2</item>
       <item>2</item>
       <item>2</item>
@@ -1033,10 +1159,10 @@
       <PROGRAM>SAPLZAOC_NAMING</PROGRAM>
       <SCREEN>4000</SCREEN>
       <LANGUAGE>E</LANGUAGE>
-      <DESCRIPT>SEL_SCREEN 4000 INFO:170000360000000000000000000126948449052</DESCRIPT>
+      <DESCRIPT>SEL_SCREEN 4000 INFO:170000870000000000000000000703962388965</DESCRIPT>
       <TYPE>J</TYPE>
       <NEXTSCREEN>4000</NEXTSCREEN>
-      <CURSOR_POS>SEL_SCREEN 4000 INFO:170000360000000000000000000126948449052</CURSOR_POS>
+      <CURSOR_POS>SEL_SCREEN 4000 INFO:170000870000000000000000000703962388965</CURSOR_POS>
       <LINES>200</LINES>
       <COLUMNS>120</COLUMNS>
       <KEEP_SCPOS>X</KEEP_SCPOS>
@@ -1051,17 +1177,35 @@
       <RPY_DYFATC>
        <CONT_TYPE>SCREEN</CONT_TYPE>
        <CONT_NAME>SCREEN</CONT_NAME>
-       <TYPE>TEMPLATE</TYPE>
-       <NAME>%_P_FOO_%_APP_%-TEXT</NAME>
-       <TEXT>______________________________</TEXT>
+       <TYPE>FRAME_TMPL</TYPE>
+       <NAME>%BGLO001_BLOCK_4000</NAME>
+       <TEXT>___________________________________________________________________________________________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>001</COLUMN>
+       <LENGTH>116</LENGTH>
+       <VISLENGTH>116</VISLENGTH>
+       <HEIGHT>010</HEIGHT>
+       <GROUP3>BLK</GROUP3>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_NSPACE_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>002</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>001</GROUP4>
+       <GROUP4>002</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -1073,17 +1217,298 @@
        <CONT_TYPE>SCREEN</CONT_TYPE>
        <CONT_NAME>SCREEN</CONT_NAME>
        <TYPE>TEMPLATE</TYPE>
-       <NAME>P_FOO</NAME>
+       <NAME>P_NSPACE</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>001</LINE>
+       <LINE>002</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>001</GROUP4>
+       <GROUP4>002</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_FUGR_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>003</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>003</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_FUGR</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>003</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>003</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_PROG_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>004</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>004</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_PROG</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>004</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>004</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_CLAS_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>005</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>005</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_CLAS</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>005</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>005</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_CLASX_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>006</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>006</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_CLASX</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>006</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>006</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_CLAST_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>007</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>007</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_CLAST</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>007</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>007</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_CLASA_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>008</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>008</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_CLASA</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>008</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>008</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_INTF_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>009</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>009</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_INTF</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>009</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>009</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -1093,7 +1518,7 @@
        <TYPE>TEXT</TYPE>
        <NAME>%_17NNJ0002322136_%_%_%_%_%_%_</NAME>
        <TEXT>-</TEXT>
-       <LINE>002</LINE>
+       <LINE>011</LINE>
        <COLUMN>001</COLUMN>
        <LENGTH>001</LENGTH>
        <VISLENGTH>001</VISLENGTH>
@@ -1147,14 +1572,98 @@
       </RPY_DYFLOW>
       <RPY_DYFLOW/>
       <RPY_DYFLOW>
-       <LINE>FIELD !P_FOO MODULE %_P_FOO .</LINE>
+       <LINE>FIELD !P_NSPACE MODULE %_P_NSPACE .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_FUGR MODULE %_P_FUGR .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_PROG MODULE %_P_PROG .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_CLAS MODULE %_P_CLAS .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_CLASX MODULE %_P_CLASX .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_CLAST MODULE %_P_CLAST .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_CLASA MODULE %_P_CLASA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_INTF MODULE %_P_INTF .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>CHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_NSPACE .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FUGR .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PROG .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_CLAS .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_CLASX .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_CLAST .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_CLASA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_INTF .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>MODULE %_BLOCK_4000001.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>ENDCHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW/>
       <RPY_DYFLOW>
        <LINE>CHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD P_FOO .</LINE>
+       <LINE>FIELD P_NSPACE .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FUGR .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PROG .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_CLAS .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_CLASX .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_CLAST .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_CLASA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_INTF .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
        <LINE>MODULE %_END_OF_SCREEN.</LINE>
@@ -1184,6 +1693,40 @@
       <item>0</item>
       <item>0</item>
       <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>4</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
       <item>2</item>
       <item>2</item>
       <item>2</item>
@@ -1195,10 +1738,10 @@
       <PROGRAM>SAPLZAOC_NAMING</PROGRAM>
       <SCREEN>5000</SCREEN>
       <LANGUAGE>E</LANGUAGE>
-      <DESCRIPT>SEL_SCREEN 5000 INFO:170000360000000000000000000126948449052</DESCRIPT>
+      <DESCRIPT>SEL_SCREEN 5000 INFO:170000870000000000000000000703962388965</DESCRIPT>
       <TYPE>J</TYPE>
       <NEXTSCREEN>5000</NEXTSCREEN>
-      <CURSOR_POS>SEL_SCREEN 5000 INFO:170000360000000000000000000126948449052</CURSOR_POS>
+      <CURSOR_POS>SEL_SCREEN 5000 INFO:170000870000000000000000000703962388965</CURSOR_POS>
       <LINES>200</LINES>
       <COLUMNS>120</COLUMNS>
       <KEEP_SCPOS>X</KEEP_SCPOS>
@@ -1213,17 +1756,35 @@
       <RPY_DYFATC>
        <CONT_TYPE>SCREEN</CONT_TYPE>
        <CONT_NAME>SCREEN</CONT_NAME>
-       <TYPE>TEMPLATE</TYPE>
-       <NAME>%_P_BAR_%_APP_%-TEXT</NAME>
-       <TEXT>______________________________</TEXT>
+       <TYPE>FRAME_TMPL</TYPE>
+       <NAME>%BLOC001_BLOCK_5000</NAME>
+       <TEXT>___________________________________________________________________________________________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>001</COLUMN>
+       <LENGTH>116</LENGTH>
+       <VISLENGTH>116</VISLENGTH>
+       <HEIGHT>007</HEIGHT>
+       <GROUP3>BLK</GROUP3>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_DATA_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>002</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>001</GROUP4>
+       <GROUP4>002</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -1235,17 +1796,178 @@
        <CONT_TYPE>SCREEN</CONT_TYPE>
        <CONT_NAME>SCREEN</CONT_NAME>
        <TYPE>TEMPLATE</TYPE>
-       <NAME>P_BAR</NAME>
+       <NAME>P_DATA</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>001</LINE>
+       <LINE>002</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>001</GROUP4>
+       <GROUP4>002</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_STATIC_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>003</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>003</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_STATIC</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>003</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>003</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_FSYMBO_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>004</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>004</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_FSYMBO</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>004</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>004</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_LCONST_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>005</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>005</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_LCONST</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>005</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>005</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_LTYPES_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>006</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>006</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_LTYPES</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>006</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>006</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -1255,7 +1977,7 @@
        <TYPE>TEXT</TYPE>
        <NAME>%_17NNJ0002322136_%_%_%_%_%_%_</NAME>
        <TEXT>-</TEXT>
-       <LINE>002</LINE>
+       <LINE>008</LINE>
        <COLUMN>001</COLUMN>
        <LENGTH>001</LENGTH>
        <VISLENGTH>001</VISLENGTH>
@@ -1309,14 +2031,68 @@
       </RPY_DYFLOW>
       <RPY_DYFLOW/>
       <RPY_DYFLOW>
-       <LINE>FIELD !P_BAR MODULE %_P_BAR .</LINE>
+       <LINE>FIELD !P_DATA MODULE %_P_DATA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_STATIC MODULE %_P_STATIC .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_FSYMBO MODULE %_P_FSYMBO .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_LCONST MODULE %_P_LCONST .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_LTYPES MODULE %_P_LTYPES .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>CHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_DATA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_STATIC .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FSYMBO .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_LCONST .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_LTYPES .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>MODULE %_BLOCK_5000001.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>ENDCHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW/>
       <RPY_DYFLOW>
        <LINE>CHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD P_BAR .</LINE>
+       <LINE>FIELD P_DATA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_STATIC .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FSYMBO .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_LCONST .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_LTYPES .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
        <LINE>MODULE %_END_OF_SCREEN.</LINE>
@@ -1346,6 +2122,28 @@
       <item>0</item>
       <item>0</item>
       <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>4</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
       <item>2</item>
       <item>2</item>
       <item>2</item>
@@ -1357,10 +2155,10 @@
       <PROGRAM>SAPLZAOC_NAMING</PROGRAM>
       <SCREEN>6000</SCREEN>
       <LANGUAGE>E</LANGUAGE>
-      <DESCRIPT>SEL_SCREEN 6000 INFO:170000360000000000000000000126948449052</DESCRIPT>
+      <DESCRIPT>SEL_SCREEN 6000 INFO:170000870000000000000000000703962388965</DESCRIPT>
       <TYPE>J</TYPE>
       <NEXTSCREEN>6000</NEXTSCREEN>
-      <CURSOR_POS>SEL_SCREEN 6000 INFO:170000360000000000000000000126948449052</CURSOR_POS>
+      <CURSOR_POS>SEL_SCREEN 6000 INFO:170000870000000000000000000703962388965</CURSOR_POS>
       <LINES>200</LINES>
       <COLUMNS>120</COLUMNS>
       <KEEP_SCPOS>X</KEEP_SCPOS>
@@ -1375,17 +2173,35 @@
       <RPY_DYFATC>
        <CONT_TYPE>SCREEN</CONT_TYPE>
        <CONT_NAME>SCREEN</CONT_NAME>
-       <TYPE>TEMPLATE</TYPE>
-       <NAME>%_P_MOO_%_APP_%-TEXT</NAME>
-       <TEXT>______________________________</TEXT>
+       <TYPE>FRAME_TMPL</TYPE>
+       <NAME>%BFUG001_BLOCK_6000</NAME>
+       <TEXT>___________________________________________________________________________________________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>001</COLUMN>
+       <LENGTH>116</LENGTH>
+       <VISLENGTH>116</VISLENGTH>
+       <HEIGHT>006</HEIGHT>
+       <GROUP3>BLK</GROUP3>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_FIMPOR_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>002</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>001</GROUP4>
+       <GROUP4>002</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -1397,17 +2213,534 @@
        <CONT_TYPE>SCREEN</CONT_TYPE>
        <CONT_NAME>SCREEN</CONT_NAME>
        <TYPE>TEMPLATE</TYPE>
-       <NAME>P_MOO</NAME>
+       <NAME>P_FIMPOR</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>001</LINE>
+       <LINE>002</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>001</GROUP4>
+       <GROUP4>002</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_FEXPOR_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>003</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>003</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_FEXPOR</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>003</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>003</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_FCHANG_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>004</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>004</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_FCHANG</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>004</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>004</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_FTABLE_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>005</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>005</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_FTABLE</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>005</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>005</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>FRAME_TMPL</TYPE>
+       <NAME>%BFOR007_BLOCK_6000</NAME>
+       <TEXT>___________________________________________________________________________________________________________________</TEXT>
+       <LINE>007</LINE>
+       <COLUMN>001</COLUMN>
+       <LENGTH>116</LENGTH>
+       <VISLENGTH>116</VISLENGTH>
+       <HEIGHT>005</HEIGHT>
+       <GROUP3>BLK</GROUP3>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_FOUSIN_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>008</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>008</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_FOUSIN</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>008</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>008</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_FOCHAN_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>009</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>009</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_FOCHAN</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>009</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>009</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_FOTABL_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>010</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>010</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_FOTABL</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>010</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>010</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>FRAME_TMPL</TYPE>
+       <NAME>%BPGL012_BLOCK_6000</NAME>
+       <TEXT>___________________________________________________________________________________________________________________</TEXT>
+       <LINE>012</LINE>
+       <COLUMN>001</COLUMN>
+       <LENGTH>116</LENGTH>
+       <VISLENGTH>116</VISLENGTH>
+       <HEIGHT>008</HEIGHT>
+       <GROUP3>BLK</GROUP3>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_PGDATA_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>013</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>013</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_PGDATA</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>013</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>013</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_PGFISY_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>014</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>014</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_PGFISY</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>014</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>014</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_PGCONS_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>015</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>015</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_PGCONS</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>015</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>015</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_PGTYPE_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>016</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>016</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_PGTYPE</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>016</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>016</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_PGSELO_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>017</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>017</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_PGSELO</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>017</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>017</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_PGPARA_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>018</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>018</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_PGPARA</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>018</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>018</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -1417,7 +2750,7 @@
        <TYPE>TEXT</TYPE>
        <NAME>%_17NNJ0002322136_%_%_%_%_%_%_</NAME>
        <TEXT>-</TEXT>
-       <LINE>002</LINE>
+       <LINE>020</LINE>
        <COLUMN>001</COLUMN>
        <LENGTH>001</LENGTH>
        <VISLENGTH>001</VISLENGTH>
@@ -1471,14 +2804,170 @@
       </RPY_DYFLOW>
       <RPY_DYFLOW/>
       <RPY_DYFLOW>
-       <LINE>FIELD !P_MOO MODULE %_P_MOO .</LINE>
+       <LINE>FIELD !P_FIMPOR MODULE %_P_FIMPOR .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_FEXPOR MODULE %_P_FEXPOR .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_FCHANG MODULE %_P_FCHANG .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_FTABLE MODULE %_P_FTABLE .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>CHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FIMPOR .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FEXPOR .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FCHANG .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FTABLE .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>MODULE %_BLOCK_6000001.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>ENDCHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_FOUSIN MODULE %_P_FOUSIN .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_FOCHAN MODULE %_P_FOCHAN .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_FOTABL MODULE %_P_FOTABL .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>CHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FOUSIN .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FOCHAN .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FOTABL .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>MODULE %_BLOCK_6000007.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>ENDCHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_PGDATA MODULE %_P_PGDATA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_PGFISY MODULE %_P_PGFISY .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_PGCONS MODULE %_P_PGCONS .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_PGTYPE MODULE %_P_PGTYPE .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_PGSELO MODULE %_P_PGSELO .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_PGPARA MODULE %_P_PGPARA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>CHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PGDATA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PGFISY .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PGCONS .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PGTYPE .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PGSELO .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PGPARA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>MODULE %_BLOCK_6000012.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>ENDCHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW/>
       <RPY_DYFLOW>
        <LINE>CHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD P_MOO .</LINE>
+       <LINE>FIELD P_FIMPOR .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FEXPOR .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FCHANG .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FTABLE .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FOUSIN .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FOCHAN .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_FOTABL .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PGDATA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PGFISY .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PGCONS .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PGTYPE .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PGSELO .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_PGPARA .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
        <LINE>MODULE %_END_OF_SCREEN.</LINE>
@@ -1508,6 +2997,70 @@
       <item>0</item>
       <item>0</item>
       <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>4</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>4</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>4</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
       <item>2</item>
       <item>2</item>
       <item>2</item>
@@ -1519,10 +3072,10 @@
       <PROGRAM>SAPLZAOC_NAMING</PROGRAM>
       <SCREEN>7000</SCREEN>
       <LANGUAGE>E</LANGUAGE>
-      <DESCRIPT>SEL_SCREEN 7000 INFO:170000360000000000000000000126948449052</DESCRIPT>
+      <DESCRIPT>SEL_SCREEN 7000 INFO:170000870000000000000000000703962388965</DESCRIPT>
       <TYPE>J</TYPE>
       <NEXTSCREEN>7000</NEXTSCREEN>
-      <CURSOR_POS>SEL_SCREEN 7000 INFO:170000360000000000000000000126948449052</CURSOR_POS>
+      <CURSOR_POS>SEL_SCREEN 7000 INFO:170000870000000000000000000703962388965</CURSOR_POS>
       <LINES>200</LINES>
       <COLUMNS>120</COLUMNS>
       <KEEP_SCPOS>X</KEEP_SCPOS>
@@ -1537,17 +3090,35 @@
       <RPY_DYFATC>
        <CONT_TYPE>SCREEN</CONT_TYPE>
        <CONT_NAME>SCREEN</CONT_NAME>
-       <TYPE>TEMPLATE</TYPE>
-       <NAME>%_P_LOO_%_APP_%-TEXT</NAME>
-       <TEXT>______________________________</TEXT>
+       <TYPE>FRAME_TMPL</TYPE>
+       <NAME>%BOOD001_BLOCK_7000</NAME>
+       <TEXT>___________________________________________________________________________________________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>001</COLUMN>
+       <LENGTH>116</LENGTH>
+       <VISLENGTH>116</VISLENGTH>
+       <HEIGHT>006</HEIGHT>
+       <GROUP3>BLK</GROUP3>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_OODATA_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>002</LINE>
+       <COLUMN>003</COLUMN>
        <LENGTH>030</LENGTH>
        <VISLENGTH>030</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>TXT</GROUP3>
-       <GROUP4>001</GROUP4>
+       <GROUP4>002</GROUP4>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -1559,17 +3130,454 @@
        <CONT_TYPE>SCREEN</CONT_TYPE>
        <CONT_NAME>SCREEN</CONT_NAME>
        <TYPE>TEMPLATE</TYPE>
-       <NAME>P_LOO</NAME>
+       <NAME>P_OODATA</NAME>
        <TEXT>________________________________________</TEXT>
-       <LINE>001</LINE>
+       <LINE>002</LINE>
        <COLUMN>035</COLUMN>
        <LENGTH>040</LENGTH>
        <VISLENGTH>040</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <GROUP1>RO</GROUP1>
        <GROUP3>PAR</GROUP3>
-       <GROUP4>001</GROUP4>
+       <GROUP4>002</GROUP4>
        <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_OOCDAT_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>003</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>003</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_OOCDAT</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>003</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>003</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_OOCONS_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>004</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>004</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_OOCONS</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>004</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>004</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_OOTYPE_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>005</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>005</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_OOTYPE</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>005</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>005</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>FRAME_TMPL</TYPE>
+       <NAME>%BMET007_BLOCK_7000</NAME>
+       <TEXT>___________________________________________________________________________________________________________________</TEXT>
+       <LINE>007</LINE>
+       <COLUMN>001</COLUMN>
+       <LENGTH>116</LENGTH>
+       <VISLENGTH>116</VISLENGTH>
+       <HEIGHT>006</HEIGHT>
+       <GROUP3>BLK</GROUP3>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_OOIMPO_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>008</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>008</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_OOIMPO</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>008</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>008</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_OOEXPO_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>009</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>009</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_OOEXPO</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>009</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>009</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_OOCHAN_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>010</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>010</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_OOCHAN</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>010</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>010</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_OORETU_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>011</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>011</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_OORETU</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>011</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>011</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>FRAME_TMPL</TYPE>
+       <NAME>%BLOO013_BLOCK_7000</NAME>
+       <TEXT>___________________________________________________________________________________________________________________</TEXT>
+       <LINE>013</LINE>
+       <COLUMN>001</COLUMN>
+       <LENGTH>116</LENGTH>
+       <VISLENGTH>116</VISLENGTH>
+       <HEIGHT>005</HEIGHT>
+       <GROUP3>BLK</GROUP3>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_OOLCLA_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>014</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>014</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_OOLCLA</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>014</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>014</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_OOLTCL_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>015</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>015</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_OOLTCL</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>015</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>015</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>%_P_OOLINT_%_APP_%-TEXT</NAME>
+       <TEXT>______________________________</TEXT>
+       <LINE>016</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>030</LENGTH>
+       <VISLENGTH>030</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>TXT</GROUP3>
+       <GROUP4>016</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>P_OOLINT</NAME>
+       <TEXT>________________________________________</TEXT>
+       <LINE>016</LINE>
+       <COLUMN>035</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>040</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <GROUP1>RO</GROUP1>
+       <GROUP3>PAR</GROUP3>
+       <GROUP4>016</GROUP4>
+       <FORMAT>CHAR</FORMAT>
+       <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
       </RPY_DYFATC>
@@ -1579,7 +3587,7 @@
        <TYPE>TEXT</TYPE>
        <NAME>%_17NNJ0002322136_%_%_%_%_%_%_</NAME>
        <TEXT>-</TEXT>
-       <LINE>002</LINE>
+       <LINE>018</LINE>
        <COLUMN>001</COLUMN>
        <LENGTH>001</LENGTH>
        <VISLENGTH>001</VISLENGTH>
@@ -1633,14 +3641,150 @@
       </RPY_DYFLOW>
       <RPY_DYFLOW/>
       <RPY_DYFLOW>
-       <LINE>FIELD !P_LOO MODULE %_P_LOO .</LINE>
+       <LINE>FIELD !P_OODATA MODULE %_P_OODATA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_OOCDAT MODULE %_P_OOCDAT .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_OOCONS MODULE %_P_OOCONS .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_OOTYPE MODULE %_P_OOTYPE .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>CHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OODATA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOCDAT .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOCONS .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOTYPE .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>MODULE %_BLOCK_7000001.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>ENDCHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_OOIMPO MODULE %_P_OOIMPO .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_OOEXPO MODULE %_P_OOEXPO .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_OOCHAN MODULE %_P_OOCHAN .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_OORETU MODULE %_P_OORETU .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>CHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOIMPO .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOEXPO .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOCHAN .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OORETU .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>MODULE %_BLOCK_7000007.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>ENDCHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_OOLCLA MODULE %_P_OOLCLA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_OOLTCL MODULE %_P_OOLTCL .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>FIELD !P_OOLINT MODULE %_P_OOLINT .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW/>
+      <RPY_DYFLOW>
+       <LINE>CHAIN.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOLCLA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOLTCL .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOLINT .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>MODULE %_BLOCK_7000013.</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>ENDCHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW/>
       <RPY_DYFLOW>
        <LINE>CHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD P_LOO .</LINE>
+       <LINE>FIELD P_OODATA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOCDAT .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOCONS .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOTYPE .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOIMPO .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOEXPO .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOCHAN .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OORETU .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOLCLA .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOLTCL .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD P_OOLINT .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
        <LINE>MODULE %_END_OF_SCREEN.</LINE>
@@ -1670,6 +3814,62 @@
       <item>0</item>
       <item>0</item>
       <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>4</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>4</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>4</item>
+      <item>0</item>
+      <item>0</item>
+      <item>0</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
+      <item>2</item>
       <item>2</item>
       <item>2</item>
       <item>2</item>
