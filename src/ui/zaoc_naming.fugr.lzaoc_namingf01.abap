@@ -39,6 +39,9 @@ CLASS lcl_screen2000 IMPLEMENTATION.
       WHEN '7000'.
         set_texts( 'OO_' ).
         modify_screen( ).
+      WHEN '8000'.
+        set_texts( 'SET_' ).
+        modify_screen( ).
       WHEN OTHERS.
         ASSERT 0 = 1.
     ENDCASE.
@@ -79,6 +82,7 @@ CLASS lcl_screen2000 IMPLEMENTATION.
     DATA: lt_descriptions TYPE dd03ptab,
           ls_description  LIKE LINE OF lt_descriptions,
           lt_text         TYPE STANDARD TABLE OF rsseltexts,
+          lv_text         TYPE string,
           lv_name         TYPE fieldname.
 
 
@@ -89,10 +93,15 @@ CLASS lcl_screen2000 IMPLEMENTATION.
         lv_name = iv_prefix && screen-name+2.
         READ TABLE lt_descriptions INTO ls_description WITH KEY fieldname = lv_name.
         IF sy-subrc = 0.
+          lv_text = ls_description-scrtext_l.
+          IF lv_text IS INITIAL.
+            lv_text = ls_description-ddtext.
+          ENDIF.
+
           APPEND VALUE #(
             name = screen-name
             kind = 'P'
-            text = ls_description-ddtext ) TO lt_text.
+            text = lv_text ) TO lt_text.
         ENDIF.
       ENDIF.
     ENDLOOP.

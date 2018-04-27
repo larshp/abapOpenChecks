@@ -54,6 +54,12 @@
     </item>
     <item>
      <ID>I</ID>
+     <KEY>007</KEY>
+     <ENTRY>Other Settings</ENTRY>
+     <LENGTH>24</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
      <KEY>FOR</KEY>
      <ENTRY>FORM</ENTRY>
      <LENGTH>14</LENGTH>
@@ -93,6 +99,12 @@
      <KEY>OOD</KEY>
      <ENTRY>Class / Interface Globals</ENTRY>
      <LENGTH>58</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>OTH</KEY>
+     <ENTRY>Other Settings</ENTRY>
+     <LENGTH>24</LENGTH>
     </item>
     <item>
      <ID>I</ID>

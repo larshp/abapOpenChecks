@@ -17,3 +17,4 @@ LOAD-OF-PROGRAM.
   button_3 = 'Locals'(004).
   button_4 = 'Procedural'(005).
   button_5 = 'Object Oriented'(006).
+  button_6 = 'Other Settings'(007).

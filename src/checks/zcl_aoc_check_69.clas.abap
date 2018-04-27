@@ -18,11 +18,25 @@ CLASS zcl_aoc_check_69 DEFINITION
     METHODS put_attributes
         REDEFINITION .
   PROTECTED SECTION.
+
+    METHODS check_class .
+    METHODS check_constant .
+    METHODS check_data .
+    METHODS check_field_symbol .
+    METHODS check_form .
+    METHODS check_function .
+    METHODS check_function_pool .
+    METHODS check_inline_defs .
+    METHODS check_interface .
+    METHODS check_parameter .
+    METHODS check_report .
+    METHODS check_select_option .
+    METHODS check_type .
+    METHODS set_defaults .
   PRIVATE SECTION.
 
     DATA ms_naming TYPE zaoc_naming .
-
-    METHODS set_defaults .
+    DATA mo_compiler TYPE REF TO cl_abap_compiler .
 ENDCLASS.
 
 
@@ -35,6 +49,228 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 * abapOpenChecks
 * https://github.com/larshp/abapOpenChecks
 * MIT License
+
+    DATA: ls_statement LIKE LINE OF it_statements,
+          lv_keyword   TYPE string.
+
+
+    mo_compiler = cl_abap_compiler=>create( program_name ).
+
+    LOOP AT it_statements INTO statement_wa.
+
+      CASE keyword( ).
+        WHEN 'REPORT'.
+          check_report( ).
+        WHEN 'FUNCTION-POOL'.
+          check_function_pool( ).
+        WHEN 'TYPES'.
+          check_type( ).
+        WHEN 'DATA' OR 'RANGES'.
+          check_data( ).
+        WHEN 'CONSTANTS'.
+          check_constant( ).
+        WHEN 'FIELD-SYMBOLS'.
+          check_field_symbol( ).
+        WHEN 'SELECT-OPTIONS'.
+          check_select_option( ).
+        WHEN 'PARAMETERS' OR 'PARAMETER'.
+          check_parameter( ).
+        WHEN 'CLASS'.
+          check_class( ).
+        WHEN 'INTERFACE'.
+          check_interface( ).
+        WHEN 'FORM'.
+          check_form( ).
+        WHEN 'FUNCTION'.
+          check_function( ).
+        WHEN OTHERS.
+          check_inline_defs( ).
+      ENDCASE.
+
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD check_class.
+
+* todo
+
+  ENDMETHOD.
+
+
+  METHOD check_constant.
+
+* todo
+
+  ENDMETHOD.
+
+
+  METHOD check_data.
+
+    DATA: lo_table_symbol   TYPE REF TO cl_abap_comp_table_type,
+          lo_symbol_generic TYPE REF TO cl_abap_comp_data_generic,
+          lo_symbol_simple  TYPE REF TO cl_abap_comp_data,
+          lo_type_symbol    TYPE REF TO cl_abap_comp_type,
+          lo_symbol_tab     TYPE REF TO cl_abap_comp_table_with_head,
+          lv_regex          TYPE string,
+          lv_name           TYPE string,
+          lv_full           TYPE string.
+
+
+    lv_name = get_token_rel( 2 ).
+
+* todo
+    lv_full = '\PR:' && program_name && '\DA:' && lv_name.
+
+    lo_symbol_generic ?= mo_compiler->get_symbol_entry( lv_full ).
+
+    IF NOT lo_symbol_generic IS INITIAL.
+* todo
+      IF lo_symbol_generic->node_kind = cl_abap_comp_data_generic=>data_node_kind_table_with_head.
+        lo_symbol_tab ?= lo_symbol_generic.
+        lo_symbol_simple = lo_symbol_tab->table.
+      ELSE.
+        lo_symbol_simple ?= lo_symbol_generic.
+      ENDIF.
+
+      lo_type_symbol = lo_symbol_simple->type.
+
+      CASE lo_type_symbol->type_kind.
+        WHEN cl_abap_comp_type=>type_kind_elementary.
+          lv_regex = |^{ ms_naming-proc_pgdata }|.
+          REPLACE FIRST OCCURRENCE OF '[:type:]' IN lv_regex WITH ms_naming-prefix_elemen.
+
+          FIND REGEX lv_regex IN lv_name IGNORING CASE.
+          IF sy-subrc <> 0.
+            inform( p_sub_obj_type = c_type_include
+                    p_sub_obj_name = get_include( p_level = statement_wa-level )
+                    p_line         = get_line_rel( 2 )
+                    p_column       = get_column_rel( 2 )
+                    p_kind         = mv_errty
+                    p_test         = myname
+                    p_code         = '001'
+                    p_param_1      = lv_regex
+                    p_param_2      = lv_name ).
+          ENDIF.
+
+        WHEN cl_abap_comp_type=>type_kind_structure OR cl_abap_comp_type=>type_kind_ddic_dbtab.
+* todo
+        WHEN cl_abap_comp_type=>type_kind_table.
+* todo
+        WHEN cl_abap_comp_type=>type_kind_reference.
+* todo
+        WHEN OTHERS.
+* todo, ?
+      ENDCASE.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD check_field_symbol.
+
+* todo
+
+  ENDMETHOD.
+
+
+  METHOD check_form.
+
+* todo
+
+  ENDMETHOD.
+
+
+  METHOD check_function.
+
+* todo
+
+  ENDMETHOD.
+
+
+  METHOD check_function_pool.
+
+    DATA: lv_name  TYPE string,
+          lv_regex TYPE string.
+
+
+    lv_name = get_token_rel( 2 ).
+
+    lv_regex = |^{ ms_naming-globals_fugr }|.
+    REPLACE FIRST OCCURRENCE OF '[:nspace:]' IN lv_regex WITH ms_naming-globals_nspace.
+
+    FIND REGEX lv_regex IN lv_name IGNORING CASE.
+    IF sy-subrc <> 0.
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = get_include( )
+              p_line         = get_line_rel( 2 )
+              p_column       = get_column_rel( 2 )
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '001'
+              p_param_1      = lv_regex ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD check_inline_defs.
+
+* todo
+
+  ENDMETHOD.
+
+
+  METHOD check_interface.
+
+* todo
+
+  ENDMETHOD.
+
+
+  METHOD check_parameter.
+
+* todo
+
+  ENDMETHOD.
+
+
+  METHOD check_report.
+
+    DATA: lv_name  TYPE string,
+          lv_regex TYPE string.
+
+
+    lv_name = get_token_rel( 2 ).
+
+    lv_regex = |^{ ms_naming-globals_prog }|.
+    REPLACE FIRST OCCURRENCE OF '[:nspace:]' IN lv_regex WITH ms_naming-globals_nspace.
+
+    FIND REGEX lv_regex IN lv_name IGNORING CASE.
+    IF sy-subrc <> 0.
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = get_include( )
+              p_line         = get_line_rel( 2 )
+              p_column       = get_column_rel( 2 )
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '001'
+              p_param_1      = lv_regex
+              p_param_2      = lv_name ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD check_select_option.
+
+* todo
+
+  ENDMETHOD.
+
+
+  METHOD check_type.
 
 * todo
 
@@ -76,7 +312,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     CASE p_code.
       WHEN '001'.
-        p_text = 'todo'.                                    "#EC NOTEXT
+        p_text = 'Bad naming, expected &1, got &2'.         "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
@@ -88,12 +324,15 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD if_ci_test~query_attributes.
 
+    ms_naming-set_errty = mv_errty.
+
     CALL FUNCTION 'Z_AOC_NAMING'
       EXPORTING
         iv_read_only = p_display
       CHANGING
         cs_data      = ms_naming.
 
+    mv_errty = ms_naming-set_errty.
     attributes_ok = abap_true.
 
   ENDMETHOD.
@@ -166,6 +405,11 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ms_naming-oo_oolcla = 'LCL_'.
     ms_naming-oo_ooltcl = 'LTCL_'.
     ms_naming-oo_oolint = 'LIF_'.
+
+    ms_naming-set_excpar = abap_true.
+    ms_naming-set_cfunc  = abap_true.
+    ms_naming-set_idocfm = abap_true.
+    ms_naming-set_bwext  = abap_true.
 
   ENDMETHOD.
 ENDCLASS.
