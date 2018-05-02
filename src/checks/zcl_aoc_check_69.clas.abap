@@ -19,14 +19,33 @@ CLASS zcl_aoc_check_69 DEFINITION
         REDEFINITION .
 protected section.
 
-  methods DETERMINE_SCOPE_PREFIX
+  methods QUALIFY_TOKENS
     returning
-      value(RV_PREFIX) type STRING .
+      value(RT_TOKENS) type STOKESX_TAB .
+  methods GET_STATEMENT
+    returning
+      value(RV_STRING) type STRING .
   methods DETERMINE_TYPE_PREFIX
     importing
       !IO_GENERIC type ref to CL_ABAP_COMP_DATA_GENERIC
     returning
       value(RV_PREFIX) type STRING .
+  methods DETERMINE_SCOPE_PREFIX
+    returning
+      value(RV_PREFIX) type STRING .
+  methods COMPARE
+    importing
+      !IV_NAME type STRING
+      !IV_REGEX type STRING
+      !IV_RELATIVE type I .
+  methods COMPILER_RESOLVE
+    importing
+      !IV_NAME type STRING
+    returning
+      value(RO_GENERIC) type ref to CL_ABAP_COMP_DATA_GENERIC .
+  methods COMPILER_RESOLVE_CLASS
+    returning
+      value(RO_CLASS) type ref to CL_ABAP_COMP_CLASS .
   methods CHECK_CLASS .
   methods CHECK_METHOD_DEFINITION .
   methods CHECK_METHOD_IMPLEMENTATION .
@@ -62,11 +81,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: ls_statement LIKE LINE OF it_statements,
-          lv_keyword   TYPE string.
-
-
     CREATE OBJECT mo_stack.
+
     mo_compiler = cl_abap_compiler=>create( program_name ).
 
     LOOP AT it_statements INTO statement_wa.
@@ -102,6 +118,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
           check_method_implementation( ).
         WHEN 'ENDCLASS' OR 'ENDMETHOD' OR 'ENDFORM'.
           mo_stack->pop( ).
+        WHEN 'ENDFUNCTION'.
+          mo_stack->set( '\PR:' && 'SAPL' && object_name ).
         WHEN OTHERS.
           check_inline_defs( ).
       ENDCASE.
@@ -113,25 +131,16 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_class.
 
-    DATA: lv_name  TYPE string,
-          lv_index TYPE i,
-          lv_regex TYPE string.
+    DATA: lv_name      TYPE string,
+          lv_statement TYPE string,
+          lo_super     TYPE REF TO cl_abap_comp_class,
+          lv_regex     TYPE string.
 
 
     CASE get_token_rel( 4 ).
       WHEN 'LOAD' OR 'DEFERRED'.
         RETURN.
     ENDCASE.
-
-* todo: loop through statement tokens
-*        WHEN 'PUBLIC'.
-    lv_regex = |^{ ms_naming-globals_clas }|.
-*          EXIT.
-** FOR TESTING
-*        WHEN ''.
-*          lv_regex = |^{ ms_naming-oo_oolcla }|.
-*          EXIT.
-*      ENDCASE.
 
     lv_name = get_token_rel( 2 ).
 
@@ -143,20 +152,33 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       mo_stack->push( '\TY:' && lv_name ).
     ENDIF.
 
-    REPLACE FIRST OCCURRENCE OF '[:nspace:]' IN lv_regex WITH ms_naming-globals_nspace.
-
-    FIND REGEX lv_regex IN lv_name IGNORING CASE.
-    IF sy-subrc <> 0.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = get_include(  )
-              p_line         = get_line_rel( 2 )
-              p_column       = get_column_rel( 2 )
-              p_kind         = mv_errty
-              p_test         = myname
-              p_code         = '001'
-              p_param_1      = lv_regex
-              p_param_2      = lv_name ).
+    IF get_token_rel( 3 ) = 'IMPLEMENTATION'.
+      RETURN.
     ENDIF.
+
+    lo_super = compiler_resolve_class( ).
+    WHILE NOT lo_super->super_class IS INITIAL.
+      lo_super = lo_super->super_class.
+    ENDWHILE.
+
+    IF object_name = lv_name AND object_type = 'CLAS'.
+      IF lo_super->full_name =  '\TY:CX_ROOT'.
+        lv_regex = ms_naming-globals_clasx.
+      ELSE.
+        lv_regex = ms_naming-globals_clas.
+      ENDIF.
+      REPLACE FIRST OCCURRENCE OF '[:nspace:]' IN lv_regex WITH ms_naming-globals_nspace.
+    ELSE.
+      lv_regex = ms_naming-oo_oolcla.
+      lv_statement = get_statement( ).
+      IF lv_statement CS 'FOR TESTING'.
+        lv_regex = ms_naming-oo_ooltcl.
+      ENDIF.
+    ENDIF.
+
+    compare( iv_name     = lv_name
+             iv_regex    = lv_regex
+             iv_relative = 2 ).
 
   ENDMETHOD.
 
@@ -170,11 +192,10 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_data.
 
-    DATA:
-      lo_symbol_generic TYPE REF TO cl_abap_comp_data_generic,
-      lv_regex          TYPE string,
-      lv_name           TYPE string,
-      lv_full           TYPE string.
+    DATA: lo_generic TYPE REF TO cl_abap_comp_data_generic,
+          lv_regex   TYPE string,
+          lv_offset  TYPE string,
+          lv_name    TYPE string.
 
 
     lv_name = get_token_rel( 2 ).
@@ -189,21 +210,13 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    lv_full = mo_stack->concatenate( '\DA:' && lv_name ).
+    FIND '(' IN lv_name MATCH OFFSET lv_offset.
+    IF sy-subrc = 0.
+      lv_name = lv_name(lv_offset).
+    ENDIF.
 
-********************
-
-    lo_symbol_generic ?= mo_compiler->get_symbol_entry( lv_full ).
-
-    IF lo_symbol_generic IS INITIAL.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = get_include( p_level = statement_wa-level )
-              p_line         = get_line_rel( 2 )
-              p_column       = get_column_rel( 2 )
-              p_kind         = mv_errty
-              p_test         = myname
-              p_code         = '002'
-              p_param_1      = lv_full ).
+    lo_generic = compiler_resolve( '\DA:' && lv_name ).
+    IF lo_generic IS INITIAL.
       RETURN.
     ENDIF.
 
@@ -211,20 +224,11 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     REPLACE FIRST OCCURRENCE OF '[:type:]'
       IN lv_regex
-      WITH determine_type_prefix( lo_symbol_generic ).
+      WITH determine_type_prefix( lo_generic ).
 
-    FIND REGEX lv_regex IN lv_name IGNORING CASE.
-    IF sy-subrc <> 0.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = get_include( p_level = statement_wa-level )
-              p_line         = get_line_rel( 2 )
-              p_column       = get_column_rel( 2 )
-              p_kind         = mv_errty
-              p_test         = myname
-              p_code         = '001'
-              p_param_1      = lv_regex
-              p_param_2      = lv_name ).
-    ENDIF.
+    compare( iv_name     = lv_name
+             iv_regex    = lv_regex
+             iv_relative = 2 ).
 
   ENDMETHOD.
 
@@ -238,20 +242,61 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_form.
 
-    DATA: lv_name TYPE string.
+    DATA: lt_tokens  TYPE stokesx_tab,
+          lo_generic TYPE REF TO cl_abap_comp_data_generic,
+          lv_scope   TYPE string,
+          lv_type    TYPE string,
+          lv_regex   TYPE string,
+          lv_name    TYPE string,
+          ls_token   LIKE LINE OF lt_tokens.
+
 
     lv_name = get_token_rel( 2 ).
 
     mo_stack->push( '\FO:' && lv_name ).
 
-* todo, check parameters
+    lt_tokens = qualify_tokens( ).
+    LOOP AT lt_tokens INTO ls_token.
+      CASE ls_token-type.
+        WHEN sana_tok_field_def.
+          lv_name = ls_token-str.
+          lo_generic = compiler_resolve( '\DA:' && lv_name ).
+          IF NOT lo_generic IS BOUND.
+            CONTINUE.
+          ENDIF.
+
+          lv_type = determine_type_prefix( lo_generic ).
+          lv_regex = lv_scope.
+          REPLACE FIRST OCCURRENCE OF '[:type:]' IN lv_regex WITH lv_type.
+
+          compare( iv_name     = lv_name
+                   iv_regex    = lv_regex
+                   iv_relative = 2 ).
+
+        WHEN sana_tok_word.
+          CASE ls_token-str.
+            WHEN 'USING'.
+              lv_scope = ms_naming-proc_fousin.
+            WHEN 'CHANGING'.
+              lv_scope = ms_naming-proc_fochan.
+            WHEN 'TABLES'.
+              lv_scope = ms_naming-proc_fotabl.
+          ENDCASE.
+      ENDCASE.
+    ENDLOOP.
 
   ENDMETHOD.
 
 
   METHOD check_function.
 
-* todo
+    DATA: lv_name TYPE string.
+
+
+    lv_name = get_token_rel( 2 ).
+    mo_stack->set( '\FU:' && lv_name ).
+
+* todo, check function module parameter names
 
   ENDMETHOD.
 
@@ -264,21 +309,12 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     lv_name = get_token_rel( 2 ).
 
-    lv_regex = |^{ ms_naming-globals_fugr }|.
+    lv_regex = ms_naming-globals_fugr.
     REPLACE FIRST OCCURRENCE OF '[:nspace:]' IN lv_regex WITH ms_naming-globals_nspace.
 
-    FIND REGEX lv_regex IN lv_name IGNORING CASE.
-    IF sy-subrc <> 0.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = get_include( )
-              p_line         = get_line_rel( 2 )
-              p_column       = get_column_rel( 2 )
-              p_kind         = mv_errty
-              p_test         = myname
-              p_code         = '001'
-              p_param_1      = lv_regex
-              p_param_2      = lv_name ).
-    ENDIF.
+    compare( iv_name     = lv_name
+             iv_regex    = lv_regex
+             iv_relative = 2 ).
 
     mo_stack->push( '\PR:' && 'SAPL' && lv_name ).
 
@@ -309,28 +345,87 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ENDIF.
 
 
-    lv_regex = |^{ ms_naming-globals_intf }|.
+    lv_regex = ms_naming-globals_intf.
     REPLACE FIRST OCCURRENCE OF '[:nspace:]' IN lv_regex WITH ms_naming-globals_nspace.
 
-    FIND REGEX lv_regex IN lv_name IGNORING CASE.
-    IF sy-subrc <> 0.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = get_include( )
-              p_line         = get_line_rel( 2 )
-              p_column       = get_column_rel( 2 )
-              p_kind         = mv_errty
-              p_test         = myname
-              p_code         = '001'
-              p_param_1      = lv_regex
-              p_param_2      = lv_name ).
-    ENDIF.
+    compare( iv_name     = lv_name
+             iv_regex    = lv_regex
+             iv_relative = 2 ).
 
   ENDMETHOD.
 
 
   METHOD check_method_definition.
 
-* todo, check parameters
+    DATA: lt_tokens  TYPE stokesx_tab,
+          lo_generic TYPE REF TO cl_abap_comp_data_generic,
+          lo_super   TYPE REF TO cl_abap_comp_class,
+          lv_scope   TYPE string,
+          lv_type    TYPE string,
+          lv_regex   TYPE string,
+          lv_name    TYPE string,
+          ls_token   LIKE LINE OF lt_tokens.
+
+
+    lo_super = compiler_resolve_class( ).
+    WHILE NOT lo_super->super_class IS INITIAL.
+      lo_super = lo_super->super_class.
+    ENDWHILE.
+
+    IF object_type = 'CLAS'
+        AND ms_naming-set_excpar = abap_true
+        AND get_token_rel( 2 ) = 'CONSTRUCTOR'
+        AND lo_super->full_name = '\TY:CX_ROOT'.
+      RETURN.
+    ENDIF.
+
+**********
+
+    mo_stack->push( '\ME:' && get_token_rel( 2 ) ).
+
+    lt_tokens = qualify_tokens( ).
+
+    LOOP AT lt_tokens INTO ls_token.
+      CASE ls_token-type.
+        WHEN sana_tok_field_def.
+          lv_name = ls_token-str.
+
+          IF lv_name CP 'VALUE(*)'.
+            lv_name = lv_name+6.
+            TRANSLATE lv_name USING ') '.
+            lv_name = condense( lv_name ).
+          ENDIF.
+
+          lo_generic = compiler_resolve( '\DA:' && lv_name ).
+          IF NOT lo_generic IS BOUND.
+            CONTINUE.
+          ENDIF.
+
+          lv_type = determine_type_prefix( lo_generic ).
+
+          lv_regex = lv_scope.
+          REPLACE FIRST OCCURRENCE OF '[:type:]' IN lv_regex WITH lv_type.
+
+          compare( iv_name     = lv_name
+                   iv_regex    = lv_regex
+                   iv_relative = 2 ).
+
+        WHEN sana_tok_word.
+          CASE ls_token-str.
+            WHEN 'IMPORTING'.
+              lv_scope = ms_naming-oo_ooimpo.
+            WHEN 'EXPORTING'.
+              lv_scope = ms_naming-oo_ooexpo.
+            WHEN 'CHANGING'.
+              lv_scope = ms_naming-oo_oochan.
+            WHEN 'RETURNING'.
+              lv_scope = ms_naming-oo_ooretu.
+          ENDCASE.
+      ENDCASE.
+
+    ENDLOOP.
+
+    mo_stack->pop( ).
 
   ENDMETHOD.
 
@@ -355,7 +450,16 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_parameter.
 
-* todo
+    DATA: lv_name  TYPE string,
+          lv_regex TYPE string.
+
+
+    lv_name = get_token_rel( 2 ).
+    lv_regex = ms_naming-proc_pgpara.
+
+    compare( iv_name     = lv_name
+             iv_regex    = lv_regex
+             iv_relative = 2 ).
 
   ENDMETHOD.
 
@@ -370,28 +474,28 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     lv_name = get_token_rel( 2 ).
 
-    lv_regex = |^{ ms_naming-globals_prog }|.
+    lv_regex = ms_naming-globals_prog.
     REPLACE FIRST OCCURRENCE OF '[:nspace:]' IN lv_regex WITH ms_naming-globals_nspace.
 
-    FIND REGEX lv_regex IN lv_name IGNORING CASE.
-    IF sy-subrc <> 0.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = get_include( )
-              p_line         = get_line_rel( 2 )
-              p_column       = get_column_rel( 2 )
-              p_kind         = mv_errty
-              p_test         = myname
-              p_code         = '001'
-              p_param_1      = lv_regex
-              p_param_2      = lv_name ).
-    ENDIF.
+    compare( iv_name     = lv_name
+             iv_regex    = lv_regex
+             iv_relative = 2 ).
 
   ENDMETHOD.
 
 
   METHOD check_select_option.
 
-* todo
+    DATA: lv_name  TYPE string,
+          lv_regex TYPE string.
+
+
+    lv_name = get_token_rel( 2 ).
+    lv_regex = ms_naming-proc_pgselo.
+
+    compare( iv_name     = lv_name
+             iv_regex    = lv_regex
+             iv_relative = 2 ).
 
   ENDMETHOD.
 
@@ -399,6 +503,75 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
   METHOD check_type.
 
 * todo
+
+  ENDMETHOD.
+
+
+  METHOD compare.
+
+    DATA: lv_regex   TYPE string,
+          lv_include TYPE sobj_name.
+
+
+    lv_regex = |^{ iv_regex }|.
+
+    FIND REGEX lv_regex IN iv_name IGNORING CASE.
+    IF sy-subrc <> 0.
+      lv_include = get_include( p_level = statement_wa-level ).
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = lv_include
+              p_line         = get_line_rel( iv_relative )
+              p_column       = get_column_rel( iv_relative )
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '001'
+              p_param_1      = iv_regex
+              p_param_2      = iv_name ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD compiler_resolve.
+
+    DATA: lv_full TYPE string.
+
+
+    lv_full = mo_stack->concatenate( iv_name ).
+
+    ro_generic ?= mo_compiler->get_symbol_entry( lv_full ).
+    IF ro_generic IS INITIAL.
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = get_include( p_level = statement_wa-level )
+              p_line         = get_line_rel( 2 )
+              p_column       = get_column_rel( 2 )
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '002'
+              p_param_1      = lv_full ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD compiler_resolve_class.
+
+    DATA: lv_full TYPE string.
+
+
+    lv_full = mo_stack->concatenate( ).
+
+    ro_class ?= mo_compiler->get_symbol_entry( lv_full ).
+    IF ro_class IS INITIAL.
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = get_include( p_level = statement_wa-level )
+              p_line         = get_line_rel( 2 )
+              p_column       = get_column_rel( 2 )
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '002'
+              p_param_1      = lv_full ).
+    ENDIF.
 
   ENDMETHOD.
 
@@ -425,19 +598,25 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
   METHOD determine_scope_prefix.
 
     IF keyword( ) = 'STATICS'.
-      rv_prefix = |^{ ms_naming-locals_static }|.
-    ELSEIF mo_stack->concatenate( ) CS '\ME:' OR mo_stack->concatenate( ) CS '\FO:'.
-      rv_prefix = |^{ ms_naming-locals_data }|.
-    ELSEIF mo_stack->concatenate( ) CS '\TY:' AND keyword( ) = 'DATA'.
-      rv_prefix = |^{ ms_naming-oo_oodata }|.
-    ELSEIF mo_stack->concatenate( ) CS '\TY:' AND keyword( ) = 'CLASS-DATA'.
-      rv_prefix = |^{ ms_naming-oo_oocdat }|.
-    ELSEIF mo_stack->concatenate( ) CS '\TY:' AND keyword( ) = 'CONSTANTS'.
-      rv_prefix = |^{ ms_naming-oo_oocons }|.
-    ELSEIF mo_stack->concatenate( ) CS '\TY:' AND keyword( ) = 'TYPES'.
-      rv_prefix = |^{ ms_naming-oo_ootype }|.
+      rv_prefix = ms_naming-locals_static.
+    ELSEIF mo_stack->concatenate( ) CS '\ME:'
+        OR mo_stack->concatenate( ) CS '\FO:'
+        OR mo_stack->concatenate( ) CS '\FU:'.
+      rv_prefix = ms_naming-locals_data.
+    ELSEIF mo_stack->concatenate( ) CS '\TY:'
+        AND keyword( ) = 'DATA'.
+      rv_prefix = ms_naming-oo_oodata.
+    ELSEIF mo_stack->concatenate( ) CS '\TY:'
+        AND keyword( ) = 'CLASS-DATA'.
+      rv_prefix = ms_naming-oo_oocdat.
+    ELSEIF mo_stack->concatenate( ) CS '\TY:'
+        AND keyword( ) = 'CONSTANTS'.
+      rv_prefix = ms_naming-oo_oocons.
+    ELSEIF mo_stack->concatenate( ) CS '\TY:'
+        AND keyword( ) = 'TYPES'.
+      rv_prefix = ms_naming-oo_ootype.
     ELSE.
-      rv_prefix = |^{ ms_naming-proc_pgdata }|.
+      rv_prefix = ms_naming-proc_pgdata.
     ENDIF.
 
   ENDMETHOD.
@@ -487,7 +666,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
           WHEN cl_abap_comp_table_type=>index_kind_any.
             rv_prefix = ms_naming-prefix_tany.
           WHEN OTHERS.
-            BREAK-POINT.
+            ASSERT 0 = 1.
         ENDCASE.
       WHEN cl_abap_comp_type=>type_kind_reference.
         lo_type_symbol_ref ?= lo_type_symbol.
@@ -513,10 +692,10 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
           WHEN cl_abap_comp_table_type=>type_kind_elementary.
             rv_prefix = ms_naming-prefix_rdata.
           WHEN OTHERS.
-            BREAK-POINT.
+            ASSERT 0 = 1.
         ENDCASE.
       WHEN OTHERS.
-        BREAK-POINT.
+        ASSERT 0 = 1.
     ENDCASE.
 
   ENDMETHOD.
@@ -541,11 +720,25 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         p_text = 'Bad naming, expected &1, got &2'.         "#EC NOTEXT
       WHEN '002'.
         p_text = 'Unable to resolve &1'.                    "#EC NOTEXT
+      WHEN '003'.
+        p_text = 'Error qualifying tokens'.                 "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
                                  IMPORTING p_text = p_text ).
     ENDCASE.
+
+  ENDMETHOD.
+
+
+  METHOD get_statement.
+
+    DATA: ls_token LIKE LINE OF ref_scan->tokens.
+
+
+    LOOP AT ref_scan->tokens INTO ls_token FROM statement_wa-from TO statement_wa-to.
+      rv_string = |{ rv_string }{ ls_token-str } |.
+    ENDLOOP.
 
   ENDMETHOD.
 
@@ -577,6 +770,37 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD qualify_tokens.
+
+    INSERT LINES OF ref_scan->tokens FROM statement_wa-from
+      TO statement_wa-to INTO TABLE rt_tokens.
+
+    CALL FUNCTION 'RS_QUALIFY_ABAP_TOKENS_STR'
+      EXPORTING
+        statement_type        = statement_wa-type
+        index_from            = 1
+        index_to              = lines( rt_tokens )
+      CHANGING
+        stokesx_tab           = rt_tokens
+      EXCEPTIONS
+        error_load_pattern    = 1
+        unknown_keyword       = 2
+        no_matching_statement = 3
+        meaningless_statement = 4
+        OTHERS                = 5.
+    IF sy-subrc <> 0.
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = get_include( p_level = statement_wa-level )
+              p_line         = get_line_rel( 2 )
+              p_column       = get_column_rel( 2 )
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '003' ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
   METHOD set_defaults.
 
     ms_naming-prefix_elemen = 'V'.
@@ -602,34 +826,34 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ms_naming-globals_clasa  = '[:nspace:]CL_'.
     ms_naming-globals_intf   = '[:nspace:]IF_'.
 
-    ms_naming-locals_data   = 'L[:type:]_'.
-    ms_naming-locals_static = 'S[:type:]_'.
+    ms_naming-locals_data   = 'L[:type:]_' ##NO_TEXT.
+    ms_naming-locals_static = 'S[:type:]_' ##NO_TEXT.
     ms_naming-locals_fsymbo = '<L[:type:]_'.
     ms_naming-locals_lconst = 'LC[:type:]_'.
     ms_naming-locals_ltypes = ''.
 
-    ms_naming-proc_fimpor = 'I[:type:]_'.
-    ms_naming-proc_fexpor = 'E[:type:]_'.
-    ms_naming-proc_fchang = 'C[:type:]_'.
-    ms_naming-proc_ftable = 'T[:type:]_'.
-    ms_naming-proc_fousin = 'P[:type:]_'.
-    ms_naming-proc_fochan = 'C[:type:]_'.
-    ms_naming-proc_fotabl = 'T[:type:]_'.
-    ms_naming-proc_pgdata = 'G[:type:]_'.
+    ms_naming-proc_fimpor = 'I[:type:]_' ##NO_TEXT.
+    ms_naming-proc_fexpor = 'E[:type:]_' ##NO_TEXT.
+    ms_naming-proc_fchang = 'C[:type:]_' ##NO_TEXT.
+    ms_naming-proc_ftable = 'T[:type:]_' ##NO_TEXT.
+    ms_naming-proc_fousin = 'P[:type:]_' ##NO_TEXT.
+    ms_naming-proc_fochan = 'C[:type:]_' ##NO_TEXT.
+    ms_naming-proc_fotabl = 'T[:type:]_' ##NO_TEXT.
+    ms_naming-proc_pgdata = 'G[:type:]_' ##NO_TEXT.
     ms_naming-proc_pgfisy = '<G[:type:]_'.
     ms_naming-proc_pgcons = 'GC_'.
     ms_naming-proc_pgtype = ''.
     ms_naming-proc_pgselo = 'S_'.
     ms_naming-proc_pgpara = 'P_'.
 
-    ms_naming-oo_oodata = 'M[:type:]_'.
-    ms_naming-oo_oocdat = 'G[:type:]_'.
+    ms_naming-oo_oodata = 'M[:type:]_' ##NO_TEXT.
+    ms_naming-oo_oocdat = 'G[:type:]_' ##NO_TEXT.
     ms_naming-oo_oocons = 'C_'.
     ms_naming-oo_ootype = ''.
-    ms_naming-oo_ooimpo = 'I[:type:]_'.
-    ms_naming-oo_ooexpo = 'E[:type:]_'.
-    ms_naming-oo_oochan = 'C[:type:]_'.
-    ms_naming-oo_ooretu = 'R[:type:]_'.
+    ms_naming-oo_ooimpo = 'I[:type:]_' ##NO_TEXT.
+    ms_naming-oo_ooexpo = 'E[:type:]_' ##NO_TEXT.
+    ms_naming-oo_oochan = 'C[:type:]_' ##NO_TEXT.
+    ms_naming-oo_ooretu = 'R[:type:]_' ##NO_TEXT.
     ms_naming-oo_oolcla = 'LCL_'.
     ms_naming-oo_ooltcl = 'LTCL_'.
     ms_naming-oo_oolint = 'LIF_'.
