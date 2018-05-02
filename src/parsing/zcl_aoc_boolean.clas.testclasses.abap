@@ -83,7 +83,8 @@ CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL
       test043 FOR TESTING,
       test044 FOR TESTING,
       test045 FOR TESTING,
-      test046 FOR TESTING.
+      test046 FOR TESTING,
+      test047 FOR TESTING.
 
 ENDCLASS.       "ltcl_Test
 
@@ -564,6 +565,16 @@ CLASS ltcl_parse IMPLEMENTATION.
       exp = 'COMPARE' ).
   ENDMETHOD.
 
+  METHOD test047.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF SY-DATUM + 1 > + SY-DATUM.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
 ENDCLASS.
 
 CLASS ltcl_remove_strings DEFINITION DEFERRED.
@@ -835,7 +846,8 @@ CLASS ltcl_remove_calculations DEFINITION FOR TESTING DURATION SHORT RISK LEVEL 
       test01 FOR TESTING,
       test02 FOR TESTING,
       test03 FOR TESTING,
-      test04 FOR TESTING.
+      test04 FOR TESTING,
+      test05 FOR TESTING.
 
 ENDCLASS.
 
@@ -878,6 +890,11 @@ CLASS ltcl_remove_calculations IMPLEMENTATION.
   METHOD test04.
     test( iv_code = 'bar * ( moo + 1 )'
           iv_exp  = 'bar' ).
+  ENDMETHOD.
+
+  METHOD test05.
+    test( iv_code = 'IF SY-DATUM + 1 > + SY-DATUM'
+          iv_exp  = 'IF SY-DATUM > + SY-DATUM' ).
   ENDMETHOD.
 
 ENDCLASS.
