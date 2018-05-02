@@ -19,6 +19,18 @@ CLASS zcl_aoc_check_69 DEFINITION
         REDEFINITION .
 protected section.
 
+  methods ANALYZE_STATEMENTS
+    importing
+      !IT_STATEMENTS type SSTMNT_TAB .
+  methods CHECK_AT .
+  methods DETERMINE_SCOPE_PREFIX
+    returning
+      value(RV_PREFIX) type STRING .
+  methods REMOVE_VALUE
+    importing
+      !IV_INPUT type STRING
+    returning
+      value(RV_OUTPUT) type STRING .
   methods QUALIFY_TOKENS
     returning
       value(RT_TOKENS) type STOKESX_TAB .
@@ -28,9 +40,6 @@ protected section.
   methods DETERMINE_TYPE_PREFIX
     importing
       !IO_GENERIC type ref to CL_ABAP_COMP_DATA_GENERIC
-    returning
-      value(RV_PREFIX) type STRING .
-  methods DETERMINE_SCOPE_PREFIX
     returning
       value(RV_PREFIX) type STRING .
   methods COMPARE
@@ -68,6 +77,7 @@ private section.
   data MO_COMPILER type ref to CL_ABAP_COMPILER .
   data MO_STACK type ref to LCL_STACK .
   data MV_BEGIN type ABAP_BOOL .
+  data MV_AT type STRING .
 ENDCLASS.
 
 
@@ -75,23 +85,32 @@ ENDCLASS.
 CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
 
-  METHOD check.
+  METHOD analyze_statements.
 
-* abapOpenChecks
-* https://github.com/larshp/abapOpenChecks
-* MIT License
+    DATA: lv_define  TYPE abap_bool,
+          lv_keyword TYPE string.
 
-    CREATE OBJECT mo_stack.
-
-    mo_compiler = cl_abap_compiler=>create( program_name ).
 
     LOOP AT it_statements INTO statement_wa.
+      CHECK statement_wa-from <= statement_wa-to.
 
-      CASE keyword( ).
-        WHEN 'REPORT'.
+      lv_keyword = keyword( ).
+      IF lv_define = abap_true.
+        IF lv_keyword = 'END-OF-DEFINITION'.
+          lv_define = abap_false.
+        ENDIF.
+        CONTINUE.
+      ENDIF.
+
+      CASE lv_keyword.
+        WHEN 'DEFINE'.
+          lv_define = abap_true.
+        WHEN 'REPORT' OR 'PROGRAM'.
           check_report( ).
         WHEN 'FUNCTION-POOL'.
           check_function_pool( ).
+        WHEN 'AT'.
+          check_at( ).
         WHEN 'TYPES'.
           check_type( ).
         WHEN 'DATA' OR 'RANGES' OR 'STATICS' OR 'CLASS-DATA'.
@@ -116,15 +135,89 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
           check_method_definition( ).
         WHEN 'METHOD'.
           check_method_implementation( ).
-        WHEN 'ENDCLASS' OR 'ENDMETHOD' OR 'ENDFORM'.
+        WHEN 'ENDCLASS' OR 'ENDMETHOD' OR 'ENDFORM' OR 'ENDINTERFACE'.
           mo_stack->pop( ).
         WHEN 'ENDFUNCTION'.
-          mo_stack->set( '\PR:' && 'SAPL' && object_name ).
+          IF object_type = 'FUGR'.
+            mo_stack->set( '\PR:SAPL' && object_name ).
+          ELSE.
+            mo_stack->set( '\PR:' && object_name ).
+          ENDIF.
         WHEN OTHERS.
           check_inline_defs( ).
       ENDCASE.
-
     ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD check.
+
+* abapOpenChecks
+* https://github.com/larshp/abapOpenChecks
+* MIT License
+
+    DATA: lv_subrc LIKE sy-subrc,
+          lv_subc  TYPE reposrc-subc.
+
+
+    IF object_type = 'WDYN'.
+      RETURN. " todo
+    ELSEIF object_type = 'PROG'.
+      SELECT SINGLE subc FROM reposrc INTO lv_subc
+        WHERE progname = object_name AND r3state = 'A'.
+      IF sy-subrc <> 0 OR lv_subc = 'I' OR lv_subc = 'S'.
+        RETURN.
+      ENDIF.
+    ENDIF.
+
+    CREATE OBJECT mo_stack.
+    mo_compiler = cl_abap_compiler=>create( program_name ).
+
+    mo_compiler->get_check_infos( IMPORTING p_subrc = lv_subrc ).
+    IF lv_subrc <> 0.
+      inform( p_kind = mv_errty
+              p_test = myname
+              p_code = '005' ).
+      RETURN.
+    ENDIF.
+
+    analyze_statements( it_statements ).
+
+  ENDMETHOD.
+
+
+  METHOD check_at.
+
+    IF get_token_rel( 2 ) <> 'SELECTION-SCREEN'.
+      RETURN.
+    ENDIF.
+
+    CASE get_token_rel( 3 ).
+      WHEN 'OUTPUT'.
+        mv_at = cl_abap_compiler=>tag_at_selection_screen_output.
+      WHEN 'ON'.
+        CASE get_token_rel( 4 ).
+          WHEN 'END'.
+            mv_at = |{ cl_abap_compiler=>tag_at_selection_screen_on_end }:{ get_token_rel( 6 ) }|.
+          WHEN 'BLOCK'.
+            mv_at = |{ cl_abap_compiler=>tag_at_selection_screen_block }:{ get_token_rel( 5 ) }|.
+          WHEN 'RADIOBUTTON'.
+            mv_at = |{ cl_abap_compiler=>tag_at_selection_screen_radio }:{ get_token_rel( 6 ) }|.
+          WHEN 'HELP-REQUEST'.
+            mv_at = |{ cl_abap_compiler=>tag_at_selection_screen_help }:{ get_token_rel( 6 ) }|.
+          WHEN 'VALUE-REQUEST'.
+            mv_at = |{ cl_abap_compiler=>tag_at_selection_screen_value }:{ get_token_rel( 6 ) }|.
+          WHEN 'EXIT-COMMAND'.
+            mv_at = cl_abap_compiler=>tag_at_selection_screen_exit.
+          WHEN OTHERS.
+            mv_at = |{ cl_abap_compiler=>tag_at_selection_screen_on }:{ get_token_rel( 4 ) }|.
+        ENDCASE.
+      WHEN OTHERS.
+        mv_at = cl_abap_compiler=>tag_at_selection_screen.
+    ENDCASE.
+
+    mv_at = '\' && mv_at.
 
   ENDMETHOD.
 
@@ -157,6 +250,9 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ENDIF.
 
     lo_super = compiler_resolve_class( ).
+    IF lo_super IS INITIAL.
+      RETURN.
+    ENDIF.
     WHILE NOT lo_super->super_class IS INITIAL.
       lo_super = lo_super->super_class.
     ENDWHILE.
@@ -200,9 +296,12 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     lv_name = get_token_rel( 2 ).
 
-    IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF'.
+    IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = abap_false.
       lv_name = get_token_rel( 4 ).
       mv_begin = abap_true.
+      IF get_token_rel( 4 ) = 'COMMON' AND get_token_rel( 5 ) = 'PART'.
+        RETURN.
+      ENDIF.
     ELSEIF lv_name = 'END' AND get_token_rel( 3 ) = 'OF'.
       mv_begin = abap_false.
       RETURN.
@@ -251,6 +350,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
           ls_token   LIKE LINE OF lt_tokens.
 
 
+    CLEAR mv_at.
+
     lv_name = get_token_rel( 2 ).
 
     mo_stack->push( '\FO:' && lv_name ).
@@ -259,7 +360,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     LOOP AT lt_tokens INTO ls_token.
       CASE ls_token-type.
         WHEN sana_tok_field_def.
-          lv_name = ls_token-str.
+          lv_name = remove_value( ls_token-str ).
           lo_generic = compiler_resolve( '\DA:' && lv_name ).
           IF NOT lo_generic IS BOUND.
             CONTINUE.
@@ -334,6 +435,11 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
           lv_regex TYPE string.
 
 
+    CASE get_token_rel( 3 ).
+      WHEN 'LOAD' OR 'DEFERRED'.
+        RETURN.
+    ENDCASE.
+
     lv_name = get_token_rel( 2 ).
 
     IF object_type = 'INTF' AND lv_name = object_name.
@@ -368,6 +474,9 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
 
     lo_super = compiler_resolve_class( ).
+    IF lo_super IS INITIAL.
+      RETURN.
+    ENDIF.
     WHILE NOT lo_super->super_class IS INITIAL.
       lo_super = lo_super->super_class.
     ENDWHILE.
@@ -388,13 +497,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     LOOP AT lt_tokens INTO ls_token.
       CASE ls_token-type.
         WHEN sana_tok_field_def.
-          lv_name = ls_token-str.
-
-          IF lv_name CP 'VALUE(*)'.
-            lv_name = lv_name+6.
-            TRANSLATE lv_name USING ') '.
-            lv_name = condense( lv_name ).
-          ENDIF.
+          lv_name = remove_value( ls_token-str ).
 
           lo_generic = compiler_resolve( '\DA:' && lv_name ).
           IF NOT lo_generic IS BOUND.
@@ -540,6 +643,12 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     lv_full = mo_stack->concatenate( iv_name ).
 
     ro_generic ?= mo_compiler->get_symbol_entry( lv_full ).
+
+    IF ro_generic IS INITIAL AND NOT mv_at IS INITIAL.
+      lv_full = mo_stack->concatenate( mv_at && iv_name ).
+      ro_generic ?= mo_compiler->get_symbol_entry( lv_full ).
+    ENDIF.
+
     IF ro_generic IS INITIAL.
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = get_include( p_level = statement_wa-level )
@@ -569,7 +678,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
               p_column       = get_column_rel( 2 )
               p_kind         = mv_errty
               p_test         = myname
-              p_code         = '002'
+              p_code         = '004'
               p_param_1      = lv_full ).
     ENDIF.
 
@@ -689,10 +798,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
                 rv_prefix = ms_naming-prefix_rclass.
             ENDCASE.
 
-          WHEN cl_abap_comp_table_type=>type_kind_elementary.
-            rv_prefix = ms_naming-prefix_rdata.
           WHEN OTHERS.
-            ASSERT 0 = 1.
+            rv_prefix = ms_naming-prefix_rdata.
         ENDCASE.
       WHEN OTHERS.
         ASSERT 0 = 1.
@@ -722,6 +829,10 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         p_text = 'Unable to resolve &1'.                    "#EC NOTEXT
       WHEN '003'.
         p_text = 'Error qualifying tokens'.                 "#EC NOTEXT
+      WHEN '004'.
+        p_text = 'Unable to resolve &1'.                    "#EC NOTEXT
+      WHEN '005'.
+        p_text = 'Syntax error'.                            "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
@@ -796,6 +907,19 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
               p_kind         = mv_errty
               p_test         = myname
               p_code         = '003' ).
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD remove_value.
+
+    rv_output = iv_input.
+
+    IF rv_output CP 'VALUE(*)'.
+      rv_output = rv_output+6.
+      TRANSLATE rv_output USING ') '.
+      rv_output = condense( rv_output ).
     ENDIF.
 
   ENDMETHOD.
