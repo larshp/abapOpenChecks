@@ -254,7 +254,29 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
 
         CASE ls_token-str.
           WHEN '+' OR '-' OR '*' OR '/' OR 'MOD' OR 'DIV' OR 'BIT-AND' OR 'BIT-OR' OR '&&'.
-            IF ls_next-str <> '('.
+            IF ls_next-str <> '('
+              AND ls_prev-str <> '='
+              AND ls_prev-str <> '<>'
+              AND ls_prev-str <> '<'
+              AND ls_prev-str <> 'GT'
+              AND ls_prev-str <> '>'
+              AND ls_prev-str <> 'LT'
+              AND ls_prev-str <> '>='
+              AND ls_prev-str <> 'GE'
+              AND ls_prev-str <> 'NS'
+              AND ls_prev-str <> '<='
+              AND ls_prev-str <> 'LE'
+              AND ls_prev-str <> 'NE'
+              AND ls_prev-str <> 'NA'
+              AND ls_prev-str <> 'CO'
+              AND ls_prev-str <> 'CA'
+              AND ls_prev-str <> 'CS'
+              AND ls_prev-str <> 'CN'
+              AND ls_prev-str <> 'IN'
+              AND ls_prev-str <> 'CP'
+              AND ls_prev-str <> 'NP'
+              AND ls_prev-str <> 'IS'
+              AND ls_prev-str <> 'EQ'.
               DO 2 TIMES.
                 DELETE lt_tokens INDEX lv_index.
               ENDDO.
