@@ -23,9 +23,6 @@ protected section.
     importing
       !IT_STATEMENTS type SSTMNT_TAB .
   methods CHECK_AT .
-  methods DETERMINE_SCOPE_PREFIX
-    returning
-      value(RV_PREFIX) type STRING .
   methods REMOVE_VALUE
     importing
       !IV_INPUT type STRING
@@ -42,22 +39,29 @@ protected section.
       !IO_GENERIC type ref to CL_ABAP_COMP_DATA_GENERIC
     returning
       value(RV_PREFIX) type STRING .
-  methods COMPARE
+  methods CHECK_FM_PARAMETERS
     importing
-      !IV_NAME type STRING
-      !IV_REGEX type STRING
-      !IV_RELATIVE type I .
+      !IT_PARAMETERS type RSFB_PARA
+      !IV_PREFIX type STRING .
+  methods DETERMINE_SCOPE_PREFIX
+    returning
+      value(RV_PREFIX) type STRING .
+  methods COMPILER_RESOLVE_CLASS
+    returning
+      value(RO_CLASS) type ref to CL_ABAP_COMP_CLASS .
   methods COMPILER_RESOLVE
     importing
       !IV_NAME type STRING
     returning
       value(RO_GENERIC) type ref to CL_ABAP_COMP_DATA_GENERIC .
-  methods COMPILER_RESOLVE_CLASS
-    returning
-      value(RO_CLASS) type ref to CL_ABAP_COMP_CLASS .
-  methods CHECK_CLASS .
-  methods CHECK_METHOD_DEFINITION .
+  methods COMPARE
+    importing
+      !IV_NAME type STRING
+      !IV_REGEX type STRING
+      !IV_RELATIVE type I .
   methods CHECK_METHOD_IMPLEMENTATION .
+  methods CHECK_METHOD_DEFINITION .
+  methods CHECK_CLASS .
   methods CHECK_CONSTANT .
   methods CHECK_DATA .
   methods CHECK_FIELD_SYMBOL .
@@ -339,6 +343,35 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD check_fm_parameters.
+
+    DATA: lv_name      TYPE string,
+          lv_regex     TYPE string,
+          lo_generic   TYPE REF TO cl_abap_comp_data_generic,
+          ls_parameter LIKE LINE OF it_parameters.
+
+
+    LOOP AT it_parameters INTO ls_parameter.
+      lv_regex = iv_prefix.
+      lv_name = ls_parameter-parameter.
+
+      lo_generic = compiler_resolve( '\DA:' && lv_name ).
+      IF lo_generic IS INITIAL.
+        CONTINUE.
+      ENDIF.
+
+      REPLACE FIRST OCCURRENCE OF '[:type:]'
+        IN lv_regex
+        WITH determine_type_prefix( lo_generic ).
+
+      compare( iv_name     = lv_name
+               iv_regex    = lv_regex
+               iv_relative = 2 ).
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
   METHOD check_form.
 
     DATA: lt_tokens  TYPE stokesx_tab,
@@ -391,13 +424,46 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_function.
 
-    DATA: lv_name TYPE string.
+    DATA: lv_name      TYPE eu_lname,
+          ls_interface TYPE rsfbintfv,
+          ls_parameter TYPE rsfbpara.
 
 
     lv_name = get_token_rel( 2 ).
     mo_stack->set( '\FU:' && lv_name ).
 
-* todo, check function module parameter names
+
+    cl_fb_function_utility=>meth_get_interface(
+      EXPORTING
+        im_name             = lv_name
+      IMPORTING
+        ex_interface        = ls_interface
+      EXCEPTIONS
+        error_occured       = 1
+        object_not_existing = 2
+        OTHERS              = 3 ).
+    IF sy-subrc <> 0.
+* todo, error
+      RETURN.
+    ENDIF.
+
+* todo, check if the signature should be skipped
+
+    check_fm_parameters(
+      it_parameters = ls_interface-import
+      iv_prefix     = ms_naming-proc_fimpor ).
+
+    check_fm_parameters(
+      it_parameters = ls_interface-export
+      iv_prefix     = ms_naming-proc_fexpor ).
+
+    check_fm_parameters(
+      it_parameters = ls_interface-change
+      iv_prefix     = ms_naming-proc_fchang ).
+
+    check_fm_parameters(
+      it_parameters = ls_interface-tables
+      iv_prefix     = ms_naming-proc_ftable ).
 
   ENDMETHOD.
 
