@@ -19,30 +19,6 @@ CLASS zcl_aoc_check_69 DEFINITION
         REDEFINITION .
 protected section.
 
-  methods ANALYZE_STATEMENTS
-    importing
-      !IT_STATEMENTS type SSTMNT_TAB .
-  methods CHECK_AT .
-  methods REMOVE_VALUE
-    importing
-      !IV_INPUT type STRING
-    returning
-      value(RV_OUTPUT) type STRING .
-  methods QUALIFY_TOKENS
-    returning
-      value(RT_TOKENS) type STOKESX_TAB .
-  methods GET_STATEMENT
-    returning
-      value(RV_STRING) type STRING .
-  methods DETERMINE_TYPE_PREFIX
-    importing
-      !IO_GENERIC type ref to CL_ABAP_COMP_DATA_GENERIC
-    returning
-      value(RV_PREFIX) type STRING .
-  methods CHECK_FM_PARAMETERS
-    importing
-      !IT_PARAMETERS type RSFB_PARA
-      !IV_PREFIX type STRING .
   methods DETERMINE_SCOPE_PREFIX
     returning
       value(RV_PREFIX) type STRING .
@@ -59,8 +35,43 @@ protected section.
       !IV_NAME type STRING
       !IV_REGEX type STRING
       !IV_RELATIVE type I .
-  methods CHECK_METHOD_IMPLEMENTATION .
+  methods GET_STATEMENT
+    returning
+      value(RV_STRING) type STRING .
+  methods QUALIFY_TOKENS
+    returning
+      value(RT_TOKENS) type STOKESX_TAB .
+  methods REMOVE_VALUE
+    importing
+      !IV_INPUT type STRING
+    returning
+      value(RV_OUTPUT) type STRING .
+  methods SKIP_FM_PARAMETERS
+    importing
+      !IS_PARAMETERS type RSFBINTFV
+    returning
+      value(RV_SKIP) type ABAP_BOOL .
+  methods SKIP_FM_PARAMETERS_CHECK
+    importing
+      !IS_PARAMETERS type RSFBINTFV
+      !IS_CHECK type RSFBINTFV
+    returning
+      value(RV_SKIP) type ABAP_BOOL .
+  methods DETERMINE_TYPE_PREFIX
+    importing
+      !IO_GENERIC type ref to CL_ABAP_COMP_DATA_GENERIC
+    returning
+      value(RV_PREFIX) type STRING .
+  methods CHECK_FM_PARAMETERS
+    importing
+      !IT_PARAMETERS type RSFB_PARA
+      !IV_PREFIX type STRING .
+  methods CHECK_AT .
+  methods ANALYZE_STATEMENTS
+    importing
+      !IT_STATEMENTS type SSTMNT_TAB .
   methods CHECK_METHOD_DEFINITION .
+  methods CHECK_METHOD_IMPLEMENTATION .
   methods CHECK_CLASS .
   methods CHECK_CONSTANT .
   methods CHECK_DATA .
@@ -338,7 +349,34 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_field_symbol.
 
-* todo
+    DATA: lo_generic TYPE REF TO cl_abap_comp_data_generic,
+          lv_regex   TYPE string,
+          lv_offset  TYPE string,
+          lv_name    TYPE string.
+
+
+    lv_name = get_token_rel( 2 ).
+
+    lo_generic = compiler_resolve( '\DA:' && lv_name ).
+    IF lo_generic IS INITIAL.
+      RETURN.
+    ENDIF.
+
+    IF mo_stack->concatenate( ) CS '\ME:'
+        OR mo_stack->concatenate( ) CS '\FO:'
+        OR mo_stack->concatenate( ) CS '\FU:'.
+      lv_regex = ms_naming-locals_fsymbo.
+    ELSE.
+      lv_regex = ms_naming-proc_pgfisy.
+    ENDIF.
+
+    REPLACE FIRST OCCURRENCE OF '[:type:]'
+      IN lv_regex
+      WITH determine_type_prefix( lo_generic ).
+
+    compare( iv_name     = lv_name
+             iv_regex    = lv_regex
+             iv_relative = 2 ).
 
   ENDMETHOD.
 
@@ -443,11 +481,15 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         object_not_existing = 2
         OTHERS              = 3 ).
     IF sy-subrc <> 0.
-* todo, error
+      inform( p_kind = mv_errty
+              p_test = myname
+              p_code = '006' ).
       RETURN.
     ENDIF.
 
-* todo, check if the signature should be skipped
+    IF skip_fm_parameters( ls_interface ) = abap_true.
+      RETURN.
+    ENDIF.
 
     check_fm_parameters(
       it_parameters = ls_interface-import
@@ -824,7 +866,12 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     CASE lo_type_symbol->type_kind.
       WHEN cl_abap_comp_type=>type_kind_elementary.
-        rv_prefix = ms_naming-prefix_elemen.
+        CASE lo_type_symbol->full_name.
+          WHEN '\PT:ANY' OR '\PT:DATA'.
+            rv_prefix = ms_naming-prefix_generi.
+          WHEN OTHERS.
+            rv_prefix = ms_naming-prefix_elemen.
+        ENDCASE.
       WHEN cl_abap_comp_type=>type_kind_structure OR cl_abap_comp_type=>type_kind_ddic_dbtab.
         rv_prefix = ms_naming-prefix_struct.
       WHEN cl_abap_comp_type=>type_kind_table.
@@ -899,6 +946,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         p_text = 'Unable to resolve &1'.                    "#EC NOTEXT
       WHEN '005'.
         p_text = 'Syntax error'.                            "#EC NOTEXT
+      WHEN '006'.
+        p_text = 'Error reading FM parameters'.             "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
@@ -1019,7 +1068,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ms_naming-locals_data   = 'L[:type:]_' ##NO_TEXT.
     ms_naming-locals_static = 'S[:type:]_' ##NO_TEXT.
     ms_naming-locals_fsymbo = '<L[:type:]_'.
-    ms_naming-locals_lconst = 'LC[:type:]_'.
+    ms_naming-locals_lconst = 'LC_'.
     ms_naming-locals_ltypes = ''.
 
     ms_naming-proc_fimpor = 'I[:type:]_' ##NO_TEXT.
@@ -1052,6 +1101,88 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ms_naming-set_cfunc  = abap_true.
     ms_naming-set_idocfm = abap_true.
     ms_naming-set_bwext  = abap_true.
+
+  ENDMETHOD.
+
+
+  METHOD skip_fm_parameters.
+
+    DATA: ls_check     TYPE rsfbintfv,
+          ls_parameter TYPE rsfbpara.
+
+
+    DEFINE _append.
+      ls_parameter-parameter = &2.
+      APPEND ls_parameter TO ls_check-&1.
+    END-OF-DEFINITION.
+
+* idoc processing function module
+    CLEAR ls_check.
+    _append import 'INPUT_METHOD'.
+    _append import 'MASS_PROCESSING'.
+    _append export 'WORKFLOW_RESULT'.
+    _append export 'APPLICATION_VARIABLE'.
+    _append export 'IN_UPDATE_TASK'.
+    _append export 'CALL_TRANSACTION_DONE'.
+    _append tables 'IDOC_CONTRL'.
+    _append tables 'IDOC_DATA'.
+    _append tables 'IDOC_STATUS'.
+    _append tables 'RETURN_VARIABLES'.
+    _append tables 'SERIALIZATION_INFO'.
+
+    rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                        is_check      = ls_check ).
+    IF rv_skip = abap_true.
+      RETURN.
+    ENDIF.
+
+* add more here
+
+  ENDMETHOD.
+
+
+  METHOD skip_fm_parameters_check.
+
+    DATA: ls_parameter LIKE LINE OF is_check-import.
+
+
+    IF lines( is_parameters-import ) <> lines( is_check-import )
+        OR lines( is_parameters-export ) <> lines( is_check-export )
+        OR lines( is_parameters-change ) <> lines( is_check-change )
+        OR lines( is_parameters-tables ) <> lines( is_check-tables ).
+      RETURN.
+    ENDIF.
+
+    LOOP AT is_check-import INTO ls_parameter.
+      READ TABLE is_parameters-import WITH KEY parameter = ls_parameter-parameter
+        TRANSPORTING NO FIELDS.
+      IF sy-subrc <> 0.
+        RETURN.
+      ENDIF.
+    ENDLOOP.
+    LOOP AT is_check-export INTO ls_parameter.
+      READ TABLE is_parameters-export WITH KEY parameter = ls_parameter-parameter
+        TRANSPORTING NO FIELDS.
+      IF sy-subrc <> 0.
+        RETURN.
+      ENDIF.
+    ENDLOOP.
+    LOOP AT is_check-change INTO ls_parameter.
+      READ TABLE is_parameters-change WITH KEY parameter = ls_parameter-parameter
+        TRANSPORTING NO FIELDS.
+      IF sy-subrc <> 0.
+        RETURN.
+      ENDIF.
+    ENDLOOP.
+    LOOP AT is_check-tables INTO ls_parameter.
+      READ TABLE is_parameters-tables WITH KEY parameter = ls_parameter-parameter
+        TRANSPORTING NO FIELDS.
+      IF sy-subrc <> 0.
+        RETURN.
+      ENDIF.
+    ENDLOOP.
+
+    rv_skip = abap_true.
 
   ENDMETHOD.
 ENDCLASS.
