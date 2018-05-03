@@ -66,9 +66,21 @@
     </item>
     <item>
      <ID>I</ID>
+     <KEY>FSI</KEY>
+     <ENTRY>Skip special function module signatures</ENTRY>
+     <LENGTH>78</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
      <KEY>FUG</KEY>
      <ENTRY>Function Modules</ENTRY>
      <LENGTH>26</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>GEX</KEY>
+     <ENTRY>Global exception classes</ENTRY>
+     <LENGTH>48</LENGTH>
     </item>
     <item>
      <ID>I</ID>
@@ -120,6 +132,18 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_BWEXT</KEY>
+     <ENTRY>1</ENTRY>
+     <LENGTH>9</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_CFUNC</KEY>
+     <ENTRY>1</ENTRY>
+     <LENGTH>9</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_CLAS</KEY>
      <ENTRY>1</ENTRY>
      <LENGTH>9</LENGTH>
@@ -151,6 +175,18 @@
     <item>
      <ID>S</ID>
      <KEY>P_ELEMEN</KEY>
+     <ENTRY>1</ENTRY>
+     <LENGTH>9</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_ERRTY</KEY>
+     <ENTRY>1</ENTRY>
+     <LENGTH>9</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_EXCPAR</KEY>
      <ENTRY>1</ENTRY>
      <LENGTH>9</LENGTH>
     </item>
@@ -211,6 +247,12 @@
     <item>
      <ID>S</ID>
      <KEY>P_GENERI</KEY>
+     <ENTRY>1</ENTRY>
+     <LENGTH>9</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_IDOCFM</KEY>
      <ENTRY>1</ENTRY>
      <LENGTH>9</LENGTH>
     </item>

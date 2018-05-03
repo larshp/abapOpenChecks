@@ -19,22 +19,53 @@ CLASS zcl_aoc_check_69 DEFINITION
         REDEFINITION .
 protected section.
 
-  methods DETERMINE_SCOPE_PREFIX
+  methods IS_GLOBAL_EXCEPTION_CLASS
     returning
-      value(RV_PREFIX) type STRING .
-  methods COMPILER_RESOLVE_CLASS
-    returning
-      value(RO_CLASS) type ref to CL_ABAP_COMP_CLASS .
-  methods COMPILER_RESOLVE
+      value(RV_BOOL) type ABAP_BOOL .
+  methods ANALYZE_STATEMENTS
     importing
-      !IV_NAME type STRING
-    returning
-      value(RO_GENERIC) type ref to CL_ABAP_COMP_DATA_GENERIC .
+      !IT_STATEMENTS type SSTMNT_TAB .
+  methods CHECK_AT .
+  methods CHECK_CLASS .
+  methods CHECK_CONSTANT .
+  methods CHECK_DATA .
+  methods CHECK_FIELD_SYMBOL .
+  methods CHECK_FM_PARAMETERS
+    importing
+      !IT_PARAMETERS type RSFB_PARA
+      !IV_PREFIX type STRING .
+  methods CHECK_FORM .
+  methods CHECK_FUNCTION .
+  methods CHECK_FUNCTION_POOL .
+  methods CHECK_INLINE_DEFS .
+  methods CHECK_INTERFACE .
+  methods CHECK_METHOD_DEFINITION .
+  methods CHECK_METHOD_IMPLEMENTATION .
+  methods CHECK_PARAMETER .
+  methods CHECK_REPORT .
+  methods CHECK_SELECT_OPTION .
+  methods CHECK_TYPE .
   methods COMPARE
     importing
       !IV_NAME type STRING
       !IV_REGEX type STRING
       !IV_RELATIVE type I .
+  methods COMPILER_RESOLVE
+    importing
+      !IV_NAME type STRING
+    returning
+      value(RO_GENERIC) type ref to CL_ABAP_COMP_DATA_GENERIC .
+  methods COMPILER_RESOLVE_CLASS
+    returning
+      value(RO_CLASS) type ref to CL_ABAP_COMP_CLASS .
+  methods DETERMINE_SCOPE_PREFIX
+    returning
+      value(RV_PREFIX) type STRING .
+  methods DETERMINE_TYPE_PREFIX
+    importing
+      !IO_GENERIC type ref to CL_ABAP_COMP_DATA_GENERIC
+    returning
+      value(RV_PREFIX) type STRING .
   methods GET_STATEMENT
     returning
       value(RV_STRING) type STRING .
@@ -46,6 +77,7 @@ protected section.
       !IV_INPUT type STRING
     returning
       value(RV_OUTPUT) type STRING .
+  methods SET_DEFAULTS .
   methods SKIP_FM_PARAMETERS
     importing
       !IS_PARAMETERS type RSFBINTFV
@@ -57,35 +89,6 @@ protected section.
       !IS_CHECK type RSFBINTFV
     returning
       value(RV_SKIP) type ABAP_BOOL .
-  methods DETERMINE_TYPE_PREFIX
-    importing
-      !IO_GENERIC type ref to CL_ABAP_COMP_DATA_GENERIC
-    returning
-      value(RV_PREFIX) type STRING .
-  methods CHECK_FM_PARAMETERS
-    importing
-      !IT_PARAMETERS type RSFB_PARA
-      !IV_PREFIX type STRING .
-  methods CHECK_AT .
-  methods ANALYZE_STATEMENTS
-    importing
-      !IT_STATEMENTS type SSTMNT_TAB .
-  methods CHECK_METHOD_DEFINITION .
-  methods CHECK_METHOD_IMPLEMENTATION .
-  methods CHECK_CLASS .
-  methods CHECK_CONSTANT .
-  methods CHECK_DATA .
-  methods CHECK_FIELD_SYMBOL .
-  methods CHECK_FORM .
-  methods CHECK_FUNCTION .
-  methods CHECK_FUNCTION_POOL .
-  methods CHECK_INLINE_DEFS .
-  methods CHECK_INTERFACE .
-  methods CHECK_PARAMETER .
-  methods CHECK_REPORT .
-  methods CHECK_SELECT_OPTION .
-  methods CHECK_TYPE .
-  methods SET_DEFAULTS .
 private section.
 
   data MS_NAMING type ZAOC_NAMING .
@@ -177,7 +180,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
 
     IF object_type = 'WDYN'.
-      RETURN. " todo
+      RETURN. " todo, WDYN
     ELSEIF object_type = 'PROG'.
       SELECT SINGLE subc FROM reposrc INTO lv_subc
         WHERE progname = object_name AND r3state = 'A'.
@@ -296,7 +299,37 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_constant.
 
-* todo
+    DATA: lv_regex  TYPE string,
+          lv_offset TYPE string,
+          lv_name   TYPE string.
+
+
+    lv_name = get_token_rel( 2 ).
+
+    IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = abap_false.
+      lv_name = get_token_rel( 4 ).
+      mv_begin = abap_true.
+    ELSEIF lv_name = 'END' AND get_token_rel( 3 ) = 'OF'.
+      mv_begin = abap_false.
+      RETURN.
+    ELSEIF mv_begin = abap_true.
+      RETURN.
+    ENDIF.
+
+    IF mo_stack->concatenate( ) CS '\ME:'
+        OR mo_stack->concatenate( ) CS '\FO:'
+        OR mo_stack->concatenate( ) CS '\FU:'.
+      lv_regex = ms_naming-locals_lconst.
+    ELSE.
+      lv_regex = ms_naming-proc_pgcons.
+      IF ms_naming-set_exccon = abap_true AND is_global_exception_class( ) = abap_true.
+        RETURN.
+      ENDIF.
+    ENDIF.
+
+    compare( iv_name     = lv_name
+             iv_regex    = lv_regex
+             iv_relative = 2 ).
 
   ENDMETHOD.
 
@@ -331,6 +364,12 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     lo_generic = compiler_resolve( '\DA:' && lv_name ).
     IF lo_generic IS INITIAL.
+      RETURN.
+    ENDIF.
+
+    IF ms_naming-set_excatt = abap_true
+        AND mo_stack->concatenate( ) = |\\TY:{ object_name }|
+        AND is_global_exception_class( ) = abap_true.
       RETURN.
     ENDIF.
 
@@ -573,7 +612,6 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     DATA: lt_tokens  TYPE stokesx_tab,
           lo_generic TYPE REF TO cl_abap_comp_data_generic,
-          lo_super   TYPE REF TO cl_abap_comp_class,
           lv_scope   TYPE string,
           lv_type    TYPE string,
           lv_regex   TYPE string,
@@ -581,22 +619,11 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
           ls_token   LIKE LINE OF lt_tokens.
 
 
-    lo_super = compiler_resolve_class( ).
-    IF lo_super IS INITIAL.
-      RETURN.
-    ENDIF.
-    WHILE NOT lo_super->super_class IS INITIAL.
-      lo_super = lo_super->super_class.
-    ENDWHILE.
-
-    IF object_type = 'CLAS'
+    IF is_global_exception_class( ) = abap_true
         AND ms_naming-set_excpar = abap_true
-        AND get_token_rel( 2 ) = 'CONSTRUCTOR'
-        AND lo_super->full_name = '\TY:CX_ROOT'.
+        AND get_token_rel( 2 ) = 'CONSTRUCTOR'.
       RETURN.
     ENDIF.
-
-**********
 
     mo_stack->push( '\ME:' && get_token_rel( 2 ) ).
 
@@ -713,7 +740,24 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_type.
 
-* todo
+    DATA: lv_regex  TYPE string,
+          lv_offset TYPE string,
+          lv_name   TYPE string.
+
+
+    lv_name = get_token_rel( 2 ).
+
+    IF mo_stack->concatenate( ) CS '\ME:'
+        OR mo_stack->concatenate( ) CS '\FO:'
+        OR mo_stack->concatenate( ) CS '\FU:'.
+      lv_regex = ms_naming-locals_ltypes.
+    ELSE.
+      lv_regex = ms_naming-proc_pgtype.
+    ENDIF.
+
+    compare( iv_name     = lv_name
+             iv_regex    = lv_regex
+             iv_relative = 2 ).
 
   ENDMETHOD.
 
@@ -985,6 +1029,28 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD is_global_exception_class.
+
+    DATA: lo_super TYPE REF TO cl_abap_comp_class.
+
+
+    IF object_type <> 'CLAS'.
+      RETURN.
+    ENDIF.
+
+    lo_super = compiler_resolve_class( ).
+    IF lo_super IS INITIAL.
+      RETURN.
+    ENDIF.
+    WHILE NOT lo_super->super_class IS INITIAL.
+      lo_super = lo_super->super_class.
+    ENDWHILE.
+
+    rv_bool = boolc( lo_super->full_name = '\TY:CX_ROOT' ).
+
+  ENDMETHOD.
+
+
   METHOD put_attributes.
 
     IMPORT
@@ -1098,6 +1164,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ms_naming-oo_oolint = 'LIF_'.
 
     ms_naming-set_excpar = abap_true.
+    ms_naming-set_excatt = abap_true.
+    ms_naming-set_exccon = abap_true.
     ms_naming-set_cfunc  = abap_true.
     ms_naming-set_idocfm = abap_true.
     ms_naming-set_bwext  = abap_true.
