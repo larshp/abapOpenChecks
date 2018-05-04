@@ -63,7 +63,7 @@
      <ADMINFIELD>0</ADMINFIELD>
      <PRECFIELD>ZAOC_NAMING_OO</PRECFIELD>
      <MASK>      S</MASK>
-     <DDTEXT>Procedural Naming</DDTEXT>
+     <DDTEXT>Object Oriented Naming</DDTEXT>
      <COMPTYPE>S</COMPTYPE>
     </DD03P>
     <DD03P>
