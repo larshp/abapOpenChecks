@@ -17,85 +17,93 @@ CLASS zcl_aoc_check_69 DEFINITION
         REDEFINITION .
     METHODS put_attributes
         REDEFINITION .
-protected section.
+  PROTECTED SECTION.
 
-  methods IS_GLOBAL_EXCEPTION_CLASS
-    returning
-      value(RV_BOOL) type ABAP_BOOL .
-  methods ANALYZE_STATEMENTS
-    importing
-      !IT_STATEMENTS type SSTMNT_TAB .
-  methods CHECK_AT .
-  methods CHECK_CLASS .
-  methods CHECK_CONSTANT .
-  methods CHECK_DATA .
-  methods CHECK_FIELD_SYMBOL .
-  methods CHECK_FM_PARAMETERS
-    importing
-      !IT_PARAMETERS type RSFB_PARA
-      !IV_PREFIX type STRING .
-  methods CHECK_FORM .
-  methods CHECK_FUNCTION .
-  methods CHECK_FUNCTION_POOL .
-  methods CHECK_INLINE_DEFS .
-  methods CHECK_INTERFACE .
-  methods CHECK_METHOD_DEFINITION .
-  methods CHECK_METHOD_IMPLEMENTATION .
-  methods CHECK_PARAMETER .
-  methods CHECK_REPORT .
-  methods CHECK_SELECT_OPTION .
-  methods CHECK_TYPE .
-  methods COMPARE
-    importing
-      !IV_NAME type STRING
-      !IV_REGEX type STRING
-      !IV_RELATIVE type I .
-  methods COMPILER_RESOLVE
-    importing
-      !IV_NAME type STRING
-    returning
-      value(RO_GENERIC) type ref to CL_ABAP_COMP_DATA_GENERIC .
-  methods COMPILER_RESOLVE_CLASS
-    returning
-      value(RO_CLASS) type ref to CL_ABAP_COMP_CLASS .
-  methods DETERMINE_SCOPE_PREFIX
-    returning
-      value(RV_PREFIX) type STRING .
-  methods DETERMINE_TYPE_PREFIX
-    importing
-      !IO_GENERIC type ref to CL_ABAP_COMP_DATA_GENERIC
-    returning
-      value(RV_PREFIX) type STRING .
-  methods GET_STATEMENT
-    returning
-      value(RV_STRING) type STRING .
-  methods QUALIFY_TOKENS
-    returning
-      value(RT_TOKENS) type STOKESX_TAB .
-  methods REMOVE_VALUE
-    importing
-      !IV_INPUT type STRING
-    returning
-      value(RV_OUTPUT) type STRING .
-  methods SET_DEFAULTS .
-  methods SKIP_FM_PARAMETERS
-    importing
-      !IS_PARAMETERS type RSFBINTFV
-    returning
-      value(RV_SKIP) type ABAP_BOOL .
-  methods SKIP_FM_PARAMETERS_CHECK
-    importing
-      !IS_PARAMETERS type RSFBINTFV
-      !IS_CHECK type RSFBINTFV
-    returning
-      value(RV_SKIP) type ABAP_BOOL .
-private section.
+    METHODS field_symbol
+      IMPORTING
+        !iv_name TYPE string .
+    METHODS data
+      IMPORTING
+        !iv_name  TYPE string
+        !iv_scope TYPE string OPTIONAL .
+    METHODS is_global_exception_class
+      RETURNING
+        VALUE(rv_bool) TYPE abap_bool .
+    METHODS analyze_statements
+      IMPORTING
+        !it_statements TYPE sstmnt_tab .
+    METHODS check_at .
+    METHODS check_class .
+    METHODS check_constant .
+    METHODS check_data .
+    METHODS check_field_symbol .
+    METHODS check_fm_parameters
+      IMPORTING
+        !it_parameters TYPE rsfb_para
+        !iv_prefix     TYPE string .
+    METHODS check_form .
+    METHODS check_function .
+    METHODS check_function_pool .
+    METHODS check_inline_defs .
+    METHODS check_interface .
+    METHODS check_method_definition .
+    METHODS check_method_implementation .
+    METHODS check_parameter .
+    METHODS check_report .
+    METHODS check_select_option .
+    METHODS check_type .
+    METHODS compare
+      IMPORTING
+        !iv_name     TYPE string
+        !iv_regex    TYPE string
+        !iv_relative TYPE i .
+    METHODS compiler_resolve
+      IMPORTING
+        !iv_name          TYPE string
+      RETURNING
+        VALUE(ro_generic) TYPE REF TO cl_abap_comp_data_generic .
+    METHODS compiler_resolve_class
+      RETURNING
+        VALUE(ro_class) TYPE REF TO cl_abap_comp_class .
+    METHODS determine_scope_prefix
+      RETURNING
+        VALUE(rv_prefix) TYPE string .
+    METHODS determine_type_prefix
+      IMPORTING
+        !io_generic      TYPE REF TO cl_abap_comp_data_generic
+      RETURNING
+        VALUE(rv_prefix) TYPE string .
+    METHODS get_statement
+      RETURNING
+        VALUE(rv_string) TYPE string .
+    METHODS qualify_tokens
+      RETURNING
+        VALUE(rt_tokens) TYPE stokesx_tab .
+    METHODS remove_value
+      IMPORTING
+        !iv_input        TYPE string
+      RETURNING
+        VALUE(rv_output) TYPE string .
+    METHODS set_defaults .
+    METHODS skip_fm_parameters
+      IMPORTING
+        !iv_name       TYPE eu_lname
+        !is_parameters TYPE rsfbintfv
+      RETURNING
+        VALUE(rv_skip) TYPE abap_bool .
+    METHODS skip_fm_parameters_check
+      IMPORTING
+        !is_parameters TYPE rsfbintfv
+        !is_check      TYPE rsfbintfv
+      RETURNING
+        VALUE(rv_skip) TYPE abap_bool .
+  PRIVATE SECTION.
 
-  data MS_NAMING type ZAOC_NAMING .
-  data MO_COMPILER type ref to CL_ABAP_COMPILER .
-  data MO_STACK type ref to LCL_STACK .
-  data MV_BEGIN type ABAP_BOOL .
-  data MV_AT type STRING .
+    DATA ms_naming TYPE zaoc_naming .
+    DATA mo_compiler TYPE REF TO cl_abap_compiler .
+    DATA mo_stack TYPE REF TO lcl_stack .
+    DATA mv_begin TYPE abap_bool .
+    DATA mv_at TYPE string .
 ENDCLASS.
 
 
@@ -299,9 +307,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_constant.
 
-    DATA: lv_regex  TYPE string,
-          lv_offset TYPE string,
-          lv_name   TYPE string.
+    DATA: lv_regex TYPE string,
+          lv_name  TYPE string.
 
 
     lv_name = get_token_rel( 2 ).
@@ -336,10 +343,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_data.
 
-    DATA: lo_generic TYPE REF TO cl_abap_comp_data_generic,
-          lv_regex   TYPE string,
-          lv_offset  TYPE string,
-          lv_name    TYPE string.
+    DATA: lv_offset TYPE string,
+          lv_name   TYPE string.
 
 
     lv_name = get_token_rel( 2 ).
@@ -357,14 +362,10 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+* remove old style length definitions
     FIND '(' IN lv_name MATCH OFFSET lv_offset.
     IF sy-subrc = 0.
       lv_name = lv_name(lv_offset).
-    ENDIF.
-
-    lo_generic = compiler_resolve( '\DA:' && lv_name ).
-    IF lo_generic IS INITIAL.
-      RETURN.
     ENDIF.
 
     IF ms_naming-set_excatt = abap_true
@@ -373,15 +374,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    lv_regex = determine_scope_prefix( ).
-
-    REPLACE FIRST OCCURRENCE OF '[:type:]'
-      IN lv_regex
-      WITH determine_type_prefix( lo_generic ).
-
-    compare( iv_name     = lv_name
-             iv_regex    = lv_regex
-             iv_relative = 2 ).
+    data( lv_name ).
 
   ENDMETHOD.
 
@@ -390,7 +383,6 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     DATA: lo_generic TYPE REF TO cl_abap_comp_data_generic,
           lv_regex   TYPE string,
-          lv_offset  TYPE string,
           lv_name    TYPE string.
 
 
@@ -451,13 +443,10 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_form.
 
-    DATA: lt_tokens  TYPE stokesx_tab,
-          lo_generic TYPE REF TO cl_abap_comp_data_generic,
-          lv_scope   TYPE string,
-          lv_type    TYPE string,
-          lv_regex   TYPE string,
-          lv_name    TYPE string,
-          ls_token   LIKE LINE OF lt_tokens.
+    DATA: lt_tokens TYPE stokesx_tab,
+          lv_scope  TYPE string,
+          lv_name   TYPE string,
+          ls_token  LIKE LINE OF lt_tokens.
 
 
     CLEAR mv_at.
@@ -471,19 +460,9 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       CASE ls_token-type.
         WHEN sana_tok_field_def.
           lv_name = remove_value( ls_token-str ).
-          lo_generic = compiler_resolve( '\DA:' && lv_name ).
-          IF NOT lo_generic IS BOUND.
-            CONTINUE.
-          ENDIF.
 
-          lv_type = determine_type_prefix( lo_generic ).
-          lv_regex = lv_scope.
-          REPLACE FIRST OCCURRENCE OF '[:type:]' IN lv_regex WITH lv_type.
-
-          compare( iv_name     = lv_name
-                   iv_regex    = lv_regex
-                   iv_relative = 2 ).
-
+          data( iv_name  = lv_name
+                iv_scope = lv_scope ).
         WHEN sana_tok_word.
           CASE ls_token-str.
             WHEN 'USING'.
@@ -502,8 +481,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
   METHOD check_function.
 
     DATA: lv_name      TYPE eu_lname,
-          ls_interface TYPE rsfbintfv,
-          ls_parameter TYPE rsfbpara.
+          ls_interface TYPE rsfbintfv.
 
 
     lv_name = get_token_rel( 2 ).
@@ -526,7 +504,9 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    IF skip_fm_parameters( ls_interface ) = abap_true.
+    IF skip_fm_parameters(
+        iv_name       = lv_name
+        is_parameters = ls_interface ) = abap_true.
       RETURN.
     ENDIF.
 
@@ -571,7 +551,23 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_inline_defs.
 
-* todo
+    DATA: ls_token LIKE LINE OF ref_scan->tokens,
+          lv_name  TYPE string.
+
+
+    LOOP AT ref_scan->tokens FROM statement_wa-from TO statement_wa-to INTO ls_token.
+
+      FIND REGEX '^DATA\((\w+)\)$' IN ls_token-str SUBMATCHES lv_name.
+      IF sy-subrc = 0.
+        data( lv_name ).
+      ENDIF.
+
+      FIND REGEX '^FIELD-SYMBOL\((\w+)\)$' IN ls_token-str SUBMATCHES lv_name.
+      IF sy-subrc = 0.
+        field_symbol( lv_name ).
+      ENDIF.
+
+    ENDLOOP.
 
   ENDMETHOD.
 
@@ -610,13 +606,10 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_method_definition.
 
-    DATA: lt_tokens  TYPE stokesx_tab,
-          lo_generic TYPE REF TO cl_abap_comp_data_generic,
-          lv_scope   TYPE string,
-          lv_type    TYPE string,
-          lv_regex   TYPE string,
-          lv_name    TYPE string,
-          ls_token   LIKE LINE OF lt_tokens.
+    DATA: lt_tokens TYPE stokesx_tab,
+          lv_scope  TYPE string,
+          lv_name   TYPE string,
+          ls_token  LIKE LINE OF lt_tokens.
 
 
     IF is_global_exception_class( ) = abap_true
@@ -634,20 +627,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         WHEN sana_tok_field_def.
           lv_name = remove_value( ls_token-str ).
 
-          lo_generic = compiler_resolve( '\DA:' && lv_name ).
-          IF NOT lo_generic IS BOUND.
-            CONTINUE.
-          ENDIF.
-
-          lv_type = determine_type_prefix( lo_generic ).
-
-          lv_regex = lv_scope.
-          REPLACE FIRST OCCURRENCE OF '[:type:]' IN lv_regex WITH lv_type.
-
-          compare( iv_name     = lv_name
-                   iv_regex    = lv_regex
-                   iv_relative = 2 ).
-
+          data( iv_name  = lv_name
+                iv_scope = lv_scope ).
         WHEN sana_tok_word.
           CASE ls_token-str.
             WHEN 'IMPORTING'.
@@ -740,9 +721,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_type.
 
-    DATA: lv_regex  TYPE string,
-          lv_offset TYPE string,
-          lv_name   TYPE string.
+    DATA: lv_regex TYPE string,
+          lv_name  TYPE string.
 
 
     lv_name = get_token_rel( 2 ).
@@ -822,6 +802,10 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     lv_full = mo_stack->concatenate( ).
 
+    IF lv_full IS INITIAL.
+      RETURN.
+    ENDIF.
+
     ro_class ?= mo_compiler->get_symbol_entry( lv_full ).
     IF ro_class IS INITIAL.
       inform( p_sub_obj_type = c_type_include
@@ -854,6 +838,34 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     set_defaults( ).
 
   ENDMETHOD.                    "CONSTRUCTOR
+
+
+  METHOD data.
+
+    DATA: lo_generic TYPE REF TO cl_abap_comp_data_generic,
+          lv_regex   TYPE string.
+
+
+    lo_generic = compiler_resolve( '\DA:' && iv_name ).
+    IF lo_generic IS INITIAL.
+      RETURN.
+    ENDIF.
+
+    IF iv_scope IS INITIAL.
+      lv_regex = determine_scope_prefix( ).
+    ELSE.
+      lv_regex = iv_scope.
+    ENDIF.
+
+    REPLACE FIRST OCCURRENCE OF '[:type:]'
+      IN lv_regex
+      WITH determine_type_prefix( lo_generic ).
+
+    compare( iv_name     = iv_name
+             iv_regex    = lv_regex
+             iv_relative = 2 ).
+
+  ENDMETHOD.
 
 
   METHOD determine_scope_prefix.
@@ -961,6 +973,36 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       WHEN OTHERS.
         ASSERT 0 = 1.
     ENDCASE.
+
+  ENDMETHOD.
+
+
+  METHOD field_symbol.
+
+    DATA: lo_generic TYPE REF TO cl_abap_comp_data_generic,
+          lv_regex   TYPE string.
+
+
+    lo_generic = compiler_resolve( '\DA:' && iv_name ).
+    IF lo_generic IS INITIAL.
+      RETURN.
+    ENDIF.
+
+    IF mo_stack->concatenate( ) CS '\ME:'
+        OR mo_stack->concatenate( ) CS '\FO:'
+        OR mo_stack->concatenate( ) CS '\FU:'.
+      lv_regex = ms_naming-locals_fsymbo.
+    ELSE.
+      lv_regex = ms_naming-proc_pgfisy.
+    ENDIF.
+
+    REPLACE FIRST OCCURRENCE OF '[:type:]'
+      IN lv_regex
+      WITH determine_type_prefix( lo_generic ).
+
+    compare( iv_name     = iv_name
+             iv_regex    = lv_regex
+             iv_relative = 2 ).
 
   ENDMETHOD.
 
@@ -1185,33 +1227,67 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     END-OF-DEFINITION.
 
 * idoc processing function module
-    CLEAR ls_check.
-    _append import 'INPUT_METHOD'.
-    _append import 'MASS_PROCESSING'.
-    _append export 'WORKFLOW_RESULT'.
-    _append export 'APPLICATION_VARIABLE'.
-    _append export 'IN_UPDATE_TASK'.
-    _append export 'CALL_TRANSACTION_DONE'.
-    _append tables 'IDOC_CONTRL'.
-    _append tables 'IDOC_DATA'.
-    _append tables 'IDOC_STATUS'.
-    _append tables 'RETURN_VARIABLES'.
-    _append tables 'SERIALIZATION_INFO'.
+    IF ms_naming-set_idocfm = abap_true
+        AND rv_skip = abap_false.
+      CLEAR ls_check.
+      _append import 'INPUT_METHOD'.
+      _append import 'MASS_PROCESSING'.
+      _append export 'WORKFLOW_RESULT'.
+      _append export 'APPLICATION_VARIABLE'.
+      _append export 'IN_UPDATE_TASK'.
+      _append export 'CALL_TRANSACTION_DONE'.
+      _append tables 'IDOC_CONTRL'.
+      _append tables 'IDOC_DATA'.
+      _append tables 'IDOC_STATUS'.
+      _append tables 'RETURN_VARIABLES'.
+      _append tables 'SERIALIZATION_INFO'.
 
-    rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
-                                        is_check      = ls_check ).
-    IF rv_skip = abap_true.
-      RETURN.
+      rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                          is_check      = ls_check ).
     ENDIF.
 
-* add more here
+* conversion exits
+    IF ms_naming-set_cfunc = abap_true
+        AND rv_skip = abap_false
+        AND ( iv_name CS 'CONVERSION_EXIT_*_INPUT'
+        OR iv_name CS 'CONVERSION_EXIT_*_OUTPUT' ).
+
+      CLEAR ls_check.
+      _append import 'INPUT'.
+      _append export 'OUTPUT'.
+
+      rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                          is_check      = ls_check ).
+    ENDIF.
+
+* BW extractors
+    IF ms_naming-set_bwext = abap_true
+        AND rv_skip = abap_false.
+      CLEAR ls_check.
+      _append import 'I_REQUNR'.
+      _append import 'I_DSOURCE'.
+      _append import 'I_ISOURCE'.
+      _append import 'I_MAXSIZE'.
+      _append import 'I_INITFLAG'.
+      _append import 'I_UPDMODE'.
+      _append import 'I_DATAPAKID'.
+      _append import 'I_PRIVATE_MODE'.
+      _append import 'I_CALLMODE'.
+      _append import 'I_REMOTE_CALL'.
+      _append tables 'I_T_SELECT'.
+      _append tables 'I_T_FIELDS'.
+      _append tables 'E_T_DATA'.
+
+      rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                          is_check      = ls_check ).
+    ENDIF.
 
   ENDMETHOD.
 
 
   METHOD skip_fm_parameters_check.
 
-    DATA: ls_parameter LIKE LINE OF is_check-import.
+    DATA ls_parameter LIKE LINE OF is_check-import.
 
 
     IF lines( is_parameters-import ) <> lines( is_check-import )
