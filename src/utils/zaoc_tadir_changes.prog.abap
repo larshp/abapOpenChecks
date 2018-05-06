@@ -1,8 +1,8 @@
 REPORT zaoc_tadir_changes.
 * show who/when package was changed for an object
 
-CONSTANTS: c_utf16be TYPE abap_encoding VALUE '4102',
-           c_utf16le TYPE abap_encoding VALUE '4103'.
+CONSTANTS: gc_utf16be TYPE abap_encoding VALUE '4102',
+           gc_utf16le TYPE abap_encoding VALUE '4103'.
 
 PARAMETERS: p_obj  TYPE tadir-object OBLIGATORY,
             p_nam  TYPE tadir-obj_name OBLIGATORY,
@@ -62,14 +62,14 @@ FORM run RAISING cx_salv_msg.
 
   LOOP AT lt_log ASSIGNING FIELD-SYMBOL(<ls_log>).
 
-    DATA(loc_conv) = cl_abap_conv_in_ce=>create(
+    DATA(lo_conv) = cl_abap_conv_in_ce=>create(
         input       = <ls_log>-logdata
-        encoding    = c_utf16be
+        encoding    = gc_utf16be
         replacement = '?'
         ignore_cerr = abap_true ).
 
     TRY.
-        loc_conv->read( IMPORTING data = lv_string ).
+        lo_conv->read( IMPORTING data = lv_string ).
       CATCH cx_sy_conversion_codepage
           cx_sy_codepage_converter_init
           cx_parameter_invalid_type

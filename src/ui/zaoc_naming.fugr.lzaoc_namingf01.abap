@@ -124,22 +124,22 @@ CLASS lcl_screen2000 IMPLEMENTATION.
           lv_target TYPE fieldname,
           ls_field  LIKE LINE OF lt_fields.
 
-    FIELD-SYMBOLS: <lv_source> TYPE any,
-                   <lv_target> TYPE any.
+    FIELD-SYMBOLS: <lg_source> TYPE any,
+                   <lg_target> TYPE any.
 
 
     lt_fields = read_structure( ).
 
     LOOP AT lt_fields INTO ls_field WHERE datatype <> ''.
-      ASSIGN COMPONENT ls_field-fieldname OF STRUCTURE is_data TO <lv_source>.
+      ASSIGN COMPONENT ls_field-fieldname OF STRUCTURE is_data TO <lg_source>.
       ASSERT sy-subrc = 0.
 
       lv_target = ls_field-fieldname.
       REPLACE FIRST OCCURRENCE OF REGEX '^\w+_' IN lv_target WITH 'P_'.
-      ASSIGN (lv_target) TO <lv_target>.
+      ASSIGN (lv_target) TO <lg_target>.
       ASSERT sy-subrc = 0.
 
-      <lv_target> = <lv_source>.
+      <lg_target> = <lg_source>.
     ENDLOOP.
 
   ENDMETHOD.
@@ -157,22 +157,22 @@ CLASS lcl_screen2000 IMPLEMENTATION.
           lv_source TYPE fieldname,
           ls_field  LIKE LINE OF lt_fields.
 
-    FIELD-SYMBOLS: <lv_source> TYPE any,
-                   <lv_target> TYPE any.
+    FIELD-SYMBOLS: <lg_source> TYPE any,
+                   <lg_target> TYPE any.
 
 
     lt_fields = read_structure( ).
 
     LOOP AT lt_fields INTO ls_field WHERE datatype <> ''.
-      ASSIGN COMPONENT ls_field-fieldname OF STRUCTURE rs_data TO <lv_target>.
+      ASSIGN COMPONENT ls_field-fieldname OF STRUCTURE rs_data TO <lg_target>.
       ASSERT sy-subrc = 0.
 
       lv_source = ls_field-fieldname.
       REPLACE FIRST OCCURRENCE OF REGEX '^\w+_' IN lv_source WITH 'P_'.
-      ASSIGN (lv_source) TO <lv_source>.
+      ASSIGN (lv_source) TO <lg_source>.
       ASSERT sy-subrc = 0.
 
-      <lv_target> = <lv_source>.
+      <lg_target> = <lg_source>.
     ENDLOOP.
 
   ENDMETHOD.

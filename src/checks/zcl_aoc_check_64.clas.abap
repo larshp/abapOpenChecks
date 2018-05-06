@@ -29,7 +29,7 @@ CLASS zcl_aoc_check_64 DEFINITION
         !ii_node TYPE REF TO if_scv_result_node .
     METHODS walk
       IMPORTING
-        !ir_node TYPE REF TO if_scv_result_node .
+        !ii_node TYPE REF TO if_scv_result_node .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -248,11 +248,11 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
 
   METHOD walk.
 
-    IF ir_node->has_children( ) = abap_false.
-      node( ir_node ).
+    IF ii_node->has_children( ) = abap_false.
+      node( ii_node ).
     ENDIF.
 
-    LOOP AT ir_node->get_children( ) INTO DATA(li_node).
+    LOOP AT ii_node->get_children( ) INTO DATA(li_node).
       walk( li_node ).
     ENDLOOP.
 

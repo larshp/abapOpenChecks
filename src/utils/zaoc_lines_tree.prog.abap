@@ -28,7 +28,7 @@ CLASS lcl_logic DEFINITION FINAL.
     CLASS-METHODS: run RETURNING VALUE(rt_result) TYPE ty_result_tt.
 
   PRIVATE SECTION.
-    CLASS-DATA: mt_result TYPE ty_result_tt.
+    CLASS-DATA: gt_result TYPE ty_result_tt.
 
     CLASS-METHODS:
       run_package
@@ -48,12 +48,12 @@ CLASS lcl_logic IMPLEMENTATION.
 
   METHOD run.
 
-    CLEAR mt_result.
+    CLEAR gt_result.
 
     run_package( iv_devclass = p_devc
                  iv_parent   = '' ).
 
-    rt_result = mt_result.
+    rt_result = gt_result.
 
   ENDMETHOD.
 
@@ -110,10 +110,10 @@ CLASS lcl_logic IMPLEMENTATION.
     DATA: lt_sub TYPE cl_pak_package_queries=>tt_subpackage_info,
           ls_sub LIKE LINE OF lt_sub.
 
-    FIELD-SYMBOLS: <ls_result> LIKE LINE OF mt_result.
+    FIELD-SYMBOLS: <ls_result> LIKE LINE OF gt_result.
 
 
-    APPEND INITIAL LINE TO mt_result ASSIGNING <ls_result>.
+    APPEND INITIAL LINE TO gt_result ASSIGNING <ls_result>.
     <ls_result>-package = iv_devclass.
     <ls_result>-parent  = iv_parent.
 
@@ -159,8 +159,8 @@ CLASS lcl_gui DEFINITION FINAL.
 
   PRIVATE SECTION.
     CLASS-DATA:
-      mo_container TYPE REF TO cl_gui_custom_container,
-      mo_tree      TYPE REF TO cl_gui_column_tree.
+      go_container TYPE REF TO cl_gui_custom_container,
+      go_tree      TYPE REF TO cl_gui_column_tree.
 
 ENDCLASS.
 
@@ -170,11 +170,11 @@ CLASS lcl_gui IMPLEMENTATION.
 
     DATA: ls_hierarchy_header TYPE treev_hhdr.
 
-    IF NOT mo_container IS INITIAL.
+    IF NOT go_container IS INITIAL.
       RETURN.
     ENDIF.
 
-    CREATE OBJECT mo_container
+    CREATE OBJECT go_container
       EXPORTING
         container_name              = 'CUSTOM_2000'
       EXCEPTIONS
@@ -188,9 +188,9 @@ CLASS lcl_gui IMPLEMENTATION.
     ls_hierarchy_header-heading = 'Package'(c01).
     ls_hierarchy_header-width = 100.
 
-    CREATE OBJECT mo_tree
+    CREATE OBJECT go_tree
       EXPORTING
-        parent                      = mo_container
+        parent                      = go_container
         node_selection_mode         = cl_gui_column_tree=>node_sel_mode_single
         item_selection              = abap_true
         hierarchy_column_name       = 'DEVCLASS'
@@ -204,7 +204,7 @@ CLASS lcl_gui IMPLEMENTATION.
         lifetime_error              = 6.
     ASSERT sy-subrc = 0.
 
-    mo_tree->add_column(
+    go_tree->add_column(
       EXPORTING
         name                         = 'LINES'
         width                        = 100
@@ -229,14 +229,14 @@ CLASS lcl_gui IMPLEMENTATION.
 
     TYPES: item_table_type TYPE STANDARD TABLE OF mtreeitm WITH DEFAULT KEY.
 
-    DATA: node_table TYPE treev_ntab,
-          node       LIKE LINE OF node_table,
-          item_table TYPE item_table_type,
-          item       LIKE LINE OF item_table,
-          lt_result  TYPE lcl_logic=>ty_result_tt,
-          lv_key     LIKE node-node_key,
-          lv_parent  LIKE node-node_key,
-          ls_result  LIKE LINE OF lt_result.
+    DATA: lt_node_table TYPE treev_ntab,
+          ls_node       LIKE LINE OF lt_node_table,
+          lt_item_table TYPE item_table_type,
+          ls_item       LIKE LINE OF lt_item_table,
+          lt_result     TYPE lcl_logic=>ty_result_tt,
+          lv_key        LIKE ls_node-node_key,
+          lv_parent     LIKE ls_node-node_key,
+          ls_result     LIKE LINE OF lt_result.
 
 
     lt_result = lcl_logic=>run( ).
@@ -244,39 +244,39 @@ CLASS lcl_gui IMPLEMENTATION.
     LOOP AT lt_result INTO ls_result.
       lv_key = sy-tabix.
 
-      CLEAR node.
-      node-node_key = lv_key.
+      CLEAR ls_node.
+      ls_node-node_key = lv_key.
       READ TABLE lt_result WITH KEY package = ls_result-parent TRANSPORTING NO FIELDS.
       IF sy-subrc = 0.
         lv_parent = sy-tabix.
-        node-relatkey = lv_parent.
+        ls_node-relatkey = lv_parent.
       ENDIF.
       READ TABLE lt_result WITH KEY parent = ls_result-package TRANSPORTING NO FIELDS.
       IF sy-subrc = 0.
-        node-isfolder = abap_true.
+        ls_node-isfolder = abap_true.
       ENDIF.
-      APPEND node TO node_table.
+      APPEND ls_node TO lt_node_table.
 
-      CLEAR item.
-      item-node_key = lv_key.
-      item-item_name = 'DEVCLASS'.
-      item-class = cl_gui_column_tree=>item_class_text.
-      item-text = ls_result-package.
-      APPEND item TO item_table.
+      CLEAR ls_item.
+      ls_item-node_key = lv_key.
+      ls_item-item_name = 'DEVCLASS'.
+      ls_item-class = cl_gui_column_tree=>item_class_text.
+      ls_item-text = ls_result-package.
+      APPEND ls_item TO lt_item_table.
 
-      CLEAR item.
-      item-node_key = lv_key.
-      item-item_name = 'LINES'.
-      item-class = cl_gui_column_tree=>item_class_text.
-      item-text = ls_result-count.
-      APPEND item TO item_table.
+      CLEAR ls_item.
+      ls_item-node_key = lv_key.
+      ls_item-item_name = 'LINES'.
+      ls_item-class = cl_gui_column_tree=>item_class_text.
+      ls_item-text = ls_result-count.
+      APPEND ls_item TO lt_item_table.
 
     ENDLOOP.
 
-    mo_tree->add_nodes_and_items(
+    go_tree->add_nodes_and_items(
       EXPORTING
-        node_table                     = node_table
-        item_table                     = item_table
+        node_table                     = lt_node_table
+        item_table                     = lt_item_table
         item_table_structure_name      = 'MTREEITM'
       EXCEPTIONS
         failed                         = 1
@@ -286,9 +286,9 @@ CLASS lcl_gui IMPLEMENTATION.
         table_structure_name_not_found = 6 ).
     ASSERT sy-subrc = 0.
 
-    IF lines( node_table ) > 1.
+    IF lines( lt_node_table ) > 1.
       lv_key = 1.
-      mo_tree->expand_node(
+      go_tree->expand_node(
         EXPORTING
           node_key            = lv_key
         EXCEPTIONS

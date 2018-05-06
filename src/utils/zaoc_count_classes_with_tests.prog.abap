@@ -22,7 +22,7 @@ FORM run RAISING cx_salv_msg.
          END OF ty_tadir.
 
   DATA: lt_tadir TYPE STANDARD TABLE OF ty_tadir WITH DEFAULT KEY,
-        lr_alv   TYPE REF TO cl_salv_table,
+        lo_alv   TYPE REF TO cl_salv_table,
         lt_alv   TYPE STANDARD TABLE OF ty_alv WITH DEFAULT KEY,
         ls_alv   LIKE LINE OF lt_alv.
 
@@ -51,12 +51,12 @@ FORM run RAISING cx_salv_msg.
 
   cl_salv_table=>factory(
     IMPORTING
-      r_salv_table = lr_alv
+      r_salv_table = lo_alv
     CHANGING
       t_table      = lt_alv ).
 
-  lr_alv->get_functions( )->set_all( ).
-  lr_alv->get_columns( )->set_optimize( ).
-  lr_alv->display( ).
+  lo_alv->get_functions( )->set_all( ).
+  lo_alv->get_columns( )->set_optimize( ).
+  lo_alv->display( ).
 
 ENDFORM.
