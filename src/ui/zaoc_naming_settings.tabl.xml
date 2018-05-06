@@ -98,6 +98,19 @@
      <MASK>  CHAR</MASK>
      <DDTEXT>BW extractors</DDTEXT>
     </DD03P>
+    <DD03P>
+     <TABNAME>ZAOC_NAMING_SETTINGS</TABNAME>
+     <FIELDNAME>SET_SYNTAX</FIELDNAME>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <POSITION>0008</POSITION>
+     <ADMINFIELD>0</ADMINFIELD>
+     <INTTYPE>C</INTTYPE>
+     <INTLEN>000002</INTLEN>
+     <DATATYPE>CHAR</DATATYPE>
+     <LENG>000001</LENG>
+     <MASK>  CHAR</MASK>
+     <DDTEXT>Report syntax errors</DDTEXT>
+    </DD03P>
    </DD03P_TABLE>
   </asx:values>
  </asx:abap>
