@@ -59,8 +59,7 @@ CLASS ltcl_test IMPLEMENTATION.
         p_test = ''
         p_code = ms_result-code
       IMPORTING
-        p_text = lv_text
-    ).
+        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'N'
                                         act = ms_result-kind ).
@@ -79,8 +78,7 @@ CLASS ltcl_test IMPLEMENTATION.
         p_test = ''
         p_code = ms_result-code
       IMPORTING
-        p_text = lv_text
-    ).
+        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'N'
                                         act = ms_result-kind ).
@@ -101,8 +99,7 @@ CLASS ltcl_test IMPLEMENTATION.
         p_test = ''
         p_code = ms_result-code
       IMPORTING
-        p_text = lv_text
-    ).
+        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'N'
                                         act = ms_result-kind ).
@@ -121,8 +118,7 @@ CLASS ltcl_test IMPLEMENTATION.
         p_test = ''
         p_code = ms_result-code
       IMPORTING
-        p_text = lv_text
-    ).
+        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'W'
                                         act = ms_result-kind ).
@@ -141,8 +137,7 @@ CLASS ltcl_test IMPLEMENTATION.
         p_test = ''
         p_code = ms_result-code
       IMPORTING
-        p_text = lv_text
-    ).
+        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'E'
                                         act = ms_result-kind ).
@@ -199,8 +194,7 @@ CLASS ltcl_test IMPLEMENTATION.
         p_test = ''
         p_code = ms_result-code
       IMPORTING
-        p_text = lv_text
-    ).
+        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'E'
                                         act = ms_result-kind ).
@@ -240,8 +234,7 @@ CLASS ltcl_test IMPLEMENTATION.
         p_test = ''
         p_code = ms_result-code
       IMPORTING
-        p_text = lv_text
-    ).
+        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'E'
                                         act = ms_result-kind ).

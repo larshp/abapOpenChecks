@@ -312,7 +312,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
 
   METHOD constructor.
-    CALL METHOD super->constructor.
+    super->constructor( ).
 
     "get description of check class
     SELECT SINGLE descript FROM vseoclass INTO description
