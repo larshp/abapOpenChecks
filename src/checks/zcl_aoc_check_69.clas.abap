@@ -201,7 +201,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     mo_compiler = cl_abap_compiler=>create( program_name ).
 
     mo_compiler->get_check_infos( IMPORTING p_subrc = lv_subrc ).
-    IF lv_subrc <> 0.
+    IF lv_subrc <> 0 AND ms_naming-set_syntax = abap_true.
       inform( p_kind = mv_errty
               p_test = myname
               p_code = '005' ).
@@ -1215,6 +1215,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ms_naming-set_cfunc  = abap_true.
     ms_naming-set_idocfm = abap_true.
     ms_naming-set_bwext  = abap_true.
+    ms_naming-set_syntax = abap_true.
 
   ENDMETHOD.
 
