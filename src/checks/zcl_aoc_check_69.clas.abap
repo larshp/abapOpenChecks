@@ -1301,7 +1301,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
         rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
                                             is_check      = ls_check ).
-      ENDIF.                                          
+      ENDIF.
     ENDIF.
 
   ENDMETHOD.

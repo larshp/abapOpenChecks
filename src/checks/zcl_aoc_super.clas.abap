@@ -467,7 +467,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       IF p_sub_obj_name CP 'MP9+++BI' OR p_sub_obj_name CP 'MP9+++00'.
         RETURN. " custom HR infotype includes
       ENDIF.
-      
+
       SELECT SINGLE cnam FROM reposrc INTO lv_cnam
         WHERE progname = p_sub_obj_name AND r3state = 'A'.
       IF sy-subrc = 0
