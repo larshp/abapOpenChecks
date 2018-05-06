@@ -1284,6 +1284,24 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
       rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
                                           is_check      = ls_check ).
+      IF rv_skip = abap_false.
+        CLEAR ls_check.
+        _append import 'I_REQUNR'.
+        _append import 'I_DSOURCE'.
+        _append import 'I_CHABASNM'.
+        _append import 'I_MAXSIZE'.
+        _append import 'I_INITFLAG'.
+        _append import 'I_UPDMODE'.
+        _append import 'I_DATAPAKID'.
+        _append import 'I_S_TIMEINT'.
+        _append import 'I_PRIVATE_MODE'.
+        _append tables 'I_T_SELECT'.
+        _append tables 'I_T_FIELDS'.
+        _append tables 'E_T_DATA'.
+
+        rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                            is_check      = ls_check ).
+      ENDIF.                                          
     ENDIF.
 
   ENDMETHOD.
