@@ -594,7 +594,11 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ENDIF.
 
 
-    lv_regex = ms_naming-globals_intf.
+    IF object_type = 'INTF'.
+      lv_regex = ms_naming-globals_intf.
+    ELSE.
+      lv_regex = ms_naming-oo_oolint.
+    ENDIF.
     REPLACE FIRST OCCURRENCE OF '[:nspace:]' IN lv_regex WITH ms_naming-globals_nspace.
 
     compare( iv_name     = lv_name
