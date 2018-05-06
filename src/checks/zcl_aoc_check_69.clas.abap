@@ -587,7 +587,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     IF object_type = 'INTF' AND lv_name = object_name.
       mo_stack->set( '\TY:' && lv_name ).
-    ELSEIF object_type = 'INTF'.
+    ELSEIF object_type = 'INTF' OR object_type = 'CLAS'.
       mo_stack->set( '\PR:' && program_name && '\TY:' && lv_name ).
     ELSE.
       mo_stack->push( '\TY:' && lv_name ).
