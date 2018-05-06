@@ -1,22 +1,22 @@
-class ZCL_AOC_CHECK_70 definition
-  public
-  inheriting from ZCL_AOC_SUPER
-  create public .
+CLASS zcl_aoc_check_70 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor .
 
-  methods CHECK
-    redefinition .
-  methods GET_ATTRIBUTES
-    redefinition .
-  methods GET_MESSAGE_TEXT
-    redefinition .
-  methods IF_CI_TEST~QUERY_ATTRIBUTES
-    redefinition .
-  methods PUT_ATTRIBUTES
-    redefinition .
+    METHODS check
+         REDEFINITION .
+    METHODS get_attributes
+         REDEFINITION .
+    METHODS get_message_text
+         REDEFINITION .
+    METHODS if_ci_test~query_attributes
+         REDEFINITION .
+    METHODS put_attributes
+         REDEFINITION .
   PROTECTED SECTION.
 
     DATA mt_pattern_info TYPE char20_t .
@@ -24,37 +24,37 @@ public section.
     DATA mt_pattern_error TYPE char20_t .
     DATA mv_multiline TYPE sap_bool .
     CLASS-DATA st_todo_texts TYPE stringtab .
-private section.
+  PRIVATE SECTION.
 
-  methods GET_CODE_FROM_TEXT
-    importing
-      !IV_TEXT type STRING
-    returning
-      value(RV_CODE) type SCI_ERRC .
-  methods GET_COMMENT_TOKENS
-    importing
-      !IT_TOKENS type STOKESX_TAB
-    returning
-      value(RT_COMMENTS) type STOKESX_TAB .
-  methods GET_PLAIN_TEXT_COMMENT
-    importing
-      !IT_COMMENTS type STOKESX_TAB
-    returning
-      value(RT_COMMENT_TEXTS) type STRINGTAB .
-  methods GET_TOKENS
-    importing
-      !IT_TOKENS type STOKESX_TAB
-      !IT_STATEMENTS type SSTMNT_TAB
-      !IV_LEVEL type I
-    returning
-      value(RT_TOKENS) type STOKESX_TAB .
-  methods PARSE
-    importing
-      !IT_COMMENTS type STOKESX_TAB
-      !IT_COMMENT_TEXTS type STRINGTAB
-      !IS_LEVEL type SLEVEL
-      !IV_ERROR_TYPE type SCI_ERRTY
-      !IV_PATTERN type CHAR20 .
+    METHODS get_code_from_text
+      IMPORTING
+        !iv_text       TYPE string
+      RETURNING
+        VALUE(rv_code) TYPE sci_errc .
+    METHODS get_comment_tokens
+      IMPORTING
+        !it_tokens         TYPE stokesx_tab
+      RETURNING
+        VALUE(rt_comments) TYPE stokesx_tab .
+    METHODS get_plain_text_comment
+      IMPORTING
+        !it_comments            TYPE stokesx_tab
+      RETURNING
+        VALUE(rt_comment_texts) TYPE stringtab .
+    METHODS get_tokens
+      IMPORTING
+        !it_tokens       TYPE stokesx_tab
+        !it_statements   TYPE sstmnt_tab
+        !iv_level        TYPE i
+      RETURNING
+        VALUE(rt_tokens) TYPE stokesx_tab .
+    METHODS parse
+      IMPORTING
+        !it_comments      TYPE stokesx_tab
+        !it_comment_texts TYPE stringtab
+        !is_level         TYPE slevel
+        !iv_error_type    TYPE sci_errty
+        !iv_pattern       TYPE char20 .
 ENDCLASS.
 
 
