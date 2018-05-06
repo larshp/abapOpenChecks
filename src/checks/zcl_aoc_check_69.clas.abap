@@ -253,6 +253,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     DATA: lv_name      TYPE string,
           lv_statement TYPE string,
           lo_super     TYPE REF TO cl_abap_comp_class,
+          lv_abstract  TYPE abap_bool,
           lv_regex     TYPE string.
 
 
@@ -279,13 +280,16 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     IF lo_super IS INITIAL.
       RETURN.
     ENDIF.
+    lv_abstract = lo_super->is_abstract.
     WHILE NOT lo_super->super_class IS INITIAL.
       lo_super = lo_super->super_class.
     ENDWHILE.
 
     IF object_name = lv_name AND object_type = 'CLAS'.
-      IF lo_super->full_name =  '\TY:CX_ROOT'.
+      IF lo_super->full_name = '\TY:CX_ROOT'.
         lv_regex = ms_naming-globals_clasx.
+      ELSEIF lv_abstract = abap_true.
+        lv_regex = ms_naming-globals_clasa.
       ELSE.
         lv_regex = ms_naming-globals_clas.
       ENDIF.
