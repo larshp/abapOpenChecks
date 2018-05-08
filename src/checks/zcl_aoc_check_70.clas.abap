@@ -186,7 +186,7 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
     CLEAR p_text.
 
     lv_textcount = lines( st_todo_texts ).
-    IF p_code CO ' 012345789' AND p_code <= lv_textcount.
+    IF p_code CO ' 0123456789' AND p_code <= lv_textcount.
       READ TABLE st_todo_texts INTO lv_todo_text INDEX p_code.
       p_text = lv_todo_text.
     ENDIF.
