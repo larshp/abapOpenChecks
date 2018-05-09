@@ -113,7 +113,8 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
   METHOD check_methods.
 
-    CONSTANTS: c_protected TYPE seocompodf-exposure VALUE '1',
+    CONSTANTS: c_private   TYPE seocompodf-exposure VALUE '0',
+               c_protected TYPE seocompodf-exposure VALUE '1',
                c_public    TYPE seocompodf-exposure VALUE '2'.
 
     DATA: lt_methods     TYPE gty_reference_t,
@@ -123,13 +124,12 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_method> LIKE LINE OF lt_methods.
 
 
-* only look at public and protected methods, as private are covered by standard check
     SELECT clsname cmpname exposure FROM vseocompdf
       INTO TABLE lt_methods
       WHERE clsname = object_name
       AND cmptype = '1'
       AND version = '1'
-      AND ( exposure = c_protected OR exposure = c_public )
+      AND ( exposure = c_protected OR exposure = c_public OR exposure = c_private )
       AND type = ''
       AND cmpname <> 'CLASS_CONSTRUCTOR'
       AND cmpname <> 'CONSTRUCTOR'
