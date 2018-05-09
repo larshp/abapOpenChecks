@@ -735,6 +735,16 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     lv_name = get_token_rel( 2 ).
 
+    IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = abap_false.
+      lv_name = get_token_rel( 4 ).
+      mv_begin = abap_true.
+    ELSEIF lv_name = 'END' AND get_token_rel( 3 ) = 'OF'.
+      mv_begin = abap_false.
+      RETURN.
+    ELSEIF mv_begin = abap_true.
+      RETURN.
+    ENDIF.
+
     IF mo_stack->concatenate( ) CS '\ME:'
         OR mo_stack->concatenate( ) CS '\FO:'
         OR mo_stack->concatenate( ) CS '\FU:'.
