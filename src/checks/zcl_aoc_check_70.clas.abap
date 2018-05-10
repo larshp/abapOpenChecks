@@ -23,7 +23,6 @@ CLASS zcl_aoc_check_70 DEFINITION
     DATA mt_pattern_warning TYPE char20_t .
     DATA mt_pattern_error TYPE char20_t .
     DATA mv_multiline TYPE sap_bool .
-    CLASS-DATA gt_todo_texts TYPE stringtab .
   PRIVATE SECTION.
 
     METHODS get_comment_tokens
@@ -152,11 +151,11 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
   METHOD get_comment_tokens.
     FIELD-SYMBOLS:
-      <fs_token> TYPE stokesx.
+      <ls_token> TYPE stokesx.
 
     "only meaningful comments
-    LOOP AT it_tokens ASSIGNING <fs_token> WHERE type = scan_token_type-comment AND str CN '*"-&'.
-      APPEND <fs_token> TO rt_comments.
+    LOOP AT it_tokens ASSIGNING <ls_token> WHERE type = scan_token_type-comment AND str CN '*"-&'.
+      APPEND <ls_token> TO rt_comments.
     ENDLOOP.
   ENDMETHOD.
 
@@ -264,12 +263,6 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
               ENDIF.
               CONCATENATE lv_complete_text <lv_comment_text> INTO lv_complete_text SEPARATED BY space.
             ENDWHILE.
-          ENDIF.
-
-
-          READ TABLE gt_todo_texts TRANSPORTING NO FIELDS WITH TABLE KEY table_line = lv_complete_text.
-          IF sy-subrc <> 0.
-            APPEND lv_complete_text TO gt_todo_texts.
           ENDIF.
 
           inform(
