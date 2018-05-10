@@ -23,7 +23,7 @@ CLASS zcl_aoc_check_70 DEFINITION
     DATA mt_pattern_warning TYPE char20_t .
     DATA mt_pattern_error TYPE char20_t .
     DATA mv_multiline TYPE sap_bool .
-    CLASS-DATA st_todo_texts TYPE stringtab .
+    CLASS-DATA gt_todo_texts TYPE stringtab .
   PRIVATE SECTION.
 
     METHODS get_code_from_text
@@ -157,9 +157,9 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
   METHOD get_code_from_text.
 
-    READ TABLE st_todo_texts TRANSPORTING NO FIELDS WITH TABLE KEY table_line = iv_text.
+    READ TABLE gt_todo_texts TRANSPORTING NO FIELDS WITH TABLE KEY table_line = iv_text.
     IF sy-subrc <> 0.
-      APPEND iv_text TO st_todo_texts.
+      APPEND iv_text TO gt_todo_texts.
     ENDIF.
 
     rv_code = sy-tabix.
@@ -185,9 +185,9 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
     CLEAR p_text.
 
-    lv_textcount = lines( st_todo_texts ).
+    lv_textcount = lines( gt_todo_texts ).
     IF p_code CO ' 0123456789' AND p_code <= lv_textcount.
-      READ TABLE st_todo_texts INTO lv_todo_text INDEX p_code.
+      READ TABLE gt_todo_texts INTO lv_todo_text INDEX p_code.
       p_text = lv_todo_text.
     ENDIF.
 
@@ -278,19 +278,21 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
             "Append consecutive comment lines
             WHILE sy-subrc = 0.
               READ TABLE it_comments ASSIGNING <ls_comment> WITH KEY row = <ls_comment>-row + 1.
-              IF sy-subrc = 0.
-                READ TABLE it_comment_texts ASSIGNING <lv_comment_text> INDEX sy-tabix.
-                IF sy-subrc = 0.
-                  CONCATENATE lv_complete_text <lv_comment_text> INTO lv_complete_text SEPARATED BY space.
-                ENDIF.
+              IF sy-subrc <> 0.
+                EXIT.
               ENDIF.
+              READ TABLE it_comment_texts ASSIGNING <lv_comment_text> INDEX sy-tabix.
+              IF sy-subrc <> 0.
+                EXIT.
+              ENDIF.
+              CONCATENATE lv_complete_text <lv_comment_text> INTO lv_complete_text SEPARATED BY space.
             ENDWHILE.
           ENDIF.
 
 
-          READ TABLE st_todo_texts TRANSPORTING NO FIELDS WITH TABLE KEY table_line = lv_complete_text.
+          READ TABLE gt_todo_texts TRANSPORTING NO FIELDS WITH TABLE KEY table_line = lv_complete_text.
           IF sy-subrc <> 0.
-            APPEND lv_complete_text TO st_todo_texts.
+            APPEND lv_complete_text TO gt_todo_texts.
           ENDIF.
 
           inform(
