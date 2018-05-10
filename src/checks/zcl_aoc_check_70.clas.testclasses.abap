@@ -11,10 +11,12 @@ CLASS ltcl_test DEFINITION FOR TESTING
   PRIVATE SECTION.
     DATA: mt_code   TYPE string_table,
           ms_result TYPE scirest_ad,
+          mv_text   TYPE string,
           mo_check  TYPE REF TO zcl_aoc_check_70.
 
     METHODS:
       setup,
+      message_handler FOR EVENT message OF zcl_aoc_check_70 IMPORTING p_param_1,
       export_import FOR TESTING,
       test001 FOR TESTING,
       test002 FOR TESTING,
@@ -41,108 +43,83 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
+    SET HANDLER message_handler FOR mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
+
+  METHOD message_handler.
+    mv_text = p_param_1.
+  ENDMETHOD.
 
   METHOD export_import.
     zcl_aoc_unit_test=>export_import( mo_check ).
   ENDMETHOD.
 
   METHOD test001.
-    DATA:
-      lv_text TYPE string.
     _code 'WRITE ''foo''. "ToDo: Replace text'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
-    mo_check->get_message_text(
-      EXPORTING
-        p_test = ''
-        p_code = ms_result-code
-      IMPORTING
-        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'N'
                                         act = ms_result-kind ).
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
     cl_abap_unit_assert=>assert_equals( exp = 'ToDo: Replace text'
-                                        act = lv_text ).
+                                        act = mv_text ).
   ENDMETHOD.
 
   METHOD test002.
-    DATA:
-      lv_text TYPE string.
     _code 'WRITE ''foo''. " ToDo: Replace text'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
-    mo_check->get_message_text(
-      EXPORTING
-        p_test = ''
-        p_code = ms_result-code
-      IMPORTING
-        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'N'
                                         act = ms_result-kind ).
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
     cl_abap_unit_assert=>assert_equals( exp = 'ToDo: Replace text'
-                                        act = lv_text ).
+                                        act = mv_text ).
   ENDMETHOD.
 
   METHOD test003.
-    DATA:
-      lv_text TYPE string.
     _code 'WRITE ''foo'''.
     _code '* ToDo: insert bar'.
     _code '*WRITE ''foo'''.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
-    mo_check->get_message_text(
-      EXPORTING
-        p_test = ''
-        p_code = ms_result-code
-      IMPORTING
-        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'N'
                                         act = ms_result-kind ).
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
     cl_abap_unit_assert=>assert_equals( exp = 'ToDo: insert bar'
-                                        act = lv_text ).
+                                        act = mv_text ).
   ENDMETHOD.
 
   METHOD test004.
-    DATA:
-      lv_text TYPE string.
     _code 'LEAVE PROGRAM. "HACK: Leave program before crash'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
-    mo_check->get_message_text(
-      EXPORTING
-        p_test = ''
-        p_code = ms_result-code
-      IMPORTING
-        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'W'
                                         act = ms_result-kind ).
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
     cl_abap_unit_assert=>assert_equals( exp = 'HACK: Leave program before crash'
-                                        act = lv_text ).
+                                        act = mv_text ).
   ENDMETHOD.
 
   METHOD test005.
-    DATA:
-      lv_text TYPE string.
     _code 'DATA(LV_NUMBER) = 5 / 0. "FixMe: DIV/0'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
-    mo_check->get_message_text(
-      EXPORTING
-        p_test = ''
-        p_code = ms_result-code
-      IMPORTING
-        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'E'
                                         act = ms_result-kind ).
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
     cl_abap_unit_assert=>assert_equals( exp = 'FixMe: DIV/0'
-                                        act = lv_text ).
+                                        act = mv_text ).
   ENDMETHOD.
 
   METHOD test006.
@@ -168,8 +145,7 @@ CLASS ltcl_test IMPLEMENTATION.
       lv_attributes      TYPE xstring,
       lt_pattern_info    TYPE char20_t,
       lt_pattern_warning TYPE char20_t,
-      lt_pattern_error   TYPE char20_t,
-      lv_text            TYPE string.
+      lt_pattern_error   TYPE char20_t.
     _code 'DATA(LV_NUMBER) = 5 / 0. " FixMe: DIV/0'.
     _code '* multiline comment'.
     _code 'DATA(LV_NUMBER2) = 5 / 0.'.
@@ -189,17 +165,13 @@ CLASS ltcl_test IMPLEMENTATION.
     mo_check->put_attributes( lv_attributes ).
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
-    mo_check->get_message_text(
-      EXPORTING
-        p_test = ''
-        p_code = ms_result-code
-      IMPORTING
-        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'E'
                                         act = ms_result-kind ).
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
     cl_abap_unit_assert=>assert_equals( exp = 'FixMe: DIV/0 multiline comment'
-                                        act = lv_text ).
+                                        act = mv_text ).
   ENDMETHOD.
 
   METHOD test009.
@@ -207,8 +179,7 @@ CLASS ltcl_test IMPLEMENTATION.
       lv_attributes      TYPE xstring,
       lt_pattern_info    TYPE char20_t,
       lt_pattern_warning TYPE char20_t,
-      lt_pattern_error   TYPE char20_t,
-      lv_text            TYPE string.
+      lt_pattern_error   TYPE char20_t.
     _code 'DATA(LV_NUMBER) = 5 / 0. " FixMe: DIV/0'.
     _code '*'.
     _code '* NOT a multiline comment'.
@@ -229,17 +200,13 @@ CLASS ltcl_test IMPLEMENTATION.
     mo_check->put_attributes( lv_attributes ).
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
-    mo_check->get_message_text(
-      EXPORTING
-        p_test = ''
-        p_code = ms_result-code
-      IMPORTING
-        p_text = lv_text ).
 
     cl_abap_unit_assert=>assert_equals( exp = 'E'
                                         act = ms_result-kind ).
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
     cl_abap_unit_assert=>assert_equals( exp = 'FixMe: DIV/0'
-                                        act = lv_text ).
+                                        act = mv_text ).
   ENDMETHOD.
 
 ENDCLASS.       "lcl_Test

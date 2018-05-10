@@ -26,11 +26,6 @@ CLASS zcl_aoc_check_70 DEFINITION
     CLASS-DATA gt_todo_texts TYPE stringtab .
   PRIVATE SECTION.
 
-    METHODS get_code_from_text
-      IMPORTING
-        !iv_text       TYPE string
-      RETURNING
-        VALUE(rv_code) TYPE sci_errc .
     METHODS get_comment_tokens
       IMPORTING
         !it_tokens         TYPE stokesx_tab
@@ -155,18 +150,6 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD get_code_from_text.
-
-    READ TABLE gt_todo_texts TRANSPORTING NO FIELDS WITH TABLE KEY table_line = iv_text.
-    IF sy-subrc <> 0.
-      APPEND iv_text TO gt_todo_texts.
-    ENDIF.
-
-    rv_code = sy-tabix.
-
-  ENDMETHOD.
-
-
   METHOD get_comment_tokens.
     FIELD-SYMBOLS:
       <fs_token> TYPE stokesx.
@@ -179,21 +162,15 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
 
   METHOD get_message_text.
-    DATA:
-      lv_textcount TYPE i,
-      lv_todo_text TYPE string.
 
-    CLEAR p_text.
-
-    lv_textcount = lines( gt_todo_texts ).
-    IF p_code CO ' 0123456789' AND p_code <= lv_textcount.
-      READ TABLE gt_todo_texts INTO lv_todo_text INDEX p_code.
-      p_text = lv_todo_text.
-    ENDIF.
-
-    IF p_text IS INITIAL.
-      p_text = 'other comment marker'(005).
-    ENDIF.
+    CASE p_code.
+      WHEN '001'.
+        p_text = '&1'.
+      WHEN OTHERS.
+        super->get_message_text( EXPORTING p_test = p_test
+                                           p_code = p_code
+                                 IMPORTING p_text = p_text ).
+    ENDCASE.
 
   ENDMETHOD.                    "GET_MESSAGE_TEXT
 
@@ -302,7 +279,8 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
             p_column       = <ls_comment>-col
             p_kind         = iv_error_type
             p_test         = myname
-            p_code         = get_code_from_text( lv_complete_text ) ).
+            p_code         = '001'
+            p_param_1      = lv_complete_text ).
           UNASSIGN <lv_comment_text>.
         ENDIF.
         UNASSIGN <ls_comment>.
