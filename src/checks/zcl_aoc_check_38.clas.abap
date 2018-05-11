@@ -59,8 +59,6 @@ CLASS ZCL_AOC_CHECK_38 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Avoid use of SELECT-ENDSELECT'.       "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '038'.
 

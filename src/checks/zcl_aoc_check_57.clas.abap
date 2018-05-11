@@ -103,8 +103,6 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'MESSAGE or list processing in global classes'. "#EC NOTEXT
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '057'.
 

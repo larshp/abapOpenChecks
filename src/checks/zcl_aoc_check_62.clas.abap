@@ -93,8 +93,6 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'LOOP simplification/performance'.        "#EC NOTEXT
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '062'.
 

@@ -119,8 +119,6 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Unused FORM parameter'.               "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '021'.
 

@@ -95,8 +95,6 @@ CLASS ZCL_AOC_CHECK_46 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Shadowed variable'.                   "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '046'.
 

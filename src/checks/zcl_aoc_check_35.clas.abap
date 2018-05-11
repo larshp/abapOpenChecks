@@ -87,8 +87,6 @@ CLASS ZCL_AOC_CHECK_35 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Message not in use'.                  "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '035'.
 

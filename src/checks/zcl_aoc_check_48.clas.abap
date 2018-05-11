@@ -74,8 +74,6 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Internal tables'.                     "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '002'.
     position       = '048'.
 

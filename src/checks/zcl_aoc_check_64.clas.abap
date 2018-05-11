@@ -42,8 +42,6 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Unit test not covering class'.        "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '064'.
 

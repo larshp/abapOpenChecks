@@ -54,8 +54,6 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'IF in IF'.                            "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '001'.
 

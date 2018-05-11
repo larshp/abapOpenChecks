@@ -24,8 +24,6 @@ CLASS ZCL_AOC_CHECK_33 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Append structure field names'.        "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '033'.
 

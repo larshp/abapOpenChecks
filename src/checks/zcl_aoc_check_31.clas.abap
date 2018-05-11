@@ -135,8 +135,6 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Extended Program Check, Filterable'.  "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '003'.
     position       = '031'.
 

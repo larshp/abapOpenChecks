@@ -223,8 +223,6 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Method parameters'.                   "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '056'.
 

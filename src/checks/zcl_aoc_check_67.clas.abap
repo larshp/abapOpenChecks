@@ -25,8 +25,6 @@ CLASS ZCL_AOC_CHECK_67 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'CDS syntax check'.                       "#EC NOTEXT
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '067'.
 

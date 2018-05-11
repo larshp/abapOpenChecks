@@ -79,8 +79,6 @@ CLASS ZCL_AOC_CHECK_15 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Kernel CALL'.                         "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '015'.
 

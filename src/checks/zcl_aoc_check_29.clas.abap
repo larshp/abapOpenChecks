@@ -102,8 +102,6 @@ CLASS ZCL_AOC_CHECK_29 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Naming, Local test classes'.          "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '029'.
 

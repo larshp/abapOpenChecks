@@ -843,8 +843,6 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'Naming Conventions'.                     "#EC NOTEXT
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '002'.
     position    = '069'.
 

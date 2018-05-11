@@ -64,8 +64,6 @@ CLASS ZCL_AOC_CHECK_05 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = '7 bit ASCII'.                         "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '005'.
 

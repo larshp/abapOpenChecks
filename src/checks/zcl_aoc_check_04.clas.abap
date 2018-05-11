@@ -76,8 +76,6 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Line length'.                         "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '002'.
     position       = '004'.
 

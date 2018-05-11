@@ -184,8 +184,6 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Method or constant not referenced statically'. "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '058'.
 

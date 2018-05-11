@@ -69,8 +69,6 @@ CLASS ZCL_AOC_CHECK_39 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Smartforms global definitions naming conventions'. "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '002'.
     position       = '039'.
 

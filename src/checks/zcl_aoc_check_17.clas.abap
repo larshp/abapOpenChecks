@@ -143,8 +143,6 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Definitions in top of routine'.       "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '017'.
 

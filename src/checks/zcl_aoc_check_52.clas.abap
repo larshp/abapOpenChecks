@@ -81,8 +81,6 @@ CLASS ZCL_AOC_CHECK_52 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Pragma placement'.                    "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '052'.
 

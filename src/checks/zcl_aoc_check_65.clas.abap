@@ -26,8 +26,6 @@ CLASS ZCL_AOC_CHECK_65 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'Smartforms syntax check'.                "#EC NOTEXT
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '065'.
 

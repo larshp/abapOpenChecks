@@ -2,19 +2,21 @@ CLASS zcl_aoc_super_root DEFINITION
   PUBLIC
   INHERITING FROM cl_ci_test_root
   ABSTRACT
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
-    TYPE-POOLS zzaoc.
+    TYPE-POOLS zzaoc .
+
+    METHODS constructor .
 
     METHODS get_attributes
-        REDEFINITION.
+         REDEFINITION .
     METHODS if_ci_test~display_documentation
-        REDEFINITION.
+         REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION.
+         REDEFINITION .
   PROTECTED SECTION.
 
     DATA mv_errty TYPE sci_errty.
@@ -24,6 +26,26 @@ ENDCLASS.
 
 
 CLASS ZCL_AOC_SUPER_ROOT IMPLEMENTATION.
+
+
+  METHOD constructor.
+    super->constructor( ).
+
+    "get description of check class
+    SELECT SINGLE descript FROM vseoclass INTO description
+      WHERE clsname = myname
+        AND langu   = sy-langu
+        AND version = seoc_version_active
+        AND state   = seoc_state_implemented.
+    IF sy-subrc <> 0.
+      SELECT SINGLE descript FROM vseoclass INTO description
+          WHERE clsname = myname
+            AND version = seoc_version_active
+            AND state   = seoc_state_implemented.
+    ENDIF.
+
+    category = 'ZCL_AOC_CATEGORY'.
+  ENDMETHOD.
 
 
   METHOD get_attributes.

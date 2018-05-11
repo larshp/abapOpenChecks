@@ -87,8 +87,6 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'RFC call error handling'.             "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '047'.
 

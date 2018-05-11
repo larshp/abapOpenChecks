@@ -12,6 +12,7 @@ CLASS zcl_aoc_super DEFINITION
     TYPES:
       ty_structures_tt TYPE STANDARD TABLE OF sstruc WITH NON-UNIQUE DEFAULT KEY .
 
+    METHODS constructor .
     METHODS check
       IMPORTING
         !it_tokens     TYPE stokesx_tab
@@ -27,15 +28,15 @@ CLASS zcl_aoc_super DEFINITION
         VALUE(rt_result) TYPE scr_refs .
 
     METHODS get_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS if_ci_test~display_documentation
-        REDEFINITION .
+         REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS run
-        REDEFINITION .
+         REDEFINITION .
   PROTECTED SECTION.
 
     TYPES:
@@ -97,9 +98,9 @@ CLASS zcl_aoc_super DEFINITION
         VALUE(rv_bool) TYPE abap_bool .
 
     METHODS get_include
-        REDEFINITION .
+         REDEFINITION .
     METHODS inform
-        REDEFINITION .
+         REDEFINITION .
   PRIVATE SECTION.
 
     TYPES:
@@ -317,6 +318,26 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       rv_skip = abap_true.
     ENDIF.
 
+  ENDMETHOD.
+
+
+  METHOD constructor.
+    super->constructor( ).
+
+    "get description of check class
+    SELECT SINGLE descript FROM vseoclass INTO description
+      WHERE clsname = myname
+        AND langu   = sy-langu
+        AND version = seoc_version_active
+        AND state   = seoc_state_implemented.
+    IF sy-subrc <> 0.
+      SELECT SINGLE descript FROM vseoclass INTO description
+          WHERE clsname = myname
+            AND version = seoc_version_active
+            AND state   = seoc_state_implemented.
+    ENDIF.
+
+    category = 'ZCL_AOC_CATEGORY'.
   ENDMETHOD.
 
 
