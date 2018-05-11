@@ -3,39 +3,39 @@ CLASS zcl_aoc_super DEFINITION
   INHERITING FROM cl_ci_test_scan
   ABSTRACT
   CREATE PUBLIC
-  GLOBAL FRIENDS zcl_aoc_unit_test.
+
+  GLOBAL FRIENDS zcl_aoc_unit_test .
 
   PUBLIC SECTION.
-    TYPE-POOLS zzaoc.
+    TYPE-POOLS zzaoc .
 
     TYPES:
-      ty_structures_tt TYPE STANDARD TABLE OF sstruc WITH NON-UNIQUE DEFAULT KEY.
+      ty_structures_tt TYPE STANDARD TABLE OF sstruc WITH NON-UNIQUE DEFAULT KEY .
 
-    METHODS constructor .
     METHODS check
       IMPORTING
         !it_tokens     TYPE stokesx_tab
         !it_statements TYPE sstmnt_tab
         !it_levels     TYPE slevel_tab
-        !it_structures TYPE ty_structures_tt.
+        !it_structures TYPE ty_structures_tt .
     METHODS set_source
       IMPORTING
         !iv_name TYPE level_name
-        !it_code TYPE string_table.
+        !it_code TYPE string_table .
     METHODS get_compiler
       RETURNING
-        VALUE(rt_result) TYPE scr_refs.
+        VALUE(rt_result) TYPE scr_refs .
 
     METHODS get_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~display_documentation
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS run
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
     TYPES:
@@ -317,26 +317,6 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       rv_skip = abap_true.
     ENDIF.
 
-  ENDMETHOD.
-
-
-  METHOD constructor.
-    super->constructor( ).
-
-    "get description of check class
-    SELECT SINGLE descript FROM vseoclass INTO description
-      WHERE clsname = myname
-        AND langu   = sy-langu
-        AND version = seoc_version_active
-        AND state   = seoc_state_implemented.
-    IF sy-subrc <> 0.
-      SELECT SINGLE descript FROM vseoclass INTO description
-          WHERE clsname = myname
-            AND version = seoc_version_active
-            AND state   = seoc_state_implemented.
-    ENDIF.
-
-    category = 'ZCL_AOC_CATEGORY'.
   ENDMETHOD.
 
 
