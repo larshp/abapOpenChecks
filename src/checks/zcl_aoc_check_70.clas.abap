@@ -130,9 +130,9 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    APPEND 'TODO:' TO mt_pattern_info.
-    APPEND 'HACK:' TO mt_pattern_warning.
-    APPEND 'FIXME:' TO mt_pattern_error.
+    APPEND '^TODO' TO mt_pattern_info.
+    APPEND '^HACK' TO mt_pattern_warning.
+    APPEND '^FIXME' TO mt_pattern_error.
     mv_multiline = abap_false.
   ENDMETHOD.                    "CONSTRUCTOR
 
@@ -206,9 +206,9 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
   METHOD if_ci_test~query_attributes.
     zzaoc_top.
 
-    zzaoc_fill_att mt_pattern_info    'Info pattern'(001)        ''.
-    zzaoc_fill_att mt_pattern_warning 'Warning pattern'(002)     ''.
-    zzaoc_fill_att mt_pattern_error   'Error pattern'(003)       ''.
+    zzaoc_fill_att mt_pattern_info    'Info regex'(001)          ''.
+    zzaoc_fill_att mt_pattern_warning 'Warning regex'(002)       ''.
+    zzaoc_fill_att mt_pattern_error   'Error regex'(003)         ''.
     zzaoc_fill_att mv_multiline       'Multiline comments'(004)  'C'.
 
     zzaoc_popup.
@@ -235,7 +235,7 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    FIND ALL OCCURRENCES OF SUBSTRING iv_pattern IN TABLE it_comment_texts
+    FIND ALL OCCURRENCES OF REGEX iv_pattern IN TABLE it_comment_texts
       IGNORING CASE
       RESULTS lt_result.
 

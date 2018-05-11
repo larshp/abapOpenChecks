@@ -19,31 +19,25 @@
     <item>
      <ID>I</ID>
      <KEY>001</KEY>
-     <ENTRY>Info pattern</ENTRY>
+     <ENTRY>Info regex</ENTRY>
      <LENGTH>40</LENGTH>
     </item>
     <item>
      <ID>I</ID>
      <KEY>002</KEY>
-     <ENTRY>Warning pattern</ENTRY>
+     <ENTRY>Warning regex</ENTRY>
      <LENGTH>40</LENGTH>
     </item>
     <item>
      <ID>I</ID>
      <KEY>003</KEY>
-     <ENTRY>Error pattern</ENTRY>
+     <ENTRY>Error regex</ENTRY>
      <LENGTH>40</LENGTH>
     </item>
     <item>
      <ID>I</ID>
      <KEY>004</KEY>
      <ENTRY>Multiline comments</ENTRY>
-     <LENGTH>40</LENGTH>
-    </item>
-    <item>
-     <ID>I</ID>
-     <KEY>005</KEY>
-     <ENTRY>other comment marker</ENTRY>
      <LENGTH>40</LENGTH>
     </item>
    </TPOOL>
