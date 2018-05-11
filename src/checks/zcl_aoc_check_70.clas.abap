@@ -8,20 +8,20 @@ CLASS zcl_aoc_check_70 DEFINITION
     METHODS constructor .
 
     METHODS check
-         REDEFINITION .
+        REDEFINITION .
     METHODS get_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS get_message_text
-         REDEFINITION .
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS put_attributes
-         REDEFINITION .
+        REDEFINITION .
   PROTECTED SECTION.
 
-    DATA mt_pattern_info TYPE char20_t .
-    DATA mt_pattern_warning TYPE char20_t .
-    DATA mt_pattern_error TYPE char20_t .
+    DATA mt_pattern_info TYPE string_table .
+    DATA mt_pattern_warning TYPE string_table .
+    DATA mt_pattern_error TYPE string_table .
     DATA mv_multiline TYPE sap_bool .
   PRIVATE SECTION.
 
@@ -48,7 +48,7 @@ CLASS zcl_aoc_check_70 DEFINITION
         !it_comment_texts TYPE stringtab
         !is_level         TYPE slevel
         !iv_error_type    TYPE sci_errty
-        !iv_pattern       TYPE char20 .
+        !iv_pattern       TYPE clike .
 ENDCLASS.
 
 
@@ -69,7 +69,7 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
     FIELD-SYMBOLS:
       <ls_level>   LIKE LINE OF it_levels,
-      <lv_pattern> TYPE char20.
+      <lv_pattern> LIKE LINE OF mt_pattern_info.
 
     IF mt_pattern_info IS INITIAL AND mt_pattern_warning IS INITIAL AND mt_pattern_error IS INITIAL.
       RETURN.
@@ -124,8 +124,10 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '001'.
-    position       = '070'.
+    description = 'Find comment markers'.                   "#EC NOTEXT
+    category    = 'ZCL_AOC_CATEGORY'.
+    version     = '001'.
+    position    = '070'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.

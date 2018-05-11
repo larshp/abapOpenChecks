@@ -143,9 +143,9 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test008.
     DATA:
       lv_attributes      TYPE xstring,
-      lt_pattern_info    TYPE char20_t,
-      lt_pattern_warning TYPE char20_t,
-      lt_pattern_error   TYPE char20_t.
+      lt_pattern_info    TYPE text20,
+      lt_pattern_warning TYPE text20,
+      lt_pattern_error   TYPE text20.
     _code 'DATA(LV_NUMBER) = 5 / 0. " FixMe: DIV/0'.
     _code '* multiline comment'.
     _code 'DATA(LV_NUMBER2) = 5 / 0.'.
@@ -177,9 +177,9 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test009.
     DATA:
       lv_attributes      TYPE xstring,
-      lt_pattern_info    TYPE char20_t,
-      lt_pattern_warning TYPE char20_t,
-      lt_pattern_error   TYPE char20_t.
+      lt_pattern_info    TYPE text20,
+      lt_pattern_warning TYPE text20,
+      lt_pattern_error   TYPE text20.
     _code 'DATA(LV_NUMBER) = 5 / 0. " FixMe: DIV/0'.
     _code '*'.
     _code '* NOT a multiline comment'.
