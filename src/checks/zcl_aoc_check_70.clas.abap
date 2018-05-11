@@ -8,20 +8,20 @@ CLASS zcl_aoc_check_70 DEFINITION
     METHODS constructor .
 
     METHODS check
-        REDEFINITION .
+         REDEFINITION .
     METHODS get_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS get_message_text
-        REDEFINITION .
+         REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
+         REDEFINITION .
   PROTECTED SECTION.
 
-    DATA mt_pattern_info TYPE string_table .
-    DATA mt_pattern_warning TYPE string_table .
-    DATA mt_pattern_error TYPE string_table .
+    DATA mt_pattern_info TYPE sci_t_regular_expressions .
+    DATA mt_pattern_warning TYPE sci_t_regular_expressions .
+    DATA mt_pattern_error TYPE sci_t_regular_expressions .
     DATA mv_multiline TYPE sap_bool .
   PRIVATE SECTION.
 
