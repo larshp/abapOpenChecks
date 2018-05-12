@@ -32,16 +32,12 @@ CLASS ZCL_AOC_SUPER_ROOT IMPLEMENTATION.
     super->constructor( ).
 
     "get description of check class
-    SELECT SINGLE descript FROM vseoclass INTO description
+    SELECT SINGLE descript FROM seoclasstx INTO description
       WHERE clsname = myname
-        AND langu   = sy-langu
-        AND version = seoc_version_active
-        AND state   = seoc_state_implemented.
+        AND langu   = sy-langu.
     IF sy-subrc <> 0.
-      SELECT SINGLE descript FROM vseoclass INTO description
-          WHERE clsname = myname
-            AND version = seoc_version_active
-            AND state   = seoc_state_implemented.
+      SELECT SINGLE descript FROM seoclasstx INTO description
+          WHERE clsname = myname.
     ENDIF.
 
     category = 'ZCL_AOC_CATEGORY'.
