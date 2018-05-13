@@ -169,8 +169,6 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Obsolete statement'.                  "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '004'.
     position       = '008'.
 

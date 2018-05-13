@@ -127,8 +127,6 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Fake package encapsulation'.          "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '002'.
     position       = '061'.
 

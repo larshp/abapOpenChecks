@@ -237,8 +237,6 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Check pretty printer use'.            "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '003'.
     position       = '006'.
 

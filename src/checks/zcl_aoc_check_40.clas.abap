@@ -101,8 +101,6 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Check SY-SUBRC'.                      "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '040'.
 

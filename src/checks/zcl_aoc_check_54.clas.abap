@@ -60,8 +60,6 @@ CLASS ZCL_AOC_CHECK_54 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'CALL TRANSACTION authority check'.    "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '054'.
 

@@ -124,8 +124,6 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'Find comment markers'.                   "#EC NOTEXT
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '070'.
 

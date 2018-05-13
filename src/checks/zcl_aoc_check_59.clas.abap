@@ -153,8 +153,6 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Logical expression structure'.        "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '059'.
 

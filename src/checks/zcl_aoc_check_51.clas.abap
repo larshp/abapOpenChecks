@@ -81,8 +81,6 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Open SQL - Escape host variables'.    "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '051'.
 

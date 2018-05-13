@@ -146,8 +146,6 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Use LINE OF'.                         "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '002'.
     position       = '019'.
 

@@ -87,8 +87,6 @@ CLASS ZCL_AOC_CHECK_12 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Specify SORT order'.                  "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '012'.
 

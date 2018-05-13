@@ -124,8 +124,6 @@ CLASS ZCL_AOC_CHECK_66 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'RAISE EXCEPTION TYPE message checks'.    "#EC NOTEXT
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '066'.
 

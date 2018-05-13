@@ -24,8 +24,6 @@ CLASS ZCL_AOC_CHECK_63 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'ABAP Doc - Check parameter consistency'. "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '063'.
 

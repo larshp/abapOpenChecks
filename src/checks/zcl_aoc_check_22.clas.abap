@@ -140,8 +140,6 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Conditions contain identical code'.   "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '022'.
 

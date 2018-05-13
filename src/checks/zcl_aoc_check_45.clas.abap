@@ -196,8 +196,6 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Use expressions'.                     "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '004'.
     position       = '045'.
 

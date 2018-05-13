@@ -92,12 +92,11 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD constructor.
 
     super->constructor( ).
 
-    description    = 'Max one statement per line'.          "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '002'.
     position       = '011'.
 

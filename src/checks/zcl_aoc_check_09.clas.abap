@@ -57,8 +57,6 @@ CLASS ZCL_AOC_CHECK_09 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Tab instead of spaces'.               "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '009'.
 

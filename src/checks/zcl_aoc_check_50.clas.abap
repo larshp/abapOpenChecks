@@ -79,8 +79,6 @@ CLASS ZCL_AOC_CHECK_50 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'ASSERT and unit test ASSERT'.         "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '050'.
 

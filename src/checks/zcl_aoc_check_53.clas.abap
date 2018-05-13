@@ -139,8 +139,6 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Function module recommendations'.     "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '053'.
 

@@ -77,8 +77,6 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Large WHEN construct'.                "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '034'.
 
