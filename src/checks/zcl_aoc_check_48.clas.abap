@@ -53,6 +53,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
           AND <ls_statement>-include(8) <> '/1BCWDY/'.
         lv_code = '001'.
       ELSEIF <ls_statement>-str CP '*+[]*' AND object_type = 'CLAS'.
+* todo, above gives false positive in this class, instead look through non string tokens?
         lv_code = '002'.
       ENDIF.
 
@@ -61,6 +62,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
                 p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
                 p_kind         = mv_errty
+                p_position     = <ls_statement>-index
                 p_test         = myname
                 p_code         = lv_code ).
       ENDIF.
@@ -72,6 +74,8 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
   METHOD constructor.
 
+    DATA: ls_message LIKE LINE OF scimessages.
+
     super->constructor( ).
 
     version        = '002'.
@@ -81,6 +85,12 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     mv_errty = c_error.
+
+    ls_message-test = myname.
+    ls_message-code = '001'.
+    ls_message-kind = c_error.
+    ls_message-pcom = '"#EC DEFAULT_KEY'.
+    INSERT ls_message INTO TABLE scimessages.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
