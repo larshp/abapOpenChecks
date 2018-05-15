@@ -89,7 +89,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
     ls_message-test = myname.
     ls_message-code = '001'.
     ls_message-kind = c_error.
-    ls_message-pcom = '"#EC DEFAULT_KEY'.
+    ls_message-pcom = '"#EC CI_DEFAULT_KEY'.
     INSERT ls_message INTO TABLE scimessages.
 
   ENDMETHOD.                    "CONSTRUCTOR
