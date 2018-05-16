@@ -50,11 +50,12 @@ CLASS zcl_aoc_check_45 DEFINITION
     DATA mv_translate_to TYPE flag .
     DATA mv_translate_using TYPE flag .
     DATA mv_templates TYPE flag .
+    DATA mv_corresponding TYPE flag .
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
+CLASS zcl_aoc_check_45 IMPLEMENTATION.
 
 
   METHOD check.
@@ -121,6 +122,9 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
           AND <ls_statement>-str CP 'GET REFERENCE OF *'
           AND support_ref( ) = abap_true.
         lv_code = '010'.
+      ELSEIF mv_corresponding = abap_true
+          AND <ls_statement>-str CP 'MOVE-CORRESPONDING * TO *'.
+        lv_code = '011'.
       ENDIF.
 
 * todo, add READ TABLE?
@@ -215,6 +219,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     mv_translate_to    = abap_true.
     mv_translate_using = abap_true.
     mv_ref             = abap_true.
+    mv_corresponding   = abap_true.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
@@ -270,6 +275,8 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       mv_translate_using = mv_translate_using
       mv_templates       = mv_templates
       mv_ref             = mv_ref
+      mv_corresponding   = mv_corresponding
+      mv_errty           = mv_errty
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -300,6 +307,8 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
         p_text = 'Use string templates' .                   "#EC NOTEXT
       WHEN '010'.
         p_text = 'Use REF expression' .                     "#EC NOTEXT
+      WHEN '011'.
+        p_text = 'Use corresponding #( )' .                 "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
@@ -324,6 +333,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     zzaoc_fill_att mv_translate_using 'translate( )' ''.    "#EC NOTEXT
     zzaoc_fill_att mv_templates 'CONCATENATE -> String templates' ''. "#EC NOTEXT
     zzaoc_fill_att mv_ref 'REF' ''.                         "#EC NOTEXT
+    zzaoc_fill_att mv_corresponding 'corresponding #( )' ''. "#EC NOTEXT
 
     zzaoc_popup.
 
@@ -343,6 +353,8 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       mv_translate_using = mv_translate_using
       mv_templates       = mv_templates
       mv_ref             = mv_ref
+      mv_corresponding   = mv_corresponding
+      mv_errty           = mv_errty
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
