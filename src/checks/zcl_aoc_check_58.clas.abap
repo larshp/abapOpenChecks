@@ -1,58 +1,58 @@
-class ZCL_AOC_CHECK_58 definition
-  public
-  inheriting from ZCL_AOC_SUPER
-  create public .
+CLASS zcl_aoc_check_58 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor .
 
-  methods CHECK
-    redefinition .
-  methods GET_ATTRIBUTES
-    redefinition .
-  methods GET_MESSAGE_TEXT
-    redefinition .
-  methods PUT_ATTRIBUTES
-    redefinition .
-  methods IF_CI_TEST~QUERY_ATTRIBUTES
-    redefinition .
-protected section.
+    METHODS check
+        REDEFINITION .
+    METHODS get_attributes
+        REDEFINITION .
+    METHODS get_message_text
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
+    METHODS if_ci_test~query_attributes
+        REDEFINITION .
+  PROTECTED SECTION.
 
-  types:
-    BEGIN OF gty_reference_s,
+    TYPES:
+      BEGIN OF gty_reference_s,
         clsname  TYPE seocompodf-clsname,
         cmpname  TYPE seocompodf-cmpname,
         exposure TYPE seocompodf-cmpname,
       END OF gty_reference_s .
-  types:
-    gty_reference_t TYPE STANDARD TABLE OF gty_reference_s WITH EMPTY KEY .
-  types:
-    gty_include_t TYPE STANDARD TABLE OF wbcrossgt-include WITH EMPTY KEY .
+    TYPES:
+      gty_reference_t TYPE STANDARD TABLE OF gty_reference_s WITH EMPTY KEY .
+    TYPES:
+      gty_include_t TYPE STANDARD TABLE OF wbcrossgt-include WITH EMPTY KEY .
 
-  data MV_SKIP_CCAU type SAP_BOOL .
-  data MT_METHODS type ZAOC_SEOCMPNAME_RANGE_TT .
+    DATA mv_skip_ccau TYPE sap_bool .
+    DATA mt_methods TYPE zaoc_seocmpname_range_tt .
 
-  methods REPORT_CLAS
-    importing
-      !IS_METHOD type GTY_REFERENCE_S
-      !LV_ERR_CODE type SCI_ERRC .
-  methods IS_BOPF_INTERFACE
-    returning
-      value(RV_BOOLEAN) type ABAP_BOOL .
-  methods CHECK_CONSTANTS .
-  methods CHECK_METHODS .
-  methods FILTER_IMPLEMENTATIONS
-    importing
-      !IS_METHOD type GTY_REFERENCE_S
-    changing
-      !CT_INCLUDE type GTY_INCLUDE_T .
-  methods FILTER_SELF_REFERENCES
-    importing
-      !IV_CLSNAME type GTY_REFERENCE_S-CLSNAME
-    changing
-      !CT_INCLUDE type GTY_INCLUDE_T .
-private section.
+    METHODS report_clas
+      IMPORTING
+        !is_method   TYPE gty_reference_s
+        !lv_err_code TYPE sci_errc .
+    METHODS is_bopf_interface
+      RETURNING
+        VALUE(rv_boolean) TYPE abap_bool .
+    METHODS check_constants .
+    METHODS check_methods .
+    METHODS filter_implementations
+      IMPORTING
+        !is_method  TYPE gty_reference_s
+      CHANGING
+        !ct_include TYPE gty_include_t .
+    METHODS filter_self_references
+      IMPORTING
+        !iv_clsname TYPE gty_reference_s-clsname
+      CHANGING
+        !ct_include TYPE gty_include_t .
+  PRIVATE SECTION.
 ENDCLASS.
 
 
