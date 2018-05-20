@@ -1,49 +1,58 @@
-CLASS zcl_aoc_check_58 DEFINITION
-  PUBLIC
-  INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC .
+class ZCL_AOC_CHECK_58 definition
+  public
+  inheriting from ZCL_AOC_SUPER
+  create public .
 
-  PUBLIC SECTION.
+public section.
 
-    METHODS constructor .
+  methods CONSTRUCTOR .
 
-    METHODS check
-        REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
-  PROTECTED SECTION.
+  methods CHECK
+    redefinition .
+  methods GET_ATTRIBUTES
+    redefinition .
+  methods GET_MESSAGE_TEXT
+    redefinition .
+  methods PUT_ATTRIBUTES
+    redefinition .
+  methods IF_CI_TEST~QUERY_ATTRIBUTES
+    redefinition .
+protected section.
 
-    TYPES:
-      BEGIN OF gty_reference_s,
+  types:
+    BEGIN OF gty_reference_s,
         clsname  TYPE seocompodf-clsname,
         cmpname  TYPE seocompodf-cmpname,
         exposure TYPE seocompodf-cmpname,
       END OF gty_reference_s .
-    TYPES:
-      gty_reference_t TYPE STANDARD TABLE OF gty_reference_s WITH EMPTY KEY .
-    TYPES:
-      gty_include_t TYPE STANDARD TABLE OF wbcrossgt-include WITH EMPTY KEY .
+  types:
+    gty_reference_t TYPE STANDARD TABLE OF gty_reference_s WITH EMPTY KEY .
+  types:
+    gty_include_t TYPE STANDARD TABLE OF wbcrossgt-include WITH EMPTY KEY .
 
-    METHODS report_clas
-      IMPORTING
-        !is_method   TYPE gty_reference_s
-        !lv_err_code TYPE sci_errc .
-    METHODS is_bopf_interface
-      RETURNING
-        VALUE(rv_boolean) TYPE abap_bool .
-    METHODS check_constants .
-    METHODS check_methods .
-    METHODS filter_implementations
-      IMPORTING
-        !is_method  TYPE gty_reference_s
-      CHANGING
-        !ct_include TYPE gty_include_t .
-    METHODS filter_self_references
-      IMPORTING
-        !iv_clsname TYPE gty_reference_s-clsname
-      CHANGING
-        !ct_include TYPE gty_include_t .
-  PRIVATE SECTION.
+  data MV_SKIP_CCAU type SAP_BOOL .
+  data MT_METHODS type ZAOC_SEOCMPNAME_RANGE_TT .
+
+  methods REPORT_CLAS
+    importing
+      !IS_METHOD type GTY_REFERENCE_S
+      !LV_ERR_CODE type SCI_ERRC .
+  methods IS_BOPF_INTERFACE
+    returning
+      value(RV_BOOLEAN) type ABAP_BOOL .
+  methods CHECK_CONSTANTS .
+  methods CHECK_METHODS .
+  methods FILTER_IMPLEMENTATIONS
+    importing
+      !IS_METHOD type GTY_REFERENCE_S
+    changing
+      !CT_INCLUDE type GTY_INCLUDE_T .
+  methods FILTER_SELF_REFERENCES
+    importing
+      !IV_CLSNAME type GTY_REFERENCE_S-CLSNAME
+    changing
+      !CT_INCLUDE type GTY_INCLUDE_T .
+private section.
 ENDCLASS.
 
 
@@ -137,7 +146,15 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
     LOOP AT lt_methods ASSIGNING <ls_method>.
       CONCATENATE <ls_method>-clsname '\ME:' <ls_method>-cmpname INTO lv_name.
-      SELECT include FROM wbcrossgt INTO TABLE lt_ref_include WHERE otype = 'ME' AND name = lv_name.
+
+      SELECT include FROM wbcrossgt
+        INTO TABLE lt_ref_include
+        WHERE otype = 'ME'
+        AND name = lv_name.
+
+      IF mv_skip_ccau = abap_true.
+        DELETE lt_ref_include WHERE table_line+30 = 'CCAU'.
+      ENDIF.
 
       IF lines( lt_ref_include ) = 0 AND object_type = 'CLAS'.
         report_clas(
@@ -184,15 +201,16 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '001'.
-    position       = '058'.
+    version  = '001'.
+    position = '058'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
+    mv_errty     = c_error.
+    mv_skip_ccau = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD filter_implementations.
@@ -245,6 +263,17 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD get_attributes.
+
+    EXPORT
+      mv_errty = mv_errty
+      mv_skip_ccau = mv_skip_ccau
+      mt_methods = mt_methods
+      TO DATA BUFFER p_attributes.
+
+  ENDMETHOD.
+
+
   METHOD get_message_text.
 
     CLEAR p_text.
@@ -265,6 +294,19 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
                                            p_code = p_code
                                  IMPORTING p_text = p_text ).
     ENDCASE.
+
+  ENDMETHOD.
+
+
+  METHOD if_ci_test~query_attributes.
+
+    zzaoc_top.
+
+    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
+    zzaoc_fill_att mv_skip_ccau 'Skip CCAU' 'C'.            "#EC NOTEXT
+    zzaoc_fill_att mt_methods 'Methods' 'S'.                "#EC NOTEXT
+
+    zzaoc_popup.
 
   ENDMETHOD.
 
@@ -290,12 +332,28 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD put_attributes.
+
+    IMPORT
+      mv_errty = mv_errty
+      mv_skip_ccau = mv_skip_ccau
+      mt_methods = mt_methods
+      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
+
+
   METHOD report_clas.
 
     DATA: lv_include  TYPE programm,
           lt_includes TYPE seop_methods_w_include,
           ls_mtdkey   TYPE seocpdkey.
 
+
+    IF NOT is_method-cmpname IN mt_methods.
+      RETURN.
+    ENDIF.
 
     ls_mtdkey-clsname = is_method-clsname.
     ls_mtdkey-cpdname = is_method-cmpname.
