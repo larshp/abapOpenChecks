@@ -11,7 +11,8 @@ SELECT-OPTIONS: s_devc FOR tdevc-devclass OBLIGATORY.
 SELECTION-SCREEN END OF BLOCK b1.
 
 SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-002.
-PARAMETERS: p_split TYPE i DEFAULT 10.
+PARAMETERS: p_split TYPE i DEFAULT 10,
+            p_mview TYPE c AS CHECKBOX DEFAULT 'X'.
 SELECTION-SCREEN END OF BLOCK b2.
 
 ******************************************************************
@@ -84,7 +85,9 @@ CLASS lcl_app IMPLEMENTATION.
           lv_program  LIKE LINE OF lt_programs.
 
 
-    lt_programs = zcl_aoc_util_programs=>get_programs_in_package( iv_devclass ).
+    lt_programs = zcl_aoc_util_programs=>get_programs_in_package(
+      iv_devclass = iv_devclass
+      iv_ignore_mview_fugr = p_mview ).
 
     LOOP AT lt_programs INTO lv_program.
       IF sy-tabix MOD 100 = 0.
