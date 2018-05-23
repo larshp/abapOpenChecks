@@ -333,12 +333,11 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       lv_regex = ms_naming-locals_lconst.
     ELSEIF mo_stack->concatenate( ) CS '\TY:'.
       lv_regex = ms_naming-oo_oocons.
+      IF ms_naming-set_exccon = abap_true AND is_global_exception_class( ) = abap_true.
+        RETURN.
+      ENDIF.
     ELSE.
       lv_regex = ms_naming-proc_pgcons.
-    ENDIF.
-
-    IF ms_naming-set_exccon = abap_true AND is_global_exception_class( ) = abap_true.
-      RETURN.
     ENDIF.
 
     compare( iv_name     = lv_name
