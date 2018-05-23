@@ -331,11 +331,14 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         OR mo_stack->concatenate( ) CS '\FO:'
         OR mo_stack->concatenate( ) CS '\FU:'.
       lv_regex = ms_naming-locals_lconst.
+    ELSEIF mo_stack->concatenate( ) CS '\TY:'.
+      lv_regex = ms_naming-oo_oocons.
     ELSE.
       lv_regex = ms_naming-proc_pgcons.
-      IF ms_naming-set_exccon = abap_true AND is_global_exception_class( ) = abap_true.
-        RETURN.
-      ENDIF.
+    ENDIF.
+
+    IF ms_naming-set_exccon = abap_true AND is_global_exception_class( ) = abap_true.
+      RETURN.
     ENDIF.
 
     compare( iv_name     = lv_name
@@ -749,6 +752,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         OR mo_stack->concatenate( ) CS '\FO:'
         OR mo_stack->concatenate( ) CS '\FU:'.
       lv_regex = ms_naming-locals_ltypes.
+    ELSEIF mo_stack->concatenate( ) CS '\TY:'.
+      lv_regex = ms_naming-oo_ootype.
     ELSE.
       lv_regex = ms_naming-proc_pgtype.
     ENDIF.
@@ -886,24 +891,22 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD determine_scope_prefix.
 
-    IF keyword( ) = 'STATICS'.
+    DATA: lv_keyword TYPE string.
+
+    lv_keyword = keyword( ).
+
+    IF lv_keyword = 'STATICS'.
       rv_prefix = ms_naming-locals_static.
     ELSEIF mo_stack->concatenate( ) CS '\ME:'
         OR mo_stack->concatenate( ) CS '\FO:'
         OR mo_stack->concatenate( ) CS '\FU:'.
       rv_prefix = ms_naming-locals_data.
     ELSEIF mo_stack->concatenate( ) CS '\TY:'
-        AND keyword( ) = 'DATA'.
+        AND lv_keyword = 'DATA'.
       rv_prefix = ms_naming-oo_oodata.
     ELSEIF mo_stack->concatenate( ) CS '\TY:'
-        AND keyword( ) = 'CLASS-DATA'.
+        AND lv_keyword = 'CLASS-DATA'.
       rv_prefix = ms_naming-oo_oocdat.
-    ELSEIF mo_stack->concatenate( ) CS '\TY:'
-        AND keyword( ) = 'CONSTANTS'.
-      rv_prefix = ms_naming-oo_oocons.
-    ELSEIF mo_stack->concatenate( ) CS '\TY:'
-        AND keyword( ) = 'TYPES'.
-      rv_prefix = ms_naming-oo_ootype.
     ELSE.
       rv_prefix = ms_naming-proc_pgdata.
     ENDIF.
