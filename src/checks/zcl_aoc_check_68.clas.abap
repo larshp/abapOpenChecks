@@ -103,7 +103,9 @@ CLASS ZCL_AOC_CHECK_68 IMPLEMENTATION.
             object_not_found = 1
             db_error         = 2
             OTHERS           = 3.
-        IF sy-subrc <> 0.
+        IF sy-subrc = 1.
+          RETURN.
+        ELSEIF sy-subrc <> 0.
           inform_from_sy( ).
           RETURN.
         ENDIF.
