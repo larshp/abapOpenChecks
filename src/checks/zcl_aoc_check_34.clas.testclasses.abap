@@ -20,7 +20,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       export_import FOR TESTING,
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
-      test001_03 FOR TESTING.
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING RAISING cx_static_check,
+      test001_05 FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.       "lcl_Test
 
@@ -103,6 +105,143 @@ CLASS ltcl_test IMPLEMENTATION.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_04.
+* ===========
+
+    DATA:
+      lv_attributes    TYPE xstring,
+      lv_incl_comments TYPE flag,
+      lv_lines         TYPE i,
+      lv_errty         TYPE sci_errty.
+
+    lv_attributes = mo_check->get_attributes( ).
+
+    IMPORT
+      mv_errty            = lv_errty
+      mv_lines            = lv_lines
+      mv_incl_comments = lv_incl_comments
+      FROM DATA BUFFER lv_attributes.                "#EC CI_USE_WANTED
+    lv_lines = 20.
+    EXPORT
+      mv_errty            = lv_errty
+      mv_lines            = lv_lines
+      mv_incl_comments    = abap_false
+      TO DATA BUFFER lv_attributes.
+
+    mo_check->put_attributes( lv_attributes ).
+
+    _code 'CASE lv_foo.'.
+    _code '  WHEN ''bar''.'.
+    _code ' ".'.
+    _code '*.'.
+    _code '*.'.
+    _code '*.'.
+    _code '*.'.
+    _code '*.'.
+    _code '*.'.
+    _code '*.'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code 'ENDCASE.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+
+  ENDMETHOD.
+
+  METHOD test001_05.
+* ===========
+
+    DATA:
+      lv_attributes    TYPE xstring,
+      lv_incl_comments TYPE flag,
+      lv_lines         TYPE i,
+      lv_errty         TYPE sci_errty.
+
+    lv_attributes = mo_check->get_attributes( ).
+
+    IMPORT
+      mv_errty            = lv_errty
+      mv_lines            = lv_lines
+      mv_incl_comments    = lv_incl_comments
+      FROM DATA BUFFER lv_attributes.                "#EC CI_USE_WANTED
+
+    lv_lines = 20.
+
+    EXPORT
+      mv_errty            = lv_errty
+      mv_lines            = lv_lines
+      mv_incl_comments    = abap_true
+      TO DATA BUFFER lv_attributes.
+
+    mo_check->put_attributes( lv_attributes ).
+
+    _code 'CASE lv_foo.'.
+    _code '  WHEN ''bar''.'.
+    _code ' ".'.
+    _code '*.'.
+    _code '*.'.
+    _code '*.'.
+    _code '*.'.
+    _code '*.'.
+    _code '*.'.
+    _code '*.'.
+    _code '*.'.
+    _code '".'.
+    _code ' * .'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code '*.'.
+    _code '".'.
+    _code 'ENDCASE.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_not_initial( ms_result ).
 
   ENDMETHOD.
 
