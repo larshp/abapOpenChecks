@@ -1,7 +1,8 @@
 CLASS zcl_aoc_check_34 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC
+  GLOBAL FRIENDS zif_aoc_check_friend.
 
   PUBLIC SECTION.
 

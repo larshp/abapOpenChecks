@@ -8,6 +8,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
   RISK LEVEL HARMLESS
   FINAL.
 
+  PUBLIC SECTION.
+    INTERFACES zif_aoc_check_friend.
+
   PRIVATE SECTION.
 * ================
 
@@ -111,62 +114,15 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_04.
 * ===========
 
-    DATA:
-      lv_attributes    TYPE xstring,
-      lv_incl_comments TYPE flag,
-      lv_lines         TYPE i,
-      lv_errty         TYPE sci_errty.
-
-    lv_attributes = mo_check->get_attributes( ).
-
-    IMPORT
-      mv_errty            = lv_errty
-      mv_lines            = lv_lines
-      mv_incl_comments = lv_incl_comments
-      FROM DATA BUFFER lv_attributes.                "#EC CI_USE_WANTED
-    lv_lines = 20.
-    EXPORT
-      mv_errty            = lv_errty
-      mv_lines            = lv_lines
-      mv_incl_comments    = abap_false
-      TO DATA BUFFER lv_attributes.
-
-    mo_check->put_attributes( lv_attributes ).
+    mo_check->mv_incl_comments = abap_false.
+    mo_check->mv_lines = 20.
 
     _code 'CASE lv_foo.'.
     _code '  WHEN ''bar''.'.
-    _code ' ".'.
-    _code '*.'.
-    _code '*.'.
-    _code '*.'.
-    _code '*.'.
-    _code '*.'.
-    _code '*.'.
-    _code '*.'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
+    DO 10 TIMES.
+      _code ' ".'.
+      _code '*.'.
+    ENDDO.
     _code 'ENDCASE.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -179,64 +135,15 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_05.
 * ===========
 
-    DATA:
-      lv_attributes    TYPE xstring,
-      lv_incl_comments TYPE flag,
-      lv_lines         TYPE i,
-      lv_errty         TYPE sci_errty.
-
-    lv_attributes = mo_check->get_attributes( ).
-
-    IMPORT
-      mv_errty            = lv_errty
-      mv_lines            = lv_lines
-      mv_incl_comments    = lv_incl_comments
-      FROM DATA BUFFER lv_attributes.                "#EC CI_USE_WANTED
-
-    lv_lines = 20.
-
-    EXPORT
-      mv_errty            = lv_errty
-      mv_lines            = lv_lines
-      mv_incl_comments    = abap_true
-      TO DATA BUFFER lv_attributes.
-
-    mo_check->put_attributes( lv_attributes ).
+    mo_check->mv_incl_comments = abap_true.
+    mo_check->mv_lines = 20.
 
     _code 'CASE lv_foo.'.
     _code '  WHEN ''bar''.'.
-    _code ' ".'.
-    _code '*.'.
-    _code '*.'.
-    _code '*.'.
-    _code '*.'.
-    _code '*.'.
-    _code '*.'.
-    _code '*.'.
-    _code '*.'.
-    _code '".'.
-    _code ' * .'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
-    _code '*.'.
-    _code '".'.
+    DO 10 TIMES.
+      _code ' ".'.
+      _code '*.'.
+    ENDDO.
     _code 'ENDCASE.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
