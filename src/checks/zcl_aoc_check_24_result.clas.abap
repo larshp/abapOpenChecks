@@ -73,7 +73,9 @@ CLASS ZCL_AOC_CHECK_24_RESULT IMPLEMENTATION.
         position    = lv_line
       EXCEPTIONS
         OTHERS      = 3. "#EC CI_SUBRC
-    ASSERT sy-subrc = 0.
+    IF sy-subrc <> 0.
+      MESSAGE w000(zabapopenchecks).
+    ENDIF.
 
   ENDMETHOD.
 
