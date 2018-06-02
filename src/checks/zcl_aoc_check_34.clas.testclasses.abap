@@ -1,3 +1,5 @@
+CLASS ltcl_test DEFINITION DEFERRED.
+CLASS zcl_aoc_check_34 DEFINITION LOCAL FRIENDS ltcl_test.
 *----------------------------------------------------------------------*
 *       CLASS lcl_Test DEFINITION
 *----------------------------------------------------------------------*
@@ -7,9 +9,6 @@ CLASS ltcl_test DEFINITION FOR TESTING
   DURATION SHORT
   RISK LEVEL HARMLESS
   FINAL.
-
-  PUBLIC SECTION.
-    INTERFACES zif_aoc_check_friend.
 
   PRIVATE SECTION.
 * ================
