@@ -19,6 +19,10 @@ CLASS zcl_aoc_check_58 DEFINITION
         REDEFINITION .
   PROTECTED SECTION.
 
+    CONSTANTS: c_private   TYPE seocompodf-exposure VALUE '0',
+               c_protected TYPE seocompodf-exposure VALUE '1',
+               c_public    TYPE seocompodf-exposure VALUE '2'.
+
     TYPES:
       BEGIN OF gty_reference_s,
         clsname  TYPE seocompodf-clsname,
@@ -33,6 +37,7 @@ CLASS zcl_aoc_check_58 DEFINITION
     DATA mv_skip_ccau TYPE sap_bool .
     DATA mt_methods TYPE zaoc_seocmpname_range_tt .
 
+    METHODS check_types .
     METHODS report_clas
       IMPORTING
         !is_method   TYPE gty_reference_s
@@ -72,7 +77,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
     check_methods( ).
     check_constants( ).
-* todo, check types?
+    check_types( ).
 
   ENDMETHOD.
 
@@ -94,7 +99,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       INTO TABLE lt_constants
       WHERE clsname = object_name
       AND version = '1'
-      AND exposure = '2'
+      AND exposure = c_public
       AND attdecltyp = '2'
       ORDER BY PRIMARY KEY.
 
@@ -121,10 +126,6 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
 
   METHOD check_methods.
-
-    CONSTANTS: c_private   TYPE seocompodf-exposure VALUE '0',
-               c_protected TYPE seocompodf-exposure VALUE '1',
-               c_public    TYPE seocompodf-exposure VALUE '2'.
 
     DATA: lt_methods     TYPE gty_reference_t,
           lv_name        TYPE wbcrossgt-name,
@@ -192,6 +193,46 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
         ENDIF.
       ENDIF.
 
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD check_types.
+
+    DATA: lt_types   TYPE gty_reference_t,
+          lv_name    TYPE wbcrossgt-name,
+          lv_include TYPE programm.
+
+    FIELD-SYMBOLS: <ls_type> LIKE LINE OF lt_types.
+
+
+    SELECT clsname cmpname exposure FROM vseocompdf
+      INTO TABLE lt_types
+      WHERE clsname = object_name
+      AND cmptype = '3'
+      AND version = '1'
+      AND ( exposure = c_protected OR exposure = c_public OR exposure = c_private )
+      AND type = ''
+      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
+
+    LOOP AT lt_types ASSIGNING <ls_type>.
+      CONCATENATE <ls_type>-clsname '\TY:' <ls_type>-cmpname INTO lv_name.
+      SELECT SINGLE name FROM wbcrossgt INTO lv_name WHERE otype = 'TY' AND name = lv_name ##WARN_OK.
+      IF sy-subrc <> 0.
+        IF object_type = 'CLAS'.
+          lv_include = cl_oo_classname_service=>get_pubsec_name( <ls_type>-clsname ).
+        ELSE.
+          lv_include = cl_oo_classname_service=>get_interfacepool_name( <ls_type>-clsname ).
+        ENDIF.
+
+        inform( p_sub_obj_type = c_type_include
+                p_sub_obj_name = lv_include
+                p_kind         = mv_errty
+                p_test         = myname
+                p_code         = '006'
+                p_param_1      = <ls_type>-cmpname ).
+      ENDIF.
     ENDLOOP.
 
   ENDMETHOD.
@@ -289,6 +330,8 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
         p_text = 'Method &1 only implemented, not referenced statically'. "#EC NOTEXT
       WHEN '005'.
         p_text = '&1 not referenced statically'.            "#EC NOTEXT
+      WHEN '006'.
+        p_text = 'Type &1 not referenced statically'.       "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
