@@ -26,7 +26,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_check_34 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
 
 
   METHOD check.
@@ -35,9 +35,12 @@ CLASS zcl_aoc_check_34 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
+* todo, move this macro to method instead
     DEFINE _check.
-      IF lv_start > 0 AND ( ( mv_incl_comments EQ abap_true AND ( ( lv_start + mv_lines ) < <ls_token>-row  ) ) OR
-                            ( mv_incl_comments EQ abap_false AND ( ( lv_start + mv_lines ) < ( <ls_token>-row - lv_comment_lines ) ) ) ).
+      IF lv_start > 0 AND ( ( mv_incl_comments EQ abap_true
+          AND ( ( lv_start + mv_lines ) < <ls_token>-row  ) )
+          OR ( mv_incl_comments EQ abap_false
+          AND ( ( lv_start + mv_lines ) < ( <ls_token>-row - lv_comment_lines ) ) ) ).
         lv_include = get_include( p_level = <ls_statement>-level ).
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
