@@ -130,6 +130,8 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
+    enable_rfc( ).
+
     APPEND '^TODO' TO mt_pattern_info.
     APPEND '^HACK' TO mt_pattern_warning.
     APPEND '^FIXME' TO mt_pattern_error.
