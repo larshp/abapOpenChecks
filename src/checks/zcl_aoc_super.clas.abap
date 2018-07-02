@@ -50,6 +50,7 @@ CLASS zcl_aoc_super DEFINITION
         start      TYPE ty_position,
         end        TYPE ty_position,
         include    TYPE programm,
+        level      TYPE stmnt_levl,
         count      TYPE i,
         terminator TYPE stmnt_term,
         index      TYPE i,
@@ -98,9 +99,9 @@ CLASS zcl_aoc_super DEFINITION
         VALUE(rv_bool) TYPE abap_bool .
 
     METHODS get_include
-         REDEFINITION .
+        REDEFINITION .
     METHODS inform
-         REDEFINITION .
+        REDEFINITION .
   PRIVATE SECTION.
 
     TYPES:
@@ -175,8 +176,9 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       ENDLOOP.
       IF sy-subrc = 0.
         APPEND INITIAL LINE TO rt_statements ASSIGNING <ls_add>.
-        <ls_add>-str = lv_str.
+        <ls_add>-str        = lv_str.
         <ls_add>-include    = get_include( p_level = <ls_statement>-level ).
+        <ls_add>-level      = <ls_statement>-level.
         <ls_add>-start      = ls_start.
         <ls_add>-end        = ls_end.
         <ls_add>-count      = lv_count.
