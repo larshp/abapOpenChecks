@@ -20,6 +20,16 @@ CLASS zcl_aoc_check_61 DEFINITION
     TYPES:
       ty_devclass_tt TYPE STANDARD TABLE OF devclass WITH DEFAULT KEY .
 
+    METHODS explode_pinf
+      IMPORTING
+        !it_permissions   TYPE permis_tab
+      RETURNING
+        VALUE(rt_allowed) TYPE zcl_aoc_dependencies=>ty_objects_tt .
+    METHODS list_permissions
+      IMPORTING
+        !iv_package    TYPE devclass
+      RETURNING
+        VALUE(rt_list) TYPE permis_tab .
     METHODS read_classification
       IMPORTING
         !iv_package     TYPE devclass
@@ -28,10 +38,20 @@ CLASS zcl_aoc_check_61 DEFINITION
     METHODS find_encapsulation
       RETURNING
         VALUE(rs_encapsulation) TYPE ty_encapsulation .
+    METHODS check_package_interfaces
+      IMPORTING
+        !is_encapsulation TYPE ty_encapsulation
+      CHANGING
+        !ct_used          TYPE zcl_aoc_dependencies=>ty_objects_tt .
     METHODS check_used_objects
       IMPORTING
         !is_encapsulation TYPE ty_encapsulation
         VALUE(it_used)    TYPE zcl_aoc_dependencies=>ty_objects_tt .
+    METHODS list_allowed
+      IMPORTING
+        !iv_package    TYPE devclass
+      RETURNING
+        VALUE(rt_list) TYPE ty_devclass_tt .
     METHODS list_subpackages
       IMPORTING
         !iv_package    TYPE devclass
@@ -50,11 +70,30 @@ ENDCLASS.
 CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
 
 
+  METHOD check_package_interfaces.
+
+    DATA: lt_allowed TYPE zcl_aoc_dependencies=>ty_objects_tt,
+          ls_allowed LIKE LINE OF lt_allowed.
+
+
+    lt_allowed = explode_pinf( list_permissions( is_encapsulation-package ) ).
+
+    LOOP AT lt_allowed INTO ls_allowed.
+      DELETE ct_used
+        WHERE obj_type = ls_allowed-obj_type
+        AND obj_name = ls_allowed-obj_name.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
   METHOD check_used_objects.
 
-    DATA: lt_sub  TYPE ty_devclass_tt,
-          ls_used LIKE LINE OF it_used,
-          lv_sub  LIKE LINE OF lt_sub.
+    DATA: lt_allow TYPE ty_devclass_tt,
+          lv_allow LIKE LINE OF lt_allow,
+          lt_sub   TYPE ty_devclass_tt,
+          lv_sub   LIKE LINE OF lt_sub,
+          ls_used  LIKE LINE OF it_used.
 
 
     IF lines( it_used ) = 0.
@@ -65,6 +104,20 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
     LOOP AT lt_sub INTO lv_sub.
       DELETE it_used WHERE package = lv_sub.
     ENDLOOP.
+
+    lt_allow = list_allowed( is_encapsulation-package ).
+    LOOP AT lt_allow INTO lv_allow.
+      lt_sub = list_subpackages( lv_allow ).
+      LOOP AT lt_sub INTO lv_sub.
+        DELETE it_used WHERE package = lv_sub.
+      ENDLOOP.
+    ENDLOOP.
+
+    check_package_interfaces(
+      EXPORTING
+        is_encapsulation = is_encapsulation
+      CHANGING
+        ct_used          = it_used ).
 
     LOOP AT it_used INTO ls_used.
       inform( p_test    = myname
@@ -102,6 +155,35 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
     add_obj_type( 'FUGR' ).
     add_obj_type( 'TTYP' ).
     add_obj_type( 'VIEW' ).
+
+  ENDMETHOD.
+
+
+  METHOD explode_pinf.
+
+* todo, IT_PERMISSIONS-ERR_SEVER is currently ignored
+
+    DATA: lt_pinf       TYPE permis_tab,
+          ls_permission LIKE LINE OF it_permissions.
+
+
+    LOOP AT it_permissions INTO ls_permission.
+      SELECT elem_key AS intf_name FROM ifobjshort
+        APPENDING CORRESPONDING FIELDS OF TABLE lt_pinf
+        WHERE intf_name = ls_permission-intf_name
+        AND elem_type = 'PINF'.
+
+      SELECT elem_type AS obj_type
+        elem_key AS obj_name
+        FROM ifobjshort
+        APPENDING TABLE rt_allowed
+        WHERE intf_name = ls_permission-intf_name
+        AND elem_type <> 'PINF'.
+    ENDLOOP.
+
+    IF lines( lt_pinf ) > 0.
+      APPEND LINES OF explode_pinf( lt_pinf ) TO rt_allowed.
+    ENDIF.
 
   ENDMETHOD.
 
@@ -144,6 +226,42 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
                                            p_code = p_code
                                  IMPORTING p_text = p_text ).
     ENDCASE.
+
+  ENDMETHOD.
+
+
+  METHOD list_allowed.
+
+    DATA: ls_object         TYPE pak_object_key,
+          ls_classification TYPE cl_cls_attr_value_assignment=>ty_classification,
+          ls_assignment     LIKE LINE OF ls_classification-assignments.
+
+
+    TRY.
+        ls_object-trobjtype = 'DEVC'.
+        ls_object-sobj_name = iv_package.
+
+        cl_cls_attr_value_assignment=>get_attr_value_assignment(
+          EXPORTING
+            im_object         = ls_object
+            im_attribute      = 'ZAOC_ENCAPSULATION_ALLOW'
+          IMPORTING
+            ex_classification = ls_classification ).
+      CATCH cx_pak_not_authorized cx_pak_invalid_state cx_pak_invalid_data.
+        RETURN.
+    ENDTRY.
+
+    LOOP AT ls_classification-assignments INTO ls_assignment.
+      APPEND ls_assignment-value TO rt_list.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD list_permissions.
+
+    SELECT * FROM permission INTO TABLE rt_list
+      WHERE client_pak = iv_package.
 
   ENDMETHOD.
 
