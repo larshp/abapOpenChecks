@@ -7,57 +7,42 @@ CLASS zcl_aoc_check_61 DEFINITION
 
     METHODS constructor .
 
-    METHODS get_attributes
-        REDEFINITION .
     METHODS get_message_text
-        REDEFINITION .
-    METHODS if_ci_test~query_attributes
-        REDEFINITION .
-    METHODS put_attributes
         REDEFINITION .
     METHODS run
         REDEFINITION .
   PROTECTED SECTION.
 
     TYPES:
-      ty_seosubcodf_tt TYPE STANDARD TABLE OF seosubcodf WITH DEFAULT KEY .
+      BEGIN OF ty_encapsulation,
+        package TYPE devclass,
+      END OF ty_encapsulation .
     TYPES:
-      ty_vseosubcdf_tt TYPE STANDARD TABLE OF vseosubcdf WITH DEFAULT KEY .
-  PRIVATE SECTION.
+      ty_devclass_tt TYPE STANDARD TABLE OF devclass WITH DEFAULT KEY .
 
-    DATA mv_level TYPE devclass .
-    DATA mt_devclass TYPE packrange .
-
-    METHODS check_tabl
-      IMPORTING
-        !iv_name TYPE clike .
-    METHODS find_doma_package
-      IMPORTING
-        !iv_name       TYPE clike
-      RETURNING
-        VALUE(rv_devc) TYPE devclass .
-    METHODS find_dtel_package
-      IMPORTING
-        !iv_name       TYPE clike
-      RETURNING
-        VALUE(rv_devc) TYPE devclass .
-    METHODS find_encapsulation
-      RETURNING
-        VALUE(rv_parent) TYPE devclass .
-    METHODS find_tabl_package
-      IMPORTING
-        !iv_name       TYPE clike
-      RETURNING
-        VALUE(rv_devc) TYPE devclass .
-    METHODS is_part
+    METHODS read_classification
       IMPORTING
         !iv_package     TYPE devclass
       RETURNING
-        VALUE(rv_found) TYPE abap_bool .
-    METHODS report
+        VALUE(rv_value) TYPE cls_attribute_value .
+    METHODS find_encapsulation
+      RETURNING
+        VALUE(rs_encapsulation) TYPE ty_encapsulation .
+    METHODS check_used_objects
       IMPORTING
-        !iv_objtype TYPE trobjtype
-        !iv_objname TYPE clike .
+        !is_encapsulation TYPE ty_encapsulation
+        VALUE(it_used)    TYPE zcl_aoc_dependencies=>ty_objects_tt .
+    METHODS list_subpackages
+      IMPORTING
+        !iv_package    TYPE devclass
+      RETURNING
+        VALUE(rt_list) TYPE ty_devclass_tt .
+    METHODS list_superpackages
+      IMPORTING
+        !iv_package    TYPE devclass
+      RETURNING
+        VALUE(rt_list) TYPE ty_devclass_tt .
+  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -65,59 +50,28 @@ ENDCLASS.
 CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
 
 
-  METHOD check_tabl.
+  METHOD check_used_objects.
 
-    TYPES: BEGIN OF ty_dd03l,
-             domname  TYPE dd03l-domname,
-             rollname TYPE dd03l-rollname,
-             comptype TYPE dd03l-comptype,
-           END OF ty_dd03l.
-
-    DATA: lt_dd03l   TYPE STANDARD TABLE OF ty_dd03l WITH DEFAULT KEY,
-          lv_package TYPE devclass,
-          ls_dd03l   LIKE LINE OF lt_dd03l.
+    DATA: lt_sub  TYPE ty_devclass_tt,
+          ls_used LIKE LINE OF it_used,
+          lv_sub  LIKE LINE OF lt_sub.
 
 
-    lv_package = find_tabl_package( iv_name ).
-    IF is_part( lv_package ) = abap_false.
-      report( iv_objtype = 'TABL'
-              iv_objname = iv_name ).
-    ENDIF.
-
-    SELECT domname rollname comptype
-      FROM dd03l INTO TABLE lt_dd03l
-      WHERE tabname = iv_name.
-    IF sy-subrc <> 0.
+    IF lines( it_used ) = 0.
       RETURN.
     ENDIF.
 
-    LOOP AT lt_dd03l INTO ls_dd03l.
-      CASE ls_dd03l-comptype.
-        WHEN 'S'.
-          IF NOT ls_dd03l-rollname IS INITIAL.
-            check_tabl( ls_dd03l-rollname ).
-            CONTINUE.
-          ENDIF.
-        WHEN 'T'.
-*        check_TTYP( ls_dd03l-rollname ).
-          CONTINUE.
-      ENDCASE.
+    lt_sub = list_subpackages( is_encapsulation-package ).
+    LOOP AT lt_sub INTO lv_sub.
+      DELETE it_used WHERE package = lv_sub.
+    ENDLOOP.
 
-      IF NOT ls_dd03l-domname IS INITIAL.
-        lv_package = find_doma_package( ls_dd03l-domname ).
-        IF is_part( lv_package ) = abap_false.
-          report( iv_objtype = 'DOMA'
-                  iv_objname = ls_dd03l-domname ).
-        ENDIF.
-      ENDIF.
-
-      IF NOT ls_dd03l-rollname IS INITIAL.
-        lv_package = find_dtel_package( ls_dd03l-rollname ).
-        IF is_part( lv_package ) = abap_false.
-          report( iv_objtype = 'DTEL'
-                  iv_objname = ls_dd03l-rollname ).
-        ENDIF.
-      ENDIF.
+    LOOP AT it_used INTO ls_used.
+      inform( p_test    = myname
+              p_kind    = mv_errty
+              p_code    = '001'
+              p_param_1 = ls_used-obj_type
+              p_param_2 = ls_used-obj_name ).
     ENDLOOP.
 
   ENDMETHOD.
@@ -127,85 +81,53 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '002'.
-    position       = '061'.
+    version  = '002'.
+    position = '061'.
 
+    has_documentation = c_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
-    has_documentation = abap_true.
 
-    mv_errty      = c_error.
+    mv_errty = c_error.
 
+    add_obj_type( 'TRAN' ).
+    add_obj_type( 'CLAS' ).
+    add_obj_type( 'PROG' ).
+    add_obj_type( 'INTF' ).
+    add_obj_type( 'MSAG' ).
+    add_obj_type( 'DDLS' ).
+    add_obj_type( 'DOMA' ).
+    add_obj_type( 'DTEL' ).
     add_obj_type( 'TABL' ).
-
-  ENDMETHOD.                    "CONSTRUCTOR
-
-
-  METHOD find_doma_package.
-
-    SELECT SINGLE devclass FROM tadir INTO rv_devc
-      WHERE pgmid = 'R3TR'
-      AND object = 'DOMA'
-      AND obj_name = iv_name.
-
-  ENDMETHOD.
-
-
-  METHOD find_dtel_package.
-
-    SELECT SINGLE devclass FROM tadir INTO rv_devc
-      WHERE pgmid = 'R3TR'
-      AND object = 'DTEL'
-      AND obj_name = iv_name.
+    add_obj_type( 'FUGR' ).
+    add_obj_type( 'TTYP' ).
+    add_obj_type( 'VIEW' ).
 
   ENDMETHOD.
 
 
   METHOD find_encapsulation.
 
-    DATA: lv_devclass TYPE devclass.
+    DATA: lt_packages TYPE ty_devclass_tt,
+          lv_package  LIKE LINE OF lt_packages.
 
 
-    SELECT SINGLE devclass FROM tadir INTO lv_devclass
-      WHERE pgmid = 'R3TR'
-      AND object = object_type
+    SELECT SINGLE devclass INTO lv_package
+      FROM tadir
+      WHERE object = object_type
       AND obj_name = object_name.
     IF sy-subrc <> 0.
       RETURN.
     ENDIF.
 
-    WHILE NOT lv_devclass IS INITIAL.
-      IF lv_devclass IN mt_devclass.
-        rv_parent = lv_devclass.
+    lt_packages = list_superpackages( lv_package ).
+
+    LOOP AT lt_packages INTO lv_package.
+      IF read_classification( lv_package ) <> 'N'.
+        rs_encapsulation-package = lv_package.
         RETURN.
       ENDIF.
-
-      SELECT SINGLE parentcl INTO lv_devclass FROM tdevc
-        WHERE devclass = lv_devclass.
-      IF sy-subrc <> 0.
-        RETURN.
-      ENDIF.
-    ENDWHILE.
-
-  ENDMETHOD.
-
-
-  METHOD find_tabl_package.
-
-    SELECT SINGLE devclass FROM tadir INTO rv_devc
-      WHERE pgmid = 'R3TR'
-      AND object = 'TABL'
-      AND obj_name = iv_name.
-
-  ENDMETHOD.
-
-
-  METHOD get_attributes.
-
-    EXPORT
-      mv_errty = mv_errty
-      mt_devclass = mt_devclass
-      TO DATA BUFFER p_attributes.
+    ENDLOOP.
 
   ENDMETHOD.
 
@@ -216,7 +138,7 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
 
     CASE p_code.
       WHEN '001'.
-        p_text = 'Uses &1 &2, which is outside of the encapsulation'.
+        p_text = 'Uses &1 &2, which is outside of the encapsulation'. "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
@@ -226,73 +148,69 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD if_ci_test~query_attributes.
+  METHOD list_subpackages.
 
-    zzaoc_top.
-
-    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
-    zzaoc_fill_att mt_devclass 'Package' 'S'.               "#EC NOTEXT
-
-    zzaoc_popup.
-
-  ENDMETHOD.
+    DATA: lt_list     LIKE rt_list,
+          lv_devclass LIKE LINE OF rt_list.
 
 
-  METHOD is_part.
+    SELECT devclass INTO TABLE rt_list
+      FROM tdevc WHERE parentcl = iv_package. "#EC CI_GENBUFF "#EC CI_SUBRC
 
-    DATA: lv_package TYPE devclass.
-
-
-    lv_package = iv_package.
-
-    WHILE NOT lv_package IS INITIAL.
-      IF lv_package = mv_level.
-        rv_found = abap_true.
-        RETURN.
-      ENDIF.
-
-      SELECT SINGLE parentcl FROM tdevc INTO lv_package
-        WHERE devclass = lv_package.
-      IF sy-subrc <> 0.
-        RETURN.
-      ENDIF.
-    ENDWHILE.
+* note the recursion, since packages are added to the list
+    LOOP AT rt_list INTO lv_devclass.
+      lt_list = list_subpackages( lv_devclass ).
+      APPEND LINES OF lt_list TO rt_list.
+    ENDLOOP.
 
   ENDMETHOD.
 
 
-  METHOD put_attributes.
+  METHOD list_superpackages.
 
-    IMPORT
-      mv_errty = mv_errty
-      mt_devclass = mt_devclass
-      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
-    ASSERT sy-subrc = 0.
-
-  ENDMETHOD.
+    DATA: lt_list   LIKE rt_list,
+          lv_parent TYPE tdevc-parentcl.
 
 
-  METHOD report.
+    APPEND iv_package TO rt_list.
 
-    DATA: lv_srcsystem TYPE tadir-srcsystem.
+    SELECT SINGLE parentcl INTO lv_parent
+      FROM tdevc WHERE devclass = iv_package.           "#EC CI_GENBUFF
 
-
-    SELECT SINGLE srcsystem FROM tadir
-      INTO lv_srcsystem
-      WHERE pgmid = 'R3TR'
-      AND object = iv_objtype
-      AND obj_name = iv_objname.
-    IF sy-subrc <> 0 OR lv_srcsystem = 'SAP'.
-      RETURN.
+* todo, rewrite to iteration instead of recursion
+    IF sy-subrc = 0 AND NOT lv_parent IS INITIAL.
+      lt_list = list_superpackages( lv_parent ).
+      APPEND LINES OF lt_list TO rt_list.
     ENDIF.
 
-    inform( p_sub_obj_type = object_type
-            p_sub_obj_name = object_name
-            p_test         = myname
-            p_kind         = mv_errty
-            p_code         = '001'
-            p_param_1      = iv_objtype
-            p_param_2      = iv_objname ).
+  ENDMETHOD.
+
+
+  METHOD read_classification.
+
+    DATA: ls_object         TYPE pak_object_key,
+          ls_classification TYPE cl_cls_attr_value_assignment=>ty_classification,
+          ls_assignment     LIKE LINE OF ls_classification-assignments.
+
+
+    TRY.
+        ls_object-trobjtype = 'DEVC'.
+        ls_object-sobj_name = iv_package.
+
+        cl_cls_attr_value_assignment=>get_attr_value_assignment(
+          EXPORTING
+            im_object         = ls_object
+            im_attribute      = 'ZAOC_ENCAPSULATION'
+          IMPORTING
+            ex_classification = ls_classification ).
+      CATCH cx_pak_not_authorized cx_pak_invalid_state cx_pak_invalid_data.
+        RETURN.
+    ENDTRY.
+
+    READ TABLE ls_classification-assignments INDEX 1 INTO ls_assignment.
+    IF sy-subrc = 0.
+      rv_value = ls_assignment-value.
+    ENDIF.
 
   ENDMETHOD.
 
@@ -303,24 +221,22 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_level TYPE devclass.
+    DATA: lt_used          TYPE zcl_aoc_dependencies=>ty_objects_tt,
+          ls_encapsulation TYPE ty_encapsulation.
 
 
-    IF lines( mt_devclass ) = 0.
+    ls_encapsulation = find_encapsulation( ).
+    IF ls_encapsulation IS INITIAL.
       RETURN.
     ENDIF.
 
-    mv_level = find_encapsulation( ).
-    IF mv_level IS INITIAL.
-      RETURN.
-    ENDIF.
+    lt_used = zcl_aoc_dependencies=>resolve(
+      iv_obj_type = object_type
+      iv_obj_name = object_name ).
 
-    CASE object_type.
-      WHEN 'TABL'.
-        check_tabl( object_name ).
-      WHEN OTHERS.
-        ASSERT 0 = 1.
-    ENDCASE.
+    check_used_objects(
+      is_encapsulation = ls_encapsulation
+      it_used          = lt_used ).
 
   ENDMETHOD.
 ENDCLASS.
