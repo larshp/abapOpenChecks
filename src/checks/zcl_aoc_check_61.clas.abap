@@ -71,7 +71,8 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
               p_kind    = mv_errty
               p_code    = '001'
               p_param_1 = ls_used-obj_type
-              p_param_2 = ls_used-obj_name ).
+              p_param_2 = ls_used-obj_name
+              p_param_3 = is_encapsulation-package ).
     ENDLOOP.
 
   ENDMETHOD.
@@ -94,7 +95,6 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
     add_obj_type( 'CLAS' ).
     add_obj_type( 'PROG' ).
     add_obj_type( 'INTF' ).
-    add_obj_type( 'MSAG' ).
     add_obj_type( 'DDLS' ).
     add_obj_type( 'DOMA' ).
     add_obj_type( 'DTEL' ).
@@ -138,7 +138,7 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
 
     CASE p_code.
       WHEN '001'.
-        p_text = 'Uses &1 &2, which is outside of the encapsulation'. "#EC NOTEXT
+        p_text = 'Uses &1 &2, which is outside of the encapsulation(&3)'. "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
