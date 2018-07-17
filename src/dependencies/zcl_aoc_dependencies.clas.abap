@@ -145,11 +145,9 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
     DATA: ls_tfdir TYPE tfdir.
 
     SELECT SINGLE * FROM tfdir INTO ls_tfdir WHERE funcname = iv_name.
-    IF sy-subrc <> 0.
-      BREAK-POINT.
-    ELSE.
-      rv_name = ls_tfdir-pname_main+4.
-    ENDIF.
+    ASSERT sy-subrc = 0.
+
+    rv_name = ls_tfdir-pname_main+4.
 
   ENDMETHOD.
 
@@ -191,7 +189,7 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
       ENDCASE.
     ENDIF.
 
-    BREAK-POINT.
+    ASSERT 0 = 1.
 
   ENDMETHOD.
 
@@ -335,7 +333,8 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
         WHEN 'IC'.
           lv_type = 'PROG'.
         WHEN OTHERS.
-          BREAK-POINT.
+* todo
+          CONTINUE.
       ENDCASE.
       ls_used-obj_type = lv_type.
       ls_used-obj_name = <ls_wbcrossi>-name.
@@ -372,7 +371,8 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
         WHEN 'U'.
           CONTINUE. " FORMs in programs
         WHEN OTHERS.
-          BREAK-POINT.
+* todo
+          CONTINUE.
       ENDCASE.
       ls_used-obj_type = lv_type.
       ls_used-obj_name = <ls_cross>-name.
@@ -415,7 +415,8 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 * todo
           CONTINUE.
         WHEN OTHERS.
-          BREAK-POINT.
+* todo
+          CONTINUE.
       ENDCASE.
 
       IF <ls_wbcrossgt>-name CP '*\*'.
