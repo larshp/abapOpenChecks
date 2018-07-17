@@ -29,20 +29,6 @@
      <TDLINE>MIT License</TDLINE>
     </TLINE>
    </LINES>
-   <DESCRIPTIONS>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_CHECK_61</CLSNAME>
-     <CMPNAME>MT_DEVCLASS</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Table Type: Range for Package</DESCRIPT>
-    </SEOCOMPOTX>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_CHECK_61</CLSNAME>
-     <CMPNAME>MV_LEVEL</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Package</DESCRIPT>
-    </SEOCOMPOTX>
-   </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
 </abapGit>
