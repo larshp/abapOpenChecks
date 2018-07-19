@@ -142,6 +142,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
         name = ls_compiler-name.
       ENDIF.
       DELETE lt_parameters WHERE sconame = name.
+      CLEAR name.
     ENDLOOP.
 
     IF lines( lt_parameters ) > 0.
