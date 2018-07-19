@@ -50,6 +50,11 @@ CLASS zcl_aoc_check_56 DEFINITION
         !is_method     TYPE seocompo
         !it_parameters TYPE ty_seosubcodf_tt .
   PRIVATE SECTION.
+    methods get_name
+      importing
+        I_full_Name type string
+      returning
+        value(r_name)           type seosconame.
 ENDCLASS.
 
 
@@ -92,7 +97,10 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           ls_compiler   LIKE LINE OF lt_compiler,
           ls_mtdkey     TYPE seocpdkey,
           lv_include    TYPE programm,
+          lv_name       TYPE seosconame,
           lt_parameters TYPE ty_vseosubcdf_tt.
+
+    CHECK mv_referenced EQ abap_true.
 
 
     SELECT * FROM vseosubcdf INTO TABLE lt_parameters
@@ -125,13 +133,19 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     ENDIF.
 
     LOOP AT lt_compiler INTO ls_compiler
-        WHERE ( tag = cl_abap_compiler=>tag_data OR tag = cl_abap_compiler=>tag_method )
+        WHERE ( tag = cl_abap_compiler=>tag_data OR tag = cl_abap_compiler=>tag_method OR
+                tag = cl_abap_compiler=>tag_message_id OR tag = cl_abap_compiler=>tag_message_number OR
+                tag = cl_abap_compiler=>tag_message_type  )
         AND statement->source_info->name = lv_include.
-      DELETE lt_parameters WHERE sconame = ls_compiler-name.
+      name = get_name( ls_compiler-full_name ).
+      IF name IS INITIAL.
+        name = ls_compiler-name.
+      ENDIF.
+      DELETE lt_parameters WHERE sconame = name.
     ENDLOOP.
 
     IF lines( lt_parameters ) > 0.
-      report_unreferenced(
+     report_unreferenced(
         is_method     = is_method
         it_parameters = lt_parameters ).
     ENDIF.
@@ -166,6 +180,8 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     DATA: lt_found      TYPE sci_findlst,
           lv_index      TYPE i,
           lt_parameters TYPE ty_seosubcodf_tt.
+
+    check mv_supplied eq abap_true.
 
     FIELD-SYMBOLS: <ls_parameter> LIKE LINE OF lt_parameters,
                    <ls_found>     LIKE LINE OF lt_found.
@@ -402,4 +418,15 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
+
+  method get_name.
+    DATA: lv_moffset TYPE i,
+          lv_mlenght TYPE i.
+
+    FIND REGEX '([^:]*)$' In i_full_name MATCH OFFSET lv_moffset MATCH LENGTH lv_mlenght.
+    IF sy-subrc EQ 0.
+       r_name = i_full_name+lv_moffset(lv_mlenght).
+    ENDIF.
+  endmethod.
+
 ENDCLASS.
