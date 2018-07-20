@@ -190,9 +190,6 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_parameter> LIKE LINE OF lt_parameters,
                    <ls_found>     LIKE LINE OF lt_found.
 
-    IF mv_supplied EQ abap_false.
-      RETURN.
-    ENDIF.
 
     SELECT * FROM seosubcodf INTO TABLE lt_parameters
       WHERE clsname = is_method-clsname
