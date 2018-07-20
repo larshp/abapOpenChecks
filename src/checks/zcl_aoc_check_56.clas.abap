@@ -93,7 +93,10 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           ls_mtdkey     TYPE seocpdkey,
           lv_include    TYPE programm,
           lt_parameters TYPE ty_vseosubcdf_tt.
-
+    
+    IF mv_referenced EQ abap_false.
+       RETURN.
+    ENDIF.
 
     SELECT * FROM vseosubcdf INTO TABLE lt_parameters
       WHERE clsname = is_method-clsname
@@ -170,6 +173,9 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_parameter> LIKE LINE OF lt_parameters,
                    <ls_found>     LIKE LINE OF lt_found.
 
+    IF mv_supplied EQ abap_false.
+      RETURN.
+    ENDIF.
 
     SELECT * FROM seosubcodf INTO TABLE lt_parameters
       WHERE clsname = is_method-clsname
