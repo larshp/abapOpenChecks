@@ -100,8 +100,9 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           lv_name       TYPE seosconame,
           lt_parameters TYPE ty_vseosubcdf_tt.
 
-    CHECK mv_referenced EQ abap_true.
-
+    IF mv_referenced EQ abap_false.
+       RETURN.
+    ENDIF.
 
     SELECT * FROM vseosubcdf INTO TABLE lt_parameters
       WHERE clsname = is_method-clsname
@@ -137,12 +138,12 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
                 tag = cl_abap_compiler=>tag_message_id OR tag = cl_abap_compiler=>tag_message_number OR
                 tag = cl_abap_compiler=>tag_message_type  )
         AND statement->source_info->name = lv_include.
-      name = get_name( ls_compiler-full_name ).
-      IF name IS INITIAL.
-        name = ls_compiler-name.
+      lv_name = get_name( ls_compiler-full_name ).
+      IF lv_name IS INITIAL.
+        lv_name = ls_compiler-name.
       ENDIF.
-      DELETE lt_parameters WHERE sconame = name.
-      CLEAR name.
+      DELETE lt_parameters WHERE sconame = lv_name.
+      CLEAR lv_name.
     ENDLOOP.
 
     IF lines( lt_parameters ) > 0.
@@ -182,7 +183,9 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           lv_index      TYPE i,
           lt_parameters TYPE ty_seosubcodf_tt.
 
-    check mv_supplied eq abap_true.
+    IF mv_supplied EQ abap_false.
+      RETURN.
+    ENDIF.
 
     FIELD-SYMBOLS: <ls_parameter> LIKE LINE OF lt_parameters,
                    <ls_found>     LIKE LINE OF lt_found.
