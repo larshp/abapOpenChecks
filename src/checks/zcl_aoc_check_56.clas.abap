@@ -8,15 +8,15 @@ CLASS zcl_aoc_check_56 DEFINITION
     METHODS constructor .
 
     METHODS check
-        REDEFINITION .
+         REDEFINITION .
     METHODS get_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS get_message_text
-        REDEFINITION .
+         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION .
+         REDEFINITION .
   PROTECTED SECTION.
 
     TYPES:
@@ -50,16 +50,16 @@ CLASS zcl_aoc_check_56 DEFINITION
         !is_method     TYPE seocompo
         !it_parameters TYPE ty_seosubcodf_tt .
   PRIVATE SECTION.
-    methods get_name
-      importing
-        I_full_Name type string
-      returning
-        value(r_name)           type seosconame.
+    METHODS get_name
+      IMPORTING
+        i_full_name   TYPE string
+      RETURNING
+        VALUE(r_name) TYPE seosconame.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
+CLASS zcl_aoc_check_56 IMPLEMENTATION.
 
 
   METHOD check.
@@ -101,7 +101,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           lt_parameters TYPE ty_vseosubcdf_tt.
 
     IF mv_referenced EQ abap_false.
-       RETURN.
+      RETURN.
     ENDIF.
 
     SELECT * FROM vseosubcdf INTO TABLE lt_parameters
@@ -147,9 +147,9 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     ENDLOOP.
 
     IF lines( lt_parameters ) > 0.
-     report_unreferenced(
-        is_method     = is_method
-        it_parameters = lt_parameters ).
+      report_unreferenced(
+         is_method     = is_method
+         it_parameters = lt_parameters ).
     ENDIF.
 
   ENDMETHOD.
@@ -423,14 +423,16 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
   ENDMETHOD.
 
-  method get_name.
+  METHOD get_name.
     DATA: lv_moffset TYPE i,
           lv_mlenght TYPE i.
 
-    FIND REGEX '([^:]*)$' In i_full_name MATCH OFFSET lv_moffset MATCH LENGTH lv_mlenght.
+    FIND REGEX '([^:]*)$' IN i_full_name MATCH OFFSET lv_moffset MATCH LENGTH lv_mlenght.
     IF sy-subrc EQ 0.
-       r_name = i_full_name+lv_moffset(lv_mlenght).
+      r_name = i_full_name+lv_moffset(lv_mlenght).
     ENDIF.
-  endmethod.
+  ENDMETHOD.
+
+ENDCLASS.
 
 ENDCLASS.
