@@ -4,6 +4,8 @@ permalink: pretty
 collections:
   checks:
     output: true
+plugins:
+  - jekyll-octicons    
 defaults:
   -
     scope:
