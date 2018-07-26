@@ -145,9 +145,9 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
     DATA: ls_tfdir TYPE tfdir.
 
     SELECT SINGLE * FROM tfdir INTO ls_tfdir WHERE funcname = iv_name.
-    ASSERT sy-subrc = 0.
-
-    rv_name = ls_tfdir-pname_main+4.
+    IF sy-subrc = 0.
+      rv_name = ls_tfdir-pname_main+4.
+    ENDIF.
 
   ENDMETHOD.
 

@@ -107,6 +107,7 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
 
     lt_allow = list_allowed( is_encapsulation-package ).
     LOOP AT lt_allow INTO lv_allow.
+      DELETE it_used WHERE package = lv_allow.
       lt_sub = list_subpackages( lv_allow ).
       LOOP AT lt_sub INTO lv_sub.
         DELETE it_used WHERE package = lv_sub.
