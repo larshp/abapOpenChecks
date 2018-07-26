@@ -93,7 +93,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           ls_mtdkey     TYPE seocpdkey,
           lv_include    TYPE programm,
           lt_parameters TYPE ty_vseosubcdf_tt.
-    
+
     IF mv_referenced EQ abap_false.
        RETURN.
     ENDIF.
