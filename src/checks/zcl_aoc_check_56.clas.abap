@@ -95,7 +95,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           lt_parameters TYPE ty_vseosubcdf_tt.
 
     IF mv_referenced EQ abap_false.
-       RETURN.
+      RETURN.
     ENDIF.
 
     SELECT * FROM vseosubcdf INTO TABLE lt_parameters
