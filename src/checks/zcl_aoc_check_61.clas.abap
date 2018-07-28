@@ -47,7 +47,12 @@ CLASS zcl_aoc_check_61 DEFINITION
       IMPORTING
         !is_encapsulation TYPE ty_encapsulation
         VALUE(it_used)    TYPE zcl_aoc_dependencies=>ty_objects_tt .
-    METHODS list_allowed
+    METHODS list_allowed_objects
+      IMPORTING
+        !iv_package    TYPE devclass
+      RETURNING
+        VALUE(rt_list) TYPE zcl_aoc_dependencies=>ty_objects_tt .
+    METHODS list_allowed_packages
       IMPORTING
         !iv_package    TYPE devclass
       RETURNING
@@ -89,11 +94,13 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
 
   METHOD check_used_objects.
 
-    DATA: lt_allow TYPE ty_devclass_tt,
-          lv_allow LIKE LINE OF lt_allow,
-          lt_sub   TYPE ty_devclass_tt,
-          lv_sub   LIKE LINE OF lt_sub,
-          ls_used  LIKE LINE OF it_used.
+    DATA: lt_allow   TYPE ty_devclass_tt,
+          lv_allow   LIKE LINE OF lt_allow,
+          lt_sub     TYPE ty_devclass_tt,
+          lv_sub     LIKE LINE OF lt_sub,
+          lt_objects LIKE it_used,
+          ls_object  LIKE LINE OF lt_objects,
+          ls_used    LIKE LINE OF it_used.
 
 
     IF lines( it_used ) = 0.
@@ -105,13 +112,18 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
       DELETE it_used WHERE package = lv_sub.
     ENDLOOP.
 
-    lt_allow = list_allowed( is_encapsulation-package ).
+    lt_allow = list_allowed_packages( is_encapsulation-package ).
     LOOP AT lt_allow INTO lv_allow.
       DELETE it_used WHERE package = lv_allow.
       lt_sub = list_subpackages( lv_allow ).
       LOOP AT lt_sub INTO lv_sub.
         DELETE it_used WHERE package = lv_sub.
       ENDLOOP.
+    ENDLOOP.
+
+    lt_objects = list_allowed_objects( is_encapsulation-package ).
+    LOOP AT lt_objects INTO ls_object.
+      DELETE it_used WHERE obj_type = ls_object-obj_type AND obj_name = ls_object-obj_name.
     ENDLOOP.
 
     check_package_interfaces(
@@ -231,7 +243,43 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD list_allowed.
+  METHOD list_allowed_objects.
+
+    DATA: ls_object         TYPE pak_object_key,
+          ls_classification TYPE cl_cls_attr_value_assignment=>ty_classification,
+          lv_type           TYPE string,
+          lv_name           TYPE string,
+          ls_assignment     LIKE LINE OF ls_classification-assignments.
+
+    FIELD-SYMBOLS: <ls_list> LIKE LINE OF rt_list.
+
+
+    TRY.
+        ls_object-trobjtype = 'DEVC'.
+        ls_object-sobj_name = iv_package.
+
+        cl_cls_attr_value_assignment=>get_attr_value_assignment(
+          EXPORTING
+            im_object         = ls_object
+            im_attribute      = 'ZAOC_ENCAPSULATION_OBJECTS'
+          IMPORTING
+            ex_classification = ls_classification ).
+      CATCH cx_pak_not_authorized cx_pak_invalid_state cx_pak_invalid_data.
+        RETURN.
+    ENDTRY.
+
+    LOOP AT ls_classification-assignments INTO ls_assignment.
+      SPLIT ls_assignment-value AT ',' INTO lv_type lv_name.
+
+      APPEND INITIAL LINE TO rt_list ASSIGNING <ls_list>.
+      <ls_list>-obj_type = lv_type.
+      <ls_list>-obj_name = lv_name.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD list_allowed_packages.
 
     DATA: ls_object         TYPE pak_object_key,
           ls_classification TYPE cl_cls_attr_value_assignment=>ty_classification,
@@ -245,7 +293,7 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
         cl_cls_attr_value_assignment=>get_attr_value_assignment(
           EXPORTING
             im_object         = ls_object
-            im_attribute      = 'ZAOC_ENCAPSULATION_ALLOW'
+            im_attribute      = 'ZAOC_ENCAPSULATION_PACKAGES'
           IMPORTING
             ex_classification = ls_classification ).
       CATCH cx_pak_not_authorized cx_pak_invalid_state cx_pak_invalid_data.
