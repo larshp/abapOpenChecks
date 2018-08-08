@@ -59,7 +59,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_check_56 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
 
   METHOD check.
@@ -183,13 +183,13 @@ CLASS zcl_aoc_check_56 IMPLEMENTATION.
           lv_index      TYPE i,
           lt_parameters TYPE ty_seosubcodf_tt.
 
-    IF mv_supplied EQ abap_false.
-      RETURN.
-    ENDIF.
-
     FIELD-SYMBOLS: <ls_parameter> LIKE LINE OF lt_parameters,
                    <ls_found>     LIKE LINE OF lt_found.
 
+
+    IF mv_supplied EQ abap_false.
+      RETURN.
+    ENDIF.
 
     SELECT * FROM seosubcodf INTO TABLE lt_parameters
       WHERE clsname = is_method-clsname
@@ -321,6 +321,17 @@ CLASS zcl_aoc_check_56 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD get_name.
+    DATA: lv_moffset TYPE i,
+          lv_mlenght TYPE i.
+
+    FIND REGEX '([^:]*)$' IN i_full_name MATCH OFFSET lv_moffset MATCH LENGTH lv_mlenght.
+    IF sy-subrc EQ 0.
+      r_name = i_full_name+lv_moffset(lv_mlenght).
+    ENDIF.
+  ENDMETHOD.
+
+
   METHOD if_ci_test~query_attributes.
 
     zzaoc_top.
@@ -422,15 +433,4 @@ CLASS zcl_aoc_check_56 IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
-
-  METHOD get_name.
-    DATA: lv_moffset TYPE i,
-          lv_mlenght TYPE i.
-
-    FIND REGEX '([^:]*)$' IN i_full_name MATCH OFFSET lv_moffset MATCH LENGTH lv_mlenght.
-    IF sy-subrc EQ 0.
-      r_name = i_full_name+lv_moffset(lv_mlenght).
-    ENDIF.
-  ENDMETHOD.
-
 ENDCLASS.
