@@ -497,13 +497,15 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
         RETURN. " custom HR infotype includes
       ENDIF.
 
-      SELECT SINGLE cnam FROM reposrc INTO lv_cnam
-        WHERE progname = p_sub_obj_name AND r3state = 'A'.
-      IF sy-subrc = 0
-          AND ( lv_cnam = 'SAP'
-          OR lv_cnam = 'SAP*'
-          OR lv_cnam = 'DDIC' ).
-        RETURN.
+      IF cl_enh_badi_def_utility=>is_sap_system( ) = abap_false.
+        SELECT SINGLE cnam FROM reposrc INTO lv_cnam
+          WHERE progname = p_sub_obj_name AND r3state = 'A'.
+        IF sy-subrc = 0
+            AND ( lv_cnam = 'SAP'
+            OR lv_cnam = 'SAP*'
+            OR lv_cnam = 'DDIC' ).
+          RETURN.
+        ENDIF.
       ENDIF.
     ENDIF.
 
