@@ -42,6 +42,7 @@ CLASS zcl_aoc_check_08 DEFINITION
     DATA mv_021 TYPE flag.
     DATA mv_022 TYPE flag.
     DATA mv_023 TYPE flag.
+    DATA mv_024 TYPE flag.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -148,6 +149,8 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
         lv_code = '022'.
       ELSEIF mv_023 = abap_true AND lv_statement CP 'DO * VARYING *'.
         lv_code = '023'.
+      ELSEIF mv_024 = abap_true AND lv_statement CP 'CATCH SYSTEM-EXCEPTIONS *'.
+        lv_code = '024'.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
@@ -201,8 +204,9 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
     mv_021 = abap_true.
     mv_022 = abap_true.
     mv_023 = abap_true.
+    mv_024 = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -232,6 +236,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
       mv_021 = mv_021
       mv_022 = mv_022
       mv_023 = mv_023
+      mv_024 = mv_024
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -288,6 +293,8 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
         p_text = 'DO 1 TIMES'.                              "#EC NOTEXT
       WHEN '023'.
         p_text = 'DO ... VARYING ...'.                      "#EC NOTEXT
+      WHEN '024'.
+        p_text = 'CATCH SYSTEM-EXCEPTIONS is obsolete'.     "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
@@ -325,6 +332,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
     zzaoc_fill_att mv_021 'LOCAL' ''.                       "#EC NOTEXT
     zzaoc_fill_att mv_022 'DO 1 TIMES' ''.                  "#EC NOTEXT
     zzaoc_fill_att mv_023 'DO ... VARYING' ''.              "#EC NOTEXT
+    zzaoc_fill_att mv_024 'CATCH SYSTEM-EXCEPTIONS' ''.     "#EC NOTEXT
 
     zzaoc_popup.
 
@@ -358,6 +366,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
       mv_021 = mv_021
       mv_022 = mv_022
       mv_023 = mv_023
+      mv_024 = mv_024
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
