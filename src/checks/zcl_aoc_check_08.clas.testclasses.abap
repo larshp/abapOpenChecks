@@ -49,7 +49,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test021_01 FOR TESTING,
       test022_01 FOR TESTING,
       test022_02 FOR TESTING,
-      test023_01 FOR TESTING.
+      test023_01 FOR TESTING,
+      test024_01 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -436,4 +437,15 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
-ENDCLASS.       "lcl_Test
+  METHOD test024_01.
+
+    _code 'CATCH SYSTEM-EXCEPTIONS arithmetic_errors = 4.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '024'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+ENDCLASS.
