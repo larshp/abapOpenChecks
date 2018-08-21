@@ -8,19 +8,17 @@ CLASS zcl_aoc_check_56 DEFINITION
     METHODS constructor .
 
     METHODS check
-         REDEFINITION .
+        REDEFINITION .
     METHODS get_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS get_message_text
-         REDEFINITION .
+        REDEFINITION .
     METHODS put_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-         REDEFINITION .
+        REDEFINITION .
   PROTECTED SECTION.
 
-    TYPES:
-      ty_seosubcodf_tt TYPE STANDARD TABLE OF seosubcodf WITH DEFAULT KEY .
     TYPES:
       ty_vseosubcdf_tt TYPE STANDARD TABLE OF vseosubcdf WITH DEFAULT KEY .
 
@@ -48,7 +46,7 @@ CLASS zcl_aoc_check_56 DEFINITION
     METHODS report_unused
       IMPORTING
         !is_method     TYPE seocompo
-        !it_parameters TYPE ty_seosubcodf_tt .
+        !it_parameters TYPE ty_vseosubcdf_tt .
   PRIVATE SECTION.
     METHODS get_name
       IMPORTING
@@ -181,7 +179,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
     DATA: lt_found      TYPE sci_findlst,
           lv_index      TYPE i,
-          lt_parameters TYPE ty_seosubcodf_tt.
+          lt_parameters TYPE ty_vseosubcdf_tt.
 
     FIELD-SYMBOLS: <ls_parameter> LIKE LINE OF lt_parameters,
                    <ls_found>     LIKE LINE OF lt_found.
@@ -191,11 +189,12 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    SELECT * FROM seosubcodf INTO TABLE lt_parameters
+    SELECT * FROM vseosubcdf INTO TABLE lt_parameters
       WHERE clsname = is_method-clsname
       AND cmpname = is_method-cmpname
       AND version = '1'
       AND pardecltyp = '0'
+      AND scotype = '0'
       ORDER BY PRIMARY KEY.     "#EC CI_SUBRC "#EC CI_ALL_FIELDS_NEEDED
 
     IF lines( lt_parameters ) <= 1.
