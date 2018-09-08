@@ -299,6 +299,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       lv_statement = get_statement( ).
       IF lv_statement CS 'FOR TESTING'.
         lv_regex = ms_naming-oo_ooltcl.
+      ELSEIF lv_statement cs 'FROM CX_'.
+        lv_regex = ms_naming-oo_oolxcl.
       ENDIF.
     ENDIF.
 
@@ -1221,6 +1223,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ms_naming-oo_ooretu = 'R[:type:]_' ##NO_TEXT.
     ms_naming-oo_oolcla = 'LCL_'.
     ms_naming-oo_ooltcl = 'LTCL_'.
+    ms_naming-oo_oolxcl = 'LCX_'.
     ms_naming-oo_oolint = 'LIF_'.
 
     ms_naming-set_excpar = abap_true.
