@@ -250,12 +250,11 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_class.
 
-    DATA: lv_name       TYPE string,
-          lv_statement  TYPE string,
-          lo_super      TYPE REF TO cl_abap_comp_class,
-          lv_abstract   TYPE abap_bool,
-          lv_regex      TYPE string,
-          lv_stmt_regex TYPE string.
+    DATA: lv_name      TYPE string,
+          lv_statement TYPE string,
+          lo_super     TYPE REF TO cl_abap_comp_class,
+          lv_abstract  TYPE abap_bool,
+          lv_regex     TYPE string.
 
 
     CASE get_token_rel( 4 ).
@@ -300,23 +299,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       lv_statement = get_statement( ).
       IF lv_statement CS 'FOR TESTING'.
         lv_regex = ms_naming-oo_ooltcl.
-      ELSEIF lv_statement CS 'FROM CX_' OR lv_statement CP '*FROM /*/CX_*' OR lv_statement CP '*FROM +CX_*'.
+      ELSEIF lo_super->full_name = '\TY:CX_ROOT'.
         lv_regex = ms_naming-oo_oolxcl.
-      ELSE.
-        IF ms_naming-globals_clasx IS NOT INITIAL.
-          lv_stmt_regex = ms_naming-globals_clasx.
-          REPLACE FIRST OCCURRENCE OF '[:nspace:]' IN lv_regex WITH ms_naming-globals_nspace.
-        ENDIF.
-        IF ms_naming-oo_oolxcl IS NOT INITIAL.
-          lv_stmt_regex = |{ lv_stmt_regex }\|{ ms_naming-oo_oolxcl }|.
-        ENDIF.
-        IF lv_stmt_regex IS NOT INITIAL.
-          lv_stmt_regex = |FROM ({ lv_stmt_regex })|.
-          FIND REGEX lv_stmt_regex IN lv_statement IGNORING CASE.
-          IF sy-subrc = 0.
-            lv_regex = ms_naming-oo_oolxcl.
-          ENDIF.
-        ENDIF.
       ENDIF.
     ENDIF.
 
