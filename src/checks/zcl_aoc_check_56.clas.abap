@@ -19,8 +19,16 @@ CLASS zcl_aoc_check_56 DEFINITION
         REDEFINITION .
   PROTECTED SECTION.
 
+    TYPES: BEGIN OF ty_vseosubcdf,
+             clsname    TYPE vseosubcdf-clsname,
+             cmpname    TYPE vseosubcdf-cmpname,
+             sconame    TYPE vseosubcdf-sconame,
+             version    TYPE vseosubcdf-version,
+             paroptionl TYPE vseosubcdf-paroptionl,
+           END OF ty_vseosubcdf.
+
     TYPES:
-      ty_vseosubcdf_tt TYPE STANDARD TABLE OF vseosubcdf WITH DEFAULT KEY .
+      ty_vseosubcdf_tt TYPE STANDARD TABLE OF ty_vseosubcdf WITH DEFAULT KEY .
 
     DATA mv_supplied TYPE flag .
     DATA mv_referenced TYPE flag .
@@ -102,7 +110,8 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    SELECT * FROM vseosubcdf INTO TABLE lt_parameters
+    SELECT * FROM vseosubcdf
+      INTO CORRESPONDING FIELDS OF TABLE lt_parameters
       WHERE clsname = is_method-clsname
       AND cmpname = is_method-cmpname
       AND version = '1'
@@ -179,6 +188,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
     DATA: lt_found      TYPE sci_findlst,
           lv_index      TYPE i,
+          lv_prefered   TYPE seosubcodf-parpreferd,
           lt_parameters TYPE ty_vseosubcdf_tt.
 
     FIELD-SYMBOLS: <ls_parameter> LIKE LINE OF lt_parameters,
@@ -189,7 +199,8 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    SELECT * FROM vseosubcdf INTO TABLE lt_parameters
+    SELECT * FROM vseosubcdf
+      INTO CORRESPONDING FIELDS OF TABLE lt_parameters
       WHERE clsname = is_method-clsname
       AND cmpname = is_method-cmpname
       AND version = '1'
@@ -201,6 +212,18 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+    LOOP AT lt_parameters ASSIGNING <ls_parameter>.
+      lv_index = sy-tabix.
+      SELECT SINGLE parpreferd FROM seosubcodf INTO lv_prefered
+        WHERE clsname = <ls_parameter>-clsname
+        AND cmpname = <ls_parameter>-cmpname
+        AND sconame = <ls_parameter>-sconame
+        AND version = <ls_parameter>-version.
+      IF sy-subrc = 0 AND lv_prefered = abap_true.
+        DELETE lt_parameters INDEX lv_index.
+      ENDIF.
+    ENDLOOP.
+
     READ TABLE lt_parameters WITH KEY paroptionl = abap_false TRANSPORTING NO FIELDS.
     IF sy-subrc <> 0.
 * all parameters optional
@@ -208,6 +231,10 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     ENDIF.
 
     DELETE lt_parameters WHERE paroptionl = abap_false.
+
+    IF lines( lt_parameters ) = 0.
+      RETURN.
+    ENDIF.
 
     lt_found = find_where_used( is_method ).
 
