@@ -84,7 +84,10 @@ CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL
       test044 FOR TESTING,
       test045 FOR TESTING,
       test046 FOR TESTING,
-      test047 FOR TESTING.
+      test047 FOR TESTING,
+      test048 FOR TESTING,
+      test049 FOR TESTING,
+      test050 FOR TESTING.
 
 ENDCLASS.       "ltcl_Test
 
@@ -569,6 +572,38 @@ CLASS ltcl_parse IMPLEMENTATION.
     DATA: lv_result TYPE string.
 
     lv_result = parse( 'IF SY-DATUM + 1 > + SY-DATUM.' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
+  METHOD test048.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF abap_true = lines( tab ) AND ( NOT line_' &&
+      'exists( tab[ bname = ''ASDF'' ] ) OR sy-abcde = abap_true ).' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'AND( COMPARE ( OR( NOT( COMPARE ) COMPARE ) ) )' ).
+  ENDMETHOD.
+
+  METHOD test049.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF ( lv_req_date = 0 OR lv_req_date IS INITIAL ) O' &&
+      'R ( lv_req_date NOT BETWEEN lv_date_from AND lv_date_to ).' ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'OR( ( OR( COMPARE COMPARE ) ) ( COMPARE ) )' ).
+  ENDMETHOD.
+
+  METHOD test050.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF var NOT BETWEEN moo AND foo.' ).
 
     cl_abap_unit_assert=>assert_equals(
       act = lv_result
