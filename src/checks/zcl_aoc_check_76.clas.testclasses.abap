@@ -33,7 +33,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD test001_01.
 
-    mt_code = VALUE #( ( `SELECT * INTO TABLE @DATA(lt_data) FROM e070 INNER JOIN e07t ON e070~trkorr = e07t~trkorr WHERE e07t~langu = @sy-langu.` ) ).
+    APPEND |SELECT * INTO TABLE @DATA(lt_data) FROM e070 INN| &&
+      |ER JOIN e07t ON e070~trkorr = e07t~trkorr WHERE e07t~langu = @sy-langu.| TO mt_code.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
@@ -44,7 +45,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD test001_02.
 
-    mt_code = VALUE #( ( `SELECT * INTO TABLE @DATA(lt_data) FROM e070 INNER JOIN e071 ON e070~trkorr = e071~trkorr.` ) ).
+    APPEND |SELECT * INTO TABLE @DATA(lt_data) FROM e070 INNER JOIN e071 ON e070~trkorr = e071~trkorr.| TO mt_code.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 

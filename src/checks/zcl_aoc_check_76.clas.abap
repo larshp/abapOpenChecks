@@ -36,7 +36,8 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_check_76 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
+
 
   METHOD check.
 
@@ -50,10 +51,14 @@ CLASS zcl_aoc_check_76 IMPLEMENTATION.
           lf_relevant_join_found TYPE abap_bool,
           lv_tabname             TYPE tabname,
           ln_line                TYPE i,
+          lt_statement_tokens    TYPE stokesx_tab,
+          ls_next                LIKE LINE OF lt_statement_tokens,
+          ls_prev                LIKE LINE OF lt_statement_tokens,
           ln_column              TYPE token_col.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement>       LIKE LINE OF it_statements,
+                   <ls_statement_token> LIKE LINE OF lt_statement_tokens,
+                   <ls_token>           LIKE LINE OF it_tokens.
 
 
     LOOP AT it_statements ASSIGNING <ls_statement>.
@@ -67,23 +72,26 @@ CLASS zcl_aoc_check_76 IMPLEMENTATION.
 
         lf_relevant_join_found = abap_false.
 
-        DATA(lt_statement_tokens) = get_tokens_for_statement(
+        lt_statement_tokens = get_tokens_for_statement(
           is_statement = <ls_statement>
-          it_tokens    = it_tokens
-        ).
+          it_tokens    = it_tokens ).
 
-        CHECK line_exists( lt_statement_tokens[ str = 'JOIN' ] ).
+        READ TABLE lt_statement_tokens WITH KEY str = 'JOIN' TRANSPORTING NO FIELDS.
+        CHECK sy-subrc = 0.
 
-        LOOP AT lt_statement_tokens ASSIGNING FIELD-SYMBOL(<ls_statement_token>)
-        WHERE str = 'JOIN'.
+        LOOP AT lt_statement_tokens ASSIGNING <ls_statement_token> WHERE str = 'JOIN'.
           ln_prev_token = sy-tabix - 1.
           ln_next_token = sy-tabix + 1.
-          IF lt_statement_tokens[ ln_prev_token ]-str <> 'OUTER'.
+
+          READ TABLE lt_statement_tokens INDEX ln_prev_token INTO ls_prev.
+          READ TABLE lt_statement_tokens INDEX ln_next_token INTO ls_next.
+
+          IF ls_prev-str <> 'OUTER'.
             " check if the join contains a text table
-            lv_tabname = lt_statement_tokens[ ln_next_token ]-str.
+            lv_tabname = ls_next-str.
             IF is_text_table( lv_tabname ) = abap_true.
-              ln_line = lt_statement_tokens[ ln_next_token ]-row.
-              ln_column = lt_statement_tokens[ ln_next_token ]-col.
+              ln_line = ls_next-row.
+              ln_column = ls_next-col.
               lf_relevant_join_found = abap_true.
               EXIT.
             ENDIF.
@@ -150,6 +158,17 @@ CLASS zcl_aoc_check_76 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD get_tokens_for_statement.
+
+    FIELD-SYMBOLS: <ls_token> LIKE LINE OF it_tokens.
+
+    LOOP AT it_tokens FROM is_statement-from TO is_statement-to ASSIGNING <ls_token>.
+      APPEND <ls_token> TO rt_tokens.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
   METHOD if_ci_test~query_attributes.
 
     zzaoc_top.
@@ -157,6 +176,30 @@ CLASS zcl_aoc_check_76 IMPLEMENTATION.
     zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
 
     zzaoc_popup.
+
+  ENDMETHOD.
+
+
+  METHOD is_text_table.
+
+    DATA: lt_dfies TYPE STANDARD TABLE OF dfies.
+
+    rf_is_texttable = abap_false.
+
+    CALL FUNCTION 'DDIF_NAMETAB_GET'
+      EXPORTING
+        tabname   = iv_tablename
+      TABLES
+        dfies_tab = lt_dfies
+      EXCEPTIONS
+        not_found = 1
+        OTHERS    = 2.
+    CHECK sy-subrc = 0.
+
+    READ TABLE lt_dfies WITH KEY keyflag = abap_true datatype = 'LANG' TRANSPORTING NO FIELDS.
+    CHECK sy-subrc = 0.
+
+    rf_is_texttable = abap_true.
 
   ENDMETHOD.
 
@@ -169,36 +212,4 @@ CLASS zcl_aoc_check_76 IMPLEMENTATION.
     ASSERT sy-subrc = 0.
 
   ENDMETHOD.
-
-  METHOD get_tokens_for_statement.
-    CLEAR rt_tokens.
-    LOOP AT it_tokens FROM is_statement-from TO is_statement-to ASSIGNING FIELD-SYMBOL(<ls_token>).
-      APPEND <ls_token> TO rt_tokens.
-    ENDLOOP.
-  ENDMETHOD.
-
-
-  METHOD is_text_table.
-    DATA:
-      lt_dfies TYPE STANDARD TABLE OF dfies.
-
-    rf_is_texttable = abap_false.
-
-    CALL FUNCTION 'DDIF_NAMETAB_GET'
-      EXPORTING
-        tabname   = iv_tablename
-      TABLES
-        dfies_tab = lt_dfies
-      EXCEPTIONS
-        not_found = 1
-        OTHERS    = 2.
-
-    CHECK sy-subrc = 0.
-
-    CHECK line_exists( lt_dfies[ keyflag = abap_true datatype = 'LANG' ] ).
-
-    rf_is_texttable = abap_true.
-
-  ENDMETHOD.
-
 ENDCLASS.
