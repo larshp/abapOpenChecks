@@ -153,6 +153,8 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         lv_error = '014'.
       ELSEIF lv_code CP 'APPEND  *'.
         lv_error = '015'.
+      ELSEIF lv_code CP 'METHOD  *'.
+        lv_error = '017'.
       ENDIF.
 
       IF lv_error IS INITIAL.
@@ -229,6 +231,8 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         p_text = 'Double space after APPEND'.               "#EC NOTEXT
       WHEN '016'.
         p_text = 'Double space in method call'.             "#EC NOTEXT
+      WHEN '017'.
+        p_text = 'Double space after METHOD'.               "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
