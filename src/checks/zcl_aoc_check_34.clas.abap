@@ -19,8 +19,15 @@ CLASS zcl_aoc_check_34 DEFINITION
         REDEFINITION.
   PROTECTED SECTION.
 
-    DATA mv_lines TYPE i.
-    DATA mv_incl_comments TYPE flag.
+    DATA mv_lines TYPE i .
+    DATA mv_incl_comments TYPE flag .
+
+    METHODS run_logic
+      IMPORTING
+        !is_statement     TYPE sstmnt
+        !is_token         TYPE stokesx
+        !iv_start         TYPE i
+        !iv_comment_lines TYPE i .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -35,24 +42,7 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-* todo, move this macro to method instead
-    DEFINE _check.
-      IF lv_start > 0 AND ( ( mv_incl_comments EQ abap_true
-          AND ( ( lv_start + mv_lines ) < <ls_token>-row  ) )
-          OR ( mv_incl_comments EQ abap_false
-          AND ( ( lv_start + mv_lines ) < ( <ls_token>-row - lv_comment_lines ) ) ) ).
-        lv_include = get_include( p_level = <ls_statement>-level ).
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
-                p_line         = lv_start
-                p_kind         = mv_errty
-                p_test         = myname
-                p_code         = '001' ).
-      ENDIF.
-    END-OF-DEFINITION.
-
     DATA: lv_start         TYPE i,
-          lv_include       TYPE sobj_name,
           lv_comment_lines TYPE i.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
@@ -68,15 +58,23 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
 
       CASE <ls_token>-str.
         WHEN 'WHEN'.
-          _check.
+          run_logic(
+            is_statement     = <ls_statement>
+            is_token         = <ls_token>
+            iv_start         = lv_start
+            iv_comment_lines = lv_comment_lines ).
           lv_comment_lines = 0.
           lv_start = <ls_token>-row.
         WHEN 'ENDCASE'.
-          _check.
+          run_logic(
+            is_statement     = <ls_statement>
+            is_token         = <ls_token>
+            iv_start         = lv_start
+            iv_comment_lines = lv_comment_lines ).
           lv_comment_lines = 0.
           lv_start = 0.
         WHEN OTHERS.
-          IF <ls_statement>-type EQ scan_stmnt_type-comment.
+          IF <ls_statement>-type = scan_stmnt_type-comment.
             lv_comment_lines = lv_comment_lines + <ls_statement>-to - <ls_statement>-from.
           ENDIF.
       ENDCASE.
@@ -151,6 +149,28 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
       mv_incl_comments = mv_incl_comments
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
+
+
+  METHOD run_logic.
+
+    DATA: lv_include TYPE sobj_name.
+
+
+    IF iv_start > 0 AND ( ( mv_incl_comments = abap_true
+        AND iv_start + mv_lines < is_token-row )
+        OR ( mv_incl_comments = abap_false
+        AND iv_start + mv_lines < is_token-row - iv_comment_lines ) ).
+
+      lv_include = get_include( p_level = is_statement-level ).
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = lv_include
+              p_line         = iv_start
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '001' ).
+    ENDIF.
 
   ENDMETHOD.
 ENDCLASS.
