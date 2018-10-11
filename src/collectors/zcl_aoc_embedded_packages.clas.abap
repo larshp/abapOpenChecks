@@ -89,6 +89,8 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_object> LIKE LINE OF lt_objects.
 
 
+    CLEAR: p_objslist, p_srcid.
+
     lt_embedded = find_embedded( ).
     IF lines( lt_embedded ) = 0.
       RETURN.

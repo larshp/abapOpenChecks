@@ -268,11 +268,10 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
         IF sy-subrc = 0.
           RETURN.
         ENDIF.
-
-        rv_bool = abap_true.
-      ELSE.
-        rv_bool = abap_true.
       ENDIF.
+
+      rv_bool = abap_true.
+
     ENDIF.
 
   ENDMETHOD.

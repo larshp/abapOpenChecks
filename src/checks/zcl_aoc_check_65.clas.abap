@@ -66,7 +66,7 @@ CLASS ZCL_AOC_CHECK_65 IMPLEMENTATION.
 
     DATA: lv_name  TYPE tdsfname,
           lx_check TYPE REF TO cx_ssf_fb_check,
-          ls_error TYPE ssfmsgerr,
+          ls_error LIKE LINE OF lx_check->error_table,
           lo_sf    TYPE REF TO cl_ssf_fb_smart_form.
 
 

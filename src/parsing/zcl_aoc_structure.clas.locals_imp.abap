@@ -67,11 +67,11 @@ CLASS lcl_build DEFINITION FINAL.
         VALUE(ro_structure) TYPE REF TO zcl_aoc_structure.
 
   PRIVATE SECTION.
+
     DATA: mt_tokens     TYPE stokesx_tab,
           mt_statements TYPE sstmnt_tab,
-          mt_structures TYPE zcl_aoc_super=>ty_structures_tt.
-
-    DATA: mt_sstr TYPE TABLE OF zcl_aoc_structure=>ty_statement.
+          mt_structures TYPE zcl_aoc_super=>ty_structures_tt,
+          mt_sstr       TYPE TABLE OF zcl_aoc_structure=>ty_statement.
 
     METHODS: build_sstr.
 

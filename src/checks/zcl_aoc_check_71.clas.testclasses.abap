@@ -10,7 +10,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
 
     DATA: mt_code   TYPE string_table,
           ms_result TYPE scirest_ad,
-          mo_check  TYPE REF TO ZCL_AOC_CHECK_71.
+          mo_check  TYPE REF TO zcl_aoc_check_71.
 
     METHODS:
       setup,

@@ -72,7 +72,7 @@ CLASS ZCL_AOC_CHECK_24_RESULT IMPLEMENTATION.
         object_type = 'PROG'
         position    = lv_line
       EXCEPTIONS
-        OTHERS      = 3. "#EC CI_SUBRC
+        OTHERS      = 3.
     IF sy-subrc <> 0.
       MESSAGE w000(zabapopenchecks).
     ENDIF.

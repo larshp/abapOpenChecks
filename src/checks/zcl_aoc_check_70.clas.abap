@@ -152,13 +152,14 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
 
   METHOD get_comment_tokens.
-    FIELD-SYMBOLS:
-      <ls_token> TYPE stokesx.
+
+    FIELD-SYMBOLS: <ls_token> LIKE LINE OF it_tokens.
 
     "only meaningful comments
     LOOP AT it_tokens ASSIGNING <ls_token> WHERE type = scan_token_type-comment AND str CN '*"-&'.
       APPEND <ls_token> TO rt_comments.
     ENDLOOP.
+
   ENDMETHOD.
 
 
@@ -178,8 +179,8 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
   METHOD get_plain_text_comment.
     FIELD-SYMBOLS:
-      <lv_comment_text> TYPE string,
-      <ls_comment>      TYPE stokesx.
+      <lv_comment_text> LIKE LINE OF rt_comment_texts,
+      <ls_comment>      LIKE LINE OF it_comments.
 
     "get plain text from comments
     LOOP AT it_comments ASSIGNING <ls_comment>.
@@ -193,8 +194,8 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
   METHOD get_tokens.
     FIELD-SYMBOLS:
-      <ls_token>     TYPE stokesx,
-      <ls_statement> TYPE sstmnt.
+      <ls_token>     LIKE LINE OF it_tokens,
+      <ls_statement> LIKE LINE OF it_statements.
 
     LOOP AT it_statements ASSIGNING <ls_statement> WHERE level = iv_level.
       LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
@@ -229,9 +230,9 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
       lt_result        TYPE match_result_tab.
 
     FIELD-SYMBOLS:
-      <lv_comment_text> TYPE string,
-      <ls_comment>      TYPE stokesx,
-      <ls_result>       TYPE match_result.
+      <lv_comment_text> LIKE LINE OF it_comment_texts,
+      <ls_comment>      LIKE LINE OF it_comments,
+      <ls_result>       LIKE LINE OF lt_result.
 
     IF iv_pattern IS INITIAL.
       RETURN.

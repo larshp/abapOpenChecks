@@ -106,7 +106,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           lv_name       TYPE seosconame,
           lt_parameters TYPE ty_vseosubcdf_tt.
 
-    IF mv_referenced EQ abap_false.
+    IF mv_referenced = abap_false.
       RETURN.
     ENDIF.
 
@@ -195,7 +195,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
                    <ls_found>     LIKE LINE OF lt_found.
 
 
-    IF mv_supplied EQ abap_false.
+    IF mv_supplied = abap_false.
       RETURN.
     ENDIF.
 
@@ -352,7 +352,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           lv_mlenght TYPE i.
 
     FIND REGEX '([^:]*)$' IN i_full_name MATCH OFFSET lv_moffset MATCH LENGTH lv_mlenght.
-    IF sy-subrc EQ 0.
+    IF sy-subrc = 0.
       r_name = i_full_name+lv_moffset(lv_mlenght).
     ENDIF.
   ENDMETHOD.

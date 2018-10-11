@@ -66,8 +66,7 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: ls_level   LIKE LINE OF it_levels,
-          lt_methods TYPE ty_methods_tt,
+    DATA: lt_methods TYPE ty_methods_tt,
           lt_locals  TYPE scr_refs,
           lv_error   TYPE abap_bool,
           ls_local   LIKE LINE OF lt_locals,

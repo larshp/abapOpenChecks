@@ -53,7 +53,7 @@ CLASS ZCL_AOC_SUPER_ROOT IMPLEMENTATION.
 
   METHOD if_ci_test~display_documentation.
 
-    DATA: lv_url TYPE string VALUE 'http://docs.abapopenchecks.org/checks/',
+    DATA: lv_url TYPE string VALUE 'http://docs.abapopenchecks.org/checks/' ##NO_TEXT,
           lv_len TYPE i.
 
 

@@ -194,10 +194,14 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
       EXCEPTIONS
         not_found = 1
         OTHERS    = 2.
-    CHECK sy-subrc = 0.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
 
     READ TABLE lt_dfies WITH KEY keyflag = abap_true datatype = 'LANG' TRANSPORTING NO FIELDS.
-    CHECK sy-subrc = 0.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
 
     rf_is_texttable = abap_true.
 

@@ -18,7 +18,7 @@ START-OF-SELECTION.
   PERFORM run.
   PERFORM output.
 
-CLASS lcl_logic DEFINITION.
+CLASS lcl_logic DEFINITION FINAL.
   PUBLIC SECTION.
     CLASS-METHODS:
       in_open_transport IMPORTING is_tadir       TYPE tadir

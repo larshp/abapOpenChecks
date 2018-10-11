@@ -158,7 +158,7 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
       ENDIF.
 
       IF lv_error IS INITIAL.
-        FIND REGEX '\w+\(  [ ]*\)' IN lv_code.
+        FIND REGEX '\w+\(  [ ]*\)' IN lv_code ##NO_TEXT.
         IF sy-subrc = 0.
           lv_error = '016'.
         ENDIF.

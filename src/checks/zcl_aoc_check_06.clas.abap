@@ -114,9 +114,8 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
     DATA: BEGIN OF ls_dynp_id,
             prog TYPE d020s-prog,
             dnum TYPE d020s-dnum,
-          END OF ls_dynp_id.
-
-    DATA: lt_d020s  TYPE STANDARD TABLE OF ty_d020s WITH DEFAULT KEY,
+          END OF ls_dynp_id,
+          lt_d020s  TYPE STANDARD TABLE OF ty_d020s WITH DEFAULT KEY,
           lv_option TYPE c LENGTH 5,
           ls_h      TYPE d020s,                             "#EC NEEDED
           lt_f      TYPE TABLE OF d021s,                    "#EC NEEDED

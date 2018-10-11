@@ -570,7 +570,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         data( lv_name ).
       ENDIF.
 
-      FIND REGEX '^FIELD-SYMBOL\((\w+)\)$' IN ls_token-str SUBMATCHES lv_name.
+      FIND REGEX '^FIELD-SYMBOL\((\w+)\)$' IN ls_token-str SUBMATCHES lv_name ##NO_TEXT.
       IF sy-subrc = 0.
         field_symbol( lv_name ).
       ENDIF.
@@ -1044,12 +1044,10 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     CASE p_code.
       WHEN '001'.
         p_text = 'Bad naming, expected &1, got &2'.         "#EC NOTEXT
-      WHEN '002'.
+      WHEN '002' OR '004'.
         p_text = 'Unable to resolve &1'.                    "#EC NOTEXT
       WHEN '003'.
         p_text = 'Error qualifying tokens'.                 "#EC NOTEXT
-      WHEN '004'.
-        p_text = 'Unable to resolve &1'.                    "#EC NOTEXT
       WHEN '005'.
         p_text = 'Syntax error'.                            "#EC NOTEXT
       WHEN '006'.
@@ -1251,7 +1249,6 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 * idoc processing function module
     IF ms_naming-set_idocfm = abap_true
         AND rv_skip = abap_false.
-      CLEAR ls_check.
       _append import 'INPUT_METHOD'.
       _append import 'MASS_PROCESSING'.
       _append export 'WORKFLOW_RESULT'.

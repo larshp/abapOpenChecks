@@ -1,4 +1,4 @@
-CLASS lcl_parse DEFINITION.
+CLASS lcl_parse DEFINITION FINAL.
 
   PUBLIC SECTION.
     CLASS-METHODS:
@@ -14,7 +14,7 @@ CLASS lcl_parse IMPLEMENTATION.
 
     DATA: lt_code       TYPE string_table,
           lt_tokens     TYPE stokesx_tab,
-          lt_statements TYPE sstmnt_tab.
+          lt_statements TYPE sstmnt_tab ##NEEDED.
 
 
     APPEND iv_string TO lt_code.

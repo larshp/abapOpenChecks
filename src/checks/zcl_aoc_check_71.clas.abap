@@ -52,7 +52,7 @@ CLASS ZCL_AOC_CHECK_71 IMPLEMENTATION.
       READ TABLE lt_statements INDEX lv_index INTO ls_prev. "#EC CI_SUBRC
 
       FIND REGEX 'MESSAGE.ID.SY-MSGID.TYPE.SY-MSGTY.NUMBER.SY-MSGNO.WITH.SY-MSGV.' IN <ls_statement>-str.
-      IF sy-subrc NE 0.
+      IF sy-subrc <> 0.
         CONTINUE.
       ENDIF.
 

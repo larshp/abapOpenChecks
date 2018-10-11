@@ -158,19 +158,19 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
     DATA: lv_clstype TYPE seoclass-clstype.
 
 
-    SELECT SINGLE COUNT(*) FROM dd04l WHERE rollname = iv_name.
+    SELECT COUNT(*) FROM dd04l WHERE rollname = iv_name.
     IF sy-subrc = 0.
       rv_type = 'DTEL'.
       RETURN.
     ENDIF.
 
-    SELECT SINGLE COUNT(*) FROM dd02l WHERE tabname = iv_name.
+    SELECT COUNT(*) FROM dd02l WHERE tabname = iv_name.
     IF sy-subrc = 0.
       rv_type = 'TABL'.
       RETURN.
     ENDIF.
 
-    SELECT SINGLE COUNT(*) FROM dd40l WHERE typename = iv_name.
+    SELECT COUNT(*) FROM dd40l WHERE typename = iv_name.
     IF sy-subrc = 0.
       rv_type = 'TTYP'.
       RETURN.
@@ -322,7 +322,7 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
   METHOD resolve_prog.
 
     DATA: lv_type      TYPE tadir-object,
-          lv_foo       TYPE string,
+          lv_foo       TYPE string ##NEEDED,
           lt_cross     TYPE STANDARD TABLE OF cross WITH DEFAULT KEY,
           ls_used      LIKE LINE OF rt_used,
           lt_wbcrossgt TYPE STANDARD TABLE OF wbcrossgt WITH DEFAULT KEY,
@@ -541,7 +541,7 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 
 
     SELECT SINGLE rowtype FROM dd40l INTO lv_rowtype
-      WHERE typename = iv_name.                           "#EC CI_SUBRC
+      WHERE typename = iv_name.
     IF sy-subrc = 0 AND NOT lv_rowtype IS INITIAL.
       ls_used-obj_type = find_type( lv_rowtype ).
       ls_used-obj_name = lv_rowtype.
