@@ -19,23 +19,32 @@ CLASS zcl_aoc_check_56 DEFINITION
         REDEFINITION .
   PROTECTED SECTION.
 
-    TYPES: BEGIN OF ty_vseosubcdf,
-             clsname    TYPE vseosubcdf-clsname,
-             cmpname    TYPE vseosubcdf-cmpname,
-             sconame    TYPE vseosubcdf-sconame,
-             version    TYPE vseosubcdf-version,
-             paroptionl TYPE vseosubcdf-paroptionl,
-           END OF ty_vseosubcdf.
-
+    TYPES:
+      BEGIN OF ty_vseosubcdf,
+        clsname    TYPE vseosubcdf-clsname,
+        cmpname    TYPE vseosubcdf-cmpname,
+        sconame    TYPE vseosubcdf-sconame,
+        version    TYPE vseosubcdf-version,
+        paroptionl TYPE vseosubcdf-paroptionl,
+      END OF ty_vseosubcdf .
     TYPES:
       ty_vseosubcdf_tt TYPE STANDARD TABLE OF ty_vseosubcdf WITH DEFAULT KEY .
 
     DATA mv_supplied TYPE flag .
     DATA mv_referenced TYPE flag .
 
+    METHODS report_unused_clas
+      IMPORTING
+        !is_method    TYPE seocompo
+        !is_parameter TYPE ty_vseosubcdf .
     METHODS check_supplied
       IMPORTING
         !is_method TYPE seocompo .
+    METHODS get_name
+      IMPORTING
+        !i_full_name  TYPE string
+      RETURNING
+        VALUE(r_name) TYPE seosconame .
     METHODS check_locally_referenced
       IMPORTING
         !is_method TYPE seocompo .
@@ -56,11 +65,6 @@ CLASS zcl_aoc_check_56 DEFINITION
         !is_method     TYPE seocompo
         !it_parameters TYPE ty_vseosubcdf_tt .
   PRIVATE SECTION.
-    METHODS get_name
-      IMPORTING
-        i_full_name   TYPE string
-      RETURNING
-        VALUE(r_name) TYPE seosconame.
 ENDCLASS.
 
 
@@ -416,40 +420,15 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
   METHOD report_unused.
 
-    DATA: lv_include TYPE programm,
-          ls_mtdkey  TYPE seocpdkey.
-
     FIELD-SYMBOLS: <ls_parameter> LIKE LINE OF it_parameters.
 
 
     LOOP AT it_parameters ASSIGNING <ls_parameter>.
       CASE object_type.
         WHEN 'CLAS'.
-          ls_mtdkey-clsname = is_method-clsname.
-          ls_mtdkey-cpdname = is_method-cmpname.
-          CLEAR lv_include.
-          cl_oo_classname_service=>get_method_include(
-            EXPORTING
-              mtdkey = ls_mtdkey
-            RECEIVING
-              result = lv_include
-            EXCEPTIONS
-              OTHERS = 0 ).
-
-          IF lv_include IS NOT INITIAL.
-            inform( p_sub_obj_type = c_type_include
-                    p_sub_obj_name = lv_include
-                    p_param_1      = <ls_parameter>-sconame
-                    p_kind         = mv_errty
-                    p_test         = myname
-                    p_code         = '001' ).
-          ELSE.
-            inform( p_param_1      = <ls_parameter>-sconame
-                    p_param_2      = is_method-cmpname
-                    p_kind         = mv_errty
-                    p_test         = myname
-                    p_code         = '002' ).
-          ENDIF.
+          report_unused_clas(
+            is_method    = is_method
+            is_parameter = <ls_parameter> ).
         WHEN 'INTF'.
           inform( p_param_1      = <ls_parameter>-sconame
                   p_param_2      = is_method-cmpname
@@ -460,6 +439,41 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           ASSERT 0 = 1.
       ENDCASE.
     ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD report_unused_clas.
+
+    DATA: lv_include TYPE programm,
+          ls_mtdkey  TYPE seocpdkey.
+
+
+    ls_mtdkey-clsname = is_method-clsname.
+    ls_mtdkey-cpdname = is_method-cmpname.
+
+    cl_oo_classname_service=>get_method_include(
+      EXPORTING
+        mtdkey = ls_mtdkey
+      RECEIVING
+        result = lv_include
+      EXCEPTIONS
+        OTHERS = 0 ).
+
+    IF lv_include IS NOT INITIAL.
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = lv_include
+              p_param_1      = is_parameter-sconame
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '001' ).
+    ELSE.
+      inform( p_param_1      = is_parameter-sconame
+              p_param_2      = is_method-cmpname
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '002' ).
+    ENDIF.
 
   ENDMETHOD.
 ENDCLASS.
