@@ -40,7 +40,7 @@ CLASS ZCL_AOC_CHECK_50 IMPLEMENTATION.
     SELECT SINGLE category FROM seoclassdf
       INTO lv_category
       WHERE clsname = object_name
-      AND version = '1'.
+      AND version = '1'.                                  "#EC CI_SUBRC
 
     lt_statements = build_statements(
         it_tokens     = it_tokens

@@ -115,7 +115,8 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
         WHERE pgmid = 'R3TR'
         AND object = ct_used-obj_type
         AND obj_name = ct_used-obj_name
-        AND ( devclass LIKE 'Y%' OR devclass LIKE 'Z%' ).
+        AND ( devclass LIKE 'Y%'
+        OR devclass LIKE 'Z%' ).                          "#EC CI_SUBRC
     ENDIF.
 
   ENDMETHOD.
@@ -256,7 +257,9 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 
 
     SELECT SINGLE entitytab FROM dd01l INTO lv_entitytab
-      WHERE domname = iv_name AND as4local = 'A' AND as4vers = '0000'.
+      WHERE domname = iv_name
+      AND as4local = 'A'
+      AND as4vers = '0000'.                               "#EC CI_SUBRC
     IF NOT lv_entitytab IS INITIAL.
       ls_used-obj_type = find_type( lv_entitytab ).
       ls_used-obj_name = lv_entitytab.
@@ -300,7 +303,7 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
       EXCEPTIONS
         not_existent = 1
         no_program   = 2
-        OTHERS       = 3.
+        OTHERS       = 3. "#EC CI_SUBRC
 
     LOOP AT lt_includes INTO lv_include.
       APPEND LINES OF resolve_prog( lv_include ) TO rt_used.

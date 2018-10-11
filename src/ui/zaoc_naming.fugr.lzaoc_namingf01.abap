@@ -72,7 +72,7 @@ CLASS lcl_screen2000 IMPLEMENTATION.
         dd03p_tab     = rt_data
       EXCEPTIONS
         illegal_input = 1
-        OTHERS        = 2.
+        OTHERS        = 2. "#EC CI_SUBRC
     ASSERT sy-subrc = 0.
 
   ENDMETHOD.

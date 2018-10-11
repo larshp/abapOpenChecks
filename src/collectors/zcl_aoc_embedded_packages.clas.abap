@@ -70,8 +70,9 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
         INTO TABLE lt_packages
         FOR ALL ENTRIES IN lt_packages
         WHERE parentcl = lt_packages-table_line.        "#EC CI_GENBUFF
-
-      APPEND LINES OF lt_packages TO rt_embedded.
+      IF sy-subrc = 0.
+        APPEND LINES OF lt_packages TO rt_embedded.
+      ENDIF.
     ENDWHILE.
 
   ENDMETHOD.
@@ -110,7 +111,7 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
       AND devclass IN p_confine_devclasses
       AND author IN p_confine_responsibles
       AND srcsystem IN lt_srcsystem
-      AND delflag = abap_false ##TOO_MANY_ITAB_FIELDS.  "#EC CI_GENBUFF
+      AND delflag = abap_false ##TOO_MANY_ITAB_FIELDS. "#EC CI_GENBUFF "#EC CI_SUBRC
 
     LOOP AT lt_objects ASSIGNING <ls_object>.
       MOVE-CORRESPONDING <ls_object> TO ls_object.

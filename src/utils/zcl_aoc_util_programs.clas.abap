@@ -142,7 +142,7 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
       INTO CORRESPONDING FIELDS OF TABLE lt_tadir
       WHERE pgmid = 'R3TR'
       AND ( object = 'CLAS' OR object = 'PROG' OR object = 'FUGR' )
-      AND devclass = iv_devclass.
+      AND devclass = iv_devclass.                         "#EC CI_SUBRC
 
     LOOP AT lt_tadir ASSIGNING <ls_tadir>.
       CASE <ls_tadir>-object.

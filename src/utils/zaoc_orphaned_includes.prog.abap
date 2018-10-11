@@ -26,7 +26,7 @@ FORM run RAISING cx_salv_msg.
   SELECT * FROM tadir INTO TABLE lt_tadir
     WHERE devclass IN s_devc
     AND pgmid = 'R3TR'
-    AND object = 'PROG'.
+    AND object = 'PROG'.                                  "#EC CI_SUBRC
 
   LOOP AT lt_tadir ASSIGNING FIELD-SYMBOL(<ls_tadir>).
     SELECT SINGLE subc INTO lv_subc FROM reposrc

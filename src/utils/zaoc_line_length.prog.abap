@@ -51,7 +51,8 @@ CLASS lcl_app IMPLEMENTATION.
 
     init_result( ).
 
-    SELECT devclass FROM tdevc INTO TABLE lt_packages WHERE devclass IN s_devc.
+    SELECT devclass FROM tdevc INTO TABLE lt_packages
+      WHERE devclass IN s_devc.                           "#EC CI_SUBRC
 
     LOOP AT lt_packages INTO lv_package.
       run_package( lv_package ).

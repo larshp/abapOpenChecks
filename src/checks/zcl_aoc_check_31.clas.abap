@@ -101,7 +101,7 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
           WHEN mv_default_atc.
             SELECT SINGLE todo_overlay
               FROM slin_desc INTO lv_todo
-              WHERE code_nr = <ls_result>-code.
+              WHERE code_nr = <ls_result>-code.           "#EC CI_SUBRC
             CASE lv_todo.
               WHEN slin_todo-prio1.
                 lv_errty = c_error.

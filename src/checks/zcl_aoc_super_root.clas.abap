@@ -34,10 +34,10 @@ CLASS ZCL_AOC_SUPER_ROOT IMPLEMENTATION.
     "get description of check class
     SELECT SINGLE descript FROM seoclasstx INTO description
       WHERE clsname = myname
-        AND langu   = sy-langu.
+      AND langu   = sy-langu.
     IF sy-subrc <> 0.
       SELECT SINGLE descript FROM seoclasstx INTO description
-          WHERE clsname = myname.
+        WHERE clsname = myname.                           "#EC CI_SUBRC
     ENDIF.
 
     category = 'ZCL_AOC_CATEGORY'.

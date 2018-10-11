@@ -91,7 +91,7 @@ FORM run RAISING cx_salv_msg.
     FROM tadir INTO @DATA(lv_current)
     WHERE pgmid = 'R3TR'
     AND object = @p_obj
-    AND obj_name = @p_nam.
+    AND obj_name = @p_nam.                                "#EC CI_SUBRC
 
   APPEND VALUE #(
     devclass = lv_current ) TO gt_output.

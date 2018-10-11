@@ -101,7 +101,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       AND version = '1'
       AND exposure = c_public
       AND attdecltyp = '2'
-      ORDER BY PRIMARY KEY.
+      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
 
     LOOP AT lt_constants ASSIGNING <ls_constant>.
       CONCATENATE <ls_constant>-clsname '\DA:' <ls_constant>-cmpname INTO lv_name.
@@ -152,7 +152,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       SELECT include FROM wbcrossgt
         INTO TABLE lt_ref_include
         WHERE otype = 'ME'
-        AND name = lv_name.
+        AND name = lv_name.                               "#EC CI_SUBRC
 
       IF mv_skip_ccau = abap_true.
         DELETE lt_ref_include WHERE table_line+30 = 'CCAU'.

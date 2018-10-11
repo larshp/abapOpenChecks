@@ -97,7 +97,7 @@ FORM run RAISING cx_salv_error.
     WHERE devclass IN s_devc
     AND object = 'CLAS'
     AND obj_name IN s_objn
-    AND delflag = abap_false.                           "#EC CI_GENBUFF
+    AND delflag = abap_false.             "#EC CI_GENBUFF "#EC CI_SUBRC
 
   LOOP AT lt_tadir INTO ls_tadir.
     lv_class = ls_tadir-obj_name.
