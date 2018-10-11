@@ -129,10 +129,19 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
     DATA: lt_methods     TYPE gty_reference_t,
           lv_name        TYPE wbcrossgt-name,
+          lv_category    TYPE seoclassdf-category,
           lt_ref_include TYPE gty_include_t.
 
     FIELD-SYMBOLS: <ls_method> LIKE LINE OF lt_methods.
 
+
+    IF mv_skip_ccau = abap_true.
+      SELECT SINGLE category FROM seoclassdf INTO lv_category
+        WHERE version = '1' AND clsname = object_name.
+      IF sy-subrc = 0 AND lv_category = '05'.
+        RETURN.
+      ENDIF.
+    ENDIF.
 
     SELECT clsname cmpname exposure alias
       FROM vseocompdf
