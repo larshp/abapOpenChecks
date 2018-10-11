@@ -19,9 +19,7 @@ CLASS zcl_aoc_check_01 DEFINITION
         VALUE(rv_bool) TYPE abap_bool .
     METHODS run_check
       IMPORTING
-        !io_structure      TYPE REF TO zcl_aoc_structure
-      RETURNING
-        VALUE(rv_reported) TYPE abap_bool .
+        !io_structure TYPE REF TO zcl_aoc_structure .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -42,7 +40,6 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
     lo_structure = zcl_aoc_structure=>build(
       it_tokens     = it_tokens
       it_statements = it_statements
-      it_levels     = it_levels
       it_structures = it_structures ).
 
     run_check( lo_structure ).

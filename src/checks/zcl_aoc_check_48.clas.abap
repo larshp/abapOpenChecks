@@ -21,8 +21,7 @@ CLASS zcl_aoc_check_48 DEFINITION
     METHODS check_table_key
       IMPORTING
         !it_tokens     TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab
-        !it_levels     TYPE slevel_tab .
+        !it_statements TYPE sstmnt_tab .
     METHODS support_empty_key
       RETURNING
         VALUE(rv_supported) TYPE abap_bool .
@@ -45,8 +44,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
     check_table_key(
       it_tokens     = it_tokens
-      it_statements = it_statements
-      it_levels     = it_levels ).
+      it_statements = it_statements ).
 
     check_table_body_access(
       it_tokens     = it_tokens
@@ -102,8 +100,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
     lt_statements = build_statements(
         it_tokens     = it_tokens
-        it_statements = it_statements
-        it_levels     = it_levels ).
+        it_statements = it_statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.

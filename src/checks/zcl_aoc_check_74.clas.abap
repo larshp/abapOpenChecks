@@ -48,8 +48,7 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
 
     lt_statements = build_statements(
       it_tokens     = it_tokens
-      it_statements = it_statements
-      it_levels     = it_levels ).
+      it_statements = it_statements ).
 
     LOOP AT it_levels ASSIGNING <ls_level>.
       lv_level = sy-tabix.

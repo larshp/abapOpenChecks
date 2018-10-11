@@ -69,7 +69,6 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
     loop( zcl_aoc_structure=>build( it_tokens     = it_tokens
                                     it_statements = it_statements
-                                    it_levels     = it_levels
                                     it_structures = it_structures ) ).
 
   ENDMETHOD.

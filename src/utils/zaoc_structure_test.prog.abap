@@ -88,7 +88,6 @@ CLASS lcl_gui IMPLEMENTATION.
     lo_structure = zcl_aoc_structure=>build(
       it_tokens     = lt_tokens
       it_statements = lt_statements
-      it_levels     = lt_levels
       it_structures = lt_structures ).
 
     go_right->set_textstream( build_result( lo_structure ) ).

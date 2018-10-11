@@ -16,16 +16,12 @@ CLASS zcl_aoc_check_03 DEFINITION
     METHODS check_nested
       IMPORTING
         !it_tokens     TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab
-        !it_levels     TYPE slevel_tab
-        !it_structures TYPE ty_structures_tt.
+        !it_statements TYPE sstmnt_tab .
     METHODS check_no_catch
       IMPORTING
         !it_tokens     TYPE stokesx_tab
         !it_statements TYPE sstmnt_tab
-        !it_levels     TYPE slevel_tab
-        !it_structures TYPE ty_structures_tt.
-
+        !it_structures TYPE ty_structures_tt .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -42,15 +38,12 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
     check_no_catch( it_tokens     = it_tokens
                     it_statements = it_statements
-                    it_levels     = it_levels
                     it_structures = it_structures ).
 
     check_nested( it_tokens     = it_tokens
-                  it_statements = it_statements
-                  it_levels     = it_levels
-                  it_structures = it_structures ).
+                  it_statements = it_statements ).
 
-  ENDMETHOD.                    "check
+  ENDMETHOD.
 
 
   METHOD check_nested.

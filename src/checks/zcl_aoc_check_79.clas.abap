@@ -41,8 +41,7 @@ CLASS zcl_aoc_check_79 DEFINITION
     METHODS initialize
       IMPORTING
         !it_tokens     TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab
-        !it_levels     TYPE slevel_tab .
+        !it_statements TYPE sstmnt_tab .
     METHODS find_locals
       IMPORTING
         !is_method       TYPE ty_method
@@ -80,8 +79,7 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
 
     initialize(
       it_tokens     = it_tokens
-      it_statements = it_statements
-      it_levels     = it_levels ).
+      it_statements = it_statements ).
 
     lt_methods = find_methods( it_levels ).
 
@@ -254,8 +252,7 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
 
     mt_statements = build_statements(
       it_tokens     = it_tokens
-      it_statements = it_statements
-      it_levels     = it_levels ).
+      it_statements = it_statements ).
 
   ENDMETHOD.
 ENDCLASS.

@@ -41,8 +41,7 @@ CLASS ZCL_AOC_CHECK_60 IMPLEMENTATION.
 
     lt_statements = build_statements(
       it_tokens     = lt_tokens
-      it_statements = it_statements
-      it_levels     = it_levels ).
+      it_statements = it_statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
 

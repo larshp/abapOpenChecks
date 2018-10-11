@@ -28,15 +28,15 @@ CLASS zcl_aoc_super DEFINITION
         VALUE(rt_result) TYPE scr_refs .
 
     METHODS get_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS if_ci_test~display_documentation
-         REDEFINITION .
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS put_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS run
-         REDEFINITION .
+        REDEFINITION .
   PROTECTED SECTION.
 
     TYPES:
@@ -84,7 +84,6 @@ CLASS zcl_aoc_super DEFINITION
       IMPORTING
         !it_tokens           TYPE stokesx_tab
         !it_statements       TYPE sstmnt_tab
-        !it_levels           TYPE slevel_tab
       RETURNING
         VALUE(rt_statements) TYPE ty_statements .
     METHODS is_class_pool

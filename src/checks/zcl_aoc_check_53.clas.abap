@@ -53,8 +53,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
 
     lt_statements = build_statements(
         it_tokens     = it_tokens
-        it_statements = it_statements
-        it_levels     = it_levels ).
+        it_statements = it_statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.

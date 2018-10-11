@@ -70,7 +70,6 @@ CLASS ltcl_test IMPLEMENTATION.
     lo_stru = zcl_aoc_structure=>build(
       it_tokens     = mt_tokens
       it_statements = mt_statements
-      it_levels     = mt_levels
       it_structures = mt_structures ).
 
     lt_string = zcl_aoc_structure=>to_string( lo_stru ).
@@ -100,7 +99,6 @@ CLASS ltcl_test IMPLEMENTATION.
     lo_stru = zcl_aoc_structure=>build(
       it_tokens     = mt_tokens
       it_statements = mt_statements
-      it_levels     = mt_levels
       it_structures = mt_structures ).
 
     lt_string = zcl_aoc_structure=>to_string( lo_stru ).
