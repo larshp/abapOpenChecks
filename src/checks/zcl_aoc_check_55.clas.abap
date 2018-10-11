@@ -92,7 +92,8 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
           CONTINUE.
         ENDIF.
 
-        READ TABLE it_statements INDEX <ls_statement>-index - 1 ASSIGNING <ls_stmt>.
+        READ TABLE it_statements INDEX <ls_statement>-index - 1
+          ASSIGNING <ls_stmt>.                            "#EC CI_SUBRC
         IF <ls_stmt>-type = scan_stmnt_type-comment.
           CONTINUE.
         ENDIF.
@@ -188,7 +189,7 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
 
     SPLIT is_statement-str AT space INTO TABLE lt_tab.
 
-    READ TABLE lt_tab INDEX 1 INTO rv_word.
+    READ TABLE lt_tab INDEX 1 INTO rv_word.               "#EC CI_SUBRC
 
   ENDMETHOD.
 ENDCLASS.

@@ -65,7 +65,7 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
                    <ls_token>     LIKE LINE OF it_tokens.
 
 
-    lt_fields[] = it_fields[].
+    lt_fields = it_fields.
 
     LOOP AT it_statements ASSIGNING <ls_statement>.
       LOOP AT it_tokens ASSIGNING <ls_token>

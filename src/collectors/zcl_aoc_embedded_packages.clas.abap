@@ -138,7 +138,7 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
     IMPORT
       mt_packages = mt_packages
       mv_local = mv_local
-      FROM DATA BUFFER p_attributes.
+      FROM DATA BUFFER p_attributes.                      "#EC CI_SUBRC
 
   ENDMETHOD.
 

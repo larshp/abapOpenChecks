@@ -1326,7 +1326,7 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    IF st_syntax[] IS INITIAL.
+    IF lines( st_syntax ) = 0.
       SELECT * FROM ssyntaxstructure
         INTO TABLE st_syntax.             "#EC CI_NOWHERE "#EC CI_SUBRC
       SORT st_syntax BY rulename ASCENDING.

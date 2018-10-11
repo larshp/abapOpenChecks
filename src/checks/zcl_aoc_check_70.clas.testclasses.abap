@@ -155,7 +155,7 @@ CLASS ltcl_test IMPLEMENTATION.
       mt_pattern_info     = lt_pattern_info
       mt_pattern_warning  = lt_pattern_warning
       mt_pattern_error    = lt_pattern_error
-      FROM DATA BUFFER lv_attributes.                "#EC CI_USE_WANTED
+      FROM DATA BUFFER lv_attributes.  "#EC CI_USE_WANTED "#EC CI_SUBRC
     EXPORT
       mv_multiline        = abap_true
       mt_pattern_info     = lt_pattern_info
@@ -190,7 +190,7 @@ CLASS ltcl_test IMPLEMENTATION.
       mt_pattern_info     = lt_pattern_info
       mt_pattern_warning  = lt_pattern_warning
       mt_pattern_error    = lt_pattern_error
-      FROM DATA BUFFER lv_attributes.                "#EC CI_USE_WANTED
+      FROM DATA BUFFER lv_attributes.  "#EC CI_USE_WANTED "#EC CI_SUBRC
     EXPORT
       mv_multiline        = abap_true
       mt_pattern_info     = lt_pattern_info

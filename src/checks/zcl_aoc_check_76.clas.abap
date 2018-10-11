@@ -83,8 +83,8 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
           ln_prev_token = sy-tabix - 1.
           ln_next_token = sy-tabix + 1.
 
-          READ TABLE lt_statement_tokens INDEX ln_prev_token INTO ls_prev.
-          READ TABLE lt_statement_tokens INDEX ln_next_token INTO ls_next.
+          READ TABLE lt_statement_tokens INDEX ln_prev_token INTO ls_prev. "#EC CI_SUBRC
+          READ TABLE lt_statement_tokens INDEX ln_next_token INTO ls_next. "#EC CI_SUBRC
 
           IF ls_prev-str <> 'OUTER'.
             " check if the join contains a text table

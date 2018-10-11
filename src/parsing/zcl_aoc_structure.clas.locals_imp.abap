@@ -26,7 +26,7 @@ CLASS lcl_simplify IMPLEMENTATION.
 
     IF io_structure->mv_type = scan_struc_type-sequence AND lines( io_structure->mt_structure ) = 1.
 * simplify sequences with one statement
-      READ TABLE io_structure->mt_structure INDEX 1 INTO ro_structure.
+      READ TABLE io_structure->mt_structure INDEX 1 INTO ro_structure. "#EC CI_SUBRC
     ENDIF.
 
     lt_copy = ro_structure->mt_structure.

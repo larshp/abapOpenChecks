@@ -132,7 +132,7 @@ CLASS lcl_app IMPLEMENTATION.
 
     LOOP AT lt_source INTO ls_source.
       lv_index = ( strlen( ls_source-line ) DIV p_split ) + 1.
-      READ TABLE gt_result INDEX lv_index ASSIGNING <ls_result>.
+      READ TABLE gt_result INDEX lv_index ASSIGNING <ls_result>. "#EC CI_SUBRC
       <ls_result>-count = <ls_result>-count + 1.
     ENDLOOP.
 

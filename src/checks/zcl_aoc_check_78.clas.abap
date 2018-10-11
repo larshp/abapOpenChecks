@@ -63,7 +63,7 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
           CONTINUE.
         ENDIF.
 
-        READ TABLE it_tokens INDEX ls_next-from INTO ls_token.
+        READ TABLE it_tokens INDEX ls_next-from INTO ls_token. "#EC CI_SUBRC
         IF ls_token-str = 'ASSERT'.
           CONTINUE.
         ENDIF.

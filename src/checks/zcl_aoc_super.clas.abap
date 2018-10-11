@@ -613,7 +613,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    CLEAR mt_source[].  " limit memory use
+    CLEAR mt_source.  " limit memory use
 
     IF program_name IS INITIAL.
       RETURN.
