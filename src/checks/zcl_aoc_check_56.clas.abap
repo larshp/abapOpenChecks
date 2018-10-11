@@ -99,6 +99,8 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
   METHOD check_locally_referenced.
 
+    CONSTANTS: lc_macro TYPE char1 VALUE 'D'.
+
     DATA: lt_compiler   TYPE scr_refs,
           ls_compiler   LIKE LINE OF lt_compiler,
           ls_mtdkey     TYPE seocpdkey,
@@ -144,7 +146,8 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
         WHERE ( tag = cl_abap_compiler=>tag_data OR tag = cl_abap_compiler=>tag_method OR
                 tag = cl_abap_compiler=>tag_message_id OR tag = cl_abap_compiler=>tag_message_number OR
                 tag = cl_abap_compiler=>tag_message_type  )
-        AND statement->source_info->name = lv_include.
+        AND ( statement->source_info->name = lv_include
+        OR statement->source_info->kind = lc_macro ).
       lv_name = get_name( ls_compiler-full_name ).
       IF lv_name IS INITIAL.
         lv_name = ls_compiler-name.
