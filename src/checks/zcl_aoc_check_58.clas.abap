@@ -54,7 +54,7 @@ CLASS zcl_aoc_check_58 DEFINITION
         !ct_include TYPE gty_include_t .
     METHODS filter_self_references
       IMPORTING
-        !iv_clsname TYPE gty_reference_s-clsname
+        !is_method  TYPE gty_reference_s
       CHANGING
         !ct_include TYPE gty_include_t .
   PRIVATE SECTION.
@@ -185,7 +185,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       ELSEIF object_type = 'CLAS' AND <ls_method>-exposure = c_public.
         filter_self_references(
           EXPORTING
-            iv_clsname = <ls_method>-clsname
+            is_method  = <ls_method>
           CHANGING
             ct_include = lt_ref_include ).
 
@@ -297,7 +297,9 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
   METHOD filter_self_references.
 
-    DATA: ls_mtdkey TYPE seocpdkey.
+    DATA: ls_mtdkey  TYPE seocpdkey,
+          lv_pattern TYPE string,
+          lt_method  TYPE TABLE OF abaptxt255.
 
     FIELD-SYMBOLS: <lv_include> LIKE LINE OF ct_include.
 
@@ -312,9 +314,24 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
           class_not_existing  = 1
           method_not_existing = 2
           OTHERS              = 3 ).
-      IF sy-subrc = 0 AND ls_mtdkey-clsname = iv_clsname.
+      IF sy-subrc = 0 AND ls_mtdkey-clsname = is_method-clsname.
+
+* check for parallel "CALLING method AT END OF TASK", which must be public
+        READ REPORT <lv_include> INTO lt_method.
+        IF sy-subrc = 0.
+* this is not completely correct, but will work in most cases?
+          lv_pattern = |CALLING { is_method-cmpname }|.
+          LOOP AT lt_method TRANSPORTING NO FIELDS WHERE line CS lv_pattern.
+            EXIT.
+          ENDLOOP.
+          IF sy-subrc = 0.
+            CONTINUE.
+          ENDIF.
+        ENDIF.
+
         DELETE ct_include.
       ENDIF.
+
     ENDLOOP.
 
   ENDMETHOD.
