@@ -1270,6 +1270,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ms_naming-set_idocfm = abap_true.
     ms_naming-set_bwext  = abap_true.
     ms_naming-set_syntax = abap_true.
+    ms_naming-set_pmeth  = abap_true.
 
   ENDMETHOD.
 
