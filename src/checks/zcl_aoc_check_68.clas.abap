@@ -90,6 +90,21 @@ CLASS ZCL_AOC_CHECK_68 IMPLEMENTATION.
     CASE object_type.
       WHEN 'IDOC'.
         lv_idoctyp = object_name.
+
+        CALL FUNCTION 'IDOCTYPE_EXISTENCE_CHECK'
+          EXPORTING
+            pi_idoctyp       = lv_idoctyp
+          EXCEPTIONS
+            object_not_found = 1
+            db_error         = 2
+            OTHERS           = 3.
+        IF sy-subrc = 1.
+          RETURN.
+        ELSEIF sy-subrc <> 0.
+          inform_from_sy( ).
+          RETURN.
+        ENDIF.
+
       WHEN 'IEXT'.
         lv_cimtyp = object_name.
 
