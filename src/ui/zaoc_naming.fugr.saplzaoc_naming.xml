@@ -108,6 +108,12 @@
     </item>
     <item>
      <ID>I</ID>
+     <KEY>MSI</KEY>
+     <ENTRY>Skip special method signatures</ENTRY>
+     <LENGTH>60</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
      <KEY>OOD</KEY>
      <ENTRY>Class / Interface Globals</ENTRY>
      <LENGTH>58</LENGTH>

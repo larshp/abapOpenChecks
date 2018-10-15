@@ -19,6 +19,11 @@ CLASS zcl_aoc_check_69 DEFINITION
         REDEFINITION .
   PROTECTED SECTION.
 
+    METHODS is_parallel_method
+      IMPORTING
+        !it_tokens     TYPE stokesx_tab
+      RETURNING
+        VALUE(rv_bool) TYPE abap_bool .
     METHODS field_symbol
       IMPORTING
         !iv_name TYPE string .
@@ -639,6 +644,10 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         WHEN sana_tok_field_def.
           lv_name = remove_value( ls_token-str ).
 
+          IF ms_naming-set_pmeth = abap_true AND is_parallel_method( lt_tokens ) = abap_true.
+            CONTINUE.
+          ENDIF.
+
           data( iv_name  = lv_name
                 iv_scope = lv_scope ).
         WHEN sana_tok_word.
@@ -1107,6 +1116,36 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ENDWHILE.
 
     rv_bool = boolc( lo_super->full_name = '\TY:CX_ROOT' ).
+
+  ENDMETHOD.
+
+
+  METHOD is_parallel_method.
+
+    DATA: ls_token LIKE LINE OF it_tokens.
+
+    IF lines( it_tokens ) <> 6.
+      RETURN.
+    ENDIF.
+
+    READ TABLE it_tokens INDEX 3 INTO ls_token.
+    IF sy-subrc <> 0 OR ls_token-str <> 'IMPORTING'.
+      RETURN.
+    ENDIF.
+    READ TABLE it_tokens INDEX 4 INTO ls_token.
+    IF sy-subrc <> 0 OR ls_token-str <> 'P_TASK'.
+      RETURN.
+    ENDIF.
+    READ TABLE it_tokens INDEX 5 INTO ls_token.
+    IF sy-subrc <> 0 OR ls_token-str <> 'TYPE'.
+      RETURN.
+    ENDIF.
+    READ TABLE it_tokens INDEX 6 INTO ls_token.
+    IF sy-subrc <> 0 OR ls_token-str <> 'CLIKE'.
+      RETURN.
+    ENDIF.
+
+    rv_bool = abap_true.
 
   ENDMETHOD.
 
