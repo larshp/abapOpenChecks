@@ -11,6 +11,10 @@ Open source checks for SAP Code Inspector / ABAP Test Cockpit (SCI/ATC)
 - configure check variant
 - run inspection
 
+**Updating**
+- Recommend backing up variants before updating abapOpenChecks, use [upDOWNci](https://github.com/larshp/upDOWNci)
+- Pull latest changes via abapGit
+
 **Design goals**
 - try and see if it works out
 - performance not high priority
