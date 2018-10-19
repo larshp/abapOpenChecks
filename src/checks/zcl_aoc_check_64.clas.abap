@@ -100,11 +100,15 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
 
   METHOD node.
 
-    DATA: lv_pb_type    TYPE cvd_pb_type,
-          lv_pb_name    TYPE cvd_pb_name,
-          lv_prog_class TYPE cvd_prog_class,
-          lv_prog_type  TYPE cvd_prog_type,
-          lv_prog_name  TYPE cvd_prog_name.
+    DATA: lv_pb_type     TYPE cvd_pb_type,
+          lv_pb_name     TYPE cvd_pb_name,
+          lv_prog_class  TYPE cvd_prog_class,
+          lv_prog_type   TYPE cvd_prog_type,
+          lv_prog_name   TYPE cvd_prog_name,
+          lo_pb_info     TYPE REF TO cl_scov_pb_info,
+          lt_tkey_selops TYPE cvt_test_key_selops,
+          ls_tkey_selops LIKE LINE OF lt_tkey_selops,
+          lo_ui_factory  TYPE REF TO cl_scov_stmnt_cov_ui_factory.
 
 
     CASE ii_node->subtype.
@@ -123,24 +127,23 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
         lv_prog_name = ii_node->get_parent( )->name.
     ENDCASE.
 
-    DATA(lo_ui_factory) = NEW cl_scov_stmnt_cov_ui_factory( ).
+    CREATE OBJECT lo_ui_factory.
 
-    DATA(lo_pb_info) = lo_ui_factory->create_pb_info(
+    lo_pb_info = lo_ui_factory->create_pb_info(
       im_pb_type    = lv_pb_type
       im_pb_name    = lv_pb_name
       im_prog_class = lv_prog_class
       im_prog_type  = lv_prog_type
       im_prog_name  = lv_prog_name ).
 
-    DATA(lt_tkey_selops) = VALUE cvt_test_key_selops( (
-      option = 'EQ'
-      sign   = 'I'
-      low    = mi_result->get_measurement( )->get_testkey( ) ) ).
+    ls_tkey_selops-option = 'EQ'.
+    ls_tkey_selops-sign   = 'I'.
+    ls_tkey_selops-low    = mi_result->get_measurement( )->get_testkey( ).
+
+    APPEND ls_tkey_selops TO lt_tkey_selops.
 
     DATA(li_container) = lo_ui_factory->create_stmnt_dcon_factory( lt_tkey_selops
       )->create_stmnt_data_container( lo_pb_info ).
-
-*    DATA(lt_source) = li_container->get_source( ).
 
     DATA(lt_meta) = li_container->get_stmnt_cov_meta_data( ).
 

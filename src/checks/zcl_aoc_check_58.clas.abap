@@ -27,9 +27,9 @@ CLASS zcl_aoc_check_58 DEFINITION
         alias    TYPE seocompodf-alias,
       END OF gty_reference_s .
     TYPES:
-      gty_reference_t TYPE STANDARD TABLE OF gty_reference_s WITH EMPTY KEY .
+      gty_reference_t TYPE STANDARD TABLE OF gty_reference_s WITH DEFAULT KEY .
     TYPES:
-      gty_include_t TYPE STANDARD TABLE OF wbcrossgt-include WITH EMPTY KEY .
+      gty_include_t TYPE STANDARD TABLE OF wbcrossgt-include WITH DEFAULT KEY .
 
     CONSTANTS c_private TYPE seocompodf-exposure VALUE '0' ##NO_TEXT.
     CONSTANTS c_protected TYPE seocompodf-exposure VALUE '1' ##NO_TEXT.

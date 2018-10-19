@@ -232,9 +232,13 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 
   METHOD resolve_clas.
 
+    DATA: lt_includes TYPE seoincl_t.
+
+    FIELD-SYMBOLS: <lv_include> LIKE LINE OF lt_includes.
+
 * todo, this method does not exist on 702
-    DATA(lt_includes) = cl_oo_classname_service=>get_all_class_includes( CONV #( iv_name ) ).
-    LOOP AT lt_includes ASSIGNING FIELD-SYMBOL(<lv_include>).
+    lt_includes = cl_oo_classname_service=>get_all_class_includes( CONV #( iv_name ) ).
+    LOOP AT lt_includes ASSIGNING <lv_include>.
       APPEND LINES OF resolve_prog( <lv_include> ) TO rt_used.
     ENDLOOP.
 
@@ -328,10 +332,14 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
           lt_wbcrossgt TYPE STANDARD TABLE OF wbcrossgt WITH DEFAULT KEY,
           lt_wbcrossi  TYPE STANDARD TABLE OF wbcrossi WITH DEFAULT KEY.
 
+    FIELD-SYMBOLS: <ls_cross>     LIKE LINE OF lt_cross,
+                   <ls_wbcrossgt> LIKE LINE OF lt_wbcrossgt,
+                   <ls_wbcrossi>  LIKE LINE OF lt_wbcrossi.
+
 
     SELECT * FROM wbcrossi INTO TABLE lt_wbcrossi
       WHERE include = iv_name.                            "#EC CI_SUBRC
-    LOOP AT lt_wbcrossi ASSIGNING FIELD-SYMBOL(<ls_wbcrossi>).
+    LOOP AT lt_wbcrossi ASSIGNING <ls_wbcrossi>.
       CASE <ls_wbcrossi>-otype.
         WHEN 'IC'.
           lv_type = 'PROG'.
@@ -347,7 +355,7 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
     SELECT * FROM cross INTO TABLE lt_cross
       WHERE include = iv_name
       AND name <> '?'.                                    "#EC CI_SUBRC
-    LOOP AT lt_cross ASSIGNING FIELD-SYMBOL(<ls_cross>).
+    LOOP AT lt_cross ASSIGNING <ls_cross>.
       CASE <ls_cross>-type.
         WHEN 'F'.
           lv_type = 'FUGR'.
@@ -385,7 +393,7 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
     SELECT * FROM wbcrossgt INTO TABLE lt_wbcrossgt
       WHERE include = iv_name
       AND direct = abap_true.                             "#EC CI_SUBRC
-    LOOP AT lt_wbcrossgt ASSIGNING FIELD-SYMBOL(<ls_wbcrossgt>).
+    LOOP AT lt_wbcrossgt ASSIGNING <ls_wbcrossgt>.
       CLEAR lv_type.
       CASE <ls_wbcrossgt>-otype.
         WHEN 'DA'.
