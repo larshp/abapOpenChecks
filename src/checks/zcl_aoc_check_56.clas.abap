@@ -146,6 +146,9 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+* used in parrallel RECEIVE RESULTS / CALLING methods
+    DELETE lt_parameters WHERE sconame = 'P_TASK'.
+
     LOOP AT lt_compiler INTO ls_compiler
         WHERE ( tag = cl_abap_compiler=>tag_data OR tag = cl_abap_compiler=>tag_method OR
                 tag = cl_abap_compiler=>tag_message_id OR tag = cl_abap_compiler=>tag_message_number OR
