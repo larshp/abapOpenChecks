@@ -87,11 +87,6 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
       lt_locals = find_locals( ls_method ).
 
       LOOP AT lt_locals INTO ls_local.
-
-        IF ls_local-name = 'FOO'.
-          BREAK-POINT.
-        ENDIF.
-
         lv_error = check_local(
           is_method = ls_method
           is_local  = ls_local ).
@@ -223,9 +218,11 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
 
     rt_writes = mt_compiler.
 
-    DELETE rt_writes WHERE full_name <> is_local-full_name
-      OR ( mode2 <> '6' AND mode2 <> '9' )
-      OR statement->source_info->name <> is_method-include.
+    DELETE rt_writes WHERE statement->source_info->name <> is_method-include.
+
+    DELETE rt_writes WHERE full_name <> is_local-full_name.
+
+    DELETE rt_writes WHERE mode2 <> '6' AND mode2 <> '9' AND mode2 <> 'D'.
 
   ENDMETHOD.
 
