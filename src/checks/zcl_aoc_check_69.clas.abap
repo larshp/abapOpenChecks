@@ -575,7 +575,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         data( lv_name ).
       ENDIF.
 
-      FIND REGEX '^FIELD-SYMBOL\((\w+)\)$' IN ls_token-str SUBMATCHES lv_name ##NO_TEXT.
+      FIND REGEX '^FIELD-SYMBOL\((<\w+>)\)$' IN ls_token-str SUBMATCHES lv_name ##NO_TEXT.
       IF sy-subrc = 0.
         field_symbol( lv_name ).
       ENDIF.
