@@ -144,7 +144,7 @@ CLASS lcl_logic IMPLEMENTATION.
         package_does_not_exist        = 4
         invalid_superpackage          = 5
         no_output_parameter_requested = 6
-        OTHERS                        = 7 ).
+        OTHERS                        = 7 ).              "#EC CI_SUBRC
 
   ENDMETHOD.
 
@@ -218,7 +218,7 @@ CLASS lcl_gui IMPLEMENTATION.
         different_column_types       = 5
         cntl_system_error            = 6
         failed                       = 7
-        predecessor_column_not_found = 8 ).
+        predecessor_column_not_found = 8 ).               "#EC CI_SUBRC
     ASSERT sy-subrc = 0.
 
     refresh_data( ).
@@ -283,7 +283,7 @@ CLASS lcl_gui IMPLEMENTATION.
         cntl_system_error              = 3
         error_in_tables                = 4
         dp_error                       = 5
-        table_structure_name_not_found = 6 ).
+        table_structure_name_not_found = 6 ).             "#EC CI_SUBRC
     ASSERT sy-subrc = 0.
 
     IF lines( lt_node_table ) > 1.
@@ -296,7 +296,7 @@ CLASS lcl_gui IMPLEMENTATION.
           illegal_level_count = 2
           cntl_system_error   = 3
           node_not_found      = 4
-          cannot_expand_leaf  = 5 ).
+          cannot_expand_leaf  = 5 ).                      "#EC CI_SUBRC
       ASSERT sy-subrc = 0.
     ENDIF.
 

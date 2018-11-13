@@ -80,7 +80,7 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
       EXCEPTIONS
         not_existent = 1
         no_program   = 2
-        OTHERS       = 3.
+        OTHERS       = 3. "#EC CI_SUBRC
 
   ENDMETHOD.
 

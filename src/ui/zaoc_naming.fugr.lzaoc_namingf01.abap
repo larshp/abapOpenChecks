@@ -136,7 +136,7 @@ CLASS lcl_screen2000 IMPLEMENTATION.
 
       lv_target = ls_field-fieldname.
       REPLACE FIRST OCCURRENCE OF REGEX '^\w+_' IN lv_target WITH 'P_'.
-      ASSIGN (lv_target) TO <lg_target>.
+      ASSIGN (lv_target) TO <lg_target>.                  "#EC CI_SUBRC
       ASSERT sy-subrc = 0.
 
       <lg_target> = <lg_source>.
@@ -169,7 +169,7 @@ CLASS lcl_screen2000 IMPLEMENTATION.
 
       lv_source = ls_field-fieldname.
       REPLACE FIRST OCCURRENCE OF REGEX '^\w+_' IN lv_source WITH 'P_'.
-      ASSIGN (lv_source) TO <lg_source>.
+      ASSIGN (lv_source) TO <lg_source>.                  "#EC CI_SUBRC
       ASSERT sy-subrc = 0.
 
       <lg_target> = <lg_source>.

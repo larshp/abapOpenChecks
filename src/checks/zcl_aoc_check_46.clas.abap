@@ -165,7 +165,7 @@ CLASS ZCL_AOC_CHECK_46 IMPLEMENTATION.
       EXCEPTIONS
         class_not_existing  = 1
         method_not_existing = 2
-        OTHERS              = 3 ).
+        OTHERS              = 3 ).                        "#EC CI_SUBRC
 
   ENDMETHOD.
 ENDCLASS.
