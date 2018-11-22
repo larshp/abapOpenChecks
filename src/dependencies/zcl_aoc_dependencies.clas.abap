@@ -71,6 +71,21 @@ CLASS zcl_aoc_dependencies DEFINITION
         !iv_name       TYPE tadir-obj_name
       RETURNING
         VALUE(rt_used) TYPE ty_objects_tt .
+    CLASS-METHODS resolve_prog_via_cross
+      IMPORTING
+        !iv_name       TYPE tadir-obj_name
+      RETURNING
+        VALUE(rt_used) TYPE ty_objects_tt .
+    CLASS-METHODS resolve_prog_via_wbcrossgt
+      IMPORTING
+        !iv_name       TYPE tadir-obj_name
+      RETURNING
+        VALUE(rt_used) TYPE ty_objects_tt .
+    CLASS-METHODS resolve_prog_via_wbcrossi
+      IMPORTING
+        !iv_name       TYPE tadir-obj_name
+      RETURNING
+        VALUE(rt_used) TYPE ty_objects_tt .
     CLASS-METHODS resolve_tabl
       IMPORTING
         !iv_name       TYPE tadir-obj_name
@@ -325,32 +340,21 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 
   METHOD resolve_prog.
 
-    DATA: lv_type      TYPE tadir-object,
-          lv_foo       TYPE string ##NEEDED,
-          lt_cross     TYPE STANDARD TABLE OF cross WITH DEFAULT KEY,
-          ls_used      LIKE LINE OF rt_used,
-          lt_wbcrossgt TYPE STANDARD TABLE OF wbcrossgt WITH DEFAULT KEY,
-          lt_wbcrossi  TYPE STANDARD TABLE OF wbcrossi WITH DEFAULT KEY.
+    APPEND LINES OF resolve_prog_via_wbcrossi( iv_name ) TO rt_used.
+    APPEND LINES OF resolve_prog_via_cross( iv_name ) TO rt_used.
+    APPEND LINES OF resolve_prog_via_wbcrossgt( iv_name ) TO rt_used.
 
-    FIELD-SYMBOLS: <ls_cross>     LIKE LINE OF lt_cross,
-                   <ls_wbcrossgt> LIKE LINE OF lt_wbcrossgt,
-                   <ls_wbcrossi>  LIKE LINE OF lt_wbcrossi.
+  ENDMETHOD.
 
 
-    SELECT * FROM wbcrossi INTO TABLE lt_wbcrossi
-      WHERE include = iv_name.                            "#EC CI_SUBRC
-    LOOP AT lt_wbcrossi ASSIGNING <ls_wbcrossi>.
-      CASE <ls_wbcrossi>-otype.
-        WHEN 'IC'.
-          lv_type = 'PROG'.
-        WHEN OTHERS.
-* todo
-          CONTINUE.
-      ENDCASE.
-      ls_used-obj_type = lv_type.
-      ls_used-obj_name = <ls_wbcrossi>-name.
-      APPEND ls_used TO rt_used.
-    ENDLOOP.
+  METHOD resolve_prog_via_cross.
+
+    DATA: lv_type  TYPE tadir-object,
+          lt_cross TYPE STANDARD TABLE OF cross WITH DEFAULT KEY,
+          ls_used  LIKE LINE OF rt_used.
+
+    FIELD-SYMBOLS: <ls_cross> LIKE LINE OF lt_cross.
+
 
     SELECT * FROM cross INTO TABLE lt_cross
       WHERE include = iv_name
@@ -389,6 +393,19 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
       ls_used-obj_name = <ls_cross>-name.
       APPEND ls_used TO rt_used.
     ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD resolve_prog_via_wbcrossgt.
+
+    DATA: lv_type      TYPE tadir-object,
+          lv_foo       TYPE string ##NEEDED,
+          ls_used      LIKE LINE OF rt_used,
+          lt_wbcrossgt TYPE STANDARD TABLE OF wbcrossgt WITH DEFAULT KEY.
+
+    FIELD-SYMBOLS: <ls_wbcrossgt> LIKE LINE OF lt_wbcrossgt.
+
 
     SELECT * FROM wbcrossgt INTO TABLE lt_wbcrossgt
       WHERE include = iv_name
@@ -473,6 +490,33 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 
       ls_used-obj_type = lv_type.
       ls_used-obj_name = <ls_wbcrossgt>-name.
+      APPEND ls_used TO rt_used.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD resolve_prog_via_wbcrossi.
+
+    DATA: lv_type     TYPE tadir-object,
+          ls_used     LIKE LINE OF rt_used,
+          lt_wbcrossi TYPE STANDARD TABLE OF wbcrossi WITH DEFAULT KEY.
+
+    FIELD-SYMBOLS: <ls_wbcrossi> LIKE LINE OF lt_wbcrossi.
+
+
+    SELECT * FROM wbcrossi INTO TABLE lt_wbcrossi
+      WHERE include = iv_name.                            "#EC CI_SUBRC
+    LOOP AT lt_wbcrossi ASSIGNING <ls_wbcrossi>.
+      CASE <ls_wbcrossi>-otype.
+        WHEN 'IC'.
+          lv_type = 'PROG'.
+        WHEN OTHERS.
+* todo
+          CONTINUE.
+      ENDCASE.
+      ls_used-obj_type = lv_type.
+      ls_used-obj_name = <ls_wbcrossi>-name.
       APPEND ls_used TO rt_used.
     ENDLOOP.
 
