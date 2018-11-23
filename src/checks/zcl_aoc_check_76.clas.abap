@@ -54,7 +54,10 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
           lt_statement_tokens    TYPE stokesx_tab,
           ls_next                LIKE LINE OF lt_statement_tokens,
           ls_prev                LIKE LINE OF lt_statement_tokens,
-          ln_column              TYPE token_col.
+          ls_as                  LIKE LINE OF lt_statement_tokens,
+          ln_column              TYPE token_col,
+          ln_join_number         TYPE i,
+          lf_read_prev_again     TYPE abap_bool.
 
     FIELD-SYMBOLS: <ls_statement>       LIKE LINE OF it_statements,
                    <ls_statement_token> LIKE LINE OF lt_statement_tokens,
@@ -79,15 +82,48 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
         READ TABLE lt_statement_tokens WITH KEY str = 'JOIN' TRANSPORTING NO FIELDS.
         CHECK sy-subrc = 0.
 
+        ln_join_number = 0.
+
         LOOP AT lt_statement_tokens ASSIGNING <ls_statement_token> WHERE str = 'JOIN'.
+          ln_join_number = ln_join_number + 1.
+
           ln_prev_token = sy-tabix - 1.
           ln_next_token = sy-tabix + 1.
+          lf_read_prev_again = abap_false.
 
           READ TABLE lt_statement_tokens INDEX ln_prev_token INTO ls_prev. "#EC CI_SUBRC
           READ TABLE lt_statement_tokens INDEX ln_next_token INTO ls_next. "#EC CI_SUBRC
 
-          IF ls_prev-str <> 'OUTER'.
-            " check if the join contains a text table
+          IF ls_prev-str <> 'OUTER' AND
+             ls_prev-str <> 'LEFT' AND
+             ls_prev-str <> 'RIGHT'.
+
+            IF ln_join_number = 1.
+              " find the table name on the left hand side of the join
+              IF ls_prev-str = 'INNER'.
+                ln_prev_token = ln_prev_token - 1.
+                lf_read_prev_again = abap_true.
+              ENDIF.
+              READ TABLE lt_statement_tokens INDEX ln_prev_token - 1 INTO ls_as. "#EC CI_SUBRC
+              IF ls_as-str = 'AS'.
+                ln_prev_token = ln_prev_token - 2.
+                lf_read_prev_again = abap_true.
+              ENDIF.
+              IF lf_read_prev_again = abap_true.
+                READ TABLE lt_statement_tokens INDEX ln_prev_token INTO ls_prev. "#EC CI_SUBRC
+              ENDIF.
+
+              " check if the table on the left hand side of the join is a text table
+              lv_tabname = ls_prev-str.
+              IF is_text_table( lv_tabname ) = abap_true.
+                ln_line = ls_prev-row.
+                ln_column = ls_prev-col.
+                lf_relevant_join_found = abap_true.
+                EXIT.
+              ENDIF.
+            ENDIF.
+
+            " check if the table on the right hand side of the join is a text table
             lv_tabname = ls_next-str.
             IF is_text_table( lv_tabname ) = abap_true.
               ln_line = ls_next-row.
