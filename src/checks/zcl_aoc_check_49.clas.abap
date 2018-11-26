@@ -141,7 +141,7 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         lv_error = '008'.
       ELSEIF lv_code CP 'SORT  *'.
         lv_error = '009'.
-      ELSEIF lv_code CP 'REPORT  *'.
+      ELSEIF lv_code CP 'REPORT  *' AND NOT lv_code = 'REPORT'.
         lv_error = '010'.
       ELSEIF lv_code CP 'ELSEIF  *'.
         lv_error = '011'.

@@ -27,6 +27,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_07 FOR TESTING,
       test001_08 FOR TESTING,
       test001_09 FOR TESTING,
+      test010_01 FOR TESTING,
+      test010_02 FOR TESTING,
+      test010_03 FOR TESTING,
       test016_01 FOR TESTING,
       test016_02 FOR TESTING,
       test016_03 FOR TESTING,
@@ -166,6 +169,37 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD test010_01.
+
+    _code 'REPORT  zfoobar.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '010'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test010_02.
+
+    _code 'REPORT zfoobar.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test010_03.
+
+    _code 'REPORT.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
   METHOD test016_01.
 
     _code 'call_method(  ).'.
@@ -208,4 +242,4 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
-ENDCLASS.       "lcl_Test
+ENDCLASS.
