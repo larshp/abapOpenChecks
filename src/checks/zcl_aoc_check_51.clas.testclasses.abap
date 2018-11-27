@@ -29,7 +29,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_06 FOR TESTING,
       test001_07 FOR TESTING,
       test001_08 FOR TESTING,
-      test001_09 FOR TESTING.
+      test001_09 FOR TESTING,
+      test001_10 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -181,6 +182,21 @@ CLASS ltcl_test IMPLEMENTATION.
     ENDIF.
 
     _code 'SELECT * FROM usr02 APPENDING TABLE @lt_data.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_10.
+* ===========
+
+    IF mo_check->supported( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'SELECT SINGLE bname FROM usr02 INTO (@lv_bname).'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
