@@ -26,6 +26,12 @@ CLASS zcl_aoc_check_62 DEFINITION
         !is_next       TYPE ty_statement
       RETURNING
         VALUE(rv_code) TYPE sci_errc .
+    METHODS check_lines
+      IMPORTING
+        !is_statement  TYPE ty_statement
+        !is_next       TYPE ty_statement
+      RETURNING
+        VALUE(rv_code) TYPE sci_errc .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -77,6 +83,11 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
           is_next_next = <ls_next_next> ).
       ENDIF.
 
+      IF lv_code IS INITIAL.
+        lv_code = check_lines(
+          is_statement = <ls_statement>
+          is_next      = <ls_next> ).
+      ENDIF.
 
       IF NOT lv_code IS INITIAL.
         inform( p_sub_obj_type = c_type_include
@@ -149,6 +160,31 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD check_lines.
+
+    DATA: lv_table TYPE string.
+
+    FIND REGEX '^IF NOT (\w+) IS INITIAL$' IN is_statement-str SUBMATCHES lv_table.
+    IF sy-subrc <> 0.
+      FIND REGEX '^IF (\w+) IS NOT INITIAL$' IN is_statement-str SUBMATCHES lv_table.
+    ENDIF.
+    IF sy-subrc <> 0.
+* assuming LINES method is not overwritten by custom method
+      FIND REGEX '^IF LINES\( (\w+) \) > 0$' IN is_statement-str SUBMATCHES lv_table.
+    ENDIF.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+    lv_table = |^LOOP AT { lv_table } |.
+    FIND REGEX lv_table IN is_next-str.
+    IF sy-subrc = 0.
+      rv_code = '003'.
+    ENDIF.
+
+  ENDMETHOD.
+
+
   METHOD constructor.
 
     super->constructor( ).
@@ -175,6 +211,8 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
         p_text = 'Use DELETE WHERE instead'.                "#EC NOTEXT
       WHEN '002'.
         p_text = 'CONTINUE as last statement in loop'.      "#EC NOTEXT
+      WHEN '003'.
+        p_text = 'Checking for lines before looping'.       "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code

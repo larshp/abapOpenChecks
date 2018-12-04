@@ -22,7 +22,10 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
       test001_05 FOR TESTING,
       test002_01 FOR TESTING,
       test002_02 FOR TESTING,
-      test002_03 FOR TESTING.
+      test002_03 FOR TESTING,
+      test003_01 FOR TESTING,
+      test003_02 FOR TESTING,
+      test003_03 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -142,6 +145,45 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test002_03.
 
     _code 'WRITE hello.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test003_01.
+
+    _code 'IF lt_table IS NOT INITIAL.'.
+    _code 'LOOP AT lt_table INTO ls_data.'.
+    _code 'ENDLOOP.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '003'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test003_02.
+
+    _code 'IF lines( lt_messages ) > 0.'.
+    _code 'LOOP AT lt_messages INTO ls_message WHERE foo = ''A''.'.
+    _code 'ENDLOOP.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '003'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test003_03.
+
+    _code 'LOOP AT lt_table INTO ls_data.'.
+    _code 'ENDLOOP.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
