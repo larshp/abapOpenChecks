@@ -30,16 +30,18 @@ CLASS ZCL_AOC_CHECK_80 IMPLEMENTATION.
     DATA: lt_code   TYPE string_table,
           lv_offset TYPE i,
           lv_length TYPE i,
+          lv_level  TYPE i,
           lv_report TYPE abap_bool,
           lv_line   TYPE token_row.
 
-    FIELD-SYMBOLS: <ls_level> LIKE LINE OF it_levels,
-                   <ls_token> LIKE LINE OF it_tokens,
-                   <lv_code>  LIKE LINE OF lt_code.
+    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
+                   <ls_token>     LIKE LINE OF it_tokens,
+                   <ls_statement> LIKE LINE OF it_statements,
+                   <lv_code>      LIKE LINE OF lt_code.
 
 
     LOOP AT it_levels ASSIGNING <ls_level>.
-
+      lv_level = sy-tabix.
       lt_code = get_source( <ls_level> ).
 
       LOOP AT lt_code ASSIGNING <lv_code>.
@@ -53,12 +55,15 @@ CLASS ZCL_AOC_CHECK_80 IMPLEMENTATION.
         ENDIF.
 
         lv_report = abap_true.
-        LOOP AT it_tokens ASSIGNING <ls_token> WHERE row = lv_line AND type CA 'SC'
-            AND col <= lv_offset.
-          IF <ls_token>-col + <ls_token>-len1 >= lv_offset + lv_length.
-            lv_report = abap_false.
-            EXIT.
-          ENDIF.
+        LOOP AT it_statements ASSIGNING <ls_statement> WHERE level = lv_level.
+          LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to
+              WHERE row = lv_line AND type CA 'SC'
+              AND col <= lv_offset.
+            IF <ls_token>-col + <ls_token>-len1 >= lv_offset + lv_length.
+              lv_report = abap_false.
+              EXIT.
+            ENDIF.
+          ENDLOOP.
         ENDLOOP.
 
         IF lv_report = abap_true.
