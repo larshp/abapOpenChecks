@@ -1271,6 +1271,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ms_naming-set_bwext  = abap_true.
     ms_naming-set_syntax = abap_true.
     ms_naming-set_pmeth  = abap_true.
+    ms_naming-set_shlp   = abap_true.
 
   ENDMETHOD.
 
@@ -1357,6 +1358,21 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
                                             is_check      = ls_check ).
       ENDIF.
+    ENDIF.
+
+* search help exits
+    IF ms_naming-set_shlp = abap_true
+        AND rv_skip = abap_false.
+
+      CLEAR ls_check.
+      _append tables 'SHLP_TAB'.
+      _append tables 'RECORD_TAB'.
+      _append change 'SHLP'.
+      _append change 'CALLCONTROL'.
+
+      rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                          is_check      = ls_check ).
+
     ENDIF.
 
   ENDMETHOD.
