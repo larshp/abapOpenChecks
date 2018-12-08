@@ -82,6 +82,7 @@ CLASS lcl_screen2000 IMPLEMENTATION.
     DATA: lt_descriptions TYPE dd03ptab,
           ls_description  LIKE LINE OF lt_descriptions,
           lt_text         TYPE STANDARD TABLE OF rsseltexts,
+          ls_text         LIKE LINE OF lt_text,
           lv_text         TYPE string,
           lv_name         TYPE fieldname.
 
@@ -98,10 +99,11 @@ CLASS lcl_screen2000 IMPLEMENTATION.
             lv_text = ls_description-ddtext.
           ENDIF.
 
-          APPEND VALUE #(
-            name = screen-name
-            kind = 'P'
-            text = lv_text ) TO lt_text.
+          CLEAR ls_text.
+          ls_text-name = screen-name.
+          ls_text-kind = 'P'.
+          ls_text-text = lv_text.
+          APPEND ls_text TO lt_text.
         ENDIF.
       ENDIF.
     ENDLOOP.

@@ -22,10 +22,12 @@ FORM run RAISING cx_salv_msg.
          END OF ty_tadir.
 
   DATA: lt_tadir TYPE STANDARD TABLE OF ty_tadir WITH DEFAULT KEY,
+        ls_tadir LIKE LINE OF lt_tadir,
         lo_alv   TYPE REF TO cl_salv_table,
         lt_alv   TYPE STANDARD TABLE OF ty_alv WITH DEFAULT KEY,
         ls_alv   LIKE LINE OF lt_alv.
 
+  DATA  ls_aunit_info TYPE if_aunit_prog_info_types=>ty_s_program.
 
   SELECT object obj_name FROM tadir INTO TABLE lt_tadir
     WHERE pgmid = 'R3TR'
@@ -34,9 +36,9 @@ FORM run RAISING cx_salv_msg.
     AND devclass IN s_devc
     AND delflag = abap_false.                             "#EC CI_SUBRC
 
-  LOOP AT lt_tadir INTO DATA(ls_tadir).
+  LOOP AT lt_tadir INTO ls_tadir.
     CLEAR ls_alv.
-    DATA(ls_aunit_info) = cl_aunit_prog_info=>get_program_info(
+    ls_aunit_info = cl_aunit_prog_info=>get_program_info(
       allow_commit = abap_true
       obj_type     = ls_tadir-object
       obj_name     = ls_tadir-obj_name ).

@@ -70,13 +70,15 @@ CLASS ZCL_AOC_STRUCTURE IMPLEMENTATION.
 
     DATA: lv_string    TYPE string,
           lt_string    TYPE ty_string_tt,
+          lv_temp      TYPE string,
           lo_structure TYPE REF TO zcl_aoc_structure.
 
 
-    APPEND |{ io_structure->ms_statement-statement
+    lv_temp = |{ io_structure->ms_statement-statement
       }, Children: { lines( io_structure->mt_structure )
       }, Type: { io_structure->mv_type
-      }, Stmnt type: { io_structure->mv_stmnt_type }| TO rt_string.
+      }, Stmnt type: { io_structure->mv_stmnt_type }|.
+    APPEND lv_temp TO rt_string.
     LOOP AT io_structure->mt_structure INTO lo_structure.
       lt_string = to_string( lo_structure ).
       LOOP AT lt_string INTO lv_string.

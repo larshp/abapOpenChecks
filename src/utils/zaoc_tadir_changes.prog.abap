@@ -26,12 +26,16 @@ FORM run RAISING cx_salv_msg.
 
   DATA: lt_objects TYPE stprt_h_tablist,
         ls_object  LIKE LINE OF lt_objects,
+        ls_output  LIKE LINE OF gt_output,
+        lv_current TYPE tadir-devclass,
         lv_from    TYPE d,
         lt_keys    TYPE stprsokey,
         lv_string  TYPE string,
         ls_key     LIKE LINE OF lt_keys,
+        lo_conv    TYPE REF TO cl_abap_conv_in_ce,
         lt_log     TYPE stprt_log_stable_type.
 
+  FIELD-SYMBOLS <ls_log> LIKE LINE OF lt_log.
 
   lv_from = sy-datum - p_days.
 
@@ -60,9 +64,9 @@ FORM run RAISING cx_salv_msg.
     RETURN.
   ENDIF.
 
-  LOOP AT lt_log ASSIGNING FIELD-SYMBOL(<ls_log>).
+  LOOP AT lt_log ASSIGNING <ls_log>.
 
-    DATA(lo_conv) = cl_abap_conv_in_ce=>create(
+    lo_conv = cl_abap_conv_in_ce=>create(
         input       = <ls_log>-logdata
         encoding    = gc_utf16be
         replacement = '?'
@@ -77,24 +81,27 @@ FORM run RAISING cx_salv_msg.
         ASSERT 0 = 1.
     ENDTRY.
 
-    APPEND VALUE #(
-      object   = p_obj
-      obj_name = p_nam
-      logdate  = <ls_log>-logdate
-      logtime  = <ls_log>-logtime
-      username = <ls_log>-username
-      devclass = lv_string+81(30) ) TO gt_output.
+    CLEAR ls_output.
+    ls_output-object   = p_obj.
+    ls_output-obj_name = p_nam.
+    ls_output-logdate  = <ls_log>-logdate.
+    ls_output-logtime  = <ls_log>-logtime.
+    ls_output-username = <ls_log>-username.
+    ls_output-devclass = lv_string+81(30).
+    APPEND ls_output TO gt_output.
 
   ENDLOOP.
 
-  SELECT SINGLE devclass
-    FROM tadir INTO @DATA(lv_current)
-    WHERE pgmid = 'R3TR'
-    AND object = @p_obj
-    AND obj_name = @p_nam.                                "#EC CI_SUBRC
 
-  APPEND VALUE #(
-    devclass = lv_current ) TO gt_output.
+  SELECT SINGLE devclass
+    FROM tadir INTO lv_current
+    WHERE pgmid = 'R3TR'
+    AND object = p_obj
+    AND obj_name = p_nam.                                "#EC CI_SUBRC
+
+  CLEAR ls_output.
+  ls_output-devclass = lv_current.
+  APPEND ls_output TO gt_output.
 
   PERFORM show.
 
@@ -102,9 +109,11 @@ ENDFORM.
 
 FORM show RAISING cx_salv_msg.
 
+  DATA lo_alv TYPE REF TO cl_salv_table.
+
   cl_salv_table=>factory(
     IMPORTING
-      r_salv_table = DATA(lo_alv)
+      r_salv_table = lo_alv
     CHANGING
       t_table      = gt_output ).
 
