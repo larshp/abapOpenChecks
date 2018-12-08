@@ -21,14 +21,14 @@ FORM run RAISING cx_salv_msg.
         lt_main   TYPE STANDARD TABLE OF program WITH NON-UNIQUE DEFAULT KEY.
 
   FIELD-SYMBOLS: <ls_output> LIKE LINE OF lt_output.
-
+  FIELD-SYMBOLS: <ls_tadir> LIKE LINE OF lt_tadir.
 
   SELECT * FROM tadir INTO TABLE lt_tadir
     WHERE devclass IN s_devc
     AND pgmid = 'R3TR'
     AND object = 'PROG'.                                  "#EC CI_SUBRC
 
-  LOOP AT lt_tadir ASSIGNING FIELD-SYMBOL(<ls_tadir>).
+  LOOP AT lt_tadir ASSIGNING <ls_tadir>.
     SELECT SINGLE subc INTO lv_subc FROM reposrc
       WHERE progname = <ls_tadir>-obj_name AND r3state = 'A'.
     IF sy-subrc <> 0 OR lv_subc <> 'I'.
