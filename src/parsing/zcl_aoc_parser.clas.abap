@@ -598,8 +598,8 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
     CREATE OBJECT lo_before
       EXPORTING
         iv_type     = gc_dummy
-        iv_value    = 'Sequence'                              "#EC NOTEXT
-        iv_rulename = iv_rulename.
+        iv_value    = 'Sequence'
+        iv_rulename = iv_rulename. "#EC NOTEXT
     io_before->edge( lo_before ).
 
     DO li_children->get_length( ) TIMES.

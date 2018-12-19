@@ -82,7 +82,7 @@ CLASS ZCL_AOC_CHECK_71 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'MESSAGE using system variables SY-MSGTY, SY-MSGNO, etc'. "#EC NOTEXT
+    description = 'MESSAGE using sytem variables SY-MSGTY, SY-MSGNO, etc'. "#EC NOTEXT
     category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '071'.

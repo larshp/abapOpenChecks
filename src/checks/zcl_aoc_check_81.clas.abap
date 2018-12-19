@@ -27,8 +27,7 @@ CLASS ZCL_AOC_CHECK_81 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_code  TYPE string_table,
-          lv_level TYPE i,
+    DATA: lv_level TYPE i,
           lv_first TYPE abap_bool,
           lv_code  TYPE sci_errc,
           ls_next  LIKE LINE OF it_tokens.

@@ -7,20 +7,20 @@ CLASS ltcl_test DEFINITION FOR TESTING
   PRIVATE SECTION.
 * ================
 
-    DATA: mo_check TYPE REF TO zcl_aoc_check_72.
+    DATA: mo_check TYPE REF TO zcl_aoc_check_73.
 
     METHODS:
       setup,
       export_import FOR TESTING.
 
-ENDCLASS.       "lcl_Test
+ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
 * ==============================
 
   METHOD setup.
     CREATE OBJECT mo_check.
-  ENDMETHOD.                    "setup
+  ENDMETHOD.
 
   METHOD export_import.
     zcl_aoc_unit_test=>export_import( mo_check ).
