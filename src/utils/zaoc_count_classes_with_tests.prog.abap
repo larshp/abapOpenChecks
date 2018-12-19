@@ -21,13 +21,12 @@ FORM run RAISING cx_salv_msg.
            obj_name TYPE tadir-obj_name,
          END OF ty_tadir.
 
-  DATA: lt_tadir TYPE STANDARD TABLE OF ty_tadir WITH DEFAULT KEY,
-        ls_tadir LIKE LINE OF lt_tadir,
-        lo_alv   TYPE REF TO cl_salv_table,
-        lt_alv   TYPE STANDARD TABLE OF ty_alv WITH DEFAULT KEY,
-        ls_alv   LIKE LINE OF lt_alv.
-
-  DATA  ls_aunit_info TYPE if_aunit_prog_info_types=>ty_s_program.
+  DATA: lt_tadir      TYPE STANDARD TABLE OF ty_tadir WITH DEFAULT KEY,
+        ls_tadir      LIKE LINE OF lt_tadir,
+        lo_alv        TYPE REF TO cl_salv_table,
+        lt_alv        TYPE STANDARD TABLE OF ty_alv WITH DEFAULT KEY,
+        ls_alv        LIKE LINE OF lt_alv,
+        ls_aunit_info TYPE if_aunit_prog_info_types=>ty_s_program.
 
   SELECT object obj_name FROM tadir INTO TABLE lt_tadir
     WHERE pgmid = 'R3TR'
