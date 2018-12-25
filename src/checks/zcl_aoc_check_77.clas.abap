@@ -17,9 +17,9 @@ CLASS zcl_aoc_check_77 DEFINITION
         REDEFINITION .
     METHODS run
         REDEFINITION .
-protected section.
+  PROTECTED SECTION.
 
-  data MV_EXPOSURE type CHAR1 .
+    DATA mv_exposure TYPE char1 .
   PRIVATE SECTION.
 ENDCLASS.
 
