@@ -27,14 +27,12 @@ CLASS zcl_aoc_check_45 DEFINITION
     METHODS support_740sp02
       RETURNING
         VALUE(rv_supported) TYPE abap_bool .
-    METHODS find_supported .
   PRIVATE SECTION.
 
-    CLASS-DATA gv_executed TYPE abap_bool .
-    CLASS-DATA gv_740sp02 TYPE abap_bool .
     DATA mv_lines TYPE flag .
     DATA mv_new TYPE flag .
     DATA mv_inline_decl TYPE flag .
+    DATA mv_line_exists TYPE flag .
     DATA mv_ref TYPE flag .
     DATA mv_condense TYPE flag .
     DATA mv_concat_lines TYPE flag .
@@ -114,8 +112,14 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
           AND support_740sp02( ) = abap_true.
         lv_code = '010'.
       ELSEIF mv_corresponding = abap_true
-          AND <ls_statement>-str CP 'MOVE-CORRESPONDING * TO *'.
+          AND <ls_statement>-str CP 'MOVE-CORRESPONDING * TO *'
+          AND support_740sp02( ) = abap_true.
         lv_code = '011'.
+      ELSEIF mv_line_exists = abap_true
+          AND <ls_statement>-str CP 'READ TABLE * TRANSPORTING NO FIELDS*'
+          AND NOT <ls_statement>-str CP '* BINARY SEARCH*'
+          AND support_740sp02( ) = abap_true.
+        lv_code = '012'.
       ENDIF.
 
 * todo, add READ TABLE?
@@ -211,42 +215,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     mv_translate_using = abap_true.
     mv_ref             = abap_true.
     mv_corresponding   = abap_true.
-
-  ENDMETHOD.                    "CONSTRUCTOR
-
-
-  METHOD find_supported.
-
-    DATA: lt_itab  TYPE STANDARD TABLE OF string,
-          lv_mess  TYPE string,
-          lv_lin   TYPE i,
-          ls_trdir TYPE trdir,
-          lv_code  TYPE string,
-          lv_wrd   TYPE string.
-
-
-    IF gv_executed = abap_true.
-      RETURN.
-    ENDIF.
-
-    lv_code = 'REPORT zfoobar.' ##NO_TEXT.
-    APPEND lv_code TO lt_itab.
-    lv_code = 'DATA(lo_new) = NEW cl_gui_frontend_services( ).' ##NO_TEXT.
-    APPEND lv_code TO lt_itab.
-
-    ls_trdir-uccheck = abap_true.
-
-    SYNTAX-CHECK FOR lt_itab
-      MESSAGE lv_mess
-      LINE lv_lin
-      WORD lv_wrd
-      DIRECTORY ENTRY ls_trdir.
-    IF sy-subrc = 0.
-* all supported in 740SP02
-      gv_740sp02 = abap_true.
-    ENDIF.
-
-    gv_executed = abap_true.
+    mv_line_exists     = abap_true.
 
   ENDMETHOD.
 
@@ -266,6 +235,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       mv_ref             = mv_ref
       mv_corresponding   = mv_corresponding
       mv_errty           = mv_errty
+      mv_line_exists     = mv_line_exists
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -298,6 +268,8 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
         p_text = 'Use REF expression' .                     "#EC NOTEXT
       WHEN '011'.
         p_text = 'Use corresponding #( )' .                 "#EC NOTEXT
+      WHEN '012'.
+        p_text = 'Use line_exists( )' .                     "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
@@ -313,7 +285,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 
     zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
     zzaoc_fill_att mv_lines 'lines( )' ''.                  "#EC NOTEXT
-    zzaoc_fill_att mv_new 'NEW' ''.                         "#EC NOTEXT
+    zzaoc_fill_att mv_new 'NEW #( )' ''.                    "#EC NOTEXT
     zzaoc_fill_att mv_inline_decl 'Inline declarations' ''. "#EC NOTEXT
     zzaoc_fill_att mv_condense 'condense( )' ''.            "#EC NOTEXT
     zzaoc_fill_att mv_concat_lines 'concate_lines_of( )' ''. "#EC NOTEXT
@@ -321,8 +293,9 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     zzaoc_fill_att mv_translate_to 'to_upper( ) or to_lower( )' ''. "#EC NOTEXT
     zzaoc_fill_att mv_translate_using 'translate( )' ''.    "#EC NOTEXT
     zzaoc_fill_att mv_templates 'CONCATENATE -> String templates' ''. "#EC NOTEXT
-    zzaoc_fill_att mv_ref 'REF' ''.                         "#EC NOTEXT
+    zzaoc_fill_att mv_ref 'REF #( )' ''.                    "#EC NOTEXT
     zzaoc_fill_att mv_corresponding 'corresponding #( )' ''. "#EC NOTEXT
+    zzaoc_fill_att mv_line_exists 'line_exists( )' ''.      "#EC NOTEXT
 
     zzaoc_popup.
 
@@ -344,6 +317,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       mv_ref             = mv_ref
       mv_corresponding   = mv_corresponding
       mv_errty           = mv_errty
+      mv_line_exists     = mv_line_exists
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
@@ -352,8 +326,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 
   METHOD support_740sp02.
 
-    find_supported( ).
-    rv_supported = gv_740sp02.
+    rv_supported = lcl_supported=>support_740sp02( ).
 
   ENDMETHOD.
 ENDCLASS.
