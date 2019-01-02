@@ -24,22 +24,14 @@ CLASS zcl_aoc_check_45 DEFINITION
         !is_statement  TYPE ty_statement
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
-    METHODS support_inline_decl
-      RETURNING
-        VALUE(rv_supported) TYPE abap_bool .
-    METHODS support_new
-      RETURNING
-        VALUE(rv_supported) TYPE abap_bool .
-    METHODS support_ref
+    METHODS support_740sp02
       RETURNING
         VALUE(rv_supported) TYPE abap_bool .
     METHODS find_supported .
   PRIVATE SECTION.
 
     CLASS-DATA gv_executed TYPE abap_bool .
-    CLASS-DATA gv_ref_supported TYPE abap_bool .
-    CLASS-DATA gv_new_supported TYPE abap_bool .
-    CLASS-DATA gv_inline_supported TYPE abap_bool .
+    CLASS-DATA gv_740sp02 TYPE abap_bool .
     DATA mv_lines TYPE flag .
     DATA mv_new TYPE flag .
     DATA mv_inline_decl TYPE flag .
@@ -86,7 +78,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       ELSEIF <ls_statement>-str CP 'CREATE OBJECT *'
           AND NOT <ls_statement>-str CP '* TYPE (*'
           AND mv_new = abap_true
-          AND support_new( ) = abap_true.
+          AND support_740sp02( ) = abap_true.
         lv_code = '002'.
       ELSEIF ( ( <ls_statement>-str CP 'LOOP AT * INTO *'
           AND NOT <ls_statement>-str CP 'LOOP AT * INTO DATA(*' )
@@ -95,7 +87,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
           OR ( <ls_statement>-str CP 'CATCH * INTO *'
           AND NOT <ls_statement>-str CP 'CATCH * INTO DATA(*' ) )
           AND mv_inline_decl = abap_true
-          AND support_inline_decl( ) = abap_true
+          AND support_740sp02( ) = abap_true
           AND check_loop( <ls_statement> ) = abap_true.
         lv_code = '003'.
       ELSEIF mv_condense = abap_true
@@ -119,7 +111,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
         lv_code = '009'.
       ELSEIF mv_ref = abap_true
           AND <ls_statement>-str CP 'GET REFERENCE OF *'
-          AND support_ref( ) = abap_true.
+          AND support_740sp02( ) = abap_true.
         lv_code = '010'.
       ELSEIF mv_corresponding = abap_true
           AND <ls_statement>-str CP 'MOVE-CORRESPONDING * TO *'.
@@ -251,9 +243,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       DIRECTORY ENTRY ls_trdir.
     IF sy-subrc = 0.
 * all supported in 740SP02
-      gv_new_supported = abap_true.
-      gv_ref_supported = abap_true.
-      gv_inline_supported = abap_true.
+      gv_740sp02 = abap_true.
     ENDIF.
 
     gv_executed = abap_true.
@@ -360,26 +350,10 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD support_inline_decl.
+  METHOD support_740sp02.
 
     find_supported( ).
-    rv_supported = gv_inline_supported.
-
-  ENDMETHOD.
-
-
-  METHOD support_new.
-
-    find_supported( ).
-    rv_supported = gv_new_supported.
-
-  ENDMETHOD.
-
-
-  METHOD support_ref.
-
-    find_supported( ).
-    rv_supported = gv_ref_supported.
+    rv_supported = gv_740sp02.
 
   ENDMETHOD.
 ENDCLASS.
