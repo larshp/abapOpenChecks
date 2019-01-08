@@ -245,7 +245,9 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
 
   METHOD initialize.
 
-    mt_compiler = get_compiler( ).
+    mt_compiler = zcl_aoc_compiler=>get_instance(
+      iv_object_type = object_type
+      iv_object_name = object_name )->get_result( ).
 
     mt_statements = build_statements(
       it_tokens     = it_tokens

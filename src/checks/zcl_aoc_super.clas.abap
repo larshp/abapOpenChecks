@@ -23,9 +23,6 @@ CLASS zcl_aoc_super DEFINITION
       IMPORTING
         !iv_name TYPE level_name
         !it_code TYPE string_table .
-    METHODS get_compiler
-      RETURNING
-        VALUE(rt_result) TYPE scr_refs .
 
     METHODS get_attributes
         REDEFINITION .
@@ -107,31 +104,29 @@ CLASS zcl_aoc_super DEFINITION
       BEGIN OF ty_source,
         name TYPE level_name,
         code TYPE string_table,
-      END OF ty_source.
+      END OF ty_source .
     TYPES:
-      ty_source_tt TYPE SORTED TABLE OF ty_source WITH UNIQUE KEY name.
+      ty_source_tt TYPE SORTED TABLE OF ty_source WITH UNIQUE KEY name .
 
-    DATA mt_cache_result TYPE scr_refs.
-    DATA mv_cache_program TYPE program.
-    DATA mt_source TYPE ty_source_tt.
+    DATA mt_source TYPE ty_source_tt .
 
     CLASS-METHODS token_position
       IMPORTING
         !is_token          TYPE stokesx
       RETURNING
-        VALUE(rs_position) TYPE ty_position.
+        VALUE(rs_position) TYPE ty_position .
     METHODS check_class
       IMPORTING
         !iv_sub_obj_name TYPE sobj_name
       RETURNING
-        VALUE(rv_skip)   TYPE abap_bool.
+        VALUE(rv_skip)   TYPE abap_bool .
     METHODS check_wdy
       IMPORTING
         !iv_sub_obj_type TYPE trobjtype
         !iv_sub_obj_name TYPE sobj_name
         !iv_line         TYPE token_row
       RETURNING
-        VALUE(rv_skip)   TYPE abap_bool.
+        VALUE(rv_skip)   TYPE abap_bool .
 ENDCLASS.
 
 
@@ -354,46 +349,6 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
   METHOD get_attributes.
 
     EXPORT mv_errty = mv_errty TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_compiler.
-
-    DATA: lv_class    TYPE seoclsname,
-          lo_compiler TYPE REF TO cl_abap_compiler,
-          lv_name     TYPE program.
-
-
-    CASE object_type.
-      WHEN 'PROG'.
-        lv_name = object_name.
-      WHEN 'CLAS'.
-        lv_class = object_name.
-        lv_name = cl_oo_classname_service=>get_classpool_name( lv_class ).
-      WHEN 'FUGR'.
-        CONCATENATE 'SAPL' object_name INTO lv_name.
-      WHEN OTHERS.
-        RETURN.
-    ENDCASE.
-
-    IF lv_name = mv_cache_program.
-      rt_result = mt_cache_result.
-      RETURN.
-    ENDIF.
-
-    lo_compiler = cl_abap_compiler=>create(
-      p_name             = lv_name
-      p_no_package_check = abap_true ).
-    IF lo_compiler IS INITIAL.
-      RETURN.
-    ENDIF.
-
-    lo_compiler->get_all(
-      IMPORTING
-        p_result = rt_result ).
-    mt_cache_result = rt_result.
-    mv_cache_program = lv_name.
 
   ENDMETHOD.
 
