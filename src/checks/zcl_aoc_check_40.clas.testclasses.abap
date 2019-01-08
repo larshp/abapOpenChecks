@@ -23,7 +23,14 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_03 FOR TESTING,
       test001_04 FOR TESTING,
       test001_05 FOR TESTING,
-      test001_06 FOR TESTING.
+      test001_06 FOR TESTING,
+      test001_07 FOR TESTING,
+      test001_08 FOR TESTING,
+      test001_09 FOR TESTING,
+      test001_10 FOR TESTING,
+      test001_11 FOR TESTING,
+      test001_12 FOR TESTING,
+      test001_13 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -52,7 +59,7 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     _code 'READ TABLE lt_table INDEX 1 INTO ls_table.'.
-    _code 'WRITE: / ''Hello'''.
+    _code 'WRITE: / ''Hello''.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
@@ -92,7 +99,7 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     _code 'ASSIGN (''FOO-BAR'') TO <lg_data>.'.
-    _code 'WRITE: / ''Hello'''.
+    _code 'WRITE: / ''Hello''.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
@@ -105,7 +112,7 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     _code 'ASSIGN COMPONENT lv_string OF STRUCTURE ls_foo TO <lg_data>.'.
-    _code 'WRITE: / ''Hello'''.
+    _code 'WRITE: / ''Hello''.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
@@ -121,6 +128,135 @@ CLASS ltcl_test IMPLEMENTATION.
     _code 'ASSIGN COMPONENT lv_string OF STRUCTURE ls_foo TO <lg_data>.'.
     _code 'ASSIGN COMPONENT lv_string OF STRUCTURE ls_foo TO <lg_data>.'.
     _code 'ASSERT sy-subrc = 0.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_07.
+* ===========
+
+    _code 'IF sy-subrc <> 0.'.
+    _code '  READ TABLE lt_table INDEX 1 INTO ls_table.'.
+    _code 'ELSE.'.
+    _code '  READ TABLE lt_table INDEX 2 INTO ls_table.'.
+    _code 'ENDIF.'.
+    _code 'ASSERT sy-subrc = 0.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_08.
+* ===========
+
+    _code 'IF sy-subrc = 8.'.
+    _code '  READ TABLE lt_table INDEX 1 INTO ls_table.'.
+    _code 'ELSEIF sy-subrc = 4.'.
+    _code '  READ TABLE lt_table INDEX 2 INTO ls_table.'.
+    _code 'ELSE.'.
+    _code '  READ TABLE lt_table INDEX 3 INTO ls_table.'.
+    _code 'ENDIF.'.
+    _code 'ASSERT sy-subrc = 0.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_09.
+* ===========
+
+    _code 'IF sy-subrc = 8.'.
+    _code '  READ TABLE lt_table INDEX 1 INTO ls_table.'.
+    _code '  WRITE: / ''Hello''.'.
+    _code 'ELSEIF sy-subrc = 4.'.
+    _code '  READ TABLE lt_table INDEX 2 INTO ls_table.'.
+    _code 'ELSE.'.
+    _code '  READ TABLE lt_table INDEX 3 INTO ls_table.'.
+    _code 'ENDIF.'.
+    _code 'ASSERT sy-subrc = 0.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_10.
+* ===========
+
+    _code 'IF sy-subrc = 8.'.
+    _code '  READ TABLE lt_table INDEX 1 INTO ls_table.'.
+    _code 'ELSEIF sy-subrc = 4.'.
+    _code '  READ TABLE lt_table INDEX 2 INTO ls_table.'.
+    _code '  WRITE: / ''Hello''.'.
+    _code 'ELSE.'.
+    _code '  READ TABLE lt_table INDEX 3 INTO ls_table.'.
+    _code 'ENDIF.'.
+    _code 'ASSERT sy-subrc = 0.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_11.
+* ===========
+
+    _code 'IF sy-subrc = 8.'.
+    _code '  READ TABLE lt_table INDEX 1 INTO ls_table.'.
+    _code 'ELSEIF sy-subrc = 4.'.
+    _code '  READ TABLE lt_table INDEX 2 INTO ls_table.'.
+    _code 'ELSE.'.
+    _code '  READ TABLE lt_table INDEX 3 INTO ls_table.'.
+    _code '  WRITE: / ''Hello''.'.
+    _code 'ENDIF.'.
+    _code 'ASSERT sy-subrc = 0.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_12.
+* ===========
+
+    _code 'CASE sy-subrc.'.
+    _code '  WHEN 0.'.
+    _code '    READ TABLE lt_table INDEX 1 INTO ls_table.'.
+    _code '  WHEN OTHERS.'.
+    _code '    ASSERT 0 = 1.'.
+    _code 'ENDCASE.'.
+    _code 'ASSERT sy-subrc = 0.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_13.
+* ===========
+
+    _code 'CASE sy-subrc.'.
+    _code '  WHEN 0.'.
+    _code '    READ TABLE lt_table INDEX 1 INTO ls_table.'.
+    _code '  WHEN OTHERS.'.
+    _code '    ASSERT sy-subrc = 0.'.
+    _code 'ENDCASE.'.
+    _code 'WRITE: / ''Hello''.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
