@@ -108,6 +108,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     DATA: lt_compiler   TYPE scr_refs,
           ls_compiler   LIKE LINE OF lt_compiler,
           ls_mtdkey     TYPE seocpdkey,
+          lo_compiler   TYPE REF TO zcl_aoc_compiler,
           lv_include    TYPE programm,
           lv_name       TYPE seosconame,
           lt_parameters TYPE ty_vseosubcdf_tt.
@@ -128,7 +129,13 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    lt_compiler = get_compiler( ).
+    lo_compiler = zcl_aoc_compiler=>get_instance(
+      iv_object_type = object_type
+      iv_object_name = object_name ).
+    IF lo_compiler->has_error( ) = abap_true.
+      RETURN.
+    ENDIF.
+    lt_compiler = lo_compiler->get_result( ).
 
     ls_mtdkey-clsname = is_method-clsname.
     ls_mtdkey-cpdname = is_method-cmpname.
