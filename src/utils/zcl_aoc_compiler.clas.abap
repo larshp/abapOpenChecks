@@ -70,6 +70,7 @@ CLASS ZCL_AOC_COMPILER IMPLEMENTATION.
         CLEAR gt_cache_result.
         gv_cache_error = abap_true.
       ELSE.
+        CLEAR gt_cache_result.
         lo_compiler->get_all(
           IMPORTING
             p_result = gt_cache_result ).
