@@ -43,7 +43,12 @@ CLASS ZCL_AOC_CHECK_12 IMPLEMENTATION.
       CLEAR lv_statement.
       LOOP AT it_tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to.
-        CONCATENATE lv_statement <ls_token>-str INTO lv_statement SEPARATED BY space.
+        IF lv_statement IS INITIAL.
+          lv_statement = <ls_token>-str.
+        ELSE.
+          CONCATENATE lv_statement <ls_token>-str
+            INTO lv_statement SEPARATED BY space.
+        ENDIF.
       ENDLOOP.
 
 * parsing, derpy derp
