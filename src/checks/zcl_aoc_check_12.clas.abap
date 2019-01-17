@@ -25,11 +25,12 @@ CLASS ZCL_AOC_CHECK_12 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_include   TYPE program,
-          lv_trash     TYPE string,                         "#EC NEEDED
-          lv_error     TYPE abap_bool,
-          lt_results   TYPE TABLE OF string,
-          lv_statement LIKE LINE OF lt_results.
+    DATA: lv_include        TYPE program,
+          lv_lines          TYPE i,
+          lv_statement_sort TYPE string,
+          lv_error          TYPE abap_bool,
+          lt_results        TYPE TABLE OF string,
+          lv_statement      LIKE LINE OF lt_results.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
                    <ls_token>     LIKE LINE OF it_tokens.
@@ -43,14 +44,31 @@ CLASS ZCL_AOC_CHECK_12 IMPLEMENTATION.
       CLEAR lv_statement.
       LOOP AT it_tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to.
-        CONCATENATE lv_statement <ls_token>-str INTO lv_statement SEPARATED BY space.
+        IF lv_statement IS INITIAL.
+          lv_statement = <ls_token>-str.
+        ELSE.
+          CONCATENATE lv_statement <ls_token>-str
+            INTO lv_statement SEPARATED BY space.
+        ENDIF.
       ENDLOOP.
 
 * parsing, derpy derp
-      SPLIT lv_statement AT ' BY ' INTO lv_trash lv_statement.
+      SPLIT lv_statement AT ' BY ' INTO lv_statement_sort lv_statement.
       IF lv_statement IS INITIAL OR lv_statement CA '()'.
         CONTINUE. " current loop
       ENDIF.
+
+      "check priority before by
+      SPLIT lv_statement_sort AT space INTO TABLE lt_results.
+      lv_lines = lines( lt_results ).
+      IF lv_lines >= 3.
+        READ TABLE lt_results INTO lv_statement_sort INDEX lv_lines.
+        IF lv_statement_sort = 'ASCENDING' OR lv_statement_sort = 'DESCENDING'.
+          CONTINUE.
+        ENDIF.
+      ENDIF.
+
+      "check priority after each component
       REPLACE ALL OCCURRENCES OF ' AS TEXT' IN lv_statement WITH ''.
       SPLIT lv_statement AT space INTO TABLE lt_results.
 
