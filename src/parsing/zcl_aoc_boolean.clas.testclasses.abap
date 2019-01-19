@@ -694,7 +694,8 @@ CLASS ltcl_remove_method_calls DEFINITION FOR TESTING DURATION SHORT RISK LEVEL 
       test08 FOR TESTING,
       test09 FOR TESTING,
       test10 FOR TESTING,
-      test11 FOR TESTING.
+      test11 FOR TESTING,
+      test12 FOR TESTING.
 
 ENDCLASS.       "ltcl_Remove_Method_Calls
 
@@ -792,6 +793,13 @@ CLASS ltcl_remove_method_calls IMPLEMENTATION.
   METHOD test11.
 
     test( iv_code = 'lr_object->/ui2/if_edm_model_entity~get_entity_name( )'
+          iv_exp  = 'method' ).
+
+  ENDMETHOD.
+
+  METHOD test12.
+
+    test( iv_code = 'REF DATA( lt_tab )'
           iv_exp  = 'method' ).
 
   ENDMETHOD.
