@@ -335,7 +335,7 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
           lv_end = io_tokens->find_end_paren( lv_index ).
 
           CASE io_tokens->get_token( lv_index - 1 )-str.
-            WHEN 'NEW' OR 'CONV' OR 'COND' OR 'VALUE'.
+            WHEN 'NEW' OR 'CONV' OR 'COND' OR 'VALUE' OR 'REF'.
               lv_index = lv_index - 1.
           ENDCASE.
 
