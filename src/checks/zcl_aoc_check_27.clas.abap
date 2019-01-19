@@ -288,7 +288,8 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
           LOOP AT mt_statements ASSIGNING <ls_statement> WHERE
             ( row < <ls_result>-line AND row_to > <ls_result>-line ) OR
             ( row = <ls_result>-line AND col <= <ls_result>-column AND row_to > <ls_result>-line ) OR
-            ( row = <ls_result>-line AND col <= <ls_result>-column AND row_to = <ls_result>-line AND col_to >= <ls_result>-column ) OR
+            ( row = <ls_result>-line AND col <= <ls_result>-column AND
+              row_to = <ls_result>-line AND col_to >= <ls_result>-column ) OR
             ( row < <ls_result>-line AND row_to = <ls_result>-line AND col_to >= <ls_result>-column ).
             IF <ls_statement>-statement CP 'FORM *'.
               RETURN.
