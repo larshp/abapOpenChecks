@@ -108,12 +108,15 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
           lo_pb_info     TYPE REF TO cl_scov_pb_info,
           lt_tkey_selops TYPE cvt_test_key_selops,
           ls_tkey_selops LIKE LINE OF lt_tkey_selops,
-          lo_ui_factory  TYPE REF TO cl_scov_stmnt_cov_ui_factory.
+          lo_ui_factory  TYPE REF TO cl_scov_stmnt_cov_ui_factory,
+          li_container   TYPE REF TO if_scov_stmnt_data_container,
+          lt_meta        TYPE cvt_stmnt_cov_meta_data,
+          lo_insp        TYPE REF TO cl_scv_pblock_inspector.
 
 
     CASE ii_node->subtype.
       WHEN 'METH'.
-        DATA(lo_insp) = cl_scv_pblock_inspector=>create( ii_node ).
+        lo_insp = cl_scv_pblock_inspector=>create( ii_node ).
         lv_pb_type    = 'METH'.
         lv_pb_name    = lo_insp->get_method_name( ).
         lv_prog_class = lo_insp->get_class_name( ).
@@ -142,10 +145,10 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
 
     APPEND ls_tkey_selops TO lt_tkey_selops.
 
-    DATA(li_container) = lo_ui_factory->create_stmnt_dcon_factory( lt_tkey_selops
+    li_container = lo_ui_factory->create_stmnt_dcon_factory( lt_tkey_selops
       )->create_stmnt_data_container( lo_pb_info ).
 
-    DATA(lt_meta) = li_container->get_stmnt_cov_meta_data( ).
+    lt_meta = li_container->get_stmnt_cov_meta_data( ).
 
 * 102 = covered
     READ TABLE lt_meta WITH KEY color = '102' TRANSPORTING NO FIELDS.
@@ -182,6 +185,7 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
           li_coverage TYPE REF TO if_aucv_cvrg_rslt_provider,
           li_aunit    TYPE REF TO if_saunit_internal_result,
           lo_aunit    TYPE REF TO cl_saunit_internal_result,
+          ls_info     TYPE if_aunit_prog_info_types=>ty_s_program,
           lo_passport TYPE REF TO object.
 
 
@@ -189,7 +193,7 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    DATA(ls_info) = cl_aunit_prog_info=>get_program_info(
+    ls_info = cl_aunit_prog_info=>get_program_info(
       allow_commit = abap_true
       obj_type = object_type
       obj_name = object_name ).
@@ -249,11 +253,13 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
 
   METHOD walk.
 
+    DATA: li_node TYPE REF TO if_scv_result_node.
+
     IF ii_node->has_children( ) = abap_false.
       node( ii_node ).
     ENDIF.
 
-    LOOP AT ii_node->get_children( ) INTO DATA(li_node).
+    LOOP AT ii_node->get_children( ) INTO li_node.
       walk( li_node ).
     ENDLOOP.
 
