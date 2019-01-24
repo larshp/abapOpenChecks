@@ -42,9 +42,9 @@ CLASS zcl_aoc_check_56 DEFINITION
         !is_method TYPE seocompo .
     METHODS get_name
       IMPORTING
-        !i_full_name  TYPE string
+        !iv_full_name  TYPE string
       RETURNING
-        VALUE(r_name) TYPE seosconame .
+        VALUE(rv_name) TYPE seosconame .
     METHODS check_locally_referenced
       IMPORTING
         !is_method TYPE seocompo .
@@ -368,9 +368,9 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     DATA: lv_moffset TYPE i,
           lv_mlenght TYPE i.
 
-    FIND REGEX '([^:]*)$' IN i_full_name MATCH OFFSET lv_moffset MATCH LENGTH lv_mlenght.
+    FIND REGEX '([^:]*)$' IN iv_full_name MATCH OFFSET lv_moffset MATCH LENGTH lv_mlenght.
     IF sy-subrc = 0.
-      r_name = i_full_name+lv_moffset(lv_mlenght).
+      rv_name = iv_full_name+lv_moffset(lv_mlenght).
     ENDIF.
   ENDMETHOD.
 
