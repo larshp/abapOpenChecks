@@ -247,12 +247,14 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 
   METHOD resolve_clas.
 
-    DATA: lt_includes TYPE seoincl_t.
+    DATA: lt_includes TYPE seoincl_t,
+          lv_name     TYPE seoclsname.
 
     FIELD-SYMBOLS: <lv_include> LIKE LINE OF lt_includes.
 
 * todo, this method does not exist on 702
-    lt_includes = cl_oo_classname_service=>get_all_class_includes( CONV #( iv_name ) ).
+    lv_name = iv_name.
+    lt_includes = cl_oo_classname_service=>get_all_class_includes( lv_name ).
     LOOP AT lt_includes ASSIGNING <lv_include>.
       APPEND LINES OF resolve_prog( <lv_include> ) TO rt_used.
     ENDLOOP.
