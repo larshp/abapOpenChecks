@@ -100,6 +100,10 @@ CLASS ZCL_AOC_CHECK_63 IMPLEMENTATION.
         ASSIGN COMPONENT 'TEXT' OF STRUCTURE <lg_log> TO <lv_text>.
         ASSERT sy-subrc = 0.
 
+        IF <lv_text> CP 'active version cannot be read*'.
+          CONTINUE.
+        ENDIF.
+
         inform( p_sub_obj_type = object_type
                 p_sub_obj_name = object_name
                 p_kind         = mv_errty
