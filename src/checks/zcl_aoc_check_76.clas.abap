@@ -94,9 +94,9 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
           READ TABLE lt_statement_tokens INDEX ln_prev_token INTO ls_prev. "#EC CI_SUBRC
           READ TABLE lt_statement_tokens INDEX ln_next_token INTO ls_next. "#EC CI_SUBRC
 
-          IF ls_prev-str <> 'OUTER' AND
-             ls_prev-str <> 'LEFT' AND
-             ls_prev-str <> 'RIGHT'.
+          IF ls_prev-str <> 'OUTER'
+              AND ls_prev-str <> 'LEFT'
+              AND ls_prev-str <> 'RIGHT'.
 
             IF ln_join_number = 1.
               " find the table name on the left hand side of the join
