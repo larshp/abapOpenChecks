@@ -69,7 +69,7 @@ FORM run.
         i_text               = 'Processing'
         i_processed          = sy-tabix
         i_total              = lines( lt_tadir )
-        i_output_immediately = abap_true ).
+        i_output_immediately = abap_true ) ##NO_TEXT.
     ENDIF.
 
     SELECT SINGLE devclass FROM tdevc INTO lv_devclass
@@ -89,7 +89,7 @@ FORM run.
         AND lcl_logic=>in_open_transport( <ls_tadir> ) = abap_false.
       ls_output-object   = <ls_tadir>-object.
       ls_output-obj_name = <ls_tadir>-obj_name.
-      ls_output-text     = 'deletion flag, but not in open tr'.
+      ls_output-text     = 'deletion flag, but not in open tr' ##NO_TEXT.
       APPEND ls_output TO gt_output.
     ENDIF.
 

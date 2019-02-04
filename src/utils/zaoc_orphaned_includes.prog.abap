@@ -20,8 +20,8 @@ FORM run RAISING cx_salv_msg.
         lt_output TYPE STANDARD TABLE OF ty_output WITH DEFAULT KEY,
         lt_main   TYPE STANDARD TABLE OF program WITH NON-UNIQUE DEFAULT KEY.
 
-  FIELD-SYMBOLS: <ls_output> LIKE LINE OF lt_output.
-  FIELD-SYMBOLS: <ls_tadir> LIKE LINE OF lt_tadir.
+  FIELD-SYMBOLS: <ls_output> LIKE LINE OF lt_output,
+                 <ls_tadir>  LIKE LINE OF lt_tadir.
 
   SELECT * FROM tadir INTO TABLE lt_tadir
     WHERE devclass IN s_devc
