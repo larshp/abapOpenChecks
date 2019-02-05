@@ -1306,9 +1306,7 @@ CLASS ltcl_test_programs DEFINITION FOR TESTING
 * note: the following programs should not contain macro calls
 *       macro calls doesnt work in the parser
     METHODS:
-*      lwbabapf00           FOR TESTING,
       lsuid_maintenancep01 FOR TESTING,
-*      rsenqrr2             FOR TESTING,
       lslvc_fullscreenf03  FOR TESTING,
       saphtml_demo1        FOR TESTING,
       sap_picture_demo     FOR TESTING,
@@ -1395,19 +1393,11 @@ CLASS ltcl_test_programs IMPLEMENTATION.
 
   ENDMETHOD.                    "check
 
-*  METHOD lwbabapf00.
-*    check( 'LWBABAPF00' ).
-*  ENDMETHOD.       "build
-
   METHOD lsuid_maintenancep01.
 
     check( 'LSUID_MAINTENANCEP01' ).
 
   ENDMETHOD.                    "LSUID_MAINTENANCEP01
-
-*  METHOD rsenqrr2.
-*    check( 'RSENQRR2' ).
-*  ENDMETHOD.                    "RSENQRR2
 
   METHOD lslvc_fullscreenf03.
 

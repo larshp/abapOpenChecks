@@ -62,7 +62,7 @@ CLASS ZCL_AOC_CHECK_12 IMPLEMENTATION.
       SPLIT lv_statement_sort AT space INTO TABLE lt_results.
       lv_lines = lines( lt_results ).
       IF lv_lines >= 3.
-        READ TABLE lt_results INTO lv_statement_sort INDEX lv_lines.
+        READ TABLE lt_results INTO lv_statement_sort INDEX lv_lines. "#EC CI_SUBRC
         IF lv_statement_sort = 'ASCENDING' OR lv_statement_sort = 'DESCENDING'.
           CONTINUE.
         ENDIF.

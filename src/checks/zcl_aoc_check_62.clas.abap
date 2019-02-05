@@ -164,13 +164,13 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
 
     DATA: lv_table TYPE string.
 
-    FIND REGEX '^IF NOT (\w+) IS INITIAL$' IN is_statement-str SUBMATCHES lv_table.
+    FIND REGEX '^IF NOT (\w+) IS INITIAL$' IN is_statement-str SUBMATCHES lv_table ##NO_TEXT.
     IF sy-subrc <> 0.
-      FIND REGEX '^IF (\w+) IS NOT INITIAL$' IN is_statement-str SUBMATCHES lv_table.
+      FIND REGEX '^IF (\w+) IS NOT INITIAL$' IN is_statement-str SUBMATCHES lv_table ##NO_TEXT.
     ENDIF.
     IF sy-subrc <> 0.
 * assuming LINES method is not overwritten by custom method
-      FIND REGEX '^IF LINES\( (\w+) \) > 0$' IN is_statement-str SUBMATCHES lv_table.
+      FIND REGEX '^IF LINES\( (\w+) \) > 0$' IN is_statement-str SUBMATCHES lv_table ##NO_TEXT.
     ENDIF.
     IF sy-subrc <> 0.
       RETURN.

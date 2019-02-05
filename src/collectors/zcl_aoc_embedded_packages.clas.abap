@@ -165,7 +165,7 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
         p_name       = myname
         p_title      = 'Settings'
         p_attributes = lt_attributes
-        p_display    = p_display ).
+        p_display    = p_display ) ##NO_TEXT.
       IF lv_break = abap_true.
         RETURN.
       ENDIF.
