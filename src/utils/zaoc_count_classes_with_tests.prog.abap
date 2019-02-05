@@ -33,7 +33,7 @@ FORM run RAISING cx_salv_msg.
     AND object = 'CLAS'
     AND obj_name IN s_objn
     AND devclass IN s_devc
-    AND delflag = abap_false.                             "#EC CI_SUBRC
+    AND delflag = abap_false.             "#EC CI_GENBUFF "#EC CI_SUBRC
 
   LOOP AT lt_tadir INTO ls_tadir.
     CLEAR ls_alv.
