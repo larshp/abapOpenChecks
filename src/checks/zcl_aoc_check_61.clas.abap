@@ -210,7 +210,7 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
     SELECT SINGLE devclass INTO lv_package
       FROM tadir
       WHERE object = object_type
-      AND obj_name = object_name.
+      AND obj_name = object_name.                       "#EC CI_GENBUFF
     IF sy-subrc <> 0.
       RETURN.
     ENDIF.

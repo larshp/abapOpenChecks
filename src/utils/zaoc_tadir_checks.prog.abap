@@ -61,7 +61,7 @@ FORM run.
 
 
   SELECT * FROM tadir INTO TABLE lt_tadir
-    WHERE devclass IN s_devc.                             "#EC CI_SUBRC
+    WHERE devclass IN s_devc.             "#EC CI_GENBUFF "#EC CI_SUBRC
 
   LOOP AT lt_tadir ASSIGNING <ls_tadir>.
     IF sy-tabix MOD 500 = 0.
@@ -73,7 +73,7 @@ FORM run.
     ENDIF.
 
     SELECT SINGLE devclass FROM tdevc INTO lv_devclass
-      WHERE devclass = <ls_tadir>-devclass.
+      WHERE devclass = <ls_tadir>-devclass.             "#EC CI_GENBUFF
     IF sy-subrc <> 0
         AND p_pack = abap_true
         AND NOT ( <ls_tadir>-object = 'DEVC'
