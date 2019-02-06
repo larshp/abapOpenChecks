@@ -32,6 +32,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test006_01 FOR TESTING,
       test007_01 FOR TESTING,
       test007_02 FOR TESTING,
+      test007_03 FOR TESTING,
+      test007_04 FOR TESTING,
       test008_01 FOR TESTING,
       test009_01 FOR TESTING,
       test010_01 FOR TESTING,
@@ -238,6 +240,28 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '007'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test007_03.
+* ===========
+
+    _code 'DATA eq TYPE i.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test007_04.
+* ===========
+
+    _code 'DATA moo TYPE c LENGTH 2 VALUE ''EQ''.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
 
