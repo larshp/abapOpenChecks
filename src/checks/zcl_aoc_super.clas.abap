@@ -462,6 +462,13 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       ENDIF.
     ENDIF.
 
+    IF object_type = 'SSFO'
+        AND p_sub_obj_type = 'PROG'
+        AND ( p_sub_obj_name CP '/1BCDWB/LSF*'
+        OR p_sub_obj_name CP '/1BCDWB/SAPL*' ).
+      RETURN.
+    ENDIF.
+
     IF object_type = 'FUGR'.
       IF p_sub_obj_name CP 'LY*UXX' OR p_sub_obj_name CP 'LZ*UXX'.
         RETURN.
