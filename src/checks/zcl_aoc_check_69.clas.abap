@@ -109,6 +109,7 @@ CLASS zcl_aoc_check_69 DEFINITION
     DATA mo_stack TYPE REF TO lcl_stack .
     DATA mv_begin TYPE abap_bool .
     DATA mv_at TYPE string .
+    DATA mv_position TYPE i .
 ENDCLASS.
 
 
@@ -123,6 +124,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
 
     LOOP AT it_statements INTO statement_wa.
+      mv_position = sy-tabix.
       CHECK statement_wa-from <= statement_wa-to.
 
       lv_keyword = keyword( ).
@@ -790,6 +792,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
               p_sub_obj_name = lv_include
               p_line         = get_line_rel( iv_relative )
               p_column       = get_column_rel( iv_relative )
+              p_position     = mv_position
               p_kind         = mv_errty
               p_test         = myname
               p_code         = '001'
@@ -856,6 +859,9 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD constructor.
 
+    DATA: ls_message LIKE LINE OF scimessages.
+
+
     super->constructor( ).
 
     version     = '002'.
@@ -868,7 +874,13 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     set_defaults( ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    ls_message-test = myname.
+    ls_message-code = '001'.
+    ls_message-kind = c_error.
+    ls_message-pcom = '"#EC CI_NAMING'.
+    INSERT ls_message INTO TABLE scimessages.
+
+  ENDMETHOD.
 
 
   METHOD data.
