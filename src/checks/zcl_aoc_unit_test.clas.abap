@@ -28,11 +28,6 @@ CLASS zcl_aoc_unit_test DEFINITION
         !it_code         TYPE string_table
       RETURNING
         VALUE(rs_result) TYPE scirest_ad.
-    CLASS-METHODS check_program
-      IMPORTING
-        !iv_prgoram_name TYPE program
-      RETURNING
-        VALUE(rs_result) TYPE scirest_ad.
     CLASS-METHODS set_check
       IMPORTING
         !io_check TYPE REF TO zcl_aoc_super.
@@ -89,31 +84,6 @@ CLASS ZCL_AOC_UNIT_TEST IMPLEMENTATION.
       it_statements = lt_statements
       it_levels     = lt_levels
       it_structures = lt_structures ).
-
-    IF NOT gs_result-code IS INITIAL.
-      go_check->get_message_text(
-          p_test = ''
-          p_code = gs_result-code ).
-    ENDIF.
-
-    rs_result = gs_result.
-
-  ENDMETHOD.
-
-
-  METHOD check_program.
-
-* abapOpenChecks
-* https://github.com/larshp/abapOpenChecks
-* MIT License
-
-    CLEAR gs_result.
-    cl_abap_compiler=>clear_cache( ).
-    go_check->clear( ).
-
-    SET HANDLER handler FOR go_check.
-    go_check->program_name = iv_prgoram_name.
-    go_check->run( ).
 
     IF NOT gs_result-code IS INITIAL.
       go_check->get_message_text(
