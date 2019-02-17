@@ -95,6 +95,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
     DATA:
       lv_statement       TYPE string,
       lv_inform          TYPE abap_bool,
+      lv_column          TYPE i,
       lv_full            TYPE string,
       lt_data            TYPE STANDARD TABLE OF REF TO cl_abap_comp_data,
       lo_data            TYPE REF TO cl_abap_comp_data,
@@ -120,10 +121,11 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
       "collect all types of compute statmenet
       LOOP AT it_tokens ASSIGNING <ls_token> FROM is_statement-from TO is_statement-to
           WHERE str <> '='.
+        lv_column = <ls_token>-col.
         io_compiler->get_full_name_for_position(
           EXPORTING
-            p_line   =  <ls_token>-row
-            p_column = CONV i( <ls_token>-col )
+            p_line    = <ls_token>-row
+            p_column  = lv_column
             p_include = get_include( p_level = is_statement-level )
           IMPORTING
             p_full_name = lv_full
