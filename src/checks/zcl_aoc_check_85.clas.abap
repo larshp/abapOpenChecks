@@ -1,32 +1,32 @@
-class ZCL_AOC_CHECK_85 definition
-  public
-  inheriting from ZCL_AOC_SUPER
-  create public .
+CLASS zcl_aoc_check_85 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor .
 
-  methods CHECK
-    redefinition .
-  methods GET_MESSAGE_TEXT
-    redefinition .
-protected section.
-private section.
+    METHODS check
+         REDEFINITION .
+    METHODS get_message_text
+         REDEFINITION .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-  methods CHECK_COMPUTE
-    importing
-      !IT_TOKENS type STOKESX_TAB
-      !IS_STATEMENT type SSTMNT
-      !IO_COMPILER type ref to CL_ABAP_COMPILER
-    changing
-      value(CV_SAVE_TO_CHANGE) type ABAP_BOOL .
-  methods GET_STATEMENT
-    importing
-      !IT_TOKENS type STOKESX_TAB
-      !IS_STATEMENT type SSTMNT
-    returning
-      value(RV_STATEMENT) type STRING .
+    METHODS check_compute
+      IMPORTING
+        !it_tokens               TYPE stokesx_tab
+        !is_statement            TYPE sstmnt
+        !io_compiler             TYPE REF TO cl_abap_compiler
+      CHANGING
+        VALUE(cv_save_to_change) TYPE abap_bool .
+    METHODS get_statement
+      IMPORTING
+        !it_tokens          TYPE stokesx_tab
+        !is_statement       TYPE sstmnt
+      RETURNING
+        VALUE(rv_statement) TYPE string .
 ENDCLASS.
 
 
