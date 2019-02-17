@@ -842,7 +842,10 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    ro_class ?= mo_compiler->get_symbol_entry( lv_full ).
+    TRY.
+        ro_class ?= mo_compiler->get_symbol_entry( lv_full ).
+      CATCH cx_sy_move_cast_error ##NO_HANDLER.
+    ENDTRY.
     IF ro_class IS INITIAL.
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = get_include( p_level = statement_wa-level )
