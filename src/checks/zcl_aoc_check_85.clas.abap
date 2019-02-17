@@ -47,7 +47,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
       lv_define         TYPE abap_bool,
       lv_keyword        TYPE string.
 
-    IF trdir-fixpt = abap_false.
+    IF trdir-fixpt = abap_true.
       RETURN.
     ENDIF.
     lv_save_to_change = abap_true.
