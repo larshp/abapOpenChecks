@@ -1,4 +1,4 @@
-CLASS ltcl_temporary_program DEFINITION DEFERRED.
+CLASS lcl_temporary_program DEFINITION DEFERRED.
 
 CLASS ltcl_test DEFINITION FOR TESTING
   DURATION SHORT
@@ -7,31 +7,17 @@ CLASS ltcl_test DEFINITION FOR TESTING
 
   PRIVATE SECTION.
     DATA:
-      mo_check   TYPE REF TO zcl_aoc_check_85.
-
-    METHODS:
-      setup,
-      export_import FOR TESTING.
-
-ENDCLASS.
-
-CLASS ltcl_test_code DEFINITION FOR TESTING
-  DURATION SHORT
-  RISK LEVEL DANGEROUS
-  FINAL.
-
-  PRIVATE SECTION.
-    DATA:
       mt_code    TYPE string_table,
       ms_result  TYPE scirest_ad,
       mv_text    TYPE string,
-      mo_program TYPE REF TO ltcl_temporary_program,
+      mo_program TYPE REF TO lcl_temporary_program,
       mo_check   TYPE REF TO zcl_aoc_check_85.
 
     METHODS:
       setup,
       teardown,
       message_handler FOR EVENT message OF zcl_aoc_check_85 IMPORTING p_param_1,
+      export_import FOR TESTING,
       test_1 FOR TESTING,
       test_1_with_fixpt FOR TESTING,
       test_2 FOR TESTING,
@@ -44,7 +30,7 @@ CLASS ltcl_test_code DEFINITION FOR TESTING
 
 ENDCLASS.
 
-CLASS ltcl_temporary_program DEFINITION FOR TESTING FINAL.
+CLASS lcl_temporary_program DEFINITION FOR TESTING FINAL.
   PUBLIC SECTION.
     TYPES:
       t_program_name TYPE c LENGTH 30.
@@ -60,7 +46,7 @@ CLASS ltcl_temporary_program DEFINITION FOR TESTING FINAL.
       mv_program_name      TYPE t_program_name.
 ENDCLASS.
 
-CLASS ltcl_temporary_program IMPLEMENTATION.
+CLASS lcl_temporary_program IMPLEMENTATION.
   METHOD constructor.
     DATA:
       lt_data TYPE STANDARD TABLE OF rbase.
@@ -105,19 +91,6 @@ ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
 
-  METHOD setup.
-    CREATE OBJECT mo_check.
-    zcl_aoc_unit_test=>set_check( mo_check ).
-  ENDMETHOD.
-
-  METHOD export_import.
-    zcl_aoc_unit_test=>export_import( mo_check ).
-  ENDMETHOD.
-
-ENDCLASS.
-
-CLASS ltcl_test_code IMPLEMENTATION.
-
   DEFINE _code.
     APPEND &1 TO mt_code.
   END-OF-DEFINITION.
@@ -130,12 +103,16 @@ CLASS ltcl_test_code IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD teardown.
-    CLEAR mv_text.
     mo_program->cleanup( ).
   ENDMETHOD.
 
   METHOD message_handler.
     mv_text = p_param_1.
+  ENDMETHOD.
+
+
+  METHOD export_import.
+    zcl_aoc_unit_test=>export_import( mo_check ).
   ENDMETHOD.
 
   METHOD test_1.
@@ -210,7 +187,7 @@ CLASS ltcl_test_code IMPLEMENTATION.
     _code 'DATA gv_p TYPE p LENGTH 10 DECIMALS 3.'.
     _code 'gv_p = ''500.12''.'.
 
-    mo_program->generate_programm( it_source_code = mt_code ).
+    mo_program->generate_programm( it_source_code = mt_code iv_fixpt = abap_true ).
 
     ms_result = zcl_aoc_unit_test=>check_program( mo_program->get_program_name( ) ).
 
@@ -227,7 +204,7 @@ CLASS ltcl_test_code IMPLEMENTATION.
     _code 'DATA gv_p TYPE p LENGTH 10 DECIMALS 3.'.
     _code 'gv_p = `500.12`.'.
 
-    mo_program->generate_programm( it_source_code = mt_code ).
+    mo_program->generate_programm( it_source_code = mt_code iv_fixpt = abap_true ).
 
     ms_result = zcl_aoc_unit_test=>check_program( mo_program->get_program_name( ) ).
 
@@ -244,7 +221,7 @@ CLASS ltcl_test_code IMPLEMENTATION.
     _code 'DATA gv_p TYPE p LENGTH 10 DECIMALS 3.'.
     _code 'gv_p = |500.12|.'.
 
-    mo_program->generate_programm( it_source_code = mt_code ).
+    mo_program->generate_programm( it_source_code = mt_code iv_fixpt = abap_true ).
 
     ms_result = zcl_aoc_unit_test=>check_program( mo_program->get_program_name( ) ).
 
@@ -252,7 +229,7 @@ CLASS ltcl_test_code IMPLEMENTATION.
                                         act = ms_result-kind ).
     cl_abap_unit_assert=>assert_equals( exp = '002'
                                         act = ms_result-code ).
-    cl_abap_unit_assert=>assert_equals( exp = 'GV_P = | `500.12` |'
+    cl_abap_unit_assert=>assert_equals( exp = 'GV_P = |500.12|'
                                         act = mv_text ).
   ENDMETHOD.
 
@@ -284,9 +261,6 @@ CLASS ltcl_test_code IMPLEMENTATION.
 
     ms_result = zcl_aoc_unit_test=>check_program( mo_program->get_program_name( ) ).
 
-    cl_abap_unit_assert=>assert_equals( exp = 'E'
-                                        act = ms_result-kind ).
-    cl_abap_unit_assert=>assert_equals( exp = '001'
-                                        act = ms_result-code ).
+    cl_abap_unit_assert=>assert_initial( ms_result ).
   ENDMETHOD.
 ENDCLASS.
