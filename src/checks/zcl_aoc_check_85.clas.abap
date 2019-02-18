@@ -118,7 +118,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
     ENDLOOP.
 
     IF lv_inform = abap_false.
-      "collect all types of compute statmenet
+      "collect all types of compute statement
       LOOP AT it_tokens ASSIGNING <ls_token> FROM is_statement-from TO is_statement-to
           WHERE str <> '='.
         lv_column = <ls_token>-col.
