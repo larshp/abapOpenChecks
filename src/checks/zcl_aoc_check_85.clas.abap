@@ -121,7 +121,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
       "collect all types of compute statement
       LOOP AT it_tokens ASSIGNING <ls_token> FROM is_statement-from TO is_statement-to
           WHERE str <> '='.
-        lv_column = <ls_token>-col.
+        lv_column = <ls_token>-col + <ls_token>-len1 - 1. "end of token
         io_compiler->get_full_name_for_position(
           EXPORTING
             p_line    = <ls_token>-row
@@ -132,8 +132,12 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
           EXCEPTIONS
             OTHERS = 4 ).
         IF sy-subrc = 0.
-          lo_data ?= io_compiler->get_symbol_entry( lv_full ).
-          APPEND lo_data TO lt_data.
+          TRY.
+              lo_data ?= io_compiler->get_symbol_entry( lv_full ).
+              APPEND lo_data TO lt_data.
+            CATCH cx_sy_move_cast_error.
+              "ignore - only take simple types
+          ENDTRY.
         ENDIF.
       ENDLOOP.
 
