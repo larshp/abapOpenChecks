@@ -32,20 +32,6 @@
      <LENGTH>28</LENGTH>
     </item>
    </TPOOL>
-   <DESCRIPTIONS>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_EMBEDDED_PACKAGES</CLSNAME>
-     <CMPNAME>MT_PACKAGES</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Code Inspector: Selection Options for the Package</DESCRIPT>
-    </SEOCOMPOTX>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_EMBEDDED_PACKAGES</CLSNAME>
-     <CMPNAME>MV_LOCAL</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>General Flag</DESCRIPT>
-    </SEOCOMPOTX>
-   </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
 </abapGit>
