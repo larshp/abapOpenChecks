@@ -28,20 +28,6 @@
      <TDLINE>MIT License</TDLINE>
     </TLINE>
    </LINES>
-   <DESCRIPTIONS>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_CHECK_69</CLSNAME>
-     <CMPNAME>MO_COMPILER</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Cross Reference of an ABAP Program</DESCRIPT>
-    </SEOCOMPOTX>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_CHECK_69</CLSNAME>
-     <CMPNAME>MS_NAMING</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Naming</DESCRIPT>
-    </SEOCOMPOTX>
-   </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
 </abapGit>

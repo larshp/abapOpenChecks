@@ -54,32 +54,6 @@
      <TDLINE>MIT License</TDLINE>
     </TLINE>
    </LINES>
-   <DESCRIPTIONS>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_CHECK_70</CLSNAME>
-     <CMPNAME>MT_PATTERN_ERROR</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Table for error patterns</DESCRIPT>
-    </SEOCOMPOTX>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_CHECK_70</CLSNAME>
-     <CMPNAME>MT_PATTERN_INFO</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Table for info patterns</DESCRIPT>
-    </SEOCOMPOTX>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_CHECK_70</CLSNAME>
-     <CMPNAME>MT_PATTERN_WARNING</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Table for warning patterns</DESCRIPT>
-    </SEOCOMPOTX>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_CHECK_70</CLSNAME>
-     <CMPNAME>MV_MULTILINE</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>accept multiline comments</DESCRIPT>
-    </SEOCOMPOTX>
-   </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
 </abapGit>

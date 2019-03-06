@@ -10,6 +10,14 @@
       "enabled": true,
       "exclude": []
     },
+    "avoid_use": {
+      "enabled": true,
+      "exclude": [],
+      "define": false,
+      "endselect": true,
+      "execSQL": true,
+      "kernelCall": true
+    },
     "breakpoint": {
       "enabled": true,
       "exclude": []
@@ -49,6 +57,20 @@
       "enabled": true,
       "exclude": []
     },
+    "double_space": {
+      "enabled": true,
+      "exclude": []
+    },
+    "empty_line_in_statement": {
+      "enabled": true,
+      "exclude": [],
+      "allowChained": false
+    },
+    "empty_loop": {
+      "enabled": true,
+      "exclude": [],
+      "length": 120
+    },
     "empty_statement": {
       "enabled": true,
       "exclude": []
@@ -74,10 +96,18 @@
       "enabled": true,
       "exclude": []
     },
+    "if_in_if": {
+      "enabled": true,
+      "exclude": []
+    },
     "indentation": {
       "enabled": true,
       "exclude": [],
-      "ignoreExceptions": true
+      "ignoreExceptions": true,
+      "alignTryCatch": false,
+      "globalClassSkipFirst": false,
+      "ignoreGlobalClassDefinition": false,
+      "ignoreGlobalInterface": false
     },
     "inline_data_old_versions": {
       "enabled": true,
@@ -87,7 +117,9 @@
       "enabled": true,
       "exclude": [],
       "ignoreExceptions": true,
-      "ignoreLowerClassImplmentationStatement": true
+      "ignoreLowerClassImplmentationStatement": true,
+      "ignoreGlobalClassDefinition": false,
+      "ignoreGlobalInterface": false
     },
     "line_length": {
       "enabled": true,
@@ -116,11 +148,7 @@
       "enabled": true,
       "exclude": []
     },
-    "message": {
-      "enabled": true,
-      "exclude": []
-    },
-    "message_text_empty": {
+    "message_exists": {
       "enabled": true,
       "exclude": []
     },
@@ -145,10 +173,35 @@
       "enabled": true,
       "exclude": []
     },
+    "msag_consistency": {
+      "enabled": true,
+      "exclude": []
+    },
     "nesting": {
       "enabled": true,
       "exclude": [],
       "depth": 6
+    },
+    "no_public_attributes": {
+      "enabled": false,
+      "exclude": []
+    },
+    "object_naming": {
+      "enabled": true,
+      "exclude": [],
+      "clas": "^ZC(L|X)\\_",
+      "intf": "^ZIF\\_",
+      "prog": "^Z",
+      "fugr": "^Z",
+      "tabl": "^Z",
+      "ttyp": "^Z",
+      "dtel": "^Z",
+      "doma": "^Z",
+      "msag": "^Z",
+      "tran": "^Z",
+      "enqu": "^Z",
+      "auth": "^Z",
+      "pinf": "^Z"
     },
     "obsolete_statement": {
       "enabled": true,
@@ -166,10 +219,21 @@
       "enabled": true,
       "exclude": []
     },
+    "remove_descriptions": {
+      "enabled": true,
+      "exclude": [],
+      "ignoreExceptions": true
+    },
     "sequential_blank": {
       "enabled": true,
       "exclude": [],
       "lines": 4
+    },
+    "short_case": {
+      "enabled": false,
+      "exclude": [],
+      "length": 1,
+      "allow": ["gv_ok_code", "column"]
     },
     "space_before_colon": {
       "enabled": true,
@@ -181,6 +245,18 @@
     },
     "superclass_final": {
       "enabled": false,
+      "exclude": []
+    },
+    "tabl_enhancement_category": {
+      "enabled": true,
+      "exclude": []
+    },
+    "unreachable_code": {
+      "enabled": true,
+      "exclude": []
+    },
+    "when_others_last": {
+      "enabled": true,
       "exclude": []
     },
     "whitespace_end": {

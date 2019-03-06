@@ -28,20 +28,6 @@
      <TDLINE>MIT License</TDLINE>
     </TLINE>
    </LINES>
-   <DESCRIPTIONS>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_CHECK_66</CLSNAME>
-     <CMPNAME>MV_EXISTS</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Boolean Variable (X=True, Space=False)</DESCRIPT>
-    </SEOCOMPOTX>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_AOC_CHECK_66</CLSNAME>
-     <CMPNAME>MV_SIMPLIFICATION</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Boolean Variable (X=True, Space=False)</DESCRIPT>
-    </SEOCOMPOTX>
-   </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
 </abapGit>
