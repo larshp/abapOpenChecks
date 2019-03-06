@@ -17,11 +17,6 @@ CLASS zcl_aoc_structure DEFINITION
         row       TYPE token_row,
       END OF ty_statement .
 
-    DATA ms_statement TYPE ty_statement READ-ONLY .
-    DATA mt_structure TYPE ty_structure_tt READ-ONLY .
-    DATA mv_type TYPE stru_type READ-ONLY .
-    DATA mv_stmnt_type TYPE stru_type READ-ONLY .
-
     CLASS-METHODS to_string
       IMPORTING
         !io_structure    TYPE REF TO zcl_aoc_structure
@@ -39,7 +34,21 @@ CLASS zcl_aoc_structure DEFINITION
         !it_structures      TYPE zcl_aoc_super=>ty_structures_tt
       RETURNING
         VALUE(ro_structure) TYPE REF TO zcl_aoc_structure .
+    METHODS get_statement
+      RETURNING
+        VALUE(rs_statement) TYPE ty_statement .
+    METHODS get_structure
+      RETURNING
+        VALUE(rt_structure) TYPE ty_structure_tt .
+    METHODS get_type
+      RETURNING
+        VALUE(rv_type) TYPE stru_type .
   PROTECTED SECTION.
+
+    DATA mv_stmnt_type TYPE stru_type .
+    DATA mt_structure TYPE ty_structure_tt .
+    DATA ms_statement TYPE ty_statement .
+    DATA mv_type TYPE stru_type .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -62,6 +71,27 @@ CLASS ZCL_AOC_STRUCTURE IMPLEMENTATION.
     ro_structure = lo_build->build( ).
 
     ro_structure = lcl_simplify=>simplify( ro_structure ).
+
+  ENDMETHOD.
+
+
+  METHOD get_statement.
+
+    rs_statement = ms_statement.
+
+  ENDMETHOD.
+
+
+  METHOD get_structure.
+
+    rt_structure = mt_structure.
+
+  ENDMETHOD.
+
+
+  METHOD get_type.
+
+    rv_type = mv_stmnt_type.
 
   ENDMETHOD.
 
