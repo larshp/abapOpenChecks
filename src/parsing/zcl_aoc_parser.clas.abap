@@ -598,8 +598,8 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
     CREATE OBJECT lo_before
       EXPORTING
         iv_type     = gc_dummy
-        iv_value    = 'Sequence'                              "#EC NOTEXT
-        iv_rulename = iv_rulename.
+        iv_value    = 'Sequence'
+        iv_rulename = iv_rulename. "#EC NOTEXT
     io_before->edge( lo_before ).
 
     DO li_children->get_length( ) TIMES.
@@ -1326,7 +1326,7 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    IF st_syntax[] IS INITIAL.
+    IF lines( st_syntax ) = 0.
       SELECT * FROM ssyntaxstructure
         INTO TABLE st_syntax.             "#EC CI_NOWHERE "#EC CI_SUBRC
       SORT st_syntax BY rulename ASCENDING.

@@ -66,7 +66,6 @@ CLASS lcl_gui IMPLEMENTATION.
           lt_code       TYPE TABLE OF abaptxt255,
           lt_tokens     TYPE stokesx_tab,
           lt_statements TYPE sstmnt_tab,
-          lt_levels     TYPE slevel_tab,
           lt_structures TYPE zcl_aoc_super=>ty_structures_tt.
 
 
@@ -78,7 +77,6 @@ CLASS lcl_gui IMPLEMENTATION.
     SCAN ABAP-SOURCE lt_code
          TOKENS          INTO lt_tokens
          STATEMENTS      INTO lt_statements
-         LEVELS          INTO lt_levels
          STRUCTURES      INTO lt_structures
          WITH ANALYSIS
          WITH COMMENTS
@@ -88,7 +86,6 @@ CLASS lcl_gui IMPLEMENTATION.
     lo_structure = zcl_aoc_structure=>build(
       it_tokens     = lt_tokens
       it_statements = lt_statements
-      it_levels     = lt_levels
       it_structures = lt_structures ).
 
     go_right->set_textstream( build_result( lo_structure ) ).

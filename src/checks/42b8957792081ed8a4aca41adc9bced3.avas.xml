@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_AVAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <AVAS>
+    <HEADER>
+     <GUID>42B8957792081ED8A4ACA41ADC9BCED3</GUID>
+     <ATTRIBUTE>CHARACTERISTIC_GROUP</ATTRIBUTE>
+     <OBJECT>
+      <TROBJTYPE>CHAR</TROBJTYPE>
+      <SOBJ_NAME>ZAOC_ENCAPSULATION_OBJECTS</SOBJ_NAME>
+     </OBJECT>
+    </HEADER>
+    <VALUES>
+     <CLS_VALUE_ASSIGNMENT>
+      <VALUE>DEVELOPMENT_COORDINATION</VALUE>
+      <ICON>@QC@</ICON>
+     </CLS_VALUE_ASSIGNMENT>
+    </VALUES>
+   </AVAS>
+  </asx:values>
+ </asx:abap>
+</abapGit>

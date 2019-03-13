@@ -1,22 +1,26 @@
 REPORT zaoc_clearance.
-
 * abapOpenChecks
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
+* Finds objects that are not statically referenced
+
 TABLES: tadir.
 
 TYPES: BEGIN OF ty_output,
-         object   TYPE tadir-object,
-         obj_name TYPE tadir-obj_name,
-         devclass TYPE tadir-devclass,
+         object     TYPE tadir-object,
+         obj_name   TYPE tadir-obj_name,
+         devclass   TYPE tadir-devclass,
+         created_on TYPE tadir-created_on,
        END OF ty_output.
 
 TYPES: ty_output_tt TYPE STANDARD TABLE OF ty_output WITH DEFAULT KEY.
 
 SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-001.
 SELECT-OPTIONS: s_devcla FOR tadir-devclass OBLIGATORY,
-                s_name   FOR tadir-obj_name.
+                s_name   FOR tadir-obj_name,
+                s_type   FOR tadir-object,
+                s_cdat   FOR tadir-created_on.
 SELECTION-SCREEN END OF BLOCK b1.
 
 *----------------------------------------------------------------------*
@@ -47,7 +51,17 @@ CLASS lcl_data DEFINITION FINAL.
           is_tadir           TYPE ty_output
         RETURNING
           VALUE(rv_obsolete) TYPE abap_bool,
+      check_ttyp
+        IMPORTING
+          is_tadir           TYPE ty_output
+        RETURNING
+          VALUE(rv_obsolete) TYPE abap_bool,
       check_tabl
+        IMPORTING
+          is_tadir           TYPE ty_output
+        RETURNING
+          VALUE(rv_obsolete) TYPE abap_bool,
+      check_clas
         IMPORTING
           is_tadir           TYPE ty_output
         RETURNING
@@ -69,13 +83,16 @@ CLASS lcl_data IMPLEMENTATION.
 
   METHOD show_progress.
 
-    DATA: lv_text TYPE string.
+    DATA: lv_percentage TYPE i,
+          lv_text       TYPE string.
 
+
+    lv_percentage = ( iv_current * 100 ) / iv_total.
 
     lv_text = |{ iv_current }/{ iv_total }|.
     CALL FUNCTION 'SAPGUI_PROGRESS_INDICATOR'
       EXPORTING
-        percentage = 99
+        percentage = lv_percentage
         text       = lv_text.
 
   ENDMETHOD.
@@ -90,14 +107,19 @@ CLASS lcl_data IMPLEMENTATION.
                    <ls_tadir> LIKE LINE OF lt_tadir.
 
 
-    SELECT object obj_name devclass FROM tadir
+    SELECT object obj_name devclass created_on
+      FROM tadir
       INTO TABLE lt_tadir
       WHERE pgmid = 'R3TR'
       AND ( object = 'DOMA'
       OR object = 'TABL'
       OR object = 'INTF'
+      OR object = 'TTYP'
+      OR object = 'CLAS'
       OR object = 'DTEL' )
+      AND object IN s_type
       AND obj_name IN s_name
+      AND created_on IN s_cdat
       AND delflag = abap_false
       AND devclass IN s_devcla.           "#EC CI_SUBRC "#EC CI_GENBUFF
 
@@ -117,6 +139,10 @@ CLASS lcl_data IMPLEMENTATION.
           lv_obsolete = check_tabl( <ls_tadir> ).
         WHEN 'INTF'.
           lv_obsolete = check_intf( <ls_tadir> ).
+        WHEN 'CLAS'.
+          lv_obsolete = check_clas( <ls_tadir> ).
+        WHEN 'TTYP'.
+          lv_obsolete = check_ttyp( <ls_tadir> ).
         WHEN OTHERS.
           ASSERT 1 = 0.
       ENDCASE.
@@ -128,14 +154,68 @@ CLASS lcl_data IMPLEMENTATION.
 
   ENDMETHOD.                    "run
 
-  METHOD check_intf.
+  METHOD check_clas.
 
     DATA: lv_name TYPE wbcrossgt-name.
 
-    SELECT SINGLE name FROM wbcrossgt INTO lv_name
+    SELECT SINGLE name FROM wbcrossgt
+      INTO lv_name
       WHERE otype = 'TY'
-      AND name = is_tadir-obj_name.
+      AND name = is_tadir-obj_name
+      AND direct = 'X'.
     IF sy-subrc <> 0.
+      rv_obsolete = abap_true.
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD check_intf.
+
+    DATA: lv_found   TYPE wbcrossgt-include,
+          lv_clsname TYPE seoclsname,
+          lv_include TYPE program.
+
+
+    lv_clsname = is_tadir-obj_name.
+    lv_include = cl_oo_classname_service=>get_intfsec_name( lv_clsname ).
+
+    SELECT SINGLE include FROM wbcrossgt INTO lv_found
+      WHERE otype = 'TY'
+      AND name = is_tadir-obj_name
+      AND include <> lv_include.
+    IF sy-subrc <> 0.
+      rv_obsolete = abap_true.
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD check_ttyp.
+
+    DATA: lt_find TYPE TABLE OF rsfind,
+          ls_find LIKE LINE OF lt_find.
+
+
+    ls_find-object = is_tadir-obj_name.
+    APPEND ls_find TO lt_find.
+
+    CALL FUNCTION 'RS_EU_CROSSREF'
+      EXPORTING
+        i_find_obj_cls           = 'DA'
+        rekursiv                 = abap_true
+        no_dialog                = abap_true
+      TABLES
+        i_findstrings            = lt_find
+      EXCEPTIONS
+        not_executed             = 1
+        not_found                = 2
+        illegal_object           = 3
+        no_cross_for_this_object = 4
+        batch                    = 5
+        batchjob_error           = 6
+        wrong_type               = 7
+        object_not_exist         = 8
+        OTHERS                   = 9.
+    IF sy-subrc = 2.
       rv_obsolete = abap_true.
     ENDIF.
 

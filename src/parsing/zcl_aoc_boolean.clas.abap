@@ -75,6 +75,8 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
     ELSEIF ( lv_token2 = 'IS' AND lv_token3 = 'INSTANCE' AND lv_token4 = 'OF' )
         OR lv_token2 = 'BETWEEN'.
       rv_comparator = 3.
+    ELSEIF lv_token2 = 'NOT' AND lv_token3 = 'BETWEEN'.
+      rv_comparator = 4.
     ELSEIF lv_token2 = '='
             OR lv_token2 = '<>'
             OR lv_token2 = '<'
@@ -181,18 +183,26 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
 
   METHOD parse_not.
 
-    DATA: lo_node  TYPE REF TO zcl_aoc_boolean_node,
-          lv_end   TYPE i,
-          lo_split TYPE REF TO zcl_aoc_boolean_tokens.
+    DATA: lo_node   TYPE REF TO zcl_aoc_boolean_node,
+          lv_end    TYPE i,
+          lv_token1 TYPE string,
+          lv_token2 TYPE string,
+          lo_split  TYPE REF TO zcl_aoc_boolean_tokens.
 
+
+    lv_token1 = io_tokens->get_token( 1 )-str.
+    lv_token2 = io_tokens->get_token( 2 )-str.
 
     CREATE OBJECT ro_node
       EXPORTING
         iv_type = zcl_aoc_boolean_node=>c_type-not.
 
-    IF io_tokens->get_token( 1 )-str = '('.
+    IF lv_token1 = '('.
       lv_end = io_tokens->find_end_paren( 1 ).
       lo_split = io_tokens->eat( lv_end ).
+    ELSEIF lv_token2 = 'OR' OR lv_token2 = 'AND'.
+* Predicative method call
+      lo_split = io_tokens->eat( 1 ).
     ELSE.
       lo_split = io_tokens->eat( 3 ).
     ENDIF.
@@ -254,7 +264,29 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
 
         CASE ls_token-str.
           WHEN '+' OR '-' OR '*' OR '/' OR 'MOD' OR 'DIV' OR 'BIT-AND' OR 'BIT-OR' OR '&&'.
-            IF ls_next-str <> '('.
+            IF ls_next-str <> '('
+                AND ls_prev-str <> '='
+                AND ls_prev-str <> '<>'
+                AND ls_prev-str <> '<'
+                AND ls_prev-str <> 'GT'
+                AND ls_prev-str <> '>'
+                AND ls_prev-str <> 'LT'
+                AND ls_prev-str <> '>='
+                AND ls_prev-str <> 'GE'
+                AND ls_prev-str <> 'NS'
+                AND ls_prev-str <> '<='
+                AND ls_prev-str <> 'LE'
+                AND ls_prev-str <> 'NE'
+                AND ls_prev-str <> 'NA'
+                AND ls_prev-str <> 'CO'
+                AND ls_prev-str <> 'CA'
+                AND ls_prev-str <> 'CS'
+                AND ls_prev-str <> 'CN'
+                AND ls_prev-str <> 'IN'
+                AND ls_prev-str <> 'CP'
+                AND ls_prev-str <> 'NP'
+                AND ls_prev-str <> 'IS'
+                AND ls_prev-str <> 'EQ'.
               DO 2 TIMES.
                 DELETE lt_tokens INDEX lv_index.
               ENDDO.
@@ -298,12 +330,12 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
       LOOP AT io_tokens->get_tokens( ) INTO ls_token.
         lv_index = sy-tabix.
 
-        FIND REGEX '^[\w<>~\-=#]+\($' IN ls_token-str.
+        FIND REGEX '^[\w<>\/~\-=#]+\($' IN ls_token-str.
         IF sy-subrc = 0.
           lv_end = io_tokens->find_end_paren( lv_index ).
 
           CASE io_tokens->get_token( lv_index - 1 )-str.
-            WHEN 'NEW' OR 'CONV' OR 'COND' OR 'VALUE'.
+            WHEN 'NEW' OR 'CONV' OR 'COND' OR 'VALUE' OR 'REF'.
               lv_index = lv_index - 1.
           ENDCASE.
 

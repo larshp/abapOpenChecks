@@ -80,10 +80,7 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
       EXCEPTIONS
         not_existent = 1
         no_program   = 2
-        OTHERS       = 3.
-    IF sy-subrc <> 0.
-      RETURN.
-    ENDIF.
+        OTHERS       = 3. "#EC CI_SUBRC
 
   ENDMETHOD.
 
@@ -142,7 +139,7 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
       INTO CORRESPONDING FIELDS OF TABLE lt_tadir
       WHERE pgmid = 'R3TR'
       AND ( object = 'CLAS' OR object = 'PROG' OR object = 'FUGR' )
-      AND devclass = iv_devclass.
+      AND devclass = iv_devclass.         "#EC CI_GENBUFF "#EC CI_SUBRC
 
     LOOP AT lt_tadir ASSIGNING <ls_tadir>.
       CASE <ls_tadir>-object.
@@ -154,7 +151,8 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
           APPEND <ls_tadir>-obj_name TO rt_programs.
         WHEN 'FUGR'.
           IF iv_ignore_mview_fugr = abap_true.
-            SELECT SINGLE area FROM tvdir INTO lv_area WHERE area = <ls_tadir>-obj_name.
+            SELECT SINGLE area FROM tvdir INTO lv_area
+              WHERE area = <ls_tadir>-obj_name.         "#EC CI_GENBUFF
             IF sy-subrc = 0.
               CONTINUE.
             ENDIF.

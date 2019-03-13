@@ -6,8 +6,7 @@
     <CLSNAME>ZCL_AOC_CHECK_61</CLSNAME>
     <VERSION>1</VERSION>
     <LANGU>E</LANGU>
-    <DESCRIPT>Exception caught but not raised</DESCRIPT>
-    <EXPOSURE>2</EXPOSURE>
+    <DESCRIPT>Fake package encapsulation</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

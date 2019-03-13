@@ -1,32 +1,27 @@
-*----------------------------------------------------------------------*
-*       CLASS lcl_Test DEFINITION
-*----------------------------------------------------------------------*
-*
-*----------------------------------------------------------------------*
-CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
+
+CLASS ltcl_test DEFINITION FOR TESTING
+  DURATION SHORT
+  RISK LEVEL HARMLESS
+  FINAL.
 
   PRIVATE SECTION.
-* ================
+
+    DATA: mo_check TYPE REF TO zcl_aoc_check_61.
 
     METHODS:
-      test001_01 FOR TESTING.
+      setup,
+      export_import FOR TESTING.
 
-ENDCLASS.       "lcl_Test
+ENDCLASS.
 
-*----------------------------------------------------------------------*
-*       CLASS lcl_Test IMPLEMENTATION
-*----------------------------------------------------------------------*
-*
-*----------------------------------------------------------------------*
 CLASS ltcl_test IMPLEMENTATION.
-* ==============================
 
-  METHOD test001_01.
-* ===========
+  METHOD setup.
+    CREATE OBJECT mo_check.
+  ENDMETHOD.
 
-* not possible to test
-    RETURN.
+  METHOD export_import.
+    zcl_aoc_unit_test=>export_import( mo_check ).
+  ENDMETHOD.
 
-  ENDMETHOD.                    "test1
-
-ENDCLASS.       "lcl_Test
+ENDCLASS.

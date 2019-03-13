@@ -44,7 +44,6 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
   METHOD build.
 
     DATA: lv_offset TYPE i,
-          lv_length TYPE i,
           lv_str    TYPE string,
           lv_level  LIKE sy-tabix.
 
@@ -142,7 +141,7 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         lv_error = '008'.
       ELSEIF lv_code CP 'SORT  *'.
         lv_error = '009'.
-      ELSEIF lv_code CP 'REPORT  *'.
+      ELSEIF lv_code CP 'REPORT  *' AND NOT lv_code = 'REPORT'.
         lv_error = '010'.
       ELSEIF lv_code CP 'ELSEIF  *'.
         lv_error = '011'.
@@ -154,12 +153,28 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         lv_error = '014'.
       ELSEIF lv_code CP 'APPEND  *'.
         lv_error = '015'.
+      ELSEIF lv_code CP 'METHOD  *'.
+        lv_error = '017'.
       ENDIF.
 
       IF lv_error IS INITIAL.
-        FIND REGEX '\w+\(  [ ]*\)' IN lv_code.
+        FIND REGEX '\w+\(  [ ]*\)' IN lv_code ##NO_TEXT.
         IF sy-subrc = 0.
           lv_error = '016'.
+        ENDIF.
+      ENDIF.
+
+      IF lv_error IS INITIAL.
+        FIND REGEX '\([ ]{2}[ ]*\S' IN lv_code ##NO_TEXT.
+        IF sy-subrc = 0.
+          lv_error = '018'.
+        ENDIF.
+      ENDIF.
+
+      IF lv_error IS INITIAL.
+        FIND REGEX '\S[ ]*[ ]{2}\)' IN lv_code ##NO_TEXT.
+        IF sy-subrc = 0.
+          lv_error = '019'.
         ENDIF.
       ENDIF.
 
@@ -180,8 +195,6 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Double space'.                        "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '049'.
 
@@ -232,6 +245,12 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         p_text = 'Double space after APPEND'.               "#EC NOTEXT
       WHEN '016'.
         p_text = 'Double space in method call'.             "#EC NOTEXT
+      WHEN '017'.
+        p_text = 'Double space after METHOD'.               "#EC NOTEXT
+      WHEN '018'.
+        p_text = 'Double space after start parenthesis'.    "#EC NOTEXT
+      WHEN '019'.
+        p_text = 'Double space before end parenthesis'.     "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code

@@ -6,7 +6,9 @@
 {% include header.html %}
 <div class="content">
 <h1>{% if page.cNumber %}{{ page.cNumber }} - {{ page.title }}{% else %}{{ page.title }}{% endif %}</h1>
-{% if page.rfc %}<img src="/img/rfc.png" title="RFC-based">{% endif %}
+<small><a href="{{ site.github.repository_url }}/tree/master/docs/{{ page.path }}">{% octicon pencil %} Improve this page</a></small>
+{% if page.rfc %}<br><img src="/img/rfc.png" title="RFC-based"><small> RFC enabled</small>{% endif %}
+{% if page.cNumber %}<br><a href="https://github.com/larshp/abapOpenChecks/blob/master/src/checks/zcl_aoc_{{ page.cNumber | downcase }}.clas.abap">{% octicon code %} <tt>CODE</tt></a>{% endif %}
 {{ content }}
 </div>
 </div>

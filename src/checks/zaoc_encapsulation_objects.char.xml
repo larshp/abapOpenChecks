@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CHAR" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <CHAR>
+    <CLS_ATTRIBUTE>
+     <NAME>ZAOC_ENCAPSULATION_OBJECTS</NAME>
+     <ACTIVATION_STATE>A</ACTIVATION_STATE>
+     <KIND>A</KIND>
+     <TYPE_GROUP>DEVC</TYPE_GROUP>
+     <VISIBLE_FOR_CUST>X</VISIBLE_FOR_CUST>
+     <ARBTRY_VAL_TYPE>C</ARBTRY_VAL_TYPE>
+     <ASSIGNMENT_DEVC>L</ASSIGNMENT_DEVC>
+     <HIDE_REMARK>X</HIDE_REMARK>
+     <MANU_CHAG_ALLOW>X</MANU_CHAG_ALLOW>
+    </CLS_ATTRIBUTE>
+    <CLS_ATTRIBUTET>
+     <CLS_ATTRIBUTET>
+      <NAME>ZAOC_ENCAPSULATION_OBJECTS</NAME>
+      <ACTIVATION_STATE>A</ACTIVATION_STATE>
+      <LANGU>E</LANGU>
+      <TEXT>abapOpenChecks - Allow objects</TEXT>
+     </CLS_ATTRIBUTET>
+    </CLS_ATTRIBUTET>
+   </CHAR>
+  </asx:values>
+ </asx:abap>
+</abapGit>

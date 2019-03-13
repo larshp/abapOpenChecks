@@ -31,7 +31,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test004_02 FOR TESTING,
       test005_01 FOR TESTING,
       test005_02 FOR TESTING,
-      test010_01 for testing.
+      test010_01 FOR TESTING,
+      test011_01 FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.       "lcl_Test
 
@@ -94,7 +95,7 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test002_01.
 * ===========
 
-    IF mo_check->support_new( ) = abap_false.
+    IF mo_check->support_740sp02( ) = abap_false.
       RETURN.
     ENDIF.
 
@@ -109,7 +110,7 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test002_02.
 * ===========
 
-    IF mo_check->support_new( ) = abap_false.
+    IF mo_check->support_740sp02( ) = abap_false.
       RETURN.
     ENDIF.
 
@@ -124,7 +125,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD test002_03.
 
-    IF mo_check->support_new( ) = abap_false.
+    IF mo_check->support_740sp02( ) = abap_false.
       RETURN.
     ENDIF.
 
@@ -185,6 +186,17 @@ CLASS ltcl_test IMPLEMENTATION.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_equals( exp = '010'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test011_01.
+
+    _code 'MOVE-CORRESPONDING foo TO bar.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '011'
                                         act = ms_result-code ).
 
   ENDMETHOD.

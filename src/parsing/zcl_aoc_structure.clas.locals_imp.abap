@@ -26,7 +26,7 @@ CLASS lcl_simplify IMPLEMENTATION.
 
     IF io_structure->mv_type = scan_struc_type-sequence AND lines( io_structure->mt_structure ) = 1.
 * simplify sequences with one statement
-      READ TABLE io_structure->mt_structure INDEX 1 INTO ro_structure.
+      READ TABLE io_structure->mt_structure INDEX 1 INTO ro_structure. "#EC CI_SUBRC
     ENDIF.
 
     lt_copy = ro_structure->mt_structure.
@@ -67,11 +67,11 @@ CLASS lcl_build DEFINITION FINAL.
         VALUE(ro_structure) TYPE REF TO zcl_aoc_structure.
 
   PRIVATE SECTION.
+
     DATA: mt_tokens     TYPE stokesx_tab,
           mt_statements TYPE sstmnt_tab,
-          mt_structures TYPE zcl_aoc_super=>ty_structures_tt.
-
-    DATA: mt_sstr TYPE TABLE OF zcl_aoc_structure=>ty_statement.
+          mt_structures TYPE zcl_aoc_super=>ty_structures_tt,
+          mt_sstr       TYPE TABLE OF zcl_aoc_structure=>ty_statement.
 
     METHODS: build_sstr.
 

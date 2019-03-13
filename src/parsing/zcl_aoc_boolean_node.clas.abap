@@ -66,7 +66,7 @@ CLASS ZCL_AOC_BOOLEAN_NODE IMPLEMENTATION.
 
     ASSERT lines( mt_children ) = 1.
 
-    READ TABLE mt_children INDEX 1 INTO ro_child.
+    READ TABLE mt_children INDEX 1 INTO ro_child.         "#EC CI_SUBRC
 
   ENDMETHOD.
 

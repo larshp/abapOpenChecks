@@ -94,8 +94,6 @@ CLASS ZCL_AOC_CHECK_37 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Define message texts in SE91'.        "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '037'.
 

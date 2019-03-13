@@ -27,7 +27,6 @@ CLASS ZCL_AOC_CHECK_60 IMPLEMENTATION.
 * MIT License
 
     DATA: lt_statements TYPE ty_statements,
-          lv_index      TYPE i,
           lt_tokens     LIKE it_tokens,
           lv_code       TYPE sci_errc.
 
@@ -42,8 +41,7 @@ CLASS ZCL_AOC_CHECK_60 IMPLEMENTATION.
 
     lt_statements = build_statements(
       it_tokens     = lt_tokens
-      it_statements = it_statements
-      it_levels     = it_levels ).
+      it_statements = it_statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
 
@@ -70,8 +68,6 @@ CLASS ZCL_AOC_CHECK_60 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'Concatenation of string templates'.      "#EC NOTEXT
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '060'.
 

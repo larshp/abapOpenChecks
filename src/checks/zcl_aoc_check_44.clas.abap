@@ -116,8 +116,6 @@ CLASS ZCL_AOC_CHECK_44 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'EXPORTING can be changed to RETURNING'. "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '044'.
 

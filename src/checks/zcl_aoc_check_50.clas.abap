@@ -40,12 +40,11 @@ CLASS ZCL_AOC_CHECK_50 IMPLEMENTATION.
     SELECT SINGLE category FROM seoclassdf
       INTO lv_category
       WHERE clsname = object_name
-      AND version = '1'.
+      AND version = '1'.                                  "#EC CI_SUBRC
 
     lt_statements = build_statements(
         it_tokens     = it_tokens
-        it_statements = it_statements
-        it_levels     = it_levels ).
+        it_statements = it_statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
@@ -79,8 +78,6 @@ CLASS ZCL_AOC_CHECK_50 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'ASSERT and unit test ASSERT'.         "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '050'.
 

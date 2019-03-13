@@ -129,8 +129,6 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'No direct changes to standard tables'. "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '026'.
 

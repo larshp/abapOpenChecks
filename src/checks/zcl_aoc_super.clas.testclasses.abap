@@ -13,7 +13,6 @@ CLASS ltcl_test DEFINITION FOR TESTING
       export_import FOR TESTING,
       inform FOR TESTING,
       check_class_neg FOR TESTING,
-      get_compiler FOR TESTING,
       check_class_proxy FOR TESTING.
 
     DATA: mo_super TYPE REF TO zcl_aoc_super.
@@ -72,20 +71,6 @@ CLASS ltcl_test IMPLEMENTATION.
       p_sub_obj_name = 'SAPLSETB'
       p_test         = 'ABC'
       p_code         = 'ABC' ).
-
-  ENDMETHOD.
-
-  METHOD get_compiler.
-
-    DATA: lt_refs TYPE scr_refs.
-
-
-    mo_super->object_type = 'PROG'.
-    mo_super->object_name = 'SAPLSETB'.
-
-    lt_refs = mo_super->get_compiler( ).
-
-    cl_abap_unit_assert=>assert_not_initial( lt_refs ).
 
   ENDMETHOD.
 

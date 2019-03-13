@@ -109,8 +109,6 @@ CLASS ZCL_AOC_CHECK_42 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Identical WHEN code'.                 "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '042'.
 

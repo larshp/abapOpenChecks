@@ -16,8 +16,11 @@ CLASS zcl_aoc_check_27 DEFINITION
     TYPES:
       BEGIN OF ty_stmnt,
         statement TYPE string,
-        row       TYPE stmnt_levl,
-        level     TYPE token_row,
+        row       TYPE token_row,
+        row_to    TYPE token_row,
+        level     TYPE stmnt_levl,
+        col       TYPE token_col,
+        col_to    TYPE token_col,
       END OF ty_stmnt.
 
     DATA mt_tables TYPE scit_tabl.
@@ -68,7 +71,8 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
         lv_code = '001'.
       ELSEIF ( ls_statement-statement CP 'CLEAR *'
           OR ls_statement-statement CP 'FREE *' )
-          AND is_local( ls_statement ) = abap_true.
+          AND is_local( ls_statement ) = abap_true
+          AND NOT ls_statement-statement CP 'CLEAR <*'.
         lv_code = '002'.
       ELSEIF ls_statement-statement CP 'EXIT*'
           OR ls_statement-statement CP 'CHECK *'.
@@ -117,10 +121,15 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
         IF ls_statement-statement IS INITIAL.
           ls_statement-statement = <ls_token>-str.
           ls_statement-row = <ls_token>-row.
+          ls_statement-col = <ls_token>-col.
+          ls_statement-row_to = <ls_token>-row.
+          ls_statement-col_to = <ls_token>-col.
           ls_statement-level = <ls_statement>-level.
         ELSE.
           CONCATENATE ls_statement-statement <ls_token>-str
             INTO ls_statement-statement SEPARATED BY space.
+          ls_statement-row_to = <ls_token>-row.
+          ls_statement-col_to = <ls_token>-col.
         ENDIF.
       ENDLOOP.
       APPEND ls_statement TO mt_statements.
@@ -163,8 +172,6 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Last statement is obsolete'.          "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '027'.
 
@@ -209,10 +216,13 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
           lv_include TYPE program,
           lv_var     TYPE string.
 
-    FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result.
+    FIELD-SYMBOLS: <ls_result>    LIKE LINE OF lt_result,
+                   <ls_statement> LIKE LINE OF mt_statements.
 
 
-    lt_result = get_compiler( ).
+    lt_result = zcl_aoc_compiler=>get_instance(
+      iv_object_type = object_type
+      iv_object_name = object_name )->get_result( ).
     DELETE lt_result WHERE tag <> cl_abap_compiler=>tag_data.
     DELETE lt_result WHERE name = ''.
 
@@ -246,6 +256,11 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
           RETURN.
         ENDIF.
 
+        IF ls_mtd-cpdname CA '~'.
+* handle methods from  interfaces
+          SPLIT ls_mtd-cpdname AT '~' INTO ls_mtd-clsname ls_mtd-cpdname.
+        ENDIF.
+
         SELECT SINGLE sconame FROM seosubcodf
           INTO lv_sconame
           WHERE clsname = ls_mtd-clsname
@@ -264,11 +279,28 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
         IF sy-subrc = 0.
           RETURN.
         ENDIF.
-
-        rv_bool = abap_true.
       ELSE.
-        rv_bool = abap_true.
+        READ TABLE lt_result
+          ASSIGNING <ls_result> WITH KEY
+          full_name = <ls_result>-full_name
+          mode2 = cl_abap_compiler=>mode2_def.
+        IF sy-subrc = 0.
+          LOOP AT mt_statements ASSIGNING <ls_statement>
+              WHERE ( row < <ls_result>-line AND row_to > <ls_result>-line )
+              OR ( row = <ls_result>-line AND col <= <ls_result>-column AND row_to > <ls_result>-line )
+              OR ( row = <ls_result>-line AND col <= <ls_result>-column
+              AND row_to = <ls_result>-line AND col_to >= <ls_result>-column )
+              OR ( row < <ls_result>-line AND row_to = <ls_result>-line AND col_to >= <ls_result>-column ).
+            IF <ls_statement>-statement CP 'FORM *'.
+              RETURN.
+            ENDIF.
+            EXIT.
+          ENDLOOP.
+        ENDIF.
       ENDIF.
+
+      rv_bool = abap_true.
+
     ENDIF.
 
   ENDMETHOD.

@@ -14,7 +14,6 @@ CLASS ltcl_test DEFINITION FOR TESTING
     DATA: mt_code       TYPE string_table,
           mt_tokens     TYPE stokesx_tab,
           mt_statements TYPE sstmnt_tab,
-          mt_levels     TYPE slevel_tab,
           mt_structures TYPE zcl_aoc_super=>ty_structures_tt.
 
     METHODS:
@@ -41,7 +40,6 @@ CLASS ltcl_test IMPLEMENTATION.
     SCAN ABAP-SOURCE mt_code
          TOKENS          INTO mt_tokens
          STATEMENTS      INTO mt_statements
-         LEVELS          INTO mt_levels
          STRUCTURES      INTO mt_structures
          WITH ANALYSIS
          WITH COMMENTS.
@@ -70,7 +68,6 @@ CLASS ltcl_test IMPLEMENTATION.
     lo_stru = zcl_aoc_structure=>build(
       it_tokens     = mt_tokens
       it_statements = mt_statements
-      it_levels     = mt_levels
       it_structures = mt_structures ).
 
     lt_string = zcl_aoc_structure=>to_string( lo_stru ).
@@ -100,7 +97,6 @@ CLASS ltcl_test IMPLEMENTATION.
     lo_stru = zcl_aoc_structure=>build(
       it_tokens     = mt_tokens
       it_statements = mt_statements
-      it_levels     = mt_levels
       it_structures = mt_structures ).
 
     lt_string = zcl_aoc_structure=>to_string( lo_stru ).

@@ -27,7 +27,13 @@
     <item>
      <ID>R</ID>
      <ENTRY>abapOpenChecks - Code Line Length Analysis</ENTRY>
-     <LENGTH>43</LENGTH>
+     <LENGTH>42</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_MVIEW</KEY>
+     <ENTRY>Ignore generated maint. views</ENTRY>
+     <LENGTH>38</LENGTH>
     </item>
     <item>
      <ID>S</ID>

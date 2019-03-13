@@ -11,7 +11,8 @@ SELECT-OPTIONS: s_devc FOR tdevc-devclass OBLIGATORY.
 SELECTION-SCREEN END OF BLOCK b1.
 
 SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-002.
-PARAMETERS: p_split TYPE i DEFAULT 10.
+PARAMETERS: p_split TYPE i DEFAULT 10,
+            p_mview TYPE c AS CHECKBOX DEFAULT 'X'.
 SELECTION-SCREEN END OF BLOCK b2.
 
 ******************************************************************
@@ -31,7 +32,7 @@ CLASS lcl_app DEFINITION FINAL.
 
   PRIVATE SECTION.
     CLASS-DATA:
-      mt_result TYPE ty_result_tt.
+      gt_result TYPE ty_result_tt.
 
     CLASS-METHODS:
       init_result,
@@ -50,13 +51,14 @@ CLASS lcl_app IMPLEMENTATION.
 
     init_result( ).
 
-    SELECT devclass FROM tdevc INTO TABLE lt_packages WHERE devclass IN s_devc.
+    SELECT devclass FROM tdevc INTO TABLE lt_packages
+      WHERE devclass IN s_devc.           "#EC CI_GENBUFF "#EC CI_SUBRC
 
     LOOP AT lt_packages INTO lv_package.
       run_package( lv_package ).
     ENDLOOP.
 
-    rt_result = mt_result.
+    rt_result = gt_result.
 
   ENDMETHOD.
 
@@ -64,13 +66,13 @@ CLASS lcl_app IMPLEMENTATION.
 
     DATA: lv_length TYPE i.
 
-    FIELD-SYMBOLS: <ls_result> LIKE LINE OF mt_result.
+    FIELD-SYMBOLS: <ls_result> LIKE LINE OF gt_result.
 
 
-    CLEAR mt_result.
+    CLEAR gt_result.
 
     WHILE lv_length < 255.
-      APPEND INITIAL LINE TO mt_result ASSIGNING <ls_result>.
+      APPEND INITIAL LINE TO gt_result ASSIGNING <ls_result>.
       <ls_result>-from = |{ lv_length } to { lv_length + p_split - 1 } characters|.
 
       lv_length = lv_length + p_split.
@@ -84,7 +86,9 @@ CLASS lcl_app IMPLEMENTATION.
           lv_program  LIKE LINE OF lt_programs.
 
 
-    lt_programs = zcl_aoc_util_programs=>get_programs_in_package( iv_devclass ).
+    lt_programs = zcl_aoc_util_programs=>get_programs_in_package(
+      iv_devclass = iv_devclass
+      iv_ignore_mview_fugr = p_mview ).
 
     LOOP AT lt_programs INTO lv_program.
       IF sy-tabix MOD 100 = 0.
@@ -104,9 +108,9 @@ CLASS lcl_app IMPLEMENTATION.
 
     DATA: lt_source TYPE TABLE OF abaptxt255,
           lv_index  TYPE i,
-          lv_source LIKE LINE OF lt_source.
+          ls_source LIKE LINE OF lt_source.
 
-    FIELD-SYMBOLS: <ls_result> LIKE LINE OF mt_result.
+    FIELD-SYMBOLS: <ls_result> LIKE LINE OF gt_result.
 
 
     CALL FUNCTION 'RPY_PROGRAM_READ'
@@ -126,9 +130,9 @@ CLASS lcl_app IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    LOOP AT lt_source INTO lv_source.
-      lv_index = ( strlen( lv_source-line ) DIV p_split ) + 1.
-      READ TABLE mt_result INDEX lv_index ASSIGNING <ls_result>.
+    LOOP AT lt_source INTO ls_source.
+      lv_index = ( strlen( ls_source-line ) DIV p_split ) + 1.
+      READ TABLE gt_result INDEX lv_index ASSIGNING <ls_result>. "#EC CI_SUBRC
       <ls_result>-count = <ls_result>-count + 1.
     ENDLOOP.
 

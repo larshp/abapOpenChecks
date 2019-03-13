@@ -13,13 +13,22 @@ CLASS zcl_aoc_check_48 DEFINITION
         REDEFINITION.
   PROTECTED SECTION.
 
+    METHODS check_table_body_access
+      IMPORTING
+        !it_tokens     TYPE stokesx_tab
+        !it_statements TYPE sstmnt_tab
+        !it_levels     TYPE slevel_tab .
+    METHODS check_table_key
+      IMPORTING
+        !it_tokens     TYPE stokesx_tab
+        !it_statements TYPE sstmnt_tab .
     METHODS support_empty_key
       RETURNING
-        VALUE(rv_supported) TYPE abap_bool.
+        VALUE(rv_supported) TYPE abap_bool .
   PRIVATE SECTION.
 
-    CLASS-DATA gv_checked TYPE abap_bool.
-    CLASS-DATA gv_supported TYPE abap_bool.
+    CLASS-DATA gv_checked TYPE abap_bool .
+    CLASS-DATA gv_supported TYPE abap_bool .
 ENDCLASS.
 
 
@@ -33,6 +42,56 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
+    check_table_key(
+      it_tokens     = it_tokens
+      it_statements = it_statements ).
+
+    check_table_body_access(
+      it_tokens     = it_tokens
+      it_statements = it_statements
+      it_levels     = it_levels ).
+
+  ENDMETHOD.
+
+
+  METHOD check_table_body_access.
+
+    DATA: lv_level LIKE sy-tabix.
+
+    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
+                   <ls_statement> LIKE LINE OF it_statements,
+                   <ls_level>     LIKE LINE OF it_levels.
+
+
+    IF object_type <> 'CLAS'.
+      RETURN.
+    ENDIF.
+
+    LOOP AT it_levels ASSIGNING <ls_level>.
+      lv_level = sy-tabix.
+      LOOP AT it_statements ASSIGNING <ls_statement> WHERE level = lv_level.
+        LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to
+            WHERE type <> scan_token_type-literal
+            AND type <> scan_token_type-comment.
+
+          IF <ls_token>-str CP '*+[]*'.
+            inform( p_sub_obj_type = c_type_include
+                    p_sub_obj_name = get_include( p_level = lv_level )
+                    p_line         = <ls_token>-row
+                    p_kind         = mv_errty
+                    p_test         = myname
+                    p_code         = '002' ).
+          ENDIF.
+
+        ENDLOOP.
+      ENDLOOP.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD check_table_key.
+
     DATA: lt_statements TYPE ty_statements,
           lv_code       TYPE sci_errc.
 
@@ -41,8 +100,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
     lt_statements = build_statements(
         it_tokens     = it_tokens
-        it_statements = it_statements
-        it_levels     = it_levels ).
+        it_statements = it_statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
@@ -52,8 +110,6 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
           AND support_empty_key( ) = abap_true
           AND <ls_statement>-include(8) <> '/1BCWDY/'.
         lv_code = '001'.
-      ELSEIF <ls_statement>-str CP '*+[]*' AND object_type = 'CLAS'.
-        lv_code = '002'.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
@@ -61,6 +117,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
                 p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
                 p_kind         = mv_errty
+                p_position     = <ls_statement>-index
                 p_test         = myname
                 p_code         = lv_code ).
       ENDIF.
@@ -72,10 +129,10 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
   METHOD constructor.
 
+    DATA: ls_message LIKE LINE OF scimessages.
+
     super->constructor( ).
 
-    description    = 'Internal tables'.                     "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '002'.
     position       = '048'.
 
@@ -83,6 +140,12 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     mv_errty = c_error.
+
+    ls_message-test = myname.
+    ls_message-code = '001'.
+    ls_message-kind = c_error.
+    ls_message-pcom = '"#EC CI_DEFAULT_KEY'.
+    INSERT ls_message INTO TABLE scimessages.
 
   ENDMETHOD.                    "CONSTRUCTOR
 

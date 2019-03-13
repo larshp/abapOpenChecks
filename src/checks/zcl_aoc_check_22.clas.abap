@@ -39,11 +39,11 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
 
 * IFs must contain ELSE, CASE must contain OTHERS
-    LOOP AT io_structure->mt_structure INTO lo_structure.
-      IF ( io_structure->mv_stmnt_type = scan_struc_stmnt_type-if
-          AND lo_structure->ms_statement-statement = 'ELSE' )
-          OR ( io_structure->mv_stmnt_type = scan_struc_stmnt_type-case
-          AND lo_structure->ms_statement-statement = 'WHEN OTHERS' ).
+    LOOP AT io_structure->get_structure( ) INTO lo_structure.
+      IF ( io_structure->get_type( ) = scan_struc_stmnt_type-if
+          AND lo_structure->get_statement( )-statement = 'ELSE' )
+          OR ( io_structure->get_type( ) = scan_struc_stmnt_type-case
+          AND lo_structure->get_statement( )-statement = 'WHEN OTHERS' ).
         lv_found = abap_true.
         EXIT. " current loop.
       ENDIF.
@@ -53,9 +53,9 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    compare( it_structure  = io_structure->mt_structure
+    compare( it_structure  = io_structure->get_structure( )
              iv_first_last = abap_true ).
-    compare( it_structure  = io_structure->mt_structure
+    compare( it_structure  = io_structure->get_structure( )
              iv_first_last = abap_false ).
 
   ENDMETHOD.
@@ -69,7 +69,6 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
     loop( zcl_aoc_structure=>build( it_tokens     = it_tokens
                                     it_statements = it_statements
-                                    it_levels     = it_levels
                                     it_structures = it_structures ) ).
 
   ENDMETHOD.
@@ -95,18 +94,18 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
       IF iv_first_last = abap_true.
         lv_index = 1.
       ELSE.
-        lv_index = lines( lo_stru->mt_structure ).
+        lv_index = lines( lo_stru->get_structure( ) ).
       ENDIF.
 
       IF NOT lo_first IS BOUND.
-        READ TABLE lo_stru->mt_structure INDEX lv_index INTO lo_first.
+        READ TABLE lo_stru->get_structure( ) INDEX lv_index INTO lo_first.
         IF sy-subrc <> 0.
           RETURN.
         ENDIF.
         lv_str1 = zcl_aoc_structure=>to_string_simple( lo_first ).
         CONTINUE. " current loop
       ENDIF.
-      READ TABLE lo_stru->mt_structure INDEX lv_index INTO lo_compare.
+      READ TABLE lo_stru->get_structure( ) INDEX lv_index INTO lo_compare.
       IF sy-subrc <> 0.
         RETURN.
       ENDIF.
@@ -126,8 +125,8 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
     ENDIF.
 
     inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = get_include( p_level = lo_first->ms_statement-level )
-            p_line         = lo_first->ms_statement-row
+            p_sub_obj_name = get_include( p_level = lo_first->get_statement( )-level )
+            p_line         = lo_first->get_statement( )-row
             p_kind         = mv_errty
             p_test         = myname
             p_code         = '001'
@@ -140,8 +139,6 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Conditions contain identical code'.   "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '022'.
 
@@ -176,12 +173,12 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
     DATA: lo_structure TYPE REF TO zcl_aoc_structure.
 
 
-    CASE io_structure->mv_stmnt_type.
+    CASE io_structure->get_type( ).
       WHEN scan_struc_stmnt_type-if OR scan_struc_stmnt_type-case.
         analyze_condition( io_structure ).
     ENDCASE.
 
-    LOOP AT io_structure->mt_structure INTO lo_structure.
+    LOOP AT io_structure->get_structure( ) INTO lo_structure.
       loop( lo_structure ).
     ENDLOOP.
 

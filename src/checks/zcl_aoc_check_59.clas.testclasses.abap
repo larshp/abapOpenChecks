@@ -26,7 +26,9 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
       test002_06 FOR TESTING,
       test002_07 FOR TESTING,
       test003_01 FOR TESTING,
-      test003_02 FOR TESTING.
+      test003_02 FOR TESTING,
+      test004_01 FOR TESTING,
+      test004_02 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -173,6 +175,26 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test003_02.
 
     _code 'IF ( foo = bar AND moo = boo ) OR baa = laa.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test004_01.
+
+    _code 'IF SY-DATUM + 1 > + SY-DATUM.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test004_02.
+
+    _code 'IF SY-DATUM + 1 > - SY-DATUM.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 

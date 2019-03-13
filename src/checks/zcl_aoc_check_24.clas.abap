@@ -264,8 +264,6 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Identical code blocks'.               "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '024'.
 

@@ -31,6 +31,18 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_IGNO</KEY>
+     <ENTRY>Ingore matches less than</ENTRY>
+     <LENGTH>32</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_INCL</KEY>
+     <ENTRY>Ignore includes shorter than</ENTRY>
+     <LENGTH>36</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_PROG</KEY>
      <ENTRY>Show progress per</ENTRY>
      <LENGTH>25</LENGTH>

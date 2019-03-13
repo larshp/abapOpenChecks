@@ -94,8 +94,6 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'EXIT or CHECK outside of LOOP'.       "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '002'.
 

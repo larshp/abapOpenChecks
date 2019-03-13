@@ -50,8 +50,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 
     lt_statements = build_statements(
       it_tokens     = it_tokens
-      it_statements = it_statements
-      it_levels     = it_levels ).
+      it_statements = it_statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       lv_index = sy-tabix - 1.
@@ -79,6 +78,10 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
       IF <ls_statement>-str CP 'MESSAGE *'.
         lv_code = '001'.
       ELSEIF <ls_statement>-str CP 'WRITE *'.
+        IF ls_prev-str CP 'WRITE *' AND ls_prev-start-row = <ls_statement>-start-row.
+* only report one finding for chained statements
+          CONTINUE.
+        ENDIF.
         lv_code = '002'.
       ELSE.
         ASSERT 0 = 1.
@@ -99,8 +102,6 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'MESSAGE or list processing in global classes'. "#EC NOTEXT
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '057'.
 

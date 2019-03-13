@@ -93,8 +93,6 @@ CLASS ZCL_AOC_CHECK_28 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Space before . or ,'.                 "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '002'.
     position       = '028'.
 

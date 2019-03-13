@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/larshp/abapOpenChecks.svg?branch=master)](https://travis-ci.org/larshp/abapOpenChecks)
-[![abaplint](http://abaplint.org/badges/larshp/abapOpenChecks)](http://abaplint.org/project/larshp/abapOpenChecks)
+[![abaplint](https://abaplint.org/badges/larshp/abapOpenChecks)](https://abaplint.org/project/larshp/abapOpenChecks)
 
 abapOpenChecks
 ==============
@@ -11,6 +10,10 @@ Open source checks for SAP Code Inspector / ABAP Test Cockpit (SCI/ATC)
 - activate checks in SCI(Goto -> Management Of -> Tests)
 - configure check variant
 - run inspection
+
+**Updating**
+- Recommend backing up variants before updating abapOpenChecks, use [upDOWNci](https://github.com/larshp/upDOWNci)
+- Pull latest changes via abapGit
 
 **Design goals**
 - try and see if it works out

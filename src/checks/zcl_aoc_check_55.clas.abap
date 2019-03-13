@@ -43,8 +43,7 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
     DATA: lt_statements TYPE ty_statements,
           lv_current    TYPE string,
           lv_previous   TYPE string,
-          lv_last       TYPE string,
-          lv_code       TYPE sci_errc.
+          lv_last       TYPE string.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements,
                    <ls_stmt>      LIKE LINE OF it_statements,
@@ -53,8 +52,7 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
 
     lt_statements = build_statements(
       it_tokens     = it_tokens
-      it_statements = it_statements
-      it_levels     = it_levels ).
+      it_statements = it_statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       IF sy-tabix = 1.
@@ -94,7 +92,8 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
           CONTINUE.
         ENDIF.
 
-        READ TABLE it_statements INDEX <ls_statement>-index - 1 ASSIGNING <ls_stmt>.
+        READ TABLE it_statements INDEX <ls_statement>-index - 1
+          ASSIGNING <ls_stmt>.                            "#EC CI_SUBRC
         IF <ls_stmt>-type = scan_stmnt_type-comment.
           CONTINUE.
         ENDIF.
@@ -120,8 +119,6 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Statements can be chained'.           "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '055'.
 
@@ -192,7 +189,7 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
 
     SPLIT is_statement-str AT space INTO TABLE lt_tab.
 
-    READ TABLE lt_tab INDEX 1 INTO rv_word.
+    READ TABLE lt_tab INDEX 1 INTO rv_word.               "#EC CI_SUBRC
 
   ENDMETHOD.
 ENDCLASS.

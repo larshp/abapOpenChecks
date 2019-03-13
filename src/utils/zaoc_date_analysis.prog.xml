@@ -25,6 +25,12 @@
      <LENGTH>21</LENGTH>
     </item>
     <item>
+     <ID>I</ID>
+     <KEY>003</KEY>
+     <ENTRY>Show</ENTRY>
+     <LENGTH>14</LENGTH>
+    </item>
+    <item>
      <ID>R</ID>
      <ENTRY>abapOpenChecks - Date Analysis</ENTRY>
      <LENGTH>30</LENGTH>
@@ -37,15 +43,28 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_ERRO</KEY>
+     <ENTRY>Errors</ENTRY>
+     <LENGTH>14</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_GLOB</KEY>
      <ENTRY>Global</ENTRY>
      <LENGTH>14</LENGTH>
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_INFO</KEY>
+     <ENTRY>Information</ENTRY>
+     <LENGTH>19</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_INSP</KEY>
-     <ENTRY>Inspection</ENTRY>
+     <ENTRY>.</ENTRY>
      <LENGTH>18</LENGTH>
+     <SPLIT>D</SPLIT>
     </item>
     <item>
      <ID>S</ID>
@@ -58,6 +77,19 @@
      <KEY>P_UDAT</KEY>
      <ENTRY>Updated date</ENTRY>
      <LENGTH>20</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_VERS</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>9</LENGTH>
+     <SPLIT>D</SPLIT>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_WARN</KEY>
+     <ENTRY>Warnings</ENTRY>
+     <LENGTH>16</LENGTH>
     </item>
    </TPOOL>
   </asx:values>

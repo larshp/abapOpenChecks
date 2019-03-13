@@ -72,8 +72,6 @@ CLASS ZCL_AOC_CHECK_13 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Sequential blank lines'.              "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '013'.
 

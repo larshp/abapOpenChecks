@@ -184,8 +184,6 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Parameter name can be omitted'.       "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '043'.
 
@@ -206,7 +204,9 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result.
 
 
-    lt_result = get_compiler( ).
+    lt_result = zcl_aoc_compiler=>get_instance(
+      iv_object_type = object_type
+      iv_object_name = object_name )->get_result( ).
     DELETE lt_result WHERE tag <> cl_abap_compiler=>tag_method.
 
     LOOP AT lt_result ASSIGNING <ls_result>.

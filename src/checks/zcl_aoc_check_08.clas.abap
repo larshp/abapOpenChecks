@@ -19,29 +19,37 @@ CLASS zcl_aoc_check_08 DEFINITION
         REDEFINITION.
 
   PROTECTED SECTION.
-    DATA mv_001 TYPE flag.
-    DATA mv_002 TYPE flag.
-    DATA mv_003 TYPE flag.
-    DATA mv_004 TYPE flag.
-    DATA mv_005 TYPE flag.
-    DATA mv_006 TYPE flag.
-    DATA mv_007 TYPE flag.
-    DATA mv_008 TYPE flag.
-    DATA mv_009 TYPE flag.
-    DATA mv_010 TYPE flag.
-    DATA mv_011 TYPE flag.
-    DATA mv_012 TYPE flag.
-    DATA mv_013 TYPE flag.
-    DATA mv_014 TYPE flag.
-    DATA mv_015 TYPE flag.
-    DATA mv_016 TYPE flag.
-    DATA mv_017 TYPE flag.
-    DATA mv_018 TYPE flag.
-    DATA mv_019 TYPE flag.
-    DATA mv_020 TYPE flag.
-    DATA mv_021 TYPE flag.
-    DATA mv_022 TYPE flag.
-    DATA mv_023 TYPE flag.
+
+    DATA mv_001 TYPE flag .
+    DATA mv_002 TYPE flag .
+    DATA mv_003 TYPE flag .
+    DATA mv_004 TYPE flag .
+    DATA mv_005 TYPE flag .
+    DATA mv_006 TYPE flag .
+    DATA mv_007 TYPE flag .
+    DATA mv_008 TYPE flag .
+    DATA mv_009 TYPE flag .
+    DATA mv_010 TYPE flag .
+    DATA mv_011 TYPE flag .
+    DATA mv_012 TYPE flag .
+    DATA mv_013 TYPE flag .
+    DATA mv_014 TYPE flag .
+    DATA mv_015 TYPE flag .
+    DATA mv_016 TYPE flag .
+    DATA mv_017 TYPE flag .
+    DATA mv_018 TYPE flag .
+    DATA mv_019 TYPE flag .
+    DATA mv_020 TYPE flag .
+    DATA mv_021 TYPE flag .
+    DATA mv_022 TYPE flag .
+    DATA mv_023 TYPE flag .
+    DATA mv_024 TYPE flag .
+
+    METHODS is_old
+      IMPORTING
+        !iv_statement TYPE string
+      RETURNING
+        VALUE(rv_old) TYPE abap_bool .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -103,13 +111,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
           OR lv_statement CP '* =< *'
           OR lv_statement CP '* => *' ).
         lv_code = '006'.
-      ELSEIF mv_007 = abap_true
-          AND ( lv_statement CP '* EQ *'
-          OR lv_statement CP '* NE *'
-          OR lv_statement CP '* LT *'
-          OR lv_statement CP '* GT *'
-          OR lv_statement CP '* LE *'
-          OR lv_statement CP '* GE *' ).
+      ELSEIF mv_007 = abap_true AND is_old( lv_statement ) = abap_true.
         lv_code = '007'.
       ELSEIF mv_008 = abap_true AND lv_statement CP 'DEMAND *'.
         lv_code = '008'.
@@ -127,7 +129,8 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
         lv_code = '014'.
       ELSEIF mv_015 = abap_true AND lv_statement CP 'CALL DIALOG *'.
         lv_code = '015'.
-      ELSEIF mv_016 = abap_true AND lv_statement CP '* OCCURS *'.
+      ELSEIF mv_016 = abap_true AND lv_statement CP '* OCCURS *'
+          AND NOT lv_statement CP '* OCCURS TYPE *'.
         lv_code = '016'.
       ELSEIF mv_017 = abap_true AND lv_statement CP '* WITH HEADER LINE*'.
         lv_code = '017'.
@@ -147,6 +150,8 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
         lv_code = '022'.
       ELSEIF mv_023 = abap_true AND lv_statement CP 'DO * VARYING *'.
         lv_code = '023'.
+      ELSEIF mv_024 = abap_true AND lv_statement CP 'CATCH SYSTEM-EXCEPTIONS *'.
+        lv_code = '024'.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
@@ -168,8 +173,6 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Obsolete statement'.                  "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '004'.
     position       = '008'.
 
@@ -202,8 +205,9 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
     mv_021 = abap_true.
     mv_022 = abap_true.
     mv_023 = abap_true.
+    mv_024 = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -233,6 +237,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
       mv_021 = mv_021
       mv_022 = mv_022
       mv_023 = mv_023
+      mv_024 = mv_024
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -289,6 +294,8 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
         p_text = 'DO 1 TIMES'.                              "#EC NOTEXT
       WHEN '023'.
         p_text = 'DO ... VARYING ...'.                      "#EC NOTEXT
+      WHEN '024'.
+        p_text = 'CATCH SYSTEM-EXCEPTIONS is obsolete'.     "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
@@ -326,8 +333,40 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
     zzaoc_fill_att mv_021 'LOCAL' ''.                       "#EC NOTEXT
     zzaoc_fill_att mv_022 'DO 1 TIMES' ''.                  "#EC NOTEXT
     zzaoc_fill_att mv_023 'DO ... VARYING' ''.              "#EC NOTEXT
+    zzaoc_fill_att mv_024 'CATCH SYSTEM-EXCEPTIONS' ''.     "#EC NOTEXT
 
     zzaoc_popup.
+
+  ENDMETHOD.
+
+
+  METHOD is_old.
+
+    rv_old = abap_false.
+
+    IF iv_statement CP '* EQ *' AND NOT iv_statement CP '* EQ TYPE *'.
+      rv_old = abap_true.
+    ENDIF.
+
+    IF iv_statement CP '* NE *' AND NOT iv_statement CP '* NE TYPE *'.
+      rv_old = abap_true.
+    ENDIF.
+
+    IF iv_statement CP '* LT *' AND NOT iv_statement CP '* LT TYPE *'.
+      rv_old = abap_true.
+    ENDIF.
+
+    IF iv_statement CP '* GT *' AND NOT iv_statement CP '* GT TYPE *'.
+      rv_old = abap_true.
+    ENDIF.
+
+    IF iv_statement CP '* LE *' AND NOT iv_statement CP '* LE TYPE *'.
+      rv_old = abap_true.
+    ENDIF.
+
+    IF iv_statement CP '* GE *' AND NOT iv_statement CP '* GE TYPE *'.
+      rv_old = abap_true.
+    ENDIF.
 
   ENDMETHOD.
 
@@ -359,6 +398,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
       mv_021 = mv_021
       mv_022 = mv_022
       mv_023 = mv_023
+      mv_024 = mv_024
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 

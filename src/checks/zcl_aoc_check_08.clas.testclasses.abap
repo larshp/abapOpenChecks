@@ -32,6 +32,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test006_01 FOR TESTING,
       test007_01 FOR TESTING,
       test007_02 FOR TESTING,
+      test007_03 FOR TESTING,
+      test007_04 FOR TESTING,
       test008_01 FOR TESTING,
       test009_01 FOR TESTING,
       test010_01 FOR TESTING,
@@ -41,6 +43,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test014_01 FOR TESTING,
       test015_01 FOR TESTING,
       test016_01 FOR TESTING,
+      test016_02 FOR TESTING,
       test017_01 FOR TESTING,
       test018_01 FOR TESTING,
       test019_01 FOR TESTING,
@@ -48,7 +51,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test021_01 FOR TESTING,
       test022_01 FOR TESTING,
       test022_02 FOR TESTING,
-      test023_01 FOR TESTING.
+      test023_01 FOR TESTING,
+      test024_01 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -239,6 +243,28 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD test007_03.
+* ===========
+
+    _code 'DATA eq TYPE i.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test007_04.
+* ===========
+
+    _code 'DATA moo TYPE c LENGTH 2 VALUE ''EQ''.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
   METHOD test008_01.
 
     _code 'DEMAND something.'.
@@ -338,6 +364,16 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD test016_02.
+
+    _code 'DATA occurs TYPE c.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
   METHOD test017_01.
 
     _code 'DATA lt_foo TYPE TABLE OF c WITH HEADER LINE.'.
@@ -425,4 +461,15 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
-ENDCLASS.       "lcl_Test
+  METHOD test024_01.
+
+    _code 'CATCH SYSTEM-EXCEPTIONS arithmetic_errors = 4.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '024'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+ENDCLASS.

@@ -102,8 +102,6 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Bad indentation'.                     "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '020'.
 

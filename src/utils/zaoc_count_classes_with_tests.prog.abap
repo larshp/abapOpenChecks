@@ -21,21 +21,23 @@ FORM run RAISING cx_salv_msg.
            obj_name TYPE tadir-obj_name,
          END OF ty_tadir.
 
-  DATA: lt_tadir TYPE STANDARD TABLE OF ty_tadir WITH DEFAULT KEY,
-        lr_alv   TYPE REF TO cl_salv_table,
-        lt_alv   TYPE STANDARD TABLE OF ty_alv WITH DEFAULT KEY,
-        ls_alv   LIKE LINE OF lt_alv.
-
+  DATA: lt_tadir      TYPE STANDARD TABLE OF ty_tadir WITH DEFAULT KEY,
+        ls_tadir      LIKE LINE OF lt_tadir,
+        lo_alv        TYPE REF TO cl_salv_table,
+        lt_alv        TYPE STANDARD TABLE OF ty_alv WITH DEFAULT KEY,
+        ls_alv        LIKE LINE OF lt_alv,
+        ls_aunit_info TYPE if_aunit_prog_info_types=>ty_s_program.
 
   SELECT object obj_name FROM tadir INTO TABLE lt_tadir
     WHERE pgmid = 'R3TR'
     AND object = 'CLAS'
     AND obj_name IN s_objn
     AND devclass IN s_devc
-    AND delflag = abap_false.
+    AND delflag = abap_false.             "#EC CI_GENBUFF "#EC CI_SUBRC
 
-  LOOP AT lt_tadir INTO DATA(ls_tadir).
-    DATA(ls_aunit_info) = cl_aunit_prog_info=>get_program_info(
+  LOOP AT lt_tadir INTO ls_tadir.
+    CLEAR ls_alv.
+    ls_aunit_info = cl_aunit_prog_info=>get_program_info(
       allow_commit = abap_true
       obj_type     = ls_tadir-object
       obj_name     = ls_tadir-obj_name ).
@@ -50,12 +52,12 @@ FORM run RAISING cx_salv_msg.
 
   cl_salv_table=>factory(
     IMPORTING
-      r_salv_table = lr_alv
+      r_salv_table = lo_alv
     CHANGING
       t_table      = lt_alv ).
 
-  lr_alv->get_functions( )->set_all( ).
-  lr_alv->get_columns( )->set_optimize( ).
-  lr_alv->display( ).
+  lo_alv->get_functions( )->set_all( ).
+  lo_alv->get_columns( )->set_optimize( ).
+  lo_alv->display( ).
 
 ENDFORM.

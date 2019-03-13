@@ -20,16 +20,31 @@ CLASS zcl_aoc_check_56 DEFINITION
   PROTECTED SECTION.
 
     TYPES:
-      ty_seosubcodf_tt TYPE STANDARD TABLE OF seosubcodf WITH DEFAULT KEY .
+      BEGIN OF ty_vseosubcdf,
+        clsname    TYPE vseosubcdf-clsname,
+        cmpname    TYPE vseosubcdf-cmpname,
+        sconame    TYPE vseosubcdf-sconame,
+        version    TYPE vseosubcdf-version,
+        paroptionl TYPE vseosubcdf-paroptionl,
+      END OF ty_vseosubcdf .
     TYPES:
-      ty_vseosubcdf_tt TYPE STANDARD TABLE OF vseosubcdf WITH DEFAULT KEY .
+      ty_vseosubcdf_tt TYPE STANDARD TABLE OF ty_vseosubcdf WITH DEFAULT KEY .
 
     DATA mv_supplied TYPE flag .
     DATA mv_referenced TYPE flag .
 
+    METHODS report_unused_clas
+      IMPORTING
+        !is_method    TYPE seocompo
+        !is_parameter TYPE ty_vseosubcdf .
     METHODS check_supplied
       IMPORTING
         !is_method TYPE seocompo .
+    METHODS get_name
+      IMPORTING
+        !iv_full_name  TYPE string
+      RETURNING
+        VALUE(rv_name) TYPE seosconame .
     METHODS check_locally_referenced
       IMPORTING
         !is_method TYPE seocompo .
@@ -48,7 +63,7 @@ CLASS zcl_aoc_check_56 DEFINITION
     METHODS report_unused
       IMPORTING
         !is_method     TYPE seocompo
-        !it_parameters TYPE ty_seosubcodf_tt .
+        !it_parameters TYPE ty_vseosubcdf_tt .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -88,14 +103,22 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
   METHOD check_locally_referenced.
 
+    CONSTANTS: lc_macro TYPE char1 VALUE 'D'.
+
     DATA: lt_compiler   TYPE scr_refs,
           ls_compiler   LIKE LINE OF lt_compiler,
           ls_mtdkey     TYPE seocpdkey,
+          lo_compiler   TYPE REF TO zcl_aoc_compiler,
           lv_include    TYPE programm,
+          lv_name       TYPE seosconame,
           lt_parameters TYPE ty_vseosubcdf_tt.
 
+    IF mv_referenced = abap_false.
+      RETURN.
+    ENDIF.
 
-    SELECT * FROM vseosubcdf INTO TABLE lt_parameters
+    SELECT * FROM vseosubcdf
+      INTO CORRESPONDING FIELDS OF TABLE lt_parameters
       WHERE clsname = is_method-clsname
       AND cmpname = is_method-cmpname
       AND version = '1'
@@ -106,7 +129,13 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    lt_compiler = get_compiler( ).
+    lo_compiler = zcl_aoc_compiler=>get_instance(
+      iv_object_type = object_type
+      iv_object_name = object_name ).
+    IF lo_compiler->has_error( ) = abap_true.
+      RETURN.
+    ENDIF.
+    lt_compiler = lo_compiler->get_result( ).
 
     ls_mtdkey-clsname = is_method-clsname.
     ls_mtdkey-cpdname = is_method-cmpname.
@@ -124,16 +153,27 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+* used in parrallel RECEIVE RESULTS / CALLING methods
+    DELETE lt_parameters WHERE sconame = 'P_TASK'.
+
     LOOP AT lt_compiler INTO ls_compiler
-        WHERE ( tag = cl_abap_compiler=>tag_data OR tag = cl_abap_compiler=>tag_method )
-        AND statement->source_info->name = lv_include.
-      DELETE lt_parameters WHERE sconame = ls_compiler-name.
+        WHERE ( tag = cl_abap_compiler=>tag_data OR tag = cl_abap_compiler=>tag_method OR
+                tag = cl_abap_compiler=>tag_message_id OR tag = cl_abap_compiler=>tag_message_number OR
+                tag = cl_abap_compiler=>tag_message_type  )
+        AND ( statement->source_info->name = lv_include
+        OR statement->source_info->kind = lc_macro ).
+      lv_name = get_name( ls_compiler-full_name ).
+      IF lv_name IS INITIAL.
+        lv_name = ls_compiler-name.
+      ENDIF.
+      DELETE lt_parameters WHERE sconame = lv_name.
+      CLEAR lv_name.
     ENDLOOP.
 
     IF lines( lt_parameters ) > 0.
       report_unreferenced(
-        is_method     = is_method
-        it_parameters = lt_parameters ).
+         is_method     = is_method
+         it_parameters = lt_parameters ).
     ENDIF.
 
   ENDMETHOD.
@@ -165,22 +205,41 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
     DATA: lt_found      TYPE sci_findlst,
           lv_index      TYPE i,
-          lt_parameters TYPE ty_seosubcodf_tt.
+          lv_prefered   TYPE seosubcodf-parpreferd,
+          lt_parameters TYPE ty_vseosubcdf_tt.
 
     FIELD-SYMBOLS: <ls_parameter> LIKE LINE OF lt_parameters,
                    <ls_found>     LIKE LINE OF lt_found.
 
 
-    SELECT * FROM seosubcodf INTO TABLE lt_parameters
+    IF mv_supplied = abap_false.
+      RETURN.
+    ENDIF.
+
+    SELECT * FROM vseosubcdf
+      INTO CORRESPONDING FIELDS OF TABLE lt_parameters
       WHERE clsname = is_method-clsname
       AND cmpname = is_method-cmpname
       AND version = '1'
       AND pardecltyp = '0'
+      AND scotype = '0'
       ORDER BY PRIMARY KEY.     "#EC CI_SUBRC "#EC CI_ALL_FIELDS_NEEDED
 
     IF lines( lt_parameters ) <= 1.
       RETURN.
     ENDIF.
+
+    LOOP AT lt_parameters ASSIGNING <ls_parameter>.
+      lv_index = sy-tabix.
+      SELECT SINGLE parpreferd FROM seosubcodf INTO lv_prefered
+        WHERE clsname = <ls_parameter>-clsname
+        AND cmpname = <ls_parameter>-cmpname
+        AND sconame = <ls_parameter>-sconame
+        AND version = <ls_parameter>-version.
+      IF sy-subrc = 0 AND lv_prefered = abap_true.
+        DELETE lt_parameters INDEX lv_index.
+      ENDIF.
+    ENDLOOP.
 
     READ TABLE lt_parameters WITH KEY paroptionl = abap_false TRANSPORTING NO FIELDS.
     IF sy-subrc <> 0.
@@ -189,6 +248,10 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     ENDIF.
 
     DELETE lt_parameters WHERE paroptionl = abap_false.
+
+    IF lines( lt_parameters ) = 0.
+      RETURN.
+    ENDIF.
 
     lt_found = find_where_used( is_method ).
 
@@ -223,8 +286,6 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Method parameters'.                   "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '056'.
 
@@ -303,6 +364,17 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD get_name.
+    DATA: lv_moffset TYPE i,
+          lv_mlenght TYPE i.
+
+    FIND REGEX '([^:]*)$' IN iv_full_name MATCH OFFSET lv_moffset MATCH LENGTH lv_mlenght.
+    IF sy-subrc = 0.
+      rv_name = iv_full_name+lv_moffset(lv_mlenght).
+    ENDIF.
+  ENDMETHOD.
+
+
   METHOD if_ci_test~query_attributes.
 
     zzaoc_top.
@@ -358,24 +430,15 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
   METHOD report_unused.
 
-    DATA: lv_include TYPE programm,
-          ls_mtdkey  TYPE seocpdkey.
-
     FIELD-SYMBOLS: <ls_parameter> LIKE LINE OF it_parameters.
 
 
     LOOP AT it_parameters ASSIGNING <ls_parameter>.
       CASE object_type.
         WHEN 'CLAS'.
-          ls_mtdkey-clsname = is_method-clsname.
-          ls_mtdkey-cpdname = is_method-cmpname.
-          lv_include = cl_oo_classname_service=>get_method_include( ls_mtdkey ).
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = lv_include
-                  p_param_1      = <ls_parameter>-sconame
-                  p_kind         = mv_errty
-                  p_test         = myname
-                  p_code         = '001' ).
+          report_unused_clas(
+            is_method    = is_method
+            is_parameter = <ls_parameter> ).
         WHEN 'INTF'.
           inform( p_param_1      = <ls_parameter>-sconame
                   p_param_2      = is_method-cmpname
@@ -386,6 +449,41 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           ASSERT 0 = 1.
       ENDCASE.
     ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD report_unused_clas.
+
+    DATA: lv_include TYPE programm,
+          ls_mtdkey  TYPE seocpdkey.
+
+
+    ls_mtdkey-clsname = is_method-clsname.
+    ls_mtdkey-cpdname = is_method-cmpname.
+
+    cl_oo_classname_service=>get_method_include(
+      EXPORTING
+        mtdkey = ls_mtdkey
+      RECEIVING
+        result = lv_include
+      EXCEPTIONS
+        OTHERS = 0 ).
+
+    IF lv_include IS NOT INITIAL.
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = lv_include
+              p_param_1      = is_parameter-sconame
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '001' ).
+    ELSE.
+      inform( p_param_1      = is_parameter-sconame
+              p_param_2      = is_method-cmpname
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '002' ).
+    ENDIF.
 
   ENDMETHOD.
 ENDCLASS.

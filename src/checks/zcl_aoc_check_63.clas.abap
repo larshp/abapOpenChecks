@@ -24,8 +24,6 @@ CLASS ZCL_AOC_CHECK_63 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'ABAP Doc - Check parameter consistency'. "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '063'.
 
@@ -60,7 +58,7 @@ CLASS ZCL_AOC_CHECK_63 IMPLEMENTATION.
     FIELD-SYMBOLS: <lt_log>  TYPE STANDARD TABLE,
                    <lv_type> TYPE string,
                    <lv_text> TYPE string,
-                   <ls_log>  TYPE any.
+                   <lg_log>  TYPE any.
 
 
     IF object_type <> 'CLAS' AND object_type <> 'INTF'.
@@ -95,12 +93,16 @@ CLASS ZCL_AOC_CHECK_63 IMPLEMENTATION.
         ASSERT 0 = 1.
     ENDCASE.
 
-    LOOP AT <lt_log> ASSIGNING <ls_log>.
-      ASSIGN COMPONENT 'TYPE' OF STRUCTURE <ls_log> TO <lv_type>.
+    LOOP AT <lt_log> ASSIGNING <lg_log>.
+      ASSIGN COMPONENT 'TYPE' OF STRUCTURE <lg_log> TO <lv_type>.
       ASSERT sy-subrc = 0.
       IF <lv_type> = 'E'.
-        ASSIGN COMPONENT 'TEXT' OF STRUCTURE <ls_log> TO <lv_text>.
+        ASSIGN COMPONENT 'TEXT' OF STRUCTURE <lg_log> TO <lv_text>.
         ASSERT sy-subrc = 0.
+
+        IF <lv_text> CP 'active version cannot be read*'.
+          CONTINUE.
+        ENDIF.
 
         inform( p_sub_obj_type = object_type
                 p_sub_obj_name = object_name

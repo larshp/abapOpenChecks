@@ -1,3 +1,5 @@
+CLASS ltcl_test DEFINITION DEFERRED.
+CLASS zcl_aoc_check_34 DEFINITION LOCAL FRIENDS ltcl_test.
 *----------------------------------------------------------------------*
 *       CLASS lcl_Test DEFINITION
 *----------------------------------------------------------------------*
@@ -20,7 +22,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       export_import FOR TESTING,
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
-      test001_03 FOR TESTING.
+      test001_03 FOR TESTING,
+      test001_04 FOR TESTING RAISING cx_static_check,
+      test001_05 FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.       "lcl_Test
 
@@ -103,6 +107,47 @@ CLASS ltcl_test IMPLEMENTATION.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_04.
+* ===========
+
+    mo_check->mv_incl_comments = abap_false.
+    mo_check->mv_lines = 20.
+
+    _code 'CASE lv_foo.'.
+    _code '  WHEN ''bar''.'.
+    DO 10 TIMES.
+      _code ' ".'.
+      _code '*.'.
+    ENDDO.
+    _code 'ENDCASE.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+
+  ENDMETHOD.
+
+  METHOD test001_05.
+* ===========
+
+    mo_check->mv_incl_comments = abap_true.
+    mo_check->mv_lines = 20.
+
+    _code 'CASE lv_foo.'.
+    _code '  WHEN ''bar''.'.
+    DO 10 TIMES.
+      _code ' ".'.
+      _code '*.'.
+    ENDDO.
+    _code 'ENDCASE.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_not_initial( ms_result ).
 
   ENDMETHOD.
 

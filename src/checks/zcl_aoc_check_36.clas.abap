@@ -24,8 +24,6 @@ CLASS ZCL_AOC_CHECK_36 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Exception text not in use'.           "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '036'.
 

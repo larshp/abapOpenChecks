@@ -153,7 +153,7 @@ CLASS ZCL_AOC_BOOLEAN_TOKENS IMPLEMENTATION.
 
   METHOD get_token.
 
-    READ TABLE mt_tokens INDEX iv_index INTO rs_token.
+    READ TABLE mt_tokens INDEX iv_index INTO rs_token.    "#EC CI_SUBRC
 
   ENDMETHOD.
 

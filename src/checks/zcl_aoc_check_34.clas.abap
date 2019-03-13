@@ -19,7 +19,15 @@ CLASS zcl_aoc_check_34 DEFINITION
         REDEFINITION.
   PROTECTED SECTION.
 
-    DATA mv_lines TYPE i.
+    DATA mv_lines TYPE i .
+    DATA mv_incl_comments TYPE flag .
+
+    METHODS run_logic
+      IMPORTING
+        !is_statement     TYPE sstmnt
+        !is_token         TYPE stokesx
+        !iv_start         TYPE i
+        !iv_comment_lines TYPE i .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -34,38 +42,41 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DEFINE _check.
-      IF lv_start > 0 AND lv_start + mv_lines < <ls_token>-row.
-        lv_include = get_include( p_level = <ls_statement>-level ).
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
-                p_line         = lv_start
-                p_kind         = mv_errty
-                p_test         = myname
-                p_code         = '001' ).
-      ENDIF.
-    END-OF-DEFINITION.
-
-    DATA: lv_start   TYPE i,
-          lv_include TYPE sobj_name.
+    DATA: lv_start         TYPE i,
+          lv_comment_lines TYPE i.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
                    <ls_token>     LIKE LINE OF it_tokens.
 
 
     LOOP AT it_statements ASSIGNING <ls_statement>
-        WHERE type = scan_stmnt_type-standard.
+        WHERE type = scan_stmnt_type-standard OR
+              type = scan_stmnt_type-comment.
 
       READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       ASSERT sy-subrc = 0.
 
       CASE <ls_token>-str.
         WHEN 'WHEN'.
-          _check.
+          run_logic(
+            is_statement     = <ls_statement>
+            is_token         = <ls_token>
+            iv_start         = lv_start
+            iv_comment_lines = lv_comment_lines ).
+          lv_comment_lines = 0.
           lv_start = <ls_token>-row.
         WHEN 'ENDCASE'.
-          _check.
+          run_logic(
+            is_statement     = <ls_statement>
+            is_token         = <ls_token>
+            iv_start         = lv_start
+            iv_comment_lines = lv_comment_lines ).
+          lv_comment_lines = 0.
           lv_start = 0.
+        WHEN OTHERS.
+          IF <ls_statement>-type = scan_stmnt_type-comment.
+            lv_comment_lines = lv_comment_lines + <ls_statement>-to - <ls_statement>-from.
+          ENDIF.
       ENDCASE.
 
     ENDLOOP.
@@ -77,8 +88,6 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Large WHEN construct'.                "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '034'.
 
@@ -98,6 +107,7 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
     EXPORT
       mv_errty = mv_errty
       mv_lines = mv_lines
+      mv_incl_comments = mv_incl_comments
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
@@ -125,7 +135,7 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
 
     zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
     zzaoc_fill_att mv_lines 'Lines' ''.                     "#EC NOTEXT
-
+    zzaoc_fill_att mv_incl_comments 'Include comments?' ''. "#EC NOTEXT
     zzaoc_popup.
 
   ENDMETHOD.
@@ -136,8 +146,31 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
     IMPORT
       mv_errty = mv_errty
       mv_lines = mv_lines
+      mv_incl_comments = mv_incl_comments
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
+
+
+  METHOD run_logic.
+
+    DATA: lv_include TYPE sobj_name.
+
+
+    IF iv_start > 0 AND ( ( mv_incl_comments = abap_true
+        AND iv_start + mv_lines < is_token-row )
+        OR ( mv_incl_comments = abap_false
+        AND iv_start + mv_lines < is_token-row - iv_comment_lines ) ).
+
+      lv_include = get_include( p_level = is_statement-level ).
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = lv_include
+              p_line         = iv_start
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '001' ).
+    ENDIF.
 
   ENDMETHOD.
 ENDCLASS.

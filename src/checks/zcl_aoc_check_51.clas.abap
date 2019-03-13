@@ -43,18 +43,19 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
 
     lt_statements = build_statements(
         it_tokens     = it_tokens
-        it_statements = it_statements
-        it_levels     = it_levels ).
+        it_statements = it_statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
 
       IF <ls_statement>-str CP 'SELECT *'.
         IF <ls_statement>-str CP '* INTO ( @*'
+            OR <ls_statement>-str CP '* INTO (@*'
             OR <ls_statement>-str CP '* INTO @*'
             OR <ls_statement>-str CP '* INTO TABLE @*'
             OR <ls_statement>-str CP '* INTO CORRESPONDING FIELDS OF @*'
             OR <ls_statement>-str CP 'SELECT COUNT( #* ) FROM *'
+            OR <ls_statement>-str CP 'SELECT COUNT(#*) FROM *'
             OR <ls_statement>-str CP '* INTO CORRESPONDING FIELDS OF TABLE @*'
             OR <ls_statement>-str CP '* APPENDING TABLE @*'
             OR <ls_statement>-str CP '* APPENDING CORRESPONDING FIELDS OF TABLE @*'.
@@ -81,8 +82,6 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description    = 'Open SQL - Escape host variables'.    "#EC NOTEXT
-    category       = 'ZCL_AOC_CATEGORY'.
     version        = '001'.
     position       = '051'.
 
