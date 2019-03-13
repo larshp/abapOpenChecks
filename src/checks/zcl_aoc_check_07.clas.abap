@@ -25,8 +25,9 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_token   LIKE sy-tabix,
-          lv_include TYPE sobj_name.
+    DATA: lv_position TYPE i,
+          lv_token    LIKE sy-tabix,
+          lv_include  TYPE sobj_name.
 
     FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
                    <ls_token1>    LIKE LINE OF it_tokens,
@@ -39,6 +40,8 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
         WHERE type = scan_stmnt_type-standard
         OR type = scan_stmnt_type-method_direct.
 
+      lv_position = sy-tabix.
+      
       lv_token = <ls_statement>-from.
       READ TABLE it_tokens ASSIGNING <ls_token1> INDEX lv_token.
       IF sy-subrc <> 0.
@@ -86,6 +89,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
         lv_include = get_include( p_level = <ls_statement>-level ).
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
+                p_position     = lv_position
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -99,6 +103,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
       lv_include = get_include( p_level = <ls_statement>-level ).
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
+              p_position     = lv_position
               p_line         = <ls_token1>-row
               p_kind         = mv_errty
               p_test         = myname
@@ -118,6 +123,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
+    uses_checksum  = abap_true.
 
     enable_rfc( ).
 
