@@ -104,6 +104,7 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
 
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = get_include( p_level = ls_form_stmnt-level )
+                p_position     = <ls_structure>-stmnt_from
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -124,6 +125,7 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
+    uses_checksum  = abap_true.
 
     enable_rfc( ).
 
