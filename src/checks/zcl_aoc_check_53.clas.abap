@@ -129,6 +129,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
+                p_position     = <ls_statement>-index
                 p_param_1      = lv_name
                 p_kind         = mv_errty
                 p_test         = myname
@@ -148,6 +149,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
+    uses_checksum  = abap_true.
 
     enable_rfc( ).
 
