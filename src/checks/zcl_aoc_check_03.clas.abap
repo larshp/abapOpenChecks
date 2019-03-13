@@ -52,7 +52,8 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_index     TYPE i,
+    DATA: lv_position  TYPE i,
+          lv_index     TYPE i,
           lv_include   TYPE program,
           lv_error     TYPE abap_bool,
           lv_exception TYPE string.
@@ -66,6 +67,8 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
         AND type <> scan_stmnt_type-empty
         AND type <> scan_stmnt_type-comment_in_stmnt
         AND type <> scan_stmnt_type-pragma.
+        
+      lv_position = sy-tabix.
 
       READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       IF sy-subrc <> 0.
@@ -93,10 +96,11 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
           lv_include = get_include( p_level = <ls_statement>-level ).
           inform( p_sub_obj_type = c_type_include
                   p_sub_obj_name = lv_include
-                  p_line = <ls_token>-row
-                  p_kind = mv_errty
-                  p_test = myname
-                  p_code = '002' ).
+                  p_position     = lv_position
+                  p_line         = <ls_token>-row
+                  p_kind         = mv_errty
+                  p_test         = myname
+                  p_code         = '002' ).
         ENDIF.
         lv_error = abap_false.
         CONTINUE.
@@ -156,10 +160,11 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
-                p_line = <ls_token>-row
-                p_kind = mv_errty
-                p_test = myname
-                p_code = '001' ).
+                p_position     = <ls_structure>-stmnt_from
+                p_line         = <ls_token>-row
+                p_kind         = mv_errty
+                p_test         = myname
+                p_code         = '001' ).
       ENDIF.
 
     ENDLOOP.
@@ -176,6 +181,7 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
+    uses_checksum  = abap_true.
 
     enable_rfc( ).
 
