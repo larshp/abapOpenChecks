@@ -34,7 +34,8 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_include           TYPE program,
+    DATA: lv_position          TYPE i,
+          lv_include           TYPE program,
           lv_prev_row          TYPE token_row,
           lv_prev_level        TYPE stmnt_levl,
           lv_prev_inform_row   TYPE token_row,
@@ -50,6 +51,8 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
         WHERE terminator = '.'
         AND type <> scan_stmnt_type-pragma.
 
+      lv_position = sy-tabix.
+      
       IF <ls_statement>-from > <ls_statement>-to.
         CONTINUE.
       ENDIF.
@@ -76,6 +79,7 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
             OR lv_prev_inform_level <> <ls_statement>-level.
           inform( p_sub_obj_type = c_type_include
                   p_sub_obj_name = lv_include
+                  p_position     = lv_position
                   p_line         = <ls_token_from>-row
                   p_kind         = mv_errty
                   p_test         = myname
@@ -102,6 +106,7 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
+    uses_checksum  = abap_true.
 
     enable_rfc( ).
 
