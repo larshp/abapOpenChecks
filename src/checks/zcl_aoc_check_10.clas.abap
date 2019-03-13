@@ -25,13 +25,16 @@ CLASS ZCL_AOC_CHECK_10 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_include TYPE program.
+    DATA: lv_position TYPE i,
+          lv_include  TYPE program.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
                    <ls_token>     LIKE LINE OF it_tokens.
 
 
     LOOP AT it_statements ASSIGNING <ls_statement>.
+    
+      lv_position = sy-tabix.
 
       LOOP AT it_tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
@@ -39,6 +42,7 @@ CLASS ZCL_AOC_CHECK_10 IMPLEMENTATION.
         lv_include = get_include( p_level = <ls_statement>-level ).
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
+                p_position     = lv_position
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -59,6 +63,7 @@ CLASS ZCL_AOC_CHECK_10 IMPLEMENTATION.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
+    uses_checksum  = abap_true.
 
     enable_rfc( ).
 
