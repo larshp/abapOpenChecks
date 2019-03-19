@@ -320,11 +320,19 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD check_constant.
 
-    DATA: lv_regex TYPE string,
-          lv_name  TYPE string.
+    DATA: lv_regex   TYPE string,
+          lv_name    TYPE string,
+          lv_offset  TYPE i,
+          lo_generic TYPE REF TO cl_abap_comp_data_generic.
 
 
     lv_name = get_token_rel( 2 ).
+
+* remove old style length definitions
+    FIND '(' IN lv_name MATCH OFFSET lv_offset.
+    IF sy-subrc = 0.
+      lv_name = lv_name(lv_offset).
+    ENDIF.
 
     IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = abap_false.
       lv_name = get_token_rel( 4 ).
@@ -348,6 +356,15 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ELSE.
       lv_regex = ms_naming-proc_pgcons.
     ENDIF.
+
+    lo_generic = compiler_resolve( '\DA:' && lv_name  ).
+    IF lo_generic IS INITIAL.
+      RETURN.
+    ENDIF.
+
+    REPLACE FIRST OCCURRENCE OF '[:type:]'
+      IN lv_regex
+      WITH determine_type_prefix( lo_generic ).
 
     compare( iv_name     = lv_name
              iv_regex    = lv_regex
