@@ -64,7 +64,7 @@ CLASS ZCL_AOC_CHECK_71 IMPLEMENTATION.
       IF <ls_statement>-str CP 'MESSAGE *'.
         lv_code = '001'.
       ELSE.
-        ASSERT 0 = 1.
+        CONTINUE.
       ENDIF.
 
       inform( p_sub_obj_type = c_type_include
