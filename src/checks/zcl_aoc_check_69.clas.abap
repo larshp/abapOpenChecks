@@ -850,7 +850,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD compiler_resolve_class.
 
-    DATA: lv_full TYPE string.
+    DATA: lv_full    TYPE string,
+          lv_include TYPE sobj_name.
 
 
     lv_full = mo_stack->concatenate( ).
@@ -864,8 +865,9 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       CATCH cx_sy_move_cast_error ##NO_HANDLER.
     ENDTRY.
     IF ro_class IS INITIAL.
+      lv_include = get_include( p_level = statement_wa-level ).
       inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = get_include( p_level = statement_wa-level )
+              p_sub_obj_name = lv_include
               p_line         = get_line_rel( 2 )
               p_column       = get_column_rel( 2 )
               p_kind         = mv_errty
@@ -1132,10 +1134,17 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD is_global_exception_class.
 
-    DATA: lo_super TYPE REF TO cl_abap_comp_class.
+    DATA: lo_super TYPE REF TO cl_abap_comp_class,
+          lv_name  TYPE seoclsname.
 
 
     IF object_type <> 'CLAS'.
+      RETURN.
+    ENDIF.
+
+    lv_name = object_name.
+    IF cl_oo_classname_service=>get_classpool_name( lv_name )
+        <> get_include( p_level = statement_wa-level ).
       RETURN.
     ENDIF.
 
