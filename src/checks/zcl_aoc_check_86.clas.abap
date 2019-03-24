@@ -98,10 +98,8 @@ CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
         batchjob_error = 2
         not_executed   = 3
         OTHERS         = 4.
-    IF sy-subrc = 3 OR lines( lt_environment ) = 0.
+    IF sy-subrc <> 0 OR lines( lt_environment ) = 0.
       RETURN.
-    ELSEIF sy-subrc <> 0.
-      BREAK-POINT.
     ENDIF.
 
     SELECT * FROM zaoc_sidb
