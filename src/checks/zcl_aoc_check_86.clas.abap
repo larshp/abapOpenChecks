@@ -81,8 +81,9 @@ CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
     SELECT SINGLE * FROM zaoc_sidb INTO ls_sidb.
     IF sy-subrc <> 0.
       inform( p_test    = myname
-              p_kind    = 'S'
+              p_kind    = c_note
               p_code    = '002' ).
+      RETURN.
     ENDIF.
 
     lv_obj_type = object_type.
