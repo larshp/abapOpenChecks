@@ -40,7 +40,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
 
-    FIELD-SYMBOLS: <ls_class> TYPE LINE OF sver_r_devclass.
+    FIELD-SYMBOLS: <ls_class> LIKE LINE OF mo_check->mt_devclass.
 
     CREATE OBJECT mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
