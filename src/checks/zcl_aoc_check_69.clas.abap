@@ -1143,8 +1143,10 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ENDIF.
 
     lv_name = object_name.
-    IF cl_oo_classname_service=>get_classpool_name( lv_name )
-        <> get_include( p_level = statement_wa-level ).
+    IF cl_oo_classname_service=>get_ccdef_name( lv_name )
+          = get_include( p_level = statement_wa-level )
+        OR cl_oo_classname_service=>get_ccimp_name( lv_name )
+          = get_include( p_level = statement_wa-level ).
       RETURN.
     ENDIF.
 
