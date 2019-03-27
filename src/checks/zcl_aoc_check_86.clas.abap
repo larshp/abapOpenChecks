@@ -107,7 +107,7 @@ CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
       INTO TABLE lt_result
       FOR ALL ENTRIES IN lt_environment
       WHERE object_type = lt_environment-type(4)
-      AND object_name = lt_environment-object(40).
+      AND object_name = lt_environment-object(40).        "#EC CI_SUBRC
 
     LOOP AT lt_result INTO ls_result.
       lv_note = ls_result-note.

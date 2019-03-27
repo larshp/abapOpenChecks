@@ -272,7 +272,7 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
         INTO lv_super
         WHERE clsname = iv_class
         AND version <> seoc_version_inactive
-        AND reltype = seor_reltype_inheritance ##WARN_OK.
+        AND reltype = seor_reltype_inheritance ##WARN_OK. "#EC CI_NOORDER
       IF sy-subrc = 0 AND NOT lv_super IS INITIAL.
 * try looking in super class
         rt_parameters = read_parameters(

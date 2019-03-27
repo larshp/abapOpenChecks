@@ -297,7 +297,7 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 
 
     SELECT SINGLE domname FROM dd04l INTO lv_domname
-      WHERE rollname = iv_name.
+      WHERE rollname = iv_name.                         "#EC CI_NOORDER
     IF sy-subrc = 0 AND NOT lv_domname IS INITIAL.
       ls_used-obj_type = 'DOMA'.
       ls_used-obj_name = lv_domname.
@@ -595,7 +595,7 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 
 
     SELECT SINGLE rowtype FROM dd40l INTO lv_rowtype
-      WHERE typename = iv_name.
+      WHERE typename = iv_name.                         "#EC CI_NOORDER
     IF sy-subrc = 0 AND NOT lv_rowtype IS INITIAL.
       ls_used-obj_type = find_type( lv_rowtype ).
       ls_used-obj_name = lv_rowtype.

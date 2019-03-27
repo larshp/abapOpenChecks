@@ -357,7 +357,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       lv_regex = ms_naming-proc_pgcons.
     ENDIF.
 
-    lo_generic = compiler_resolve( '\DA:' && lv_name  ).
+    lo_generic = compiler_resolve( '\DA:' && lv_name ).
     IF lo_generic IS INITIAL.
       RETURN.
     ENDIF.

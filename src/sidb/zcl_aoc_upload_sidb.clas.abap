@@ -143,7 +143,6 @@ CLASS ZCL_AOC_UPLOAD_SIDB IMPLEMENTATION.
           ls_piecelist LIKE LINE OF gs_simplification-piecelist,
           li_node      TYPE REF TO if_ixml_node,
           li_field     TYPE REF TO if_ixml_node,
-          li_list      TYPE REF TO if_ixml_node_list,
           li_iterator  TYPE REF TO if_ixml_node_iterator.
 
 
@@ -186,7 +185,6 @@ CLASS ZCL_AOC_UPLOAD_SIDB IMPLEMENTATION.
           ls_sitem    LIKE LINE OF gs_simplification-sitem,
           li_node     TYPE REF TO if_ixml_node,
           li_field    TYPE REF TO if_ixml_node,
-          li_list     TYPE REF TO if_ixml_node_list,
           li_iterator TYPE REF TO if_ixml_node_iterator.
 
 
@@ -225,7 +223,6 @@ CLASS ZCL_AOC_UPLOAD_SIDB IMPLEMENTATION.
           ls_sitem_plist LIKE LINE OF gs_simplification-sitem_plist,
           li_node        TYPE REF TO if_ixml_node,
           li_field       TYPE REF TO if_ixml_node,
-          li_list        TYPE REF TO if_ixml_node_list,
           li_iterator    TYPE REF TO if_ixml_node_iterator.
 
 
@@ -264,7 +261,6 @@ CLASS ZCL_AOC_UPLOAD_SIDB IMPLEMENTATION.
           ls_sitem_stats LIKE LINE OF gs_simplification-sitem_stats,
           li_node        TYPE REF TO if_ixml_node,
           li_field       TYPE REF TO if_ixml_node,
-          li_list        TYPE REF TO if_ixml_node_list,
           li_iterator    TYPE REF TO if_ixml_node_iterator.
 
 
@@ -360,7 +356,7 @@ CLASS ZCL_AOC_UPLOAD_SIDB IMPLEMENTATION.
 
 * okay, yeah, this is slow, but it will not be run very often
 
-    DELETE FROM zaoc_sidb.
+    DELETE FROM zaoc_sidb.                "#EC CI_NOWHERE "#EC CI_SUBRC
 
     LOOP AT gs_simplification-sitem INTO ls_sitem.
 
@@ -380,7 +376,7 @@ CLASS ZCL_AOC_UPLOAD_SIDB IMPLEMENTATION.
           ls_sidb-object_name = ls_piecelist-object_name.
           ls_sidb-state = ls_stats-state.
           ls_sidb-note = ls_sitem-note.
-          INSERT zaoc_sidb FROM ls_sidb.
+          INSERT zaoc_sidb FROM ls_sidb.                  "#EC CI_SUBRC
 
         ENDLOOP.
 
@@ -396,8 +392,7 @@ CLASS ZCL_AOC_UPLOAD_SIDB IMPLEMENTATION.
     DATA: li_ixml                TYPE REF TO if_ixml,
           li_ixml_stream_factory TYPE REF TO if_ixml_stream_factory,
           li_ixml_istream        TYPE REF TO if_ixml_istream,
-          li_ixml_parser         TYPE REF TO if_ixml_parser,
-          li_ixml_parse_error    TYPE REF TO if_ixml_parse_error.
+          li_ixml_parser         TYPE REF TO if_ixml_parser.
 
 
     li_ixml = cl_ixml=>create( ).
