@@ -107,7 +107,7 @@ CLASS zcl_aoc_check_69 DEFINITION
     DATA ms_naming TYPE zaoc_naming .
     DATA mo_compiler TYPE REF TO cl_abap_compiler .
     DATA mo_stack TYPE REF TO lcl_stack .
-    DATA mv_begin TYPE abap_bool .
+    DATA mv_begin TYPE i .
     DATA mv_at TYPE string .
     DATA mv_position TYPE i .
 ENDCLASS.
@@ -336,11 +336,14 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = abap_false.
       lv_name = get_token_rel( 4 ).
-      mv_begin = abap_true.
-    ELSEIF lv_name = 'END' AND get_token_rel( 3 ) = 'OF'.
-      mv_begin = abap_false.
+      mv_begin = 1.
+    ELSEIF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF'.
+      mv_begin = mv_begin + 1.
       RETURN.
-    ELSEIF mv_begin = abap_true.
+    ELSEIF lv_name = 'END' AND get_token_rel( 3 ) = 'OF'.
+      mv_begin = mv_begin - 1.
+      RETURN.
+    ELSEIF mv_begin > 0.
       RETURN.
     ENDIF.
 
@@ -381,16 +384,19 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     lv_name = get_token_rel( 2 ).
 
-    IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = abap_false.
+    IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = 0.
       lv_name = get_token_rel( 4 ).
-      mv_begin = abap_true.
+      mv_begin = 1.
       IF get_token_rel( 4 ) = 'COMMON' AND get_token_rel( 5 ) = 'PART'.
         RETURN.
       ENDIF.
-    ELSEIF lv_name = 'END' AND get_token_rel( 3 ) = 'OF'.
-      mv_begin = abap_false.
+    ELSEIF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF'.
+      mv_begin = mv_begin + 1.
       RETURN.
-    ELSEIF mv_begin = abap_true.
+    ELSEIF lv_name = 'END' AND get_token_rel( 3 ) = 'OF'.
+      mv_begin = mv_begin - 1.
+      RETURN.
+    ELSEIF mv_begin > 0.
       RETURN.
     ENDIF.
 
@@ -767,13 +773,16 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     lv_name = get_token_rel( 2 ).
 
-    IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = abap_false.
+    IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = 0.
       lv_name = get_token_rel( 4 ).
-      mv_begin = abap_true.
-    ELSEIF lv_name = 'END' AND get_token_rel( 3 ) = 'OF'.
-      mv_begin = abap_false.
+      mv_begin = 1.
+    ELSEIF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF'.
+      mv_begin = mv_begin + 1.
       RETURN.
-    ELSEIF mv_begin = abap_true.
+    ELSEIF lv_name = 'END' AND get_token_rel( 3 ) = 'OF'.
+      mv_begin = mv_begin - 1.
+      RETURN.
+    ELSEIF mv_begin > 0.
       RETURN.
     ENDIF.
 
