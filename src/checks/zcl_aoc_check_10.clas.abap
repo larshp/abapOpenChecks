@@ -33,7 +33,7 @@ CLASS ZCL_AOC_CHECK_10 IMPLEMENTATION.
 
 
     LOOP AT it_statements ASSIGNING <ls_statement>.
-    
+
       lv_position = sy-tabix.
 
       LOOP AT it_tokens ASSIGNING <ls_token>
