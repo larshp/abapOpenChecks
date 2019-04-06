@@ -67,7 +67,7 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
         AND type <> scan_stmnt_type-empty
         AND type <> scan_stmnt_type-comment_in_stmnt
         AND type <> scan_stmnt_type-pragma.
-        
+
       lv_position = sy-tabix.
 
       READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
