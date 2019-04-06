@@ -611,8 +611,8 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     INSERT ls_source INTO TABLE mt_source.
 
   ENDMETHOD.
-  
-  
+
+
   METHOD set_uses_checksum.
 * Activate checksum for current check, new feature for central ATC on 7.51
 
