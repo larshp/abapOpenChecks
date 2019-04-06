@@ -52,7 +52,7 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
         AND type <> scan_stmnt_type-pragma.
 
       lv_position = sy-tabix.
-      
+
       IF <ls_statement>-from > <ls_statement>-to.
         CONTINUE.
       ENDIF.
