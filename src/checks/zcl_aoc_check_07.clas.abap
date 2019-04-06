@@ -41,7 +41,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
         OR type = scan_stmnt_type-method_direct.
 
       lv_position = sy-tabix.
-      
+
       lv_token = <ls_statement>-from.
       READ TABLE it_tokens ASSIGNING <ls_token1> INDEX lv_token.
       IF sy-subrc <> 0.
