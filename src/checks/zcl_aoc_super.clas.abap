@@ -92,6 +92,7 @@ CLASS zcl_aoc_super DEFINITION
         !iv_include    TYPE level_name
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
+    METHODS set_uses_checksum .
 
     METHODS get_include
         REDEFINITION .
@@ -608,6 +609,20 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ls_source-code = it_code.
 
     INSERT ls_source INTO TABLE mt_source.
+
+  ENDMETHOD.
+  
+  
+  METHOD set_uses_checksum.
+* Activate checksum for current check, new feature for central ATC on 7.51
+
+    FIELD-SYMBOLS: <lv_uses_checksum> TYPE abap_bool.
+
+
+    ASSIGN ('USES_CHECKSUM') TO <lv_uses_checksum>.
+    IF sy-subrc = 0.
+      <lv_uses_checksum> = abap_true.
+    ENDIF.
 
   ENDMETHOD.
 
