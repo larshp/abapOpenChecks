@@ -87,9 +87,9 @@ CLASS ZCL_AOC_CHECK_15 IMPLEMENTATION.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
-    uses_checksum  = abap_true.
 
     enable_rfc( ).
+    set_uses_checksum( ).
 
     mv_errty = c_error.
 
