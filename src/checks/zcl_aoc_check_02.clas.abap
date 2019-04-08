@@ -79,10 +79,11 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
 
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
-                p_line = lv_line
-                p_kind = mv_errty
-                p_test = myname
-                p_code = lv_error ).
+                p_position     = lv_index
+                p_line         = lv_line
+                p_kind         = mv_errty
+                p_test         = myname
+                p_code         = lv_error ).
       ENDIF.
 
     ENDLOOP.
@@ -101,6 +102,7 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
+    set_uses_checksum( ).
 
     mv_errty = c_error.
     mv_check = abap_true.

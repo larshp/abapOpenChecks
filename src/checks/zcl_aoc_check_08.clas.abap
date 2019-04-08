@@ -64,7 +64,8 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_include   TYPE sobj_name,
+    DATA: lv_position  TYPE i,
+          lv_include   TYPE sobj_name,
           lv_code      TYPE sci_errc,
           lv_token     TYPE string,
           lv_statement TYPE string.
@@ -75,6 +76,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
 
     LOOP AT it_statements ASSIGNING <ls_statement>.
 
+      lv_position = sy-tabix.
       CLEAR lv_statement.
 
       LOOP AT it_tokens ASSIGNING <ls_token>
@@ -158,6 +160,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
         lv_include = get_include( p_level = <ls_statement>-level ).
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
+                p_position     = lv_position
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -180,6 +183,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
+    set_uses_checksum( ).
 
     mv_errty = c_error.
     mv_001 = abap_true.

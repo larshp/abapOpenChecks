@@ -45,6 +45,7 @@ CLASS ZCL_AOC_CHECK_54 IMPLEMENTATION.
       IF NOT lv_code IS INITIAL.
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = <ls_statement>-include
+                p_position     = <ls_statement>-index
                 p_line         = <ls_statement>-start-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -66,6 +67,7 @@ CLASS ZCL_AOC_CHECK_54 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
+    set_uses_checksum( ).
 
     mv_errty = c_error.
 
