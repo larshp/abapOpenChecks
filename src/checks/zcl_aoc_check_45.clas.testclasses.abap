@@ -27,6 +27,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test002_01 FOR TESTING,
       test002_02 FOR TESTING,
       test002_03 FOR TESTING,
+      test002_04 FOR TESTING,
+      test002_05 FOR TESTING,
+      test002_06 FOR TESTING,
       test004_01 FOR TESTING,
       test004_02 FOR TESTING,
       test005_01 FOR TESTING,
@@ -130,6 +133,48 @@ CLASS ltcl_test IMPLEMENTATION.
     ENDIF.
 
     _code 'CREATE OBJECT rr_result TYPE (ls_foo-command_class).'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test002_04.
+
+    IF mo_check->support_740sp02( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'CREATE OBJECT lo_new EXCEPTIONS foo = 4.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test002_05.
+
+    IF mo_check->support_740sp02( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'CREATE OBJECT lo_new EXCEPTIONS OTHERS = 4.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test002_06.
+
+    IF mo_check->support_740sp02( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'CREATE OBJECT lo_new AREA HANDLE lo_handle.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
