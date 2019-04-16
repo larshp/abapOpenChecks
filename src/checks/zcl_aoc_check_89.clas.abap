@@ -23,16 +23,16 @@ CLASS zcl_aoc_check_89 DEFINITION
   PRIVATE SECTION.
     METHODS get_lines_of_documentation
       IMPORTING
-        i_obj_type      TYPE trobjtype
-        i_obj_name      TYPE sobj_name
+        iv_obj_type      TYPE trobjtype
+        iv_obj_name      TYPE sobj_name
       RETURNING
-        VALUE(r_result) TYPE i.
+        VALUE(rv_result) TYPE i.
     METHODS get_content
       IMPORTING
-        i_obj_type      TYPE trobjtype
-        i_obj_name      TYPE sobj_name
+        iv_obj_type      TYPE trobjtype
+        iv_obj_name      TYPE sobj_name
       RETURNING
-        VALUE(r_result) TYPE xstring.
+        VALUE(rv_result) TYPE xstring.
 ENDCLASS.
 
 
@@ -46,25 +46,24 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA actual_length TYPE i.
+    DATA lv_actual_length TYPE i.
+    FIELD-SYMBOLS <ls_level> TYPE slevel.
 
-    actual_length = get_lines_of_documentation(
-                      i_obj_type = object_type
-                      i_obj_name = object_name
-                    ).
+    lv_actual_length = get_lines_of_documentation(
+                      iv_obj_type = object_type
+                      iv_obj_name = object_name ).
 
-    IF actual_length < mv_minlength.
+    IF lv_actual_length < mv_minlength.
 
-      FIELD-SYMBOLS <level> TYPE slevel.
       READ TABLE it_levels
         WITH KEY level = 0
-        ASSIGNING <level>.
+        ASSIGNING <ls_level>.
 
       inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = <level>-name
+              p_sub_obj_name = <ls_level>-name
               p_kind         = mv_errty
               p_test         = myname
-              p_code         = |{ actual_length } < { mv_minlength }| ).
+              p_code         = |{ lv_actual_length } < { mv_minlength }| ).
 
     ENDIF.
 
@@ -138,103 +137,108 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
   METHOD get_lines_of_documentation.
 
-    DATA destination TYPE rfcdest.
+    DATA lv_destination TYPE rfcdest.
+    DATA lv_objname TYPE lxeobjname.
+    DATA lv_objtype TYPE lxeobjtype.
+    DATA lo_conv TYPE REF TO cl_abap_conv_in_ce.
+    DATA lv_len TYPE i.
+    DATA lv_str TYPE string.
+    DATA lv_count_lines TYPE i.
+    DATA lv_count_chapters TYPE i.
+
     IF srcid IS NOT INITIAL.
-      destination = cl_abap_source_id=>get_destination( srcid ).
+      lv_destination = cl_abap_source_id=>get_destination( srcid ).
     ELSE.
-      destination = 'NONE'.
+      lv_destination = 'NONE'.
     ENDIF.
 
-    DATA objname TYPE lxeobjname.
-    objname = i_obj_name.
-    DATA objtype TYPE lxeobjtype.
-    objtype = i_obj_type(2).
+    lv_objname = iv_obj_name.
+    lv_objtype = iv_obj_type(2).
 
     DATA content TYPE xstring.
     content = get_content(
-        i_obj_type = i_obj_type
-        i_obj_name = i_obj_name ).
+        iv_obj_type = iv_obj_type
+        iv_obj_name = iv_obj_name ).
 
     IF content IS INITIAL.
       RETURN.
     ENDIF.
 
     TRY.
-        DATA(ce) = cl_abap_conv_in_ce=>create(
-                     input = content
-                   ).
 
-        DATA(len) = xstrlen( content ).
-        DATA str TYPE string.
+        lo_conv = cl_abap_conv_in_ce=>create(
+                     input = content ).
 
-        ce->read(
+        lv_len = xstrlen( content ).
+
+        lo_conv->read(
           IMPORTING
-            data = str                  " Einzulesendes Datenobjekt
-        ).
+            data = lv_str ).
 
-      CATCH cx_sy_conversion_codepage.     " System-Exception bei Zeichensatzkonvertierung
-      CATCH cx_sy_codepage_converter_init. " System-Exception für Initialisierung Code Page Converter
-      CATCH cx_parameter_invalid_type.     " Parameter mit ungültigem Typ
-      CATCH cx_parameter_invalid_range.    " Parameter mit ungültigem Wertebereich
+      CATCH cx_sy_conversion_codepage.
+      CATCH cx_sy_codepage_converter_init.
+      CATCH cx_parameter_invalid_type.
+      CATCH cx_parameter_invalid_range.
     ENDTRY.
 
-    FIND ALL OCCURRENCES OF '<itf:p ' IN str MATCH COUNT DATA(count_lines).
-    FIND ALL OCCURRENCES OF '<itf:p name="U1">' IN str MATCH COUNT DATA(count_chapters).  "ignore chapter headers
+    FIND ALL OCCURRENCES OF '<itf:p ' IN lv_str MATCH COUNT lv_count_lines.
+    FIND ALL OCCURRENCES OF '<itf:p name="U1">' IN lv_str MATCH COUNT lv_count_chapters.  "ignore chapter headers
 
-    r_result = count_lines - count_chapters.
+    rv_result = lv_count_lines - lv_count_chapters.
 
   ENDMETHOD.
 
 
   METHOD get_content.
 
-    DATA destination TYPE rfcdest.
+    DATA lv_destination TYPE rfcdest.
+    DATA lv_objname TYPE lxeobjname.
+    DATA lv_objtype TYPE lxeobjtype.
+
     IF srcid IS NOT INITIAL.
-      destination = cl_abap_source_id=>get_destination( srcid ).
+      lv_destination = cl_abap_source_id=>get_destination( srcid ).
     ELSE.
-      destination = 'NONE'.
+      lv_destination = 'NONE'.
     ENDIF.
 
-    DATA objname TYPE lxeobjname.
-    objname = i_obj_name.
-    DATA objtype TYPE lxeobjtype.
-    objtype = i_obj_type(2).
+    lv_objname = iv_obj_name.
+    lv_objtype = iv_obj_type(2).
 
     "function module already exists in 7.02 -> should work on every satellite system
     CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'
-      DESTINATION destination
+      DESTINATION lv_destination
       EXPORTING
         lang    = sy-langu
-        objtype = objtype
-        objname = objname
+        objtype = lv_objtype
+        objname = lv_objname
       IMPORTING
-        content = r_result.
+        content = rv_result.
 
     "not found in logon language try with English and German
-    IF r_result IS INITIAL
+    IF rv_result IS INITIAL
     AND sy-langu <> 'E'.
 
       CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'
-        DESTINATION destination
+        DESTINATION lv_destination
         EXPORTING
           lang    = 'E'
-          objtype = objtype
-          objname = objname
+          objtype = lv_objtype
+          objname = lv_objname
         IMPORTING
-          content = r_result.
+          content = rv_result.
     ENDIF.
 
-    IF r_result IS INITIAL
+    IF rv_result IS INITIAL
     AND sy-langu <> 'D'.
 
       CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'
-        DESTINATION destination
+        DESTINATION lv_destination
         EXPORTING
           lang    = 'D'
-          objtype = objtype
-          objname = objname
+          objtype = lv_objtype
+          objname = lv_objname
         IMPORTING
-          content = r_result.
+          content = rv_result.
 
     ENDIF.
 
