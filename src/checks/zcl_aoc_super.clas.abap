@@ -71,6 +71,9 @@ CLASS zcl_aoc_super DEFINITION
         !it_tokens       TYPE stokesx_tab
       RETURNING
         VALUE(rv_result) TYPE token_row .
+    CLASS-METHODS get_destination
+      IMPORTING iv_srcid         TYPE scr_source_id
+      RETURNING VALUE(rv_result) TYPE rfcdest.
     METHODS get_source
       IMPORTING
         !is_level      TYPE slevel
@@ -131,7 +134,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_SUPER IMPLEMENTATION.
+CLASS zcl_aoc_super IMPLEMENTATION.
 
 
   METHOD build_statements.
@@ -670,4 +673,34 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     rs_position-row = is_token-row.
 
   ENDMETHOD.
+
+  METHOD get_destination.
+
+    CONSTANTS lcv_classname TYPE seoclsname VALUE 'CL_ABAP_SOURCE_ID'.
+    CONSTANTS lcv_methodname TYPE seocpdname VALUE 'GET_DESTINATION'.
+
+    IF iv_srcid IS INITIAL.
+      rv_result = |NONE|.
+    ELSE.
+      TRY.
+          CALL METHOD (lcv_classname)=>(lcv_methodname)
+            EXPORTING
+              p_srcid       = iv_srcid
+            RECEIVING
+              p_destination = rv_result
+            EXCEPTIONS
+              not_found     = 1.
+
+          IF sy-subrc <> 0.
+            rv_result = |NONE|.
+          ENDIF.
+
+        CATCH cx_sy_dyn_call_illegal_class
+              cx_sy_dyn_call_illegal_method.
+          rv_result = |NONE|.
+      ENDTRY.
+    ENDIF.
+
+  ENDMETHOD.
+
 ENDCLASS.

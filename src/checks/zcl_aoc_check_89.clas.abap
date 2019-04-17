@@ -137,7 +137,6 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
   METHOD get_lines_of_documentation.
 
-    DATA lv_destination TYPE rfcdest.
     DATA lv_objname TYPE lxeobjname.
     DATA lv_objtype TYPE lxeobjtype.
     DATA lo_conv TYPE REF TO cl_abap_conv_in_ce.
@@ -145,31 +144,25 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     DATA lv_str TYPE string.
     DATA lv_count_lines TYPE i.
     DATA lv_count_chapters TYPE i.
-
-    IF srcid IS NOT INITIAL.
-      lv_destination = cl_abap_source_id=>get_destination( srcid ).
-    ELSE.
-      lv_destination = 'NONE'.
-    ENDIF.
+    DATA lv_content TYPE xstring.
 
     lv_objname = iv_obj_name.
     lv_objtype = iv_obj_type(2).
 
-    DATA content TYPE xstring.
-    content = get_content(
+    lv_content = get_content(
         iv_obj_type = iv_obj_type
         iv_obj_name = iv_obj_name ).
 
-    IF content IS INITIAL.
+    IF lv_content IS INITIAL.
       RETURN.
     ENDIF.
 
     TRY.
 
         lo_conv = cl_abap_conv_in_ce=>create(
-                     input = content ).
+                     input = lv_content ).
 
-        lv_len = xstrlen( content ).
+        lv_len = xstrlen( lv_content ).
 
         lo_conv->read(
           IMPORTING
@@ -195,11 +188,7 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     DATA lv_objname TYPE lxeobjname.
     DATA lv_objtype TYPE lxeobjtype.
 
-    IF srcid IS NOT INITIAL.
-      lv_destination = cl_abap_source_id=>get_destination( srcid ).
-    ELSE.
-      lv_destination = 'NONE'.
-    ENDIF.
+    lv_destination = get_destination( srcid ).
 
     lv_objname = iv_obj_name.
     lv_objtype = iv_obj_type(2).
