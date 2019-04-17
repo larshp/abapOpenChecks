@@ -35,10 +35,7 @@ CLASS zcl_aoc_check_89 DEFINITION
         VALUE(rv_result) TYPE xstring.
 ENDCLASS.
 
-
-
 CLASS zcl_aoc_check_89 IMPLEMENTATION.
-
 
   METHOD check.
 
@@ -69,7 +66,6 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
   ENDMETHOD.
 
-
   METHOD constructor.
 
     super->constructor( ).
@@ -87,10 +83,6 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
-
-
-
-
   METHOD get_message_text.
 
     CLEAR p_text.
@@ -100,8 +92,6 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     ENDIF.
 
   ENDMETHOD.                    "GET_MESSAGE_TEXT
-
-
 
   METHOD get_attributes.
 
@@ -133,7 +123,6 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     ASSERT sy-subrc = 0.
 
   ENDMETHOD.
-
 
   METHOD get_lines_of_documentation.
 
@@ -180,7 +169,6 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     rv_result = lv_count_lines - lv_count_chapters.
 
   ENDMETHOD.
-
 
   METHOD get_content.
 

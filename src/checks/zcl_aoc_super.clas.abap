@@ -676,14 +676,14 @@ CLASS zcl_aoc_super IMPLEMENTATION.
 
   METHOD get_destination.
 
-    CONSTANTS lcv_classname TYPE seoclsname VALUE 'CL_ABAP_SOURCE_ID'.
-    CONSTANTS lcv_methodname TYPE seocpdname VALUE 'GET_DESTINATION'.
+    CONSTANTS lc_classname TYPE seoclsname VALUE 'CL_ABAP_SOURCE_ID'.
+    CONSTANTS lc_methodname TYPE seocpdname VALUE 'GET_DESTINATION'.
 
     IF iv_srcid IS INITIAL.
       rv_result = |NONE|.
     ELSE.
       TRY.
-          CALL METHOD (lcv_classname)=>(lcv_methodname)
+          CALL METHOD (lc_classname)=>(lc_methodname)
             EXPORTING
               p_srcid       = iv_srcid
             RECEIVING
