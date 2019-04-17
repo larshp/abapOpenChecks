@@ -132,7 +132,9 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     DATA lv_len TYPE i.
     DATA lv_str TYPE string.
     DATA lv_count_lines TYPE i.
-    DATA lv_count_chapters TYPE i.
+    DATA lv_count_chapters_u1 TYPE i.
+    DATA lv_count_chapters_u2 TYPE i.
+    DATA lv_count_empty TYPE i.
     DATA lv_content TYPE xstring.
 
     lv_objname = iv_obj_name.
@@ -164,9 +166,11 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     ENDTRY.
 
     FIND ALL OCCURRENCES OF '<itf:p ' IN lv_str MATCH COUNT lv_count_lines.
-    FIND ALL OCCURRENCES OF '<itf:p name="U1">' IN lv_str MATCH COUNT lv_count_chapters.  "ignore chapter headers
+    FIND ALL OCCURRENCES OF '<itf:p name="U1">' IN lv_str MATCH COUNT lv_count_chapters_u1.  "ignore chapter headers
+    FIND ALL OCCURRENCES OF '<itf:p name="U2">' IN lv_str MATCH COUNT lv_count_chapters_u2.  "ignore chapter headers
+    FIND ALL OCCURRENCES OF '<itf:p name="AS"/>' IN lv_str MATCH COUNT lv_count_empty.  "ignore empty lines (first line in chapter)
 
-    rv_result = lv_count_lines - lv_count_chapters.
+    rv_result = lv_count_lines - lv_count_chapters_u1 - lv_count_chapters_u2 - lv_count_empty.
 
   ENDMETHOD.
 
@@ -176,10 +180,14 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     DATA lv_objname TYPE lxeobjname.
     DATA lv_objtype TYPE lxeobjtype.
 
-    lv_destination = get_destination( srcid ).
+    lv_destination = get_destination( ).
 
     lv_objname = iv_obj_name.
     lv_objtype = iv_obj_type(2).
+
+    IF lv_objtype = 'PR'.        "PROG -> REPO
+      lv_objtype = 'RE'.
+    ENDIF.
 
     "function module already exists in 7.02 -> should work on every satellite system
     CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'

@@ -72,7 +72,6 @@ CLASS zcl_aoc_super DEFINITION
       RETURNING
         VALUE(rv_result) TYPE token_row .
     CLASS-METHODS get_destination
-      IMPORTING iv_srcid         TYPE scr_source_id
       RETURNING VALUE(rv_result) TYPE rfcdest.
     METHODS get_source
       IMPORTING
@@ -676,30 +675,42 @@ CLASS zcl_aoc_super IMPLEMENTATION.
 
   METHOD get_destination.
 
+    "get destination of calling system (RFC enabled checks only)
+    "class, method and variable may not valid in 7.02 systems -> dynamic calls
     CONSTANTS lc_classname TYPE seoclsname VALUE 'CL_ABAP_SOURCE_ID'.
     CONSTANTS lc_methodname TYPE seocpdname VALUE 'GET_DESTINATION'.
 
-    IF iv_srcid IS INITIAL.
+    FIELD-SYMBOLS: <lv_srcid> TYPE sysuuid_x.
+
+    ASSIGN ('SRCID') TO <lv_srcid>.
+
+    IF NOT <lv_srcid> IS ASSIGNED.
       rv_result = |NONE|.
-    ELSE.
-      TRY.
-          CALL METHOD (lc_classname)=>(lc_methodname)
-            EXPORTING
-              p_srcid       = iv_srcid
-            RECEIVING
-              p_destination = rv_result
-            EXCEPTIONS
-              not_found     = 1.
-
-          IF sy-subrc <> 0.
-            rv_result = |NONE|.
-          ENDIF.
-
-        CATCH cx_sy_dyn_call_illegal_class
-              cx_sy_dyn_call_illegal_method.
-          rv_result = |NONE|.
-      ENDTRY.
+      RETURN.
     ENDIF.
+
+    IF <lv_srcid> IS INITIAL.
+      rv_result = |NONE|.
+      RETURN.
+    ENDIF.
+
+    TRY.
+        CALL METHOD (lc_classname)=>(lc_methodname)
+          EXPORTING
+            p_srcid       = <lv_srcid>
+          RECEIVING
+            p_destination = rv_result
+          EXCEPTIONS
+            not_found     = 1.
+
+        IF sy-subrc <> 0.
+          rv_result = |NONE|.
+        ENDIF.
+
+      CATCH cx_sy_dyn_call_illegal_class
+            cx_sy_dyn_call_illegal_method.
+        rv_result = |NONE|.
+    ENDTRY.
 
   ENDMETHOD.
 
