@@ -168,7 +168,9 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     FIND ALL OCCURRENCES OF '<itf:p ' IN lv_str MATCH COUNT lv_count_lines.
     FIND ALL OCCURRENCES OF '<itf:p name="U1">' IN lv_str MATCH COUNT lv_count_chapters_u1.  "ignore chapter headers
     FIND ALL OCCURRENCES OF '<itf:p name="U2">' IN lv_str MATCH COUNT lv_count_chapters_u2.  "ignore chapter headers
-    FIND ALL OCCURRENCES OF '<itf:p name="AS"/>' IN lv_str MATCH COUNT lv_count_empty.  "ignore empty lines (first line in chapter)
+
+    "ignore empty lines (first line in chapter)
+    FIND ALL OCCURRENCES OF '<itf:p name="AS"/>' IN lv_str MATCH COUNT lv_count_empty.
 
     rv_result = lv_count_lines - lv_count_chapters_u1 - lv_count_chapters_u2 - lv_count_empty.
 
