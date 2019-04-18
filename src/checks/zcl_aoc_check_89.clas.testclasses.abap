@@ -54,7 +54,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = 'E'
                                         act = ms_result-kind ).
-    cl_abap_unit_assert=>assert_equals( exp = '0 < 10'
+    cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
   ENDMETHOD.
 

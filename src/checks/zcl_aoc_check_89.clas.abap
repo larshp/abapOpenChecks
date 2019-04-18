@@ -44,6 +44,7 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 * MIT License
 
     DATA lv_actual_length TYPE i.
+    DATA lv_text TYPE string.
     FIELD-SYMBOLS <ls_level> TYPE slevel.
 
     lv_actual_length = get_lines_of_documentation(
@@ -56,11 +57,14 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
         WITH KEY level = 0
         ASSIGNING <ls_level>.
 
+      lv_text = |{ 'Minimum lines of documentation not reached:'(m01) } { lv_actual_length } < { mv_minlength }|.
+
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = <ls_level>-name
               p_kind         = mv_errty
               p_test         = myname
-              p_code         = |{ lv_actual_length } < { mv_minlength }| ).
+              p_code         = '001'
+              p_param_1  = lv_text ).
 
     ENDIF.
 
@@ -85,11 +89,14 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
   METHOD get_message_text.
 
-    CLEAR p_text.
-
-    IF p_code IS NOT INITIAL.
-      p_text = |{ 'Minimum lines of documentation not reached:'(m01) } { p_code }|.
-    ENDIF.
+    CASE p_code.
+      WHEN '001'.
+        p_text = '&1'.
+      WHEN OTHERS.
+        super->get_message_text( EXPORTING p_test = p_test
+                                           p_code = p_code
+                                 IMPORTING p_text = p_text ).
+    ENDCASE.
 
   ENDMETHOD.                    "GET_MESSAGE_TEXT
 
