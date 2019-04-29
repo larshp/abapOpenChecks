@@ -73,11 +73,20 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
         lv_stack = lv_stack + 1.
       ENDIF.
 
-      IF lv_check = abap_false
-          AND ( lv_statement CP 'READ TABLE *'
+      IF lv_statement CP 'READ TABLE *'
           OR lv_statement CP 'IMPORT *'
           OR lv_statement CP 'ASSIGN COMPONENT *'
-          OR lv_statement CP 'ASSIGN (*' ).
+          OR lv_statement CP 'ASSIGN (*'.
+        IF lv_check = abap_true.
+          lv_include = get_include( p_level = <ls_statement>-level ).
+          inform( p_sub_obj_type = c_type_include
+                  p_sub_obj_name = lv_include
+                  p_line         = lv_row
+                  p_kind         = mv_errty
+                  p_position     = lv_report
+                  p_test         = myname
+                  p_code         = '001' ).
+        ENDIF.
         lv_report = lv_position.
         lv_check = abap_true.
         lv_row = <ls_token>-row.

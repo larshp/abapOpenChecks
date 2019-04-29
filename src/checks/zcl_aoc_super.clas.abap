@@ -71,8 +71,6 @@ CLASS zcl_aoc_super DEFINITION
         !it_tokens       TYPE stokesx_tab
       RETURNING
         VALUE(rv_result) TYPE token_row .
-    CLASS-METHODS get_destination
-      RETURNING VALUE(rv_result) TYPE rfcdest.
     METHODS get_source
       IMPORTING
         !is_level      TYPE slevel
@@ -133,7 +131,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_super IMPLEMENTATION.
+CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
 
   METHOD build_statements.
@@ -441,9 +439,11 @@ CLASS zcl_aoc_super IMPLEMENTATION.
 
   METHOD inform.
 
-    DATA: lv_cnam TYPE reposrc-cnam,
-          lv_area TYPE tvdir-area,
-          lv_skip TYPE abap_bool.
+    DATA: lv_cnam   TYPE reposrc-cnam,
+          lv_area   TYPE tvdir-area,
+          lv_skip   TYPE abap_bool,
+          lv_line   LIKE p_line,
+          lv_column LIKE p_column.
 
     FIELD-SYMBOLS: <ls_message> LIKE LINE OF scimessages.
 
@@ -510,12 +510,30 @@ CLASS zcl_aoc_super IMPLEMENTATION.
       ENDIF.
     ENDIF.
 
+    " Determine line and column, if empty.
+    " Findings in macros for example are reported with line 0.
+    " This leads to problems with the filter for findings in SAP standard code.
+    " We need to find the calling statement and point to this line.
+    lv_line   = p_line.
+    lv_column = p_column.
+    IF ( lv_line = 0 OR lv_column = 0 ) AND p_position <> 0.
+      READ TABLE ref_scan->statements INTO statement_wa INDEX p_position.
+      IF sy-subrc = 0.
+        get_line_column_rel(
+          EXPORTING
+            p_n      = 1
+          IMPORTING
+            p_line   = lv_line
+            p_column = lv_column ).
+      ENDIF.
+    ENDIF.
+
     super->inform(
         p_sub_obj_type = p_sub_obj_type
         p_sub_obj_name = p_sub_obj_name
         p_position     = p_position
-        p_line         = p_line
-        p_column       = p_column
+        p_line         = lv_line
+        p_column       = lv_column
         p_errcnt       = p_errcnt
         p_kind         = p_kind
         p_test         = p_test
@@ -672,46 +690,4 @@ CLASS zcl_aoc_super IMPLEMENTATION.
     rs_position-row = is_token-row.
 
   ENDMETHOD.
-
-  METHOD get_destination.
-
-    "get destination of calling system (RFC enabled checks only)
-    "class, method and variable may not valid in 7.02 systems -> dynamic calls
-    CONSTANTS lc_classname TYPE seoclsname VALUE 'CL_ABAP_SOURCE_ID'.
-    CONSTANTS lc_methodname TYPE seocpdname VALUE 'GET_DESTINATION'.
-
-    FIELD-SYMBOLS: <lv_srcid> TYPE sysuuid_x.
-
-    ASSIGN ('SRCID') TO <lv_srcid>.
-
-    IF NOT <lv_srcid> IS ASSIGNED.
-      rv_result = |NONE|.
-      RETURN.
-    ENDIF.
-
-    IF <lv_srcid> IS INITIAL.
-      rv_result = |NONE|.
-      RETURN.
-    ENDIF.
-
-    TRY.
-        CALL METHOD (lc_classname)=>(lc_methodname)
-          EXPORTING
-            p_srcid       = <lv_srcid>
-          RECEIVING
-            p_destination = rv_result
-          EXCEPTIONS
-            not_found     = 1.
-
-        IF sy-subrc <> 0.
-          rv_result = |NONE|.
-        ENDIF.
-
-      CATCH cx_sy_dyn_call_illegal_class
-            cx_sy_dyn_call_illegal_method.
-        rv_result = |NONE|.
-    ENDTRY.
-
-  ENDMETHOD.
-
 ENDCLASS.

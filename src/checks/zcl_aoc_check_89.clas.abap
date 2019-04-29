@@ -8,8 +8,6 @@ CLASS zcl_aoc_check_89 DEFINITION
 
     METHODS check
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
     METHODS get_attributes
         REDEFINITION.
     METHODS if_ci_test~query_attributes
@@ -57,14 +55,12 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
         WITH KEY level = 0
         ASSIGNING <ls_level>.
 
-      lv_text = |{ 'Minimum lines of documentation not reached:'(m01) } { lv_actual_length } < { mv_minlength }|.
-
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = <ls_level>-name
               p_kind         = mv_errty
               p_test         = myname
               p_code         = '001'
-              p_param_1  = lv_text ).
+              p_param_1  = |{ lv_actual_length } < { mv_minlength }| ).
 
     ENDIF.
 
@@ -72,6 +68,7 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
   METHOD constructor.
 
+    DATA ls_scimessage TYPE scimessage.
     super->constructor( ).
 
     version        = '001'.
@@ -85,20 +82,16 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     mv_errty = c_error.
     mv_minlength = 10.
 
+    ls_scimessage-test = myname.
+    ls_scimessage-code = '001'.
+    ls_scimessage-kind = c_error.
+    ls_scimessage-text = |{ 'Minimum lines of documentation not reached:'(m01) } &1|.
+    ls_scimessage-pcom = ''.
+    ls_scimessage-pcom_alt = ''.
+
+    INSERT ls_scimessage INTO TABLE scimessages.
+
   ENDMETHOD.                    "CONSTRUCTOR
-
-  METHOD get_message_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = '&1'.
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
   METHOD get_attributes.
 

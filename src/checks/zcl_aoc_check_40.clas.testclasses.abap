@@ -12,11 +12,13 @@ CLASS ltcl_test DEFINITION FOR TESTING
 * ================
 
     DATA: mt_code   TYPE string_table,
+          mt_result TYPE STANDARD TABLE OF scirest_ad WITH DEFAULT KEY,
           ms_result TYPE scirest_ad,
           mo_check  TYPE REF TO zcl_aoc_check_40.
 
     METHODS:
       setup,
+      message_handler FOR EVENT message OF zcl_aoc_check_40 IMPORTING p_code p_line,
       export_import FOR TESTING,
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
@@ -30,7 +32,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_10 FOR TESTING,
       test001_11 FOR TESTING,
       test001_12 FOR TESTING,
-      test001_13 FOR TESTING.
+      test001_13 FOR TESTING,
+      test001_14 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -48,8 +51,18 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
     CREATE OBJECT mo_check.
+    SET HANDLER message_handler FOR mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.                    "setup
+
+  METHOD message_handler.
+    DATA:
+      ls_result LIKE LINE OF mt_result.
+
+    ls_result-line     = p_line.
+    ls_result-code     = p_code.
+    APPEND ls_result TO mt_result.
+  ENDMETHOD.
 
   METHOD export_import.
     zcl_aoc_unit_test=>export_import( mo_check ).
@@ -263,6 +276,33 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
+  ENDMETHOD.
+
+  METHOD test001_14.
+
+* first two lines should fail
+    _code 'ASSIGN COMPONENT lv_string OF STRUCTURE ls_foo TO <lg_data>.'.
+    _code 'ASSIGN COMPONENT lv_string OF STRUCTURE ls_foo TO <lg_data>.'.
+    _code 'WRITE: / ''Dummy statement''.'.
+
+    zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = 2
+                                        act = lines( mt_result ) ).
+
+    READ TABLE mt_result INTO ms_result INDEX 1.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+    cl_abap_unit_assert=>assert_equals( exp = 1
+                                        act = ms_result-line ).
+
+    READ TABLE mt_result INTO ms_result INDEX 2.
+    cl_abap_unit_assert=>assert_subrc( ).
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+    cl_abap_unit_assert=>assert_equals( exp = 2
+                                        act = ms_result-line ).
   ENDMETHOD.
 
 ENDCLASS.       "lcl_Test
