@@ -67,7 +67,8 @@ CLASS ZCL_AOC_CHECK_88 IMPLEMENTATION.
 
     SELECT * FROM seocompotx INTO TABLE lt_texts
       WHERE clsname = object_name
-      AND langu = sy-langu.
+      AND langu = sy-langu
+      AND descript <> ''.
 
     LOOP AT lt_texts INTO ls_text.
       inform( p_test    = myname
