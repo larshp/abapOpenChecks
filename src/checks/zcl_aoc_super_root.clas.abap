@@ -10,16 +10,18 @@ CLASS zcl_aoc_super_root DEFINITION
     METHODS constructor .
 
     METHODS get_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS if_ci_test~display_documentation
-         REDEFINITION .
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS put_attributes
-         REDEFINITION .
+        REDEFINITION .
   PROTECTED SECTION.
 
-    DATA mv_errty TYPE sci_errty.
+    DATA mv_errty TYPE sci_errty .
+
+    METHODS set_kind .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -96,6 +98,19 @@ CLASS ZCL_AOC_SUPER_ROOT IMPLEMENTATION.
       mv_errty = mv_errty
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
+
+    set_kind( ).
+
+  ENDMETHOD.
+
+
+  METHOD set_kind.
+
+    FIELD-SYMBOLS: <ls_message> LIKE LINE OF scimessages.
+
+    LOOP AT scimessages ASSIGNING <ls_message>.
+      <ls_message>-kind = mv_errty.
+    ENDLOOP.
 
   ENDMETHOD.
 ENDCLASS.

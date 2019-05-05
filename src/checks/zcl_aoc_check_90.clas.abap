@@ -1,14 +1,14 @@
-class ZCL_AOC_CHECK_90 definition
-  public
-  inheriting from ZCL_AOC_SUPER_ROOT
-  create public .
+CLASS zcl_aoc_check_90 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super_root
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor .
 
-  methods RUN
-    redefinition .
+    METHODS run
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -35,7 +35,7 @@ CLASS ZCL_AOC_CHECK_90 IMPLEMENTATION.
 
     ls_scimessage-test = myname.
     ls_scimessage-code = '001'.
-    ls_scimessage-kind = c_error.
+    ls_scimessage-kind = mv_errty.
     ls_scimessage-text = |Constructor visibility must be public|.
     INSERT ls_scimessage INTO TABLE scimessages.
 
