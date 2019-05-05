@@ -68,9 +68,8 @@ CLASS ZCL_AOC_CHECK_90 IMPLEMENTATION.
       AND ( exposure = lc_exposure-private
       OR exposure = lc_exposure-protected ).
     IF sy-subrc = 0.
-      inform( p_test    = myname
-              p_kind    = mv_errty
-              p_code    = '001' ).
+      inform( p_test = myname
+              p_code = '001' ).
     ENDIF.
 
   ENDMETHOD.
