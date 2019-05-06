@@ -85,7 +85,7 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     ls_scimessage-test = myname.
     ls_scimessage-code = '001'.
     ls_scimessage-kind = c_error.
-    ls_scimessage-text = |{ 'Minimum lines of documentation not reached:'(m01) } &1|.
+    ls_scimessage-text = 'Minimum lines of documentation not reached: &1'(m01).
     ls_scimessage-pcom = ''.
     ls_scimessage-pcom_alt = ''.
 
