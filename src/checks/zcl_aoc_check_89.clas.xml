@@ -17,7 +17,7 @@
     <item>
      <ID>I</ID>
      <KEY>M01</KEY>
-     <ENTRY>Minimum lines of documentation not reached:</ENTRY>
+     <ENTRY>Minimum lines of documentation not reached: &amp;1</ENTRY>
      <LENGTH>86</LENGTH>
     </item>
    </TPOOL>
