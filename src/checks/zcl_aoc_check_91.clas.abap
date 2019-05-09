@@ -140,8 +140,4 @@ CLASS zcl_aoc_check_91 IMPLEMENTATION.
 
   ENDMETHOD.
 
-
-
-
-
 ENDCLASS.
