@@ -38,6 +38,12 @@
      <ENTRY>Multiline comments</ENTRY>
      <LENGTH>40</LENGTH>
     </item>
+    <item>
+     <ID>I</ID>
+     <KEY>M01</KEY>
+     <ENTRY>Found a suspicious comment: &amp;1</ENTRY>
+     <LENGTH>54</LENGTH>
+    </item>
    </TPOOL>
    <LINES>
     <TLINE>

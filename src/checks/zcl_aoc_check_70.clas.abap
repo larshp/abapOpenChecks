@@ -11,8 +11,6 @@ CLASS zcl_aoc_check_70 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
@@ -122,6 +120,7 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
   METHOD constructor.
 
+    DATA ls_scimessage TYPE scimessage.
     super->constructor( ).
 
     version     = '001'.
@@ -136,6 +135,16 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
     APPEND '^HACK' TO mt_pattern_warning.
     APPEND '^FIXME' TO mt_pattern_error.
     mv_multiline = abap_false.
+
+    ls_scimessage-test = myname.
+    ls_scimessage-code = '001'.
+    ls_scimessage-kind = c_error.
+    ls_scimessage-text = 'Found a suspicious comment: &1'(m01).
+    ls_scimessage-pcom = ''.
+    ls_scimessage-pcom_alt = ''.
+
+    INSERT ls_scimessage INTO TABLE scimessages.
+
   ENDMETHOD.                    "CONSTRUCTOR
 
 
@@ -161,20 +170,6 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = '&1'.
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD get_plain_text_comment.
