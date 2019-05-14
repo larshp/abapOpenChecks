@@ -61,8 +61,9 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
       IF <ls_token3>-str CP '*>(*'
           OR <ls_token3>-str CP '*)=>*'
           OR <ls_token3>-str CP '*)->*'
-          OR <ls_token3>-str CP '(*'.
-* allow dynamic calls
+          OR <ls_token3>-str CP '(*'
+          OR <ls_token3>-str = 'OF'.
+* allow dynamic calls and OLE interaction
         CONTINUE.
       ENDIF.
 
