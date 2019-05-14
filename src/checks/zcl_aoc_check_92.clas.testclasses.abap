@@ -19,7 +19,7 @@ ENDCLASS.
 CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
-    create object mo_check.
+    CREATE OBJECT mo_check.
     SET HANDLER message_handler FOR mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.

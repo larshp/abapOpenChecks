@@ -22,21 +22,21 @@ CLASS zcl_aoc_check_92 IMPLEMENTATION.
 
   METHOD check.
 
-    DATA unit_tests TYPE if_aunit_prog_info_types=>ty_t_testclasses.
+    DATA lt_unit_tests TYPE if_aunit_prog_info_types=>ty_t_testclasses.
 
-    CHECK me->is_class_pool( me->program_name ) EQ abap_true.
+    IF NOT  me->is_class_pool( me->program_name ) EQ abap_true.
+      RETURN.
+    ENDIF.
 
-    unit_tests = cl_aunit_prog_info=>get_tests_of_program( me->program_name ).
+    lt_unit_tests = cl_aunit_prog_info=>get_tests_of_program( me->program_name ).
 
-    IF lines( unit_tests ) = 0.
+    IF lines( lt_unit_tests ) = 0.
 
-      inform(
-          p_sub_obj_type = c_type_include    " Objekttyp
-          p_sub_obj_name = me->program_name    " Objektname im Objektkatalog
-          p_kind         = mv_errty
-          p_test         = me->myname    " Name der Klassse
-          p_code         = '001'    " CHAR04
-      ).
+      inform( p_sub_obj_type = c_type_include    " Objekttyp
+              p_sub_obj_name = me->program_name    " Objektname im Objektkatalog
+              p_kind         = mv_errty
+              p_test         = me->myname    " Name der Klassse
+              p_code         = '001' ).
 
     ENDIF.
 
