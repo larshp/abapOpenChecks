@@ -1,5 +1,5 @@
 *"* use this source file for your ABAP unit test classes
-CLASS lcl_test DEFINITION
+CLASS ltcl_test DEFINITION
                 FOR TESTING
                 RISK LEVEL HARMLESS
                 DURATION SHORT.
@@ -16,10 +16,10 @@ CLASS lcl_test DEFINITION
 
 ENDCLASS.
 
-CLASS lcl_test IMPLEMENTATION.
+CLASS ltcl_test IMPLEMENTATION.
 
   METHOD setup.
-    mo_check = NEW zcl_aoc_check_92( ).
+    create object mo_check.
     SET HANDLER message_handler FOR mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.

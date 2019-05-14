@@ -22,9 +22,11 @@ CLASS zcl_aoc_check_92 IMPLEMENTATION.
 
   METHOD check.
 
-    CHECK me->is_class_pool( me->program_name ).
+    DATA unit_tests TYPE if_aunit_prog_info_types=>ty_t_testclasses.
 
-    DATA(unit_tests) = cl_aunit_prog_info=>get_tests_of_program( me->program_name ).
+    CHECK me->is_class_pool( me->program_name ) EQ abap_true.
+
+    unit_tests = cl_aunit_prog_info=>get_tests_of_program( me->program_name ).
 
     IF lines( unit_tests ) = 0.
 
