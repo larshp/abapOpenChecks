@@ -19,8 +19,13 @@ CLASS zcl_aoc_check_26 DEFINITION
         REDEFINITION.
   PROTECTED SECTION.
 
-    DATA:
-      mt_tables TYPE scit_tabl.
+    DATA mt_tables TYPE scit_tabl .
+
+    METHODS find_user
+      IMPORTING
+        !iv_tabname       TYPE clike
+      RETURNING
+        VALUE(rv_as4user) TYPE dd02l-as4user .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -101,13 +106,8 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      SELECT SINGLE as4user FROM dd02l INTO lv_as4user
-        WHERE tabname = <ls_rt>-code
-        AND as4local = 'A'
-        AND as4vers = space
-        AND tabclass = 'TRANSP'.                     "#EC CI_SEL_NESTED
-      IF sy-subrc = 0
-          AND ( lv_as4user = 'SAP' OR lv_as4user = 'DDIC' )
+      lv_as4user = find_user( <ls_rt>-code ).
+      IF ( lv_as4user = 'SAP' OR lv_as4user = 'DDIC' )
           AND <ls_rt>-code IN mt_tables.
         lv_include = get_include( p_level = <ls_statement>-level ).
 
@@ -129,8 +129,8 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '001'.
-    position       = '026'.
+    version  = '001'.
+    position = '026'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
@@ -138,7 +138,38 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
     mv_errty = c_error.
     CLEAR mt_tables.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    enable_rfc( ).
+
+  ENDMETHOD.
+
+
+  METHOD find_user.
+
+    DATA: lv_tabname     TYPE dd02l-tabname,
+          ls_dd02v       TYPE dd02v,
+          lv_destination TYPE rfcdest.
+
+
+    lv_tabname = iv_tabname.
+
+    lv_destination = get_destination( ).
+
+    CALL FUNCTION 'DD_TABL_GET'
+      DESTINATION lv_destination
+      EXPORTING
+        tabl_name      = lv_tabname
+      IMPORTING
+        dd02v_wa_a     = ls_dd02v
+      EXCEPTIONS
+        access_failure = 1
+        OTHERS         = 2.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+    rv_as4user = ls_dd02v-as4user.
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
