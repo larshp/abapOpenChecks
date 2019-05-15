@@ -21,7 +21,11 @@ CLASS zcl_aoc_super_root DEFINITION
 
     DATA mv_errty TYPE sci_errty .
 
+    METHODS enable_rfc .
     METHODS set_kind .
+    CLASS-METHODS get_destination
+      RETURNING
+        VALUE(rv_result) TYPE rfcdest .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -46,9 +50,65 @@ CLASS ZCL_AOC_SUPER_ROOT IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD enable_rfc.
+* RFC enable the check, new feature for central ATC on 7.51
+
+    FIELD-SYMBOLS: <lv_rfc> TYPE abap_bool.
+
+
+    ASSIGN ('REMOTE_RFC_ENABLED') TO <lv_rfc>.
+    IF sy-subrc = 0.
+      <lv_rfc> = abap_true.
+    ENDIF.
+
+  ENDMETHOD.
+
+
   METHOD get_attributes.
 
     EXPORT mv_errty = mv_errty TO DATA BUFFER p_attributes.
+
+  ENDMETHOD.
+
+
+  METHOD get_destination.
+
+    "get destination of calling system (RFC enabled checks only)
+    "class, method and variable may not valid in 7.02 systems -> dynamic calls
+    CONSTANTS lc_classname TYPE seoclsname VALUE 'CL_ABAP_SOURCE_ID'.
+    CONSTANTS lc_methodname TYPE seocpdname VALUE 'GET_DESTINATION'.
+
+    FIELD-SYMBOLS: <lv_srcid> TYPE sysuuid_x.
+
+    ASSIGN ('SRCID') TO <lv_srcid>.
+
+    IF NOT <lv_srcid> IS ASSIGNED.
+      rv_result = |NONE|.
+      RETURN.
+    ENDIF.
+
+    IF <lv_srcid> IS INITIAL.
+      rv_result = |NONE|.
+      RETURN.
+    ENDIF.
+
+    TRY.
+        CALL METHOD (lc_classname)=>(lc_methodname)
+          EXPORTING
+            p_srcid       = <lv_srcid>
+          RECEIVING
+            p_destination = rv_result
+          EXCEPTIONS
+            not_found     = 1.
+
+        IF sy-subrc <> 0.
+          rv_result = |NONE|.
+        ENDIF.
+
+      CATCH cx_sy_dyn_call_illegal_class
+            cx_sy_dyn_call_illegal_method.
+        rv_result = |NONE|.
+    ENDTRY.
 
   ENDMETHOD.
 

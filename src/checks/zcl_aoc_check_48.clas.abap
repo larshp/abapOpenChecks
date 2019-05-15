@@ -133,8 +133,8 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '002'.
-    position       = '048'.
+    version  = '002'.
+    position = '048'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
@@ -147,7 +147,9 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
     ls_message-pcom = '"#EC CI_DEFAULT_KEY'.
     INSERT ls_message INTO TABLE scimessages.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    enable_rfc( ).
+
+  ENDMETHOD.
 
 
   METHOD get_message_text.
