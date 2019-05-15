@@ -35,7 +35,9 @@ CLASS ZCL_AOC_CHECK_72 IMPLEMENTATION.
 
     add_obj_type( 'TABL' ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    enable_rfc( ).
+
+  ENDMETHOD.
 
 
   METHOD get_message_text.
@@ -60,18 +62,33 @@ CLASS ZCL_AOC_CHECK_72 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_exclass TYPE dd02l-exclass.
+    DATA: lv_tabname     TYPE dd02l-tabname,
+          ls_dd02v       TYPE dd02v,
+          lv_destination TYPE rfcdest.
+
 
     IF object_type <> 'TABL'.
       RETURN.
     ENDIF.
 
-    SELECT SINGLE exclass FROM dd02l INTO lv_exclass
-      WHERE tabname = object_name
-      AND as4local = 'A'
-      AND as4vers = '0000'.
+    lv_tabname = object_name.
 
-    IF sy-subrc = 0 AND lv_exclass = '0'.
+    lv_destination = get_destination( ).
+
+    CALL FUNCTION 'DD_TABL_GET'
+      DESTINATION lv_destination
+      EXPORTING
+        tabl_name      = lv_tabname
+      IMPORTING
+        dd02v_wa_a     = ls_dd02v
+      EXCEPTIONS
+        access_failure = 1
+        OTHERS         = 2.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+    IF ls_dd02v-exclass = '0'.
       inform( p_test = myname
               p_kind = mv_errty
               p_code = '001' ).
