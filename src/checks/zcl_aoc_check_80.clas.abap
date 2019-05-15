@@ -85,7 +85,6 @@ CLASS ZCL_AOC_CHECK_80 IMPLEMENTATION.
 
     super->constructor( ).
 
-    category = 'ZCL_AOC_CATEGORY'.
     version  = '001'.
     position = '080'.
 
@@ -93,6 +92,8 @@ CLASS ZCL_AOC_CHECK_80 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     mv_errty = c_error.
+
+    enable_rfc( ).
 
   ENDMETHOD.
 

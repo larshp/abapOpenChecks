@@ -81,15 +81,17 @@ CLASS ZCL_AOC_CHECK_52 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '001'.
-    position       = '052'.
+    version  = '001'.
+    position = '052'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
     mv_errty = c_error.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    enable_rfc( ).
+
+  ENDMETHOD.
 
 
   METHOD get_message_text.

@@ -93,8 +93,8 @@ CLASS ZCL_AOC_CHECK_28 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '002'.
-    position       = '028'.
+    version  = '002'.
+    position = '028'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
@@ -104,7 +104,7 @@ CLASS ZCL_AOC_CHECK_28 IMPLEMENTATION.
     mv_errty = c_error.
     mv_skipc = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.
