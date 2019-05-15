@@ -418,6 +418,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
   METHOD get_source.
 
     DATA: ls_source      LIKE LINE OF mt_source,
+          lt_source      TYPE STANDARD TABLE OF abaptxt255 WITH DEFAULT KEY,
           lv_destination TYPE rfcdest.
 
     FIELD-SYMBOLS: <ls_source> LIKE LINE OF mt_source.
@@ -440,14 +441,17 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
           program_name     = is_level-name
           with_includelist = abap_false
           only_source      = abap_true
+          with_lowercase   = abap_true
         TABLES
-          source_extended  = rt_code
+          source_extended  = lt_source
         EXCEPTIONS
           cancelled        = 1
           not_found        = 2
           permission_error = 3
           OTHERS           = 4.
       ASSERT sy-subrc = 0.
+
+      rt_code = lt_source.
 
       ls_source-name = is_level-name.
       ls_source-code = rt_code.
@@ -575,7 +579,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     " We need to find the calling statement and point to this line.
     lv_line   = p_line.
     lv_column = p_column.
-    IF ( lv_line = 0 OR lv_column = 0 ) AND p_position <> 0.
+    IF ( lv_line = 0 OR lv_column = 0 ) AND p_position <> 0 AND NOT ref_scan IS INITIAL.
       READ TABLE ref_scan->statements INTO statement_wa INDEX p_position.
       IF sy-subrc = 0.
         get_line_column_rel(
