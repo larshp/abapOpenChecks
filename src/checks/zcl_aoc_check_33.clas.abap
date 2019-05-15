@@ -24,8 +24,8 @@ CLASS ZCL_AOC_CHECK_33 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '001'.
-    position       = '033'.
+    version  = '001'.
+    position = '033'.
 
     has_documentation = c_true.
     has_attributes = abap_true.
@@ -35,7 +35,9 @@ CLASS ZCL_AOC_CHECK_33 IMPLEMENTATION.
 
     add_obj_type( 'TABL' ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    enable_rfc( ).
+
+  ENDMETHOD.
 
 
   METHOD get_message_text.
@@ -60,9 +62,10 @@ CLASS ZCL_AOC_CHECK_33 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_name  TYPE ddobjname,
-          ls_dd02v TYPE dd02v,
-          lt_dd03p TYPE TABLE OF dd03p.
+    DATA: lv_tabname     TYPE dd02l-tabname,
+          ls_dd02v       TYPE dd02v,
+          lv_destination TYPE rfcdest,
+          lt_dd03p       TYPE TABLE OF dd03p.
 
     FIELD-SYMBOLS: <ls_dd03p> LIKE LINE OF lt_dd03p.
 
@@ -71,16 +74,22 @@ CLASS ZCL_AOC_CHECK_33 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    lv_name = object_name.
-    CALL FUNCTION 'DDIF_TABL_GET'
-      EXPORTING
-        name      = lv_name
-      IMPORTING
-        dd02v_wa  = ls_dd02v
-      TABLES
-        dd03p_tab = lt_dd03p.
+    lv_tabname = object_name.
 
-    IF ls_dd02v-tabclass <> 'APPEND'.
+    lv_destination = get_destination( ).
+
+    CALL FUNCTION 'DD_TABL_GET'
+      DESTINATION lv_destination
+      EXPORTING
+        tabl_name      = lv_tabname
+      IMPORTING
+        dd02v_wa_a     = ls_dd02v
+      TABLES
+        dd03p_tab_a    = lt_dd03p
+      EXCEPTIONS
+        access_failure = 1
+        OTHERS         = 2.
+    IF sy-subrc <> 0 OR ls_dd02v-tabclass <> 'APPEND'.
       RETURN.
     ENDIF.
 
