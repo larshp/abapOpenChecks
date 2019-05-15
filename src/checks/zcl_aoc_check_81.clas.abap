@@ -99,6 +99,8 @@ CLASS ZCL_AOC_CHECK_81 IMPLEMENTATION.
 
     mv_errty = c_error.
 
+    enable_rfc( ).
+
   ENDMETHOD.
 
 
