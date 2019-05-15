@@ -356,6 +356,48 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD get_destination.
+
+    "get destination of calling system (RFC enabled checks only)
+    "class, method and variable may not valid in 7.02 systems -> dynamic calls
+    CONSTANTS lc_classname TYPE seoclsname VALUE 'CL_ABAP_SOURCE_ID'.
+    CONSTANTS lc_methodname TYPE seocpdname VALUE 'GET_DESTINATION'.
+
+    FIELD-SYMBOLS: <lv_srcid> TYPE sysuuid_x.
+
+    ASSIGN ('SRCID') TO <lv_srcid>.
+
+    IF NOT <lv_srcid> IS ASSIGNED.
+      rv_result = |NONE|.
+      RETURN.
+    ENDIF.
+
+    IF <lv_srcid> IS INITIAL.
+      rv_result = |NONE|.
+      RETURN.
+    ENDIF.
+
+    TRY.
+        CALL METHOD (lc_classname)=>(lc_methodname)
+          EXPORTING
+            p_srcid       = <lv_srcid>
+          RECEIVING
+            p_destination = rv_result
+          EXCEPTIONS
+            not_found     = 1.
+
+        IF sy-subrc <> 0.
+          rv_result = |NONE|.
+        ENDIF.
+
+      CATCH cx_sy_dyn_call_illegal_class
+            cx_sy_dyn_call_illegal_method.
+        rv_result = |NONE|.
+    ENDTRY.
+
+  ENDMETHOD.
+
+
   METHOD get_include.
 
     IF p_level = 0.
@@ -375,7 +417,8 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
   METHOD get_source.
 
-    DATA: ls_source LIKE LINE OF mt_source.
+    DATA: ls_source      LIKE LINE OF mt_source,
+          lv_destination TYPE rfcdest.
 
     FIELD-SYMBOLS: <ls_source> LIKE LINE OF mt_source.
 
@@ -389,7 +432,21 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     IF sy-subrc = 0.
       rt_code = <ls_source>-code.
     ELSE.
-      READ REPORT is_level-name INTO rt_code.          "#EC CI_READ_REP
+      lv_destination = get_destination( ).
+
+      CALL FUNCTION 'RPY_PROGRAM_READ'
+        DESTINATION lv_destination
+        EXPORTING
+          program_name     = is_level-name
+          with_includelist = abap_false
+          only_source      = abap_true
+        TABLES
+          source_extended  = rt_code
+        EXCEPTIONS
+          cancelled        = 1
+          not_found        = 2
+          permission_error = 3
+          OTHERS           = 4.
       ASSERT sy-subrc = 0.
 
       ls_source-name = is_level-name.
@@ -692,46 +749,4 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     rs_position-row = is_token-row.
 
   ENDMETHOD.
-
-  METHOD get_destination.
-
-    "get destination of calling system (RFC enabled checks only)
-    "class, method and variable may not valid in 7.02 systems -> dynamic calls
-    CONSTANTS lc_classname TYPE seoclsname VALUE 'CL_ABAP_SOURCE_ID'.
-    CONSTANTS lc_methodname TYPE seocpdname VALUE 'GET_DESTINATION'.
-
-    FIELD-SYMBOLS: <lv_srcid> TYPE sysuuid_x.
-
-    ASSIGN ('SRCID') TO <lv_srcid>.
-
-    IF NOT <lv_srcid> IS ASSIGNED.
-      rv_result = |NONE|.
-      RETURN.
-    ENDIF.
-
-    IF <lv_srcid> IS INITIAL.
-      rv_result = |NONE|.
-      RETURN.
-    ENDIF.
-
-    TRY.
-        CALL METHOD (lc_classname)=>(lc_methodname)
-          EXPORTING
-            p_srcid       = <lv_srcid>
-          RECEIVING
-            p_destination = rv_result
-          EXCEPTIONS
-            not_found     = 1.
-
-        IF sy-subrc <> 0.
-          rv_result = |NONE|.
-        ENDIF.
-
-      CATCH cx_sy_dyn_call_illegal_class
-            cx_sy_dyn_call_illegal_method.
-        rv_result = |NONE|.
-    ENDTRY.
-
-  ENDMETHOD.
-
 ENDCLASS.

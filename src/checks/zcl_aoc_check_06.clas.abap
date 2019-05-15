@@ -236,8 +236,8 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '003'.
-    position       = '006'.
+    version  = '003'.
+    position = '006'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
@@ -251,7 +251,9 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
     mv_flow        = abap_true.
     mv_skipc       = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    enable_rfc( ).
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
