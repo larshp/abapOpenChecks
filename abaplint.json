@@ -3,7 +3,8 @@
     "version": "v702",
     "skipGeneratedGatewayClasses": true,
     "skipGeneratedPersistentClasses": true,
-    "skipGeneratedFunctionGroups": true
+    "skipGeneratedFunctionGroups": true,
+    "applyUnspecifiedRules": true
   },
   "rules": {
     "7bit_ascii": {
@@ -42,6 +43,10 @@
       "exclude": []
     },
     "commented_code": {
+      "enabled": true,
+      "exclude": []
+    },
+    "constructor_visibility_public": {
       "enabled": true,
       "exclude": []
     },
@@ -119,7 +124,8 @@
       "ignoreExceptions": true,
       "ignoreLowerClassImplmentationStatement": true,
       "ignoreGlobalClassDefinition": false,
-      "ignoreGlobalInterface": false
+      "ignoreGlobalInterface": false,
+      "ignoreFunctionModuleName": false
     },
     "line_length": {
       "enabled": true,
@@ -183,7 +189,7 @@
       "depth": 6
     },
     "no_public_attributes": {
-      "enabled": false,
+      "enabled": true,
       "exclude": []
     },
     "object_naming": {
@@ -219,10 +225,23 @@
       "enabled": true,
       "exclude": []
     },
+    "preferred_compare_operator": {
+      "enabled": true,
+      "exclude": [],
+      "badOperators": [
+        "EQ",
+        "><",
+        "NE",
+        "GE",
+        "GT",
+        "LT",
+        "LE"
+      ]
+    },
     "remove_descriptions": {
       "enabled": true,
       "exclude": [],
-      "ignoreExceptions": true
+      "ignoreExceptions": false
     },
     "sequential_blank": {
       "enabled": true,
@@ -230,10 +249,10 @@
       "lines": 4
     },
     "short_case": {
-      "enabled": false,
+      "enabled": true,
       "exclude": [],
       "length": 1,
-      "allow": ["gv_ok_code", "column"]
+      "allow": ["column", "gv_ok_code"]
     },
     "space_before_colon": {
       "enabled": true,
