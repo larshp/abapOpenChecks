@@ -17,14 +17,14 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_check_92 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_92 IMPLEMENTATION.
 
 
   METHOD check.
 
     DATA lt_unit_tests TYPE if_aunit_prog_info_types=>ty_t_testclasses.
 
-    IF NOT  me->is_class_pool( me->program_name ) EQ abap_true.
+    IF NOT me->is_class_pool( me->program_name ) = abap_true.
       RETURN.
     ENDIF.
 
@@ -32,10 +32,10 @@ CLASS zcl_aoc_check_92 IMPLEMENTATION.
 
     IF lines( lt_unit_tests ) = 0.
 
-      inform( p_sub_obj_type = c_type_include    " Objekttyp
-              p_sub_obj_name = me->program_name    " Objektname im Objektkatalog
+      inform( p_sub_obj_type = c_type_include
+              p_sub_obj_name = me->program_name
               p_kind         = mv_errty
-              p_test         = me->myname    " Name der Klassse
+              p_test         = me->myname
               p_code         = '001' ).
 
     ENDIF.

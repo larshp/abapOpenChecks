@@ -16,6 +16,10 @@ CLASS zcl_aoc_compiler DEFINITION
     METHODS has_error
       RETURNING
         VALUE(rv_error) TYPE abap_bool .
+    METHODS constructor
+      IMPORTING
+        !it_result TYPE scr_refs
+        !iv_error  TYPE abap_bool .
   PROTECTED SECTION.
 
     CLASS-DATA gt_cache_result TYPE scr_refs .
@@ -23,11 +27,6 @@ CLASS zcl_aoc_compiler DEFINITION
     CLASS-DATA gv_cache_error TYPE abap_bool .
     DATA mt_result TYPE scr_refs .
     DATA mv_error TYPE abap_bool .
-
-    METHODS constructor
-      IMPORTING
-        !it_result TYPE scr_refs
-        !iv_error  TYPE abap_bool .
   PRIVATE SECTION.
 ENDCLASS.
 
