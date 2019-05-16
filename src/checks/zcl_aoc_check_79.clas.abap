@@ -144,7 +144,8 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
       IF ls_statement-str CP 'LOOP AT *'
           OR ls_statement-str CP 'WHILE *'
           OR ls_statement-str CP 'SELECT *'
-          OR ls_statement-str CP 'DO *'.
+          OR ls_statement-str CP 'DO *'
+          OR ls_statement-str = 'DO'.
         RETURN.
       ENDIF.
     ENDLOOP.
