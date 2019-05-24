@@ -27,7 +27,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_07 FOR TESTING,
       test001_08 FOR TESTING,
       test001_09 FOR TESTING,
-      test001_10 FOR TESTING.
+      test001_10 FOR TESTING,
+      test001_11 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -184,6 +185,17 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
+  ENDMETHOD.
+
+  METHOD test001_11.
+* ===========
+
+    _code `CALL METHOD OF excel 'Quit'.`.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
   ENDMETHOD.
 
 ENDCLASS.       "lcl_Test
