@@ -65,7 +65,7 @@ CLASS ZCL_AOC_CHECK_92 IMPLEMENTATION.
 
     CASE p_code.
       WHEN '001'.
-        p_text = |No Unittest for class { me->my_progname }. |. "#EC NOTEXT
+        p_text = |No unit tests|.                           "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code
