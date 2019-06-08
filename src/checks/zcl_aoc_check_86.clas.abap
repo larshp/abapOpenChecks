@@ -8,9 +8,11 @@ CLASS zcl_aoc_check_86 DEFINITION
     METHODS constructor .
 
     METHODS get_message_text
-        REDEFINITION .
+         REDEFINITION .
     METHODS run
-        REDEFINITION .
+         REDEFINITION .
+    METHODS consolidate_for_display
+         REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -18,6 +20,30 @@ ENDCLASS.
 
 
 CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
+
+
+  METHOD consolidate_for_display.
+
+    DATA: ls_result LIKE LINE OF p_results,
+          lv_index  TYPE i.
+
+    super->consolidate_for_display(
+      EXPORTING
+        p_sort_by_user    = p_sort_by_user
+        p_sort_by_package = p_sort_by_package
+        p_sort_by_object  = p_sort_by_object
+      CHANGING
+        p_results         = p_results
+        p_results_hd      = p_results_hd ).
+
+    READ TABLE p_results INTO ls_result WITH KEY test = myname.
+    IF sy-subrc = 0 AND ls_result-code = '002'.
+* only keep one result if the database is not uploaded
+      lv_index = sy-tabix + 1.
+      DELETE p_results FROM lv_index WHERE test = myname.
+    ENDIF.
+
+  ENDMETHOD.
 
 
   METHOD constructor.
@@ -30,6 +56,7 @@ CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
     has_documentation = c_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
+    has_display_consolidation = abap_true.
 
     mv_errty = c_error.
 
