@@ -23,7 +23,10 @@ CLASS zcl_aoc_check_91 DEFINITION
 
 ENDCLASS.
 
-CLASS zcl_aoc_check_91 IMPLEMENTATION.
+
+
+CLASS ZCL_AOC_CHECK_91 IMPLEMENTATION.
+
 
   METHOD check.
 
@@ -48,8 +51,8 @@ CLASS zcl_aoc_check_91 IMPLEMENTATION.
 
         READ TABLE it_tokens INTO ls_token INDEX ls_statement-from.
         IF sy-subrc <> 0
-        OR ls_token-type = scan_token_type-comment
-        OR ls_token-type = scan_token_type-pragma.
+            OR ls_token-type = scan_token_type-comment
+            OR ls_token-type = scan_token_type-pragma.
           CONTINUE. " current loop
         ENDIF.
 
@@ -81,6 +84,7 @@ CLASS zcl_aoc_check_91 IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD constructor.
 
     DATA ls_scimessage TYPE scimessage.
@@ -109,6 +113,7 @@ CLASS zcl_aoc_check_91 IMPLEMENTATION.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
+
   METHOD get_attributes.
 
     EXPORT
@@ -117,6 +122,7 @@ CLASS zcl_aoc_check_91 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
+
 
   METHOD if_ci_test~query_attributes.
 
@@ -129,6 +135,7 @@ CLASS zcl_aoc_check_91 IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD put_attributes.
 
     IMPORT
@@ -139,5 +146,4 @@ CLASS zcl_aoc_check_91 IMPLEMENTATION.
     ASSERT sy-subrc = 0.
 
   ENDMETHOD.
-
 ENDCLASS.

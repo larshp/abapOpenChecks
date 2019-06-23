@@ -263,17 +263,17 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       WHEN '006'.
         p_text = 'Use shift_left( ) or shift_right( )'.     "#EC NOTEXT
       WHEN '007'.
-        p_text = 'Use to_upper( ) or to_lower( )' .         "#EC NOTEXT
+        p_text = 'Use to_upper( ) or to_lower( )'.          "#EC NOTEXT
       WHEN '008'.
-        p_text = 'Use translate( )' .                       "#EC NOTEXT
+        p_text = 'Use translate( )'.                        "#EC NOTEXT
       WHEN '009'.
-        p_text = 'Use string templates' .                   "#EC NOTEXT
+        p_text = 'Use string templates'.                    "#EC NOTEXT
       WHEN '010'.
-        p_text = 'Use REF expression' .                     "#EC NOTEXT
+        p_text = 'Use REF expression'.                      "#EC NOTEXT
       WHEN '011'.
-        p_text = 'Use corresponding #( )' .                 "#EC NOTEXT
+        p_text = 'Use corresponding #( )'.                  "#EC NOTEXT
       WHEN '012'.
-        p_text = 'Use line_exists( )' .                     "#EC NOTEXT
+        p_text = 'Use line_exists( )'.                      "#EC NOTEXT
       WHEN OTHERS.
         super->get_message_text( EXPORTING p_test = p_test
                                            p_code = p_code

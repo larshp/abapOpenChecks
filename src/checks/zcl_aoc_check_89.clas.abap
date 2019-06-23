@@ -33,7 +33,10 @@ CLASS zcl_aoc_check_89 DEFINITION
         VALUE(rv_result) TYPE xstring.
 ENDCLASS.
 
-CLASS zcl_aoc_check_89 IMPLEMENTATION.
+
+
+CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
+
 
   METHOD check.
 
@@ -68,6 +71,7 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
   ENDMETHOD.
 
+
   METHOD constructor.
 
     DATA ls_scimessage TYPE scimessage.
@@ -95,6 +99,7 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
   ENDMETHOD.                    "CONSTRUCTOR
 
+
   METHOD get_attributes.
 
     EXPORT
@@ -104,27 +109,60 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD if_ci_test~query_attributes.
 
-    zzaoc_top.
+  METHOD get_content.
 
-    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
-    zzaoc_fill_att mv_minlength 'Minimum lines' ''.         "#EC NOTEXT
+    DATA lv_destination TYPE rfcdest.
+    DATA lv_objname TYPE lxeobjname.
+    DATA lv_objtype TYPE lxeobjtype.
 
-    zzaoc_popup.
+    lv_destination = get_destination( ).
+
+    lv_objname = iv_obj_name.
+    lv_objtype = iv_obj_type(2).
+
+    IF lv_objtype = 'PR'.        "PROG -> REPO
+      lv_objtype = 'RE'.
+    ENDIF.
+
+    "function module already exists in 7.02 -> should work on every satellite system
+    CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'
+      DESTINATION lv_destination
+      EXPORTING
+        lang    = sy-langu
+        objtype = lv_objtype
+        objname = lv_objname
+      IMPORTING
+        content = rv_result.
+
+    "not found in logon language try with English and German
+    IF rv_result IS INITIAL
+        AND sy-langu <> 'E'.
+      CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'
+        DESTINATION lv_destination
+        EXPORTING
+          lang    = 'E'
+          objtype = lv_objtype
+          objname = lv_objname
+        IMPORTING
+          content = rv_result.
+    ENDIF.
+
+    IF rv_result IS INITIAL
+        AND sy-langu <> 'D'.
+      CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'
+        DESTINATION lv_destination
+        EXPORTING
+          lang    = 'D'
+          objtype = lv_objtype
+          objname = lv_objname
+        IMPORTING
+          content = rv_result.
+
+    ENDIF.
 
   ENDMETHOD.
 
-  METHOD put_attributes.
-
-    IMPORT
-      mv_errty = mv_errty
-      mv_minlength = mv_minlength
-      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
-
-    ASSERT sy-subrc = 0.
-
-  ENDMETHOD.
 
   METHOD get_lines_of_documentation.
 
@@ -178,59 +216,27 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD get_content.
 
-    DATA lv_destination TYPE rfcdest.
-    DATA lv_objname TYPE lxeobjname.
-    DATA lv_objtype TYPE lxeobjtype.
+  METHOD if_ci_test~query_attributes.
 
-    lv_destination = get_destination( ).
+    zzaoc_top.
 
-    lv_objname = iv_obj_name.
-    lv_objtype = iv_obj_type(2).
+    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
+    zzaoc_fill_att mv_minlength 'Minimum lines' ''.         "#EC NOTEXT
 
-    IF lv_objtype = 'PR'.        "PROG -> REPO
-      lv_objtype = 'RE'.
-    ENDIF.
-
-    "function module already exists in 7.02 -> should work on every satellite system
-    CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'
-      DESTINATION lv_destination
-      EXPORTING
-        lang    = sy-langu
-        objtype = lv_objtype
-        objname = lv_objname
-      IMPORTING
-        content = rv_result.
-
-    "not found in logon language try with English and German
-    IF rv_result IS INITIAL
-    AND sy-langu <> 'E'.
-
-      CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'
-        DESTINATION lv_destination
-        EXPORTING
-          lang    = 'E'
-          objtype = lv_objtype
-          objname = lv_objname
-        IMPORTING
-          content = rv_result.
-    ENDIF.
-
-    IF rv_result IS INITIAL
-    AND sy-langu <> 'D'.
-
-      CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'
-        DESTINATION lv_destination
-        EXPORTING
-          lang    = 'D'
-          objtype = lv_objtype
-          objname = lv_objname
-        IMPORTING
-          content = rv_result.
-
-    ENDIF.
+    zzaoc_popup.
 
   ENDMETHOD.
 
+
+  METHOD put_attributes.
+
+    IMPORT
+      mv_errty = mv_errty
+      mv_minlength = mv_minlength
+      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
+
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
 ENDCLASS.
