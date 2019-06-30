@@ -244,6 +244,10 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
       APPEND ls_range TO mt_range.
     ENDIF.
 
+* generic types
+    ls_range-low = '* TYPE DATA'.
+    APPEND ls_range TO mt_range.
+
   ENDMETHOD.
 
 
