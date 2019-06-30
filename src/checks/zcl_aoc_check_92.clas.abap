@@ -24,6 +24,10 @@ CLASS ZCL_AOC_CHECK_92 IMPLEMENTATION.
 
     DATA lt_unit_tests TYPE if_aunit_prog_info_types=>ty_t_testclasses.
 
+    IF object_type <> 'CLAS'.
+      RETURN.
+    ENDIF.
+
     IF NOT me->is_class_pool( me->program_name ) = abap_true.
       RETURN.
     ENDIF.
