@@ -4,10 +4,14 @@ REPORT zaoc_lines_tree.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-PARAMETERS: p_devc TYPE devclass DEFAULT '$AOC' OBLIGATORY,
-            p_comm TYPE c AS CHECKBOX DEFAULT 'X',
+TABLES: tdevc.
+
+SELECT-OPTIONS: s_devc FOR tdevc-devclass DEFAULT '$AOC' OBLIGATORY.
+
+PARAMETERS: p_comm TYPE c AS CHECKBOX DEFAULT 'X',
             p_vfug TYPE c AS CHECKBOX DEFAULT 'X',
-            p_loca TYPE c AS CHECKBOX DEFAULT 'X'.
+            p_loca TYPE c AS CHECKBOX DEFAULT 'X',
+            p_gate TYPE c AS CHECKBOX DEFAULT 'X'.
 
 DATA: gv_ok_code LIKE sy-ucomm.
 
@@ -48,11 +52,21 @@ CLASS lcl_logic IMPLEMENTATION.
 
   METHOD run.
 
+    DATA: lt_tdevc TYPE STANDARD TABLE OF tdevc WITH DEFAULT KEY.
+
+    FIELD-SYMBOLS: <ls_tdevc> LIKE LINE OF lt_tdevc.
+
+
+    SELECT * FROM tdevc INTO TABLE lt_tdevc
+      WHERE devclass IN s_devc
+      AND parentcl = ''
+      ORDER BY PRIMARY KEY.
+
     CLEAR gt_result.
-
-    run_package( iv_devclass = p_devc
-                 iv_parent   = '' ).
-
+    LOOP AT lt_tdevc ASSIGNING <ls_tdevc>.
+      run_package( iv_devclass = <ls_tdevc>-devclass
+                   iv_parent   = '' ).
+    ENDLOOP.
     rt_result = gt_result.
 
   ENDMETHOD.
@@ -67,7 +81,8 @@ CLASS lcl_logic IMPLEMENTATION.
     lt_includes = zcl_aoc_util_programs=>get_programs_in_package(
       iv_devclass           = iv_devclass
       iv_ignore_mview_fugr  = p_vfug
-      iv_ignore_local_tests = p_loca ).
+      iv_ignore_local_tests = p_loca
+      iv_ignore_gateway     = p_gate ).
 
     LOOP AT lt_includes INTO lv_include.
       IF sy-tabix MOD 100 = 0.
@@ -236,10 +251,16 @@ CLASS lcl_gui IMPLEMENTATION.
           lt_result     TYPE lcl_logic=>ty_result_tt,
           lv_key        LIKE ls_node-node_key,
           lv_parent     LIKE ls_node-node_key,
+          lv_total      TYPE i,
           ls_result     LIKE LINE OF lt_result.
 
 
     lt_result = lcl_logic=>run( ).
+
+    LOOP AT lt_result INTO ls_result WHERE parent = ''.
+      lv_total = lv_total + ls_result-count.
+    ENDLOOP.
+    MESSAGE |Grand Total: { lv_total }| TYPE 'S.'.
 
     LOOP AT lt_result INTO ls_result.
       lv_key = sy-tabix.
@@ -286,11 +307,10 @@ CLASS lcl_gui IMPLEMENTATION.
         table_structure_name_not_found = 6 ).             "#EC CI_SUBRC
     ASSERT sy-subrc = 0.
 
-    IF lines( lt_node_table ) > 1.
-      lv_key = 1.
+    LOOP AT lt_node_table INTO ls_node WHERE isfolder = abap_true AND relatkey IS INITIAL.
       go_tree->expand_node(
         EXPORTING
-          node_key            = lv_key
+          node_key            = ls_node-node_key
         EXCEPTIONS
           failed              = 1
           illegal_level_count = 2
@@ -298,7 +318,7 @@ CLASS lcl_gui IMPLEMENTATION.
           node_not_found      = 4
           cannot_expand_leaf  = 5 ).                      "#EC CI_SUBRC
       ASSERT sy-subrc = 0.
-    ENDIF.
+    ENDLOOP.
 
   ENDMETHOD.
 

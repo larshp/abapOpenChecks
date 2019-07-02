@@ -9,6 +9,7 @@ CLASS zcl_aoc_util_programs DEFINITION
         !iv_devclass           TYPE devclass
         !iv_ignore_mview_fugr  TYPE abap_bool DEFAULT abap_false
         !iv_ignore_local_tests TYPE abap_bool DEFAULT abap_false
+        !iv_ignore_gateway     TYPE abap_bool DEFAULT abap_false
       RETURNING
         VALUE(rt_programs)     TYPE scit_program .
   PROTECTED SECTION.
@@ -140,6 +141,11 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
       WHERE pgmid = 'R3TR'
       AND ( object = 'CLAS' OR object = 'PROG' OR object = 'FUGR' )
       AND devclass = iv_devclass.         "#EC CI_GENBUFF "#EC CI_SUBRC
+
+    IF iv_ignore_gateway = abap_true.
+      DELETE lt_tadir WHERE obj_name CP '*_DPC' AND object = 'CLAS'.
+      DELETE lt_tadir WHERE obj_name CP '*_MPC' AND object = 'CLAS'.
+    ENDIF.
 
     LOOP AT lt_tadir ASSIGNING <ls_tadir>.
       CASE <ls_tadir>-object.
