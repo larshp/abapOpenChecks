@@ -173,10 +173,9 @@
     </item>
     <item>
      <ID>S</ID>
-     <KEY>P_DEVC</KEY>
-     <ENTRY>.</ENTRY>
-     <LENGTH>15</LENGTH>
-     <SPLIT>D</SPLIT>
+     <KEY>P_GATE</KEY>
+     <ENTRY>Ignore gateway(*_DPC, *_MPC)</ENTRY>
+     <LENGTH>36</LENGTH>
     </item>
     <item>
      <ID>S</ID>
@@ -189,6 +188,13 @@
      <KEY>P_VFUG</KEY>
      <ENTRY>Ignore maintenance views</ENTRY>
      <LENGTH>32</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>S_DEVC</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>15</LENGTH>
+     <SPLIT>D</SPLIT>
     </item>
    </TPOOL>
   </asx:values>
