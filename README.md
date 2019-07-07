@@ -7,7 +7,7 @@ Open source checks for SAP Code Inspector / ABAP Test Cockpit (SCI/ATC)
 
 **Installation**
 - install via [abapGit](https://github.com/larshp/abapGit) using the online or offline option
-- activate checks in SCI(Goto -> Management Of -> Tests)
+- activate checks in SCI(Code Inspector -> Management of -> Tests)
 - configure check variant
 - run inspection
 
