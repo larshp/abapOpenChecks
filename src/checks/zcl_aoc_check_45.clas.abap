@@ -21,7 +21,7 @@ CLASS zcl_aoc_check_45 DEFINITION
 
     METHODS check_loop
       IMPORTING
-        !is_statement  TYPE ty_statement
+        !it_statements TYPE ty_statements
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
     METHODS support_740sp02
@@ -55,6 +55,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 * MIT License
 
     DATA: lt_statements TYPE ty_statements,
+          lt_procedure  TYPE ty_statements,
           lv_code       TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
@@ -66,6 +67,14 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
+
+      APPEND <ls_statement> TO lt_procedure.
+      IF <ls_statement>-str CP 'METHOD *'
+          OR <ls_statement>-str = 'ENDMETHOD'
+          OR <ls_statement>-str CP 'FORM *'
+          OR <ls_statement>-str = 'ENDFORM'.
+        CLEAR lt_procedure.
+      ENDIF.
 
       IF ( <ls_statement>-str CP 'DESCRIBE TABLE *'
           AND <ls_statement>-count = 3
@@ -88,7 +97,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
           AND NOT <ls_statement>-str CP 'CATCH * INTO DATA(*' ) )
           AND mv_inline_decl = abap_true
           AND support_740sp02( ) = abap_true
-          AND check_loop( <ls_statement> ) = abap_true.
+          AND check_loop( lt_procedure ) = abap_true.
         lv_code = '003'.
       ELSEIF mv_condense = abap_true
           AND <ls_statement>-str CP 'CONDENSE *'.
@@ -124,9 +133,6 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
         lv_code = '012'.
       ENDIF.
 
-* todo, add READ TABLE?
-*           IF can be changed to: boolc()
-
       IF NOT lv_code IS INITIAL.
         inform( p_sub_obj_type = c_type_include
             p_sub_obj_name = <ls_statement>-include
@@ -142,23 +148,21 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 
   METHOD check_loop.
 
+* this functionality is not completely correct, but will work in most cases
+
     CONSTANTS: lc_into      TYPE string VALUE 'INTO',
                lc_assigning TYPE string VALUE 'ASSIGNING'.
 
-    DATA: lt_result TYPE scr_refs,
-          lt_str    TYPE TABLE OF string,
-          lv_var    TYPE string.
+    DATA: lt_str       TYPE TABLE OF string,
+          ls_statement LIKE LINE OF it_statements,
+          lv_declare   TYPE i,
+          lv_var       TYPE string.
 
-    FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result.
 
+    READ TABLE it_statements INDEX lines( it_statements ) INTO ls_statement.
+    ASSERT sy-subrc = 0.
 
-    lt_result = zcl_aoc_compiler=>get_instance(
-      iv_object_type = object_type
-      iv_object_name = object_name )->get_result( ).
-    DELETE lt_result WHERE tag <> cl_abap_compiler=>tag_data.
-    DELETE lt_result WHERE name = ''.
-
-    SPLIT is_statement-str AT space INTO TABLE lt_str.
+    SPLIT ls_statement-str AT space INTO TABLE lt_str.
     READ TABLE lt_str FROM lc_into TRANSPORTING NO FIELDS.
     IF sy-subrc <> 0.
       READ TABLE lt_str FROM lc_assigning TRANSPORTING NO FIELDS.
@@ -168,29 +172,25 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     READ TABLE lt_str INDEX sy-tabix INTO lv_var.
     ASSERT sy-subrc = 0.
 
-* this will make sure it is a local variable
-    READ TABLE lt_result WITH KEY
-      name = lv_var
-      grade = cl_abap_compiler=>grade_definition
-      mode2 = '2'             " downport, cl_abap_compiler=>mode2_def
-      statement->source_info->name = is_statement-include
-      TRANSPORTING NO FIELDS.
+* make sure it is a local variable
+    LOOP AT it_statements TRANSPORTING NO FIELDS WHERE str CP |DATA { lv_var }*|
+        OR str CP |FIELD-SYMBOLS { lv_var }*|
+        OR str CP |FIELD-SYMBOL { lv_var }*|.
+      lv_declare = sy-tabix + 1.
+    ENDLOOP.
     IF sy-subrc <> 0.
       RETURN.
     ENDIF.
 
 * find the first use of the variable, this should be the LOOP
-    READ TABLE lt_result ASSIGNING <ls_result> WITH KEY
-      name = lv_var
-      grade = cl_abap_compiler=>grade_direct
-      statement->source_info->name = is_statement-include.
-    IF sy-subrc <> 0.
-      RETURN.
-    ENDIF.
+    LOOP AT it_statements INTO ls_statement FROM lv_declare
+        WHERE str CP |*{ lv_var } *| OR str CP |* { lv_var }*|.
+      IF sy-tabix <> lines( it_statements ).
+        RETURN.
+      ENDIF.
+    ENDLOOP.
 
-    IF <ls_result>-statement->start_line = is_statement-start-row.
-      rv_bool = abap_true.
-    ENDIF.
+    rv_bool = abap_true.
 
   ENDMETHOD.
 
