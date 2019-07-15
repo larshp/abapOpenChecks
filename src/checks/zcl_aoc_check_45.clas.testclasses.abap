@@ -30,6 +30,10 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test002_04 FOR TESTING,
       test002_05 FOR TESTING,
       test002_06 FOR TESTING,
+      test003_01 FOR TESTING,
+      test003_02 FOR TESTING,
+      test003_03 FOR TESTING,
+      test003_04 FOR TESTING,
       test004_01 FOR TESTING,
       test004_02 FOR TESTING,
       test005_01 FOR TESTING,
@@ -175,6 +179,74 @@ CLASS ltcl_test IMPLEMENTATION.
     ENDIF.
 
     _code 'CREATE OBJECT lo_new AREA HANDLE lo_handle.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test003_01.
+
+    IF mo_check->support_740sp02( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'DATA bar LIKE LINE OF foo.'.
+    _code 'LOOP AT foo INTO bar.'.
+    _code 'ENDLOOP.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '003'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test003_02.
+
+    IF mo_check->support_740sp02( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'LOOP AT foo INTO DATA(bar).'.
+    _code 'ENDLOOP.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test003_03.
+
+    IF mo_check->support_740sp02( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'DATA bar LIKE LINE OF foo.'.
+    _code 'bar = 2.'.
+    _code 'LOOP AT foo INTO bar.'.
+    _code 'ENDLOOP.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test003_04.
+
+    IF mo_check->support_740sp02( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code 'DATA bar LIKE LINE OF foo.'.
+    _code 'FORM foo.'.
+    _code '  LOOP AT foo INTO bar.'.
+    _code '  ENDLOOP.'.
+    _code 'ENDFORM.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
