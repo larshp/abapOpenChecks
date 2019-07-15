@@ -21,26 +21,27 @@ CLASS zcl_aoc_check_27 DEFINITION
         level     TYPE stmnt_levl,
         col       TYPE token_col,
         col_to    TYPE token_col,
-      END OF ty_stmnt.
+      END OF ty_stmnt .
 
-    DATA mt_tables TYPE scit_tabl.
+    TYPES: ty_stmnt_tt TYPE STANDARD TABLE OF ty_stmnt WITH DEFAULT KEY.
 
-    TYPE-POOLS abap.
+    DATA:
+      mt_statements TYPE ty_stmnt_tt.
+
     METHODS is_local
       IMPORTING
-        !is_statement  TYPE ty_stmnt
+        !it_statements TYPE ty_stmnt_tt
       RETURNING
-        VALUE(rv_bool) TYPE abap_bool.
-    METHODS analyze.
+        VALUE(rv_bool) TYPE abap_bool .
+    METHODS analyze .
     METHODS build
       IMPORTING
         !is_structure  TYPE sstruc
         !it_statements TYPE sstmnt_tab
-        !it_tokens     TYPE stokesx_tab.
+        !it_tokens     TYPE stokesx_tab .
   PRIVATE SECTION.
 
-    DATA:
-      mt_statements TYPE TABLE OF ty_stmnt.
+
 ENDCLASS.
 
 
@@ -71,7 +72,7 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
         lv_code = '001'.
       ELSEIF ( ls_statement-statement CP 'CLEAR *'
           OR ls_statement-statement CP 'FREE *' )
-          AND is_local( ls_statement ) = abap_true
+          AND is_local( mt_statements ) = abap_true
           AND NOT ls_statement-statement CP 'CLEAR <*'.
         lv_code = '002'.
       ELSEIF ls_statement-statement CP 'EXIT*'
@@ -172,8 +173,8 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '001'.
-    position       = '027'.
+    version  = '001'.
+    position = '027'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
@@ -181,9 +182,8 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
     enable_rfc( ).
 
     mv_errty = c_error.
-    CLEAR mt_tables.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_message_text.
@@ -208,100 +208,37 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
   METHOD is_local.
 
-    DATA: lv_sconame TYPE seosubcodf-sconame,
-          lv_cmpname TYPE seocompodf-cmpname,
-          lt_result  TYPE scr_refs,
-          ls_mtd     TYPE seocpdkey,
-          lv_before  TYPE string ##NEEDED,
-          lv_include TYPE program,
-          lv_var     TYPE string.
-
-    FIELD-SYMBOLS: <ls_result>    LIKE LINE OF lt_result,
-                   <ls_statement> LIKE LINE OF mt_statements.
+    DATA: ls_statement LIKE LINE OF it_statements,
+          lv_index     TYPE i,
+          lv_trash     TYPE string ##NEEDED,
+          lv_var       TYPE string.
 
 
-    lt_result = zcl_aoc_compiler=>get_instance(
-      iv_object_type = object_type
-      iv_object_name = object_name )->get_result( ).
-    DELETE lt_result WHERE tag <> cl_abap_compiler=>tag_data.
-    DELETE lt_result WHERE name = ''.
+    lv_index = lines( it_statements ) - 1.
 
-    SPLIT is_statement-statement AT space INTO lv_before lv_var.
+    READ TABLE it_statements INDEX lv_index INTO ls_statement.
+    ASSERT sy-subrc = 0.
+    SPLIT ls_statement-statement AT space INTO lv_trash lv_var.
 
-    lv_include = get_include( p_level = is_statement-level ).
+    WHILE lv_index > 0.
 
-* todo: handle local classes?
+      READ TABLE it_statements INDEX lv_index INTO ls_statement.
+      ASSERT sy-subrc = 0.
 
-* make sure it is a local variable
-    READ TABLE lt_result
-      ASSIGNING <ls_result> WITH KEY
-      name = lv_var
-      line = is_statement-row
-      statement->source_info->name = lv_include.
-    IF sy-subrc = 0
-        AND ( <ls_result>-full_name CP '*\FO:*'
-        OR <ls_result>-full_name CP '*\ME:*' ).
-
-      IF <ls_result>-full_name CP '*\ME:*'.
-        cl_oo_classname_service=>get_method_by_include(
-          EXPORTING
-            incname             = lv_include
-          RECEIVING
-            mtdkey              = ls_mtd
-          EXCEPTIONS
-            class_not_existing  = 1
-            method_not_existing = 2
-            OTHERS              = 3 ).
-        IF sy-subrc <> 0.
-          RETURN.
-        ENDIF.
-
-        IF ls_mtd-cpdname CA '~'.
-* handle methods from  interfaces
-          SPLIT ls_mtd-cpdname AT '~' INTO ls_mtd-clsname ls_mtd-cpdname.
-        ENDIF.
-
-        SELECT SINGLE sconame FROM seosubcodf
-          INTO lv_sconame
-          WHERE clsname = ls_mtd-clsname
-          AND cmpname = ls_mtd-cpdname
-          AND sconame = lv_var
-          AND version = '1'.
-        IF sy-subrc = 0.
-          RETURN.
-        ENDIF.
-
-        SELECT SINGLE cmpname FROM seocompodf
-          INTO lv_cmpname
-          WHERE clsname = ls_mtd-clsname
-          AND cmpname = lv_var
-          AND version = '1'.
-        IF sy-subrc = 0.
-          RETURN.
-        ENDIF.
-      ELSE.
-        READ TABLE lt_result
-          ASSIGNING <ls_result> WITH KEY
-          full_name = <ls_result>-full_name
-          mode2 = cl_abap_compiler=>mode2_def.
-        IF sy-subrc = 0.
-          LOOP AT mt_statements ASSIGNING <ls_statement>
-              WHERE ( row < <ls_result>-line AND row_to > <ls_result>-line )
-              OR ( row = <ls_result>-line AND col <= <ls_result>-column AND row_to > <ls_result>-line )
-              OR ( row = <ls_result>-line AND col <= <ls_result>-column
-              AND row_to = <ls_result>-line AND col_to >= <ls_result>-column )
-              OR ( row < <ls_result>-line AND row_to = <ls_result>-line AND col_to >= <ls_result>-column ).
-            IF <ls_statement>-statement CP 'FORM *'.
-              RETURN.
-            ENDIF.
-            EXIT.
-          ENDLOOP.
-        ENDIF.
+      IF ls_statement-statement CP 'FORM *' OR ls_statement-statement CP 'METHOD *'.
+* not a local
+        RETURN.
       ENDIF.
 
-      rv_bool = abap_true.
+      IF ls_statement-statement CP |DATA { lv_var } *|
+          OR ls_statement-statement = |DATA { lv_var }|.
+        rv_bool = abap_true.
+        RETURN.
+      ENDIF.
 
-    ENDIF.
+      lv_index = lv_index - 1.
+
+    ENDWHILE.
 
   ENDMETHOD.
 ENDCLASS.

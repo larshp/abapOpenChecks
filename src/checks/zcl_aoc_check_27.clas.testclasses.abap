@@ -26,6 +26,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_06 FOR TESTING,
       test001_07 FOR TESTING,
       test002_01 FOR TESTING,
+      test002_02 FOR TESTING,
+      test002_03 FOR TESTING,
       test003_01 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
@@ -166,7 +168,38 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  ENDMETHOD.                    "test2
+  ENDMETHOD.
+
+  METHOD test002_02.
+* ===========
+
+    _code 'FORM foo.'.
+    _code '  DATA bar.'.
+    _code '  CLEAR bar.'.
+    _code 'ENDFORM.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '002'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test002_03.
+* ===========
+
+
+    _code 'DATA bar.'.
+    _code 'FORM foo.'.
+    _code '  moo = boo.'.
+    _code '  CLEAR bar.'.
+    _code 'ENDFORM.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
 
   METHOD test003_01.
 * ===========
