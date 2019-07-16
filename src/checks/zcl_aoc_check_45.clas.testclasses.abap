@@ -34,6 +34,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test003_02 FOR TESTING,
       test003_03 FOR TESTING,
       test003_04 FOR TESTING,
+      test003_05 FOR TESTING,
       test004_01 FOR TESTING,
       test004_02 FOR TESTING,
       test005_01 FOR TESTING,
@@ -247,6 +248,21 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  LOOP AT foo INTO bar.'.
     _code '  ENDLOOP.'.
     _code 'ENDFORM.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test003_05.
+
+    IF mo_check->support_740sp02( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    _code '  LOOP AT tab.'.
+    _code '  ENDLOOP.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
