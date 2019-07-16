@@ -158,6 +158,7 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
       DESTINATION lv_destination
       EXPORTING
         tabl_name      = lv_tabname
+        add_typeinfo   = abap_false
       IMPORTING
         dd02v_wa_a     = ls_dd02v
       EXCEPTIONS
