@@ -167,7 +167,9 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     IF sy-subrc <> 0.
       READ TABLE lt_str FROM lc_assigning TRANSPORTING NO FIELDS.
     ENDIF.
-    ASSERT sy-subrc = 0.
+    IF sy-subrc <> 0.
+      RETURN. " sometimes the keyword is not found, something with macros
+    ENDIF.
     sy-tabix = sy-tabix + 1.
     READ TABLE lt_str INDEX sy-tabix INTO lv_var.
     ASSERT sy-subrc = 0.
