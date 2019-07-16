@@ -78,6 +78,9 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
     ELSEIF lv_token2 = 'NOT' AND lv_token3 = 'BETWEEN'.
       rv_comparator = 4.
     ELSEIF lv_token2 = '='
+            OR lv_token2 = 'O'
+            OR lv_token2 = 'Z'
+            OR lv_token2 = 'M'
             OR lv_token2 = '<>'
             OR lv_token2 = '<'
             OR lv_token2 = 'GT'
