@@ -55,8 +55,14 @@ CLASS zcl_aoc_super DEFINITION
       END OF ty_statement .
     TYPES:
       ty_statements TYPE STANDARD TABLE OF ty_statement WITH DEFAULT KEY .
+    TYPES:
+      BEGIN OF ty_destination_cache,
+        srcid   TYPE sysuuid_x,
+        rfcdest TYPE rfcdest,
+      END OF ty_destination_cache .
 
     DATA mv_errty TYPE sci_errty .
+    CLASS-DATA gs_destination_cache TYPE ty_destination_cache .
 
     METHODS enable_rfc .
     CLASS-METHODS statement_keyword
@@ -360,34 +366,35 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
     "get destination of calling system (RFC enabled checks only)
     "class, method and variable may not valid in 7.02 systems -> dynamic calls
-    CONSTANTS lc_classname TYPE seoclsname VALUE 'CL_ABAP_SOURCE_ID'.
-    CONSTANTS lc_methodname TYPE seocpdname VALUE 'GET_DESTINATION'.
 
     FIELD-SYMBOLS: <lv_srcid> TYPE sysuuid_x.
 
     ASSIGN ('SRCID') TO <lv_srcid>.
 
-    IF NOT <lv_srcid> IS ASSIGNED.
+    IF NOT <lv_srcid> IS ASSIGNED OR <lv_srcid> IS INITIAL.
       rv_result = |NONE|.
       RETURN.
     ENDIF.
 
-    IF <lv_srcid> IS INITIAL.
-      rv_result = |NONE|.
+    IF gs_destination_cache-srcid = <lv_srcid>.
+      rv_result = gs_destination_cache-rfcdest.
       RETURN.
     ENDIF.
 
     TRY.
-        CALL METHOD (lc_classname)=>(lc_methodname)
+        CALL METHOD ('CL_ABAP_SOURCE_ID')=>('GET_DESTINATION')
           EXPORTING
             p_srcid       = <lv_srcid>
           RECEIVING
             p_destination = rv_result
           EXCEPTIONS
             not_found     = 1.
-
         IF sy-subrc <> 0.
           rv_result = |NONE|.
+        ELSE.
+* database table SCR_SRCID is not buffered, so buffer it here
+          gs_destination_cache-srcid = <lv_srcid>.
+          gs_destination_cache-rfcdest = rv_result.
         ENDIF.
 
       CATCH cx_sy_dyn_call_illegal_class
