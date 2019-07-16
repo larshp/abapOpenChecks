@@ -252,6 +252,7 @@ CLASS lcl_gui IMPLEMENTATION.
           lv_key        LIKE ls_node-node_key,
           lv_parent     LIKE ls_node-node_key,
           lv_total      TYPE i,
+          lv_string     TYPE string,
           ls_result     LIKE LINE OF lt_result.
 
 
@@ -260,7 +261,8 @@ CLASS lcl_gui IMPLEMENTATION.
     LOOP AT lt_result INTO ls_result WHERE parent = ''.
       lv_total = lv_total + ls_result-count.
     ENDLOOP.
-    MESSAGE |Grand Total: { lv_total }| TYPE 'S.'.
+    lv_string = |Grand Total: { lv_total }|.
+    MESSAGE lv_string TYPE 'S'.
 
     LOOP AT lt_result INTO ls_result.
       lv_key = sy-tabix.
