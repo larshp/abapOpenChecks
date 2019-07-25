@@ -83,7 +83,7 @@ CLASS ZCL_AOC_CHECK_83 IMPLEMENTATION.
         ENDIF.
       WHEN 'TABL'.
         SELECT SINGLE * FROM dd02l INTO ls_dd02l WHERE tabname = object_name. "#EC CI_NOORDER
-        IF sy-subrc = 0 AND ls_dd02l-tabclass = 'APPEND'.
+        IF ( sy-subrc = 0 AND ls_dd02l-tabclass = 'APPEND' ) OR sy-subrc <> 0.
           RETURN.
         ENDIF.
         SELECT SINGLE * FROM dd40l INTO ls_dd40l WHERE rowtype = object_name.
