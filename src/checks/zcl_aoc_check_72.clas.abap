@@ -84,7 +84,7 @@ CLASS ZCL_AOC_CHECK_72 IMPLEMENTATION.
       EXCEPTIONS
         access_failure = 1
         OTHERS         = 2.
-    IF sy-subrc <> 0.
+    IF sy-subrc <> 0 OR ls_dd02v IS INITIAL.
       RETURN.
     ENDIF.
 

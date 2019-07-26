@@ -1427,6 +1427,31 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     ENDIF.
 
+* idoc port function module, txn WE21 -> ABAP-PI
+    IF ms_naming-set_port = abap_true
+        AND rv_skip = abap_false.
+
+      CLEAR ls_check.
+      _append import 'I_WAIT'.
+      _append tables 'I_EDIDC'.
+
+      rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                          is_check      = ls_check ).
+
+    ENDIF.
+
+* idoc master idoc distribution, TBDME-IDOCFBNAME
+    IF ms_naming-set_port = abap_true
+        AND rv_skip = abap_false.
+
+      CLEAR ls_check.
+      _append import 'MESSAGE_TYPE'.
+
+      rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                          is_check      = ls_check ).
+
+    ENDIF.
+
   ENDMETHOD.
 
 
