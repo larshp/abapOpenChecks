@@ -168,7 +168,9 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    rv_as4user = ls_dd02v-as4user.
+    IF ls_dd02v-tabclass = 'TRANSP'.
+      rv_as4user = ls_dd02v-as4user.
+    ENDIF.
 
   ENDMETHOD.
 
