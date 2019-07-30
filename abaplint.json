@@ -4,7 +4,7 @@
     "skipGeneratedGatewayClasses": true,
     "skipGeneratedPersistentClasses": true,
     "skipGeneratedFunctionGroups": true,
-    "applyUnspecifiedRules": true
+    "applyUnspecifiedRules": false
   },
   "rules": {
     "7bit_ascii": {
