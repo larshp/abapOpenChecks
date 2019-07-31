@@ -1,27 +1,27 @@
 CLASS zcl_aoc_check_24_result DEFINITION
   PUBLIC
-  INHERITING FROM cl_ci_result_program
-  CREATE PUBLIC.
+  INHERITING FROM cl_ci_result_root
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
     METHODS constructor
       IMPORTING
-        !iv_kind TYPE sychar01.
+        !iv_kind TYPE sychar01 .
 
     METHODS if_ci_test~navigate
-        REDEFINITION.
+        REDEFINITION .
     METHODS set_info
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
-    DATA mt_list TYPE zcl_aoc_check_24=>ty_list_tt.
+    DATA mt_list TYPE zcl_aoc_check_24=>ty_list_tt .
 
     METHODS unpack
       IMPORTING
         !iv_string     TYPE string
       RETURNING
-        VALUE(rt_list) TYPE zcl_aoc_check_24=>ty_list_tt.
+        VALUE(rt_list) TYPE zcl_aoc_check_24=>ty_list_tt .
   PRIVATE SECTION.
 
     METHODS double_click
