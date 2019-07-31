@@ -194,7 +194,7 @@
     },
     "object_naming": {
       "enabled": true,
-      "exclude": [],
+      "exclude": ["deps\\/src\\/"],
       "clas": "^ZC(L|X)\\_",
       "intf": "^ZIF\\_",
       "prog": "^Z",
