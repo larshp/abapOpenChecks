@@ -129,7 +129,7 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
         READ TABLE lt_not WITH KEY name = lv_name TRANSPORTING NO FIELDS.
         IF sy-subrc = 0.
           inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = get_include( p_level = <ls_statement>-level )
+                  p_sub_obj_name = get_include( <ls_statement>-level )
                   p_line         = <ls_token>-row
                   p_kind         = mv_errty
                   p_test         = myname

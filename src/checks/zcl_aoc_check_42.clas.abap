@@ -61,7 +61,7 @@ CLASS ZCL_AOC_CHECK_42 IMPLEMENTATION.
           AND type <> scan_stmnt_type-pragma.
 
         IF <ls_when>-include IS INITIAL.
-          <ls_when>-include = get_include( p_level = <ls_statement>-level ).
+          <ls_when>-include = get_include( <ls_statement>-level ).
         ENDIF.
 
         LOOP AT it_tokens ASSIGNING <ls_token>

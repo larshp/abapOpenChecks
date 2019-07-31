@@ -132,7 +132,7 @@ CLASS ZCL_AOC_CHECK_37 IMPLEMENTATION.
     DATA: lv_include TYPE sobj_name.
 
 
-    lv_include = get_include( p_level = is_statement-level ).
+    lv_include = get_include( is_statement-level ).
 
     inform( p_sub_obj_type = c_type_include
             p_sub_obj_name = lv_include

@@ -125,7 +125,7 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
     ENDIF.
 
     inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = get_include( p_level = lo_first->get_statement( )-level )
+            p_sub_obj_name = get_include( lo_first->get_statement( )-level )
             p_line         = lo_first->get_statement( )-row
             p_kind         = mv_errty
             p_test         = myname

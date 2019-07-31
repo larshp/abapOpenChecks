@@ -126,7 +126,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
           EXPORTING
             p_line    = <ls_token>-row
             p_column  = lv_column
-            p_include = get_include( p_level = is_statement-level )
+            p_include = get_include( is_statement-level )
           IMPORTING
             p_full_name = lv_full
           EXCEPTIONS
@@ -178,7 +178,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
 
       inform(
         p_sub_obj_type = c_type_include
-        p_sub_obj_name = get_include( p_level = is_statement-level )
+        p_sub_obj_name = get_include( is_statement-level )
         p_line         = <ls_token>-row
         p_column       = <ls_token>-col
         p_kind         = 'N'

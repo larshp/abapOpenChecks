@@ -106,8 +106,8 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
       ENDIF.
 
       IF <ls_block>-statements = ls_prev-statements.
-        lv_include1 = get_include( p_level = ls_prev-level ).
-        lv_include2 = get_include( p_level = <ls_block>-level ).
+        lv_include1 = get_include( ls_prev-level ).
+        lv_include2 = get_include( <ls_block>-level ).
 
         ls_list-proc_name1 = lv_include1.
         ls_list-line1      = ls_prev-row.

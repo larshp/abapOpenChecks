@@ -59,7 +59,7 @@ CLASS ZCL_AOC_CHECK_16 IMPLEMENTATION.
           CONTINUE.
         ENDIF.
 
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = get_include( <ls_statement>-level ).
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
                 p_line         = <ls_statement>-trow

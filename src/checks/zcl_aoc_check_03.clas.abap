@@ -93,7 +93,7 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
         lv_exception = <ls_token>-str.
       ELSEIF <ls_token>-str = 'ENDTRY'.
         IF lv_error = abap_true AND NOT lv_exception IS INITIAL.
-          lv_include = get_include( p_level = <ls_statement>-level ).
+          lv_include = get_include( <ls_statement>-level ).
           inform( p_sub_obj_type = c_type_include
                   p_sub_obj_name = lv_include
                   p_position     = lv_position
@@ -156,7 +156,7 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
         READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
         ASSERT sy-subrc = 0.
 
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = get_include( <ls_statement>-level ).
 
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include

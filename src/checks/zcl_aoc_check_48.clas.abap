@@ -76,7 +76,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
           IF <ls_token>-str CP '*+[]*'.
             inform( p_sub_obj_type = c_type_include
-                    p_sub_obj_name = get_include( p_level = lv_level )
+                    p_sub_obj_name = get_include( lv_level )
                     p_line         = <ls_token>-row
                     p_kind         = mv_errty
                     p_test         = myname

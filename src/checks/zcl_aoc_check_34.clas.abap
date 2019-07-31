@@ -163,7 +163,7 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
         OR ( mv_incl_comments = abap_false
         AND iv_start + mv_lines < is_token-row - iv_comment_lines ) ).
 
-      lv_include = get_include( p_level = is_statement-level ).
+      lv_include = get_include( is_statement-level ).
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
               p_line         = iv_start

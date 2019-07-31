@@ -83,7 +83,7 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
 
     LOOP AT lt_fields ASSIGNING <ls_field>.
 
-      lv_include = get_include( p_level = <ls_field>-level ).
+      lv_include = get_include( <ls_field>-level ).
 
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include

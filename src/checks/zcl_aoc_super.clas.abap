@@ -1,8 +1,9 @@
 CLASS zcl_aoc_super DEFINITION
   PUBLIC
-  INHERITING FROM cl_ci_test_scan
+  INHERITING FROM zcl_aoc_super_root
   ABSTRACT
   CREATE PUBLIC
+
   GLOBAL FRIENDS zcl_aoc_unit_test .
 
   PUBLIC SECTION.
@@ -18,21 +19,11 @@ CLASS zcl_aoc_super DEFINITION
         !it_statements TYPE sstmnt_tab
         !it_levels     TYPE slevel_tab
         !it_structures TYPE ty_structures_tt .
-    CLASS-METHODS get_destination
-      RETURNING VALUE(rv_result) TYPE rfcdest.
     METHODS set_source
       IMPORTING
         !iv_name TYPE level_name
         !it_code TYPE string_table .
 
-    METHODS get_attributes
-        REDEFINITION .
-    METHODS if_ci_test~display_documentation
-        REDEFINITION .
-    METHODS if_ci_test~query_attributes
-        REDEFINITION .
-    METHODS put_attributes
-        REDEFINITION .
     METHODS run
         REDEFINITION .
   PROTECTED SECTION.
@@ -55,16 +46,23 @@ CLASS zcl_aoc_super DEFINITION
       END OF ty_statement .
     TYPES:
       ty_statements TYPE STANDARD TABLE OF ty_statement WITH DEFAULT KEY .
-    TYPES:
-      BEGIN OF ty_destination_cache,
-        srcid   TYPE sysuuid_x,
-        rfcdest TYPE rfcdest,
-      END OF ty_destination_cache .
 
-    DATA mv_errty TYPE sci_errty .
-    CLASS-DATA gs_destination_cache TYPE ty_destination_cache .
+    CLASS-DATA ref_scan TYPE REF TO cl_ci_scan .
+    DATA:
+      statement_wa LIKE LINE OF ref_scan->statements .
+    CLASS-DATA ref_include TYPE REF TO cl_ci_source_include .
 
-    METHODS enable_rfc .
+    METHODS get_line_column_rel
+      IMPORTING
+        VALUE(p_n) TYPE i
+      EXPORTING
+        !p_line    TYPE i
+        !p_column  TYPE token_col .
+    METHODS get_include
+      IMPORTING
+        !iv_level         TYPE i
+      RETURNING
+        VALUE(rv_include) TYPE programm .
     CLASS-METHODS statement_keyword
       IMPORTING
         !iv_number       TYPE stmnt_nr
@@ -102,8 +100,6 @@ CLASS zcl_aoc_super DEFINITION
         VALUE(rv_bool) TYPE abap_bool .
     METHODS set_uses_checksum .
 
-    METHODS get_include
-        REDEFINITION .
     METHODS inform
         REDEFINITION .
   PRIVATE SECTION.
@@ -179,7 +175,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       IF sy-subrc = 0.
         APPEND INITIAL LINE TO rt_statements ASSIGNING <ls_add>.
         <ls_add>-str        = lv_str.
-        <ls_add>-include    = get_include( p_level = <ls_statement>-level ).
+        <ls_add>-include    = get_include( <ls_statement>-level ).
         <ls_add>-level      = <ls_statement>-level.
         <ls_add>-start      = ls_start.
         <ls_add>-end        = ls_end.
@@ -341,83 +337,28 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD enable_rfc.
-* RFC enable the check, new feature for central ATC on 7.51
-
-    FIELD-SYMBOLS: <lv_rfc> TYPE abap_bool.
-
-
-    ASSIGN ('REMOTE_RFC_ENABLED') TO <lv_rfc>.
-    IF sy-subrc = 0.
-      <lv_rfc> = abap_true.
-    ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD get_attributes.
-
-    EXPORT mv_errty = mv_errty TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_destination.
-
-    "get destination of calling system (RFC enabled checks only)
-    "class, method and variable may not valid in 7.02 systems -> dynamic calls
-
-    FIELD-SYMBOLS: <lv_srcid> TYPE sysuuid_x.
-
-    ASSIGN ('SRCID') TO <lv_srcid>.
-
-    IF NOT <lv_srcid> IS ASSIGNED OR <lv_srcid> IS INITIAL.
-      rv_result = |NONE|.
-      RETURN.
-    ENDIF.
-
-    IF gs_destination_cache-srcid = <lv_srcid>.
-      rv_result = gs_destination_cache-rfcdest.
-      RETURN.
-    ENDIF.
-
-    TRY.
-        CALL METHOD ('CL_ABAP_SOURCE_ID')=>('GET_DESTINATION')
-          EXPORTING
-            p_srcid       = <lv_srcid>
-          RECEIVING
-            p_destination = rv_result
-          EXCEPTIONS
-            not_found     = 1.
-        IF sy-subrc <> 0.
-          rv_result = |NONE|.
-        ELSE.
-* database table SCR_SRCID is not buffered, so buffer it here
-          gs_destination_cache-srcid = <lv_srcid>.
-          gs_destination_cache-rfcdest = rv_result.
-        ENDIF.
-
-      CATCH cx_sy_dyn_call_illegal_class
-            cx_sy_dyn_call_illegal_method.
-        rv_result = |NONE|.
-    ENDTRY.
-
-  ENDMETHOD.
-
-
   METHOD get_include.
 
-    IF p_level = 0.
-* in case INCLUDE doesnt exist in the system
-      RETURN.
-    ENDIF.
+    BREAK-POINT.
 
-    IF ref_scan IS BOUND.
-* not bound during unit testing
-      p_result = super->get_include(
-          p_ref_scan = p_ref_scan
-          p_level    = p_level ).
-    ENDIF.
+*    IF iv_level = 0.
+** in case INCLUDE doesnt exist in the system
+*      RETURN.
+*    ENDIF.
+*
+*    IF ref_scan IS BOUND.
+** not bound during unit testing
+*      p_result = super->get_include(
+*          p_ref_scan = p_ref_scan
+*          p_level    = p_level ).
+*    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD get_line_column_rel.
+
+    BREAK-POINT.
 
   ENDMETHOD.
 
@@ -464,45 +405,6 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       ls_source-code = rt_code.
       INSERT ls_source INTO TABLE mt_source.
     ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD if_ci_test~display_documentation.
-
-    DATA: lv_url TYPE string VALUE 'http://docs.abapopenchecks.org/checks/' ##NO_TEXT,
-          lv_len TYPE i.
-
-
-    lv_len = strlen( myname ) - 2.
-
-    CONCATENATE lv_url myname+lv_len(2) INTO lv_url.
-
-    cl_gui_frontend_services=>execute(
-      EXPORTING
-        document               = lv_url
-      EXCEPTIONS
-        cntl_error             = 1
-        error_no_gui           = 2
-        bad_parameter          = 3
-        file_not_found         = 4
-        path_not_found         = 5
-        file_extension_unknown = 6
-        error_execute_failed   = 7
-        synchronous_failed     = 8
-        not_supported_by_gui   = 9
-        OTHERS                 = 10 ).                    "#EC CI_SUBRC
-
-  ENDMETHOD.
-
-
-  METHOD if_ci_test~query_attributes.
-
-    zzaoc_top.
-
-    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
-
-    zzaoc_popup.
 
   ENDMETHOD.
 
@@ -646,16 +548,6 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ELSE.
       rv_bool = abap_false.
     ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD put_attributes.
-
-    IMPORT
-      mv_errty = mv_errty
-      FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
-    ASSERT sy-subrc = 0.
 
   ENDMETHOD.
 
