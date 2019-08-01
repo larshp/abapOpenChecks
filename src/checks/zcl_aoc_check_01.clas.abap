@@ -38,9 +38,9 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
 
     lo_structure = zcl_aoc_structure=>build(
-      it_tokens     = it_tokens
-      it_statements = it_statements
-      it_structures = it_structures ).
+      it_tokens     = io_scan->tokens
+      it_statements = io_scan->statements
+      it_structures = io_scan->structures ).
 
     run_check( lo_structure ).
 

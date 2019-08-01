@@ -3,6 +3,7 @@ CLASS zcl_aoc_super DEFINITION
   INHERITING FROM cl_ci_test_scan
   ABSTRACT
   CREATE PUBLIC
+
   GLOBAL FRIENDS zcl_aoc_unit_test .
 
   PUBLIC SECTION.
@@ -14,12 +15,10 @@ CLASS zcl_aoc_super DEFINITION
     METHODS constructor .
     METHODS check
       IMPORTING
-        !it_tokens     TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab
-        !it_levels     TYPE slevel_tab
-        !it_structures TYPE ty_structures_tt .
+        !io_scan TYPE REF TO zcl_aoc_scan .
     CLASS-METHODS get_destination
-      RETURNING VALUE(rv_result) TYPE rfcdest.
+      RETURNING
+        VALUE(rv_result) TYPE rfcdest .
     METHODS set_source
       IMPORTING
         !iv_name TYPE level_name
@@ -65,20 +64,6 @@ CLASS zcl_aoc_super DEFINITION
     CLASS-DATA gs_destination_cache TYPE ty_destination_cache .
 
     METHODS enable_rfc .
-    CLASS-METHODS statement_keyword
-      IMPORTING
-        !iv_number       TYPE stmnt_nr
-        !it_statements   TYPE sstmnt_tab
-        !it_tokens       TYPE stokesx_tab
-      RETURNING
-        VALUE(rv_result) TYPE string .
-    CLASS-METHODS statement_row
-      IMPORTING
-        !iv_number       TYPE stmnt_nr
-        !it_statements   TYPE sstmnt_tab
-        !it_tokens       TYPE stokesx_tab
-      RETURNING
-        VALUE(rv_result) TYPE token_row .
     METHODS get_source
       IMPORTING
         !is_level      TYPE slevel
@@ -681,10 +666,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
                   it_code = ref_include->lines ).
     ENDIF.
 
-    check( it_tokens     = ref_scan->tokens
-           it_statements = ref_scan->statements
-           it_levels     = ref_scan->levels
-           it_structures = ref_scan->structures ).
+    check( zcl_aoc_scan=>create_from_ref( ref_scan ) ).
 
   ENDMETHOD.
 
@@ -714,42 +696,6 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     IF sy-subrc = 0.
       <lv_uses_checksum> = abap_true.
     ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD statement_keyword.
-
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
-
-
-    READ TABLE it_statements ASSIGNING <ls_statement> INDEX iv_number.
-    ASSERT sy-subrc = 0.
-
-    IF <ls_statement>-from <= <ls_statement>-to.
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-      ASSERT sy-subrc = 0.
-
-      rv_result = <ls_token>-str.
-    ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD statement_row.
-
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
-
-
-    READ TABLE it_statements ASSIGNING <ls_statement> INDEX iv_number.
-    ASSERT sy-subrc = 0.
-
-    READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-    ASSERT sy-subrc = 0.
-
-    rv_result = <ls_token>-row.
 
   ENDMETHOD.
 

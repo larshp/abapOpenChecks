@@ -41,16 +41,13 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
           lv_error   TYPE sci_errc,
           lv_index   LIKE sy-tabix.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
       lv_index = sy-tabix.
 
-      lv_keyword = statement_keyword(
-          iv_number     = lv_index
-          it_statements = it_statements
-          it_tokens     = it_tokens ).
+      lv_keyword = io_scan->statement_keyword( lv_index ).
 
       IF lv_keyword = 'EXIT' AND mv_exit = abap_true.
         lv_error = '001'.
@@ -60,7 +57,7 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
         CONTINUE. " current loop
       ENDIF.
 
-      LOOP AT it_structures TRANSPORTING NO FIELDS
+      LOOP AT io_scan->structures TRANSPORTING NO FIELDS
           WHERE ( stmnt_type = scan_struc_stmnt_type-loop
           OR stmnt_type = scan_struc_stmnt_type-while
           OR stmnt_type = scan_struc_stmnt_type-do
@@ -70,10 +67,7 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
         EXIT. " current loop
       ENDLOOP.
       IF sy-subrc <> 0.
-        lv_line = statement_row(
-          iv_number     = lv_index
-          it_statements = it_statements
-          it_tokens     = it_tokens ).
+        lv_line = io_scan->statement_row( lv_index ).
 
         lv_include = get_include( p_level = <ls_statement>-level ).
 
