@@ -37,12 +37,12 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
     DATA: lv_len   LIKE mv_maxlength,
           lv_level TYPE stmnt_levl.
 
-    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                   <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF io_scan->levels,
+                   <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
       lv_level = sy-tabix.
 
       IF mv_skipc = abap_true
@@ -50,9 +50,9 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
         CONTINUE. " current loop
       ENDIF.
 
-      LOOP AT it_statements ASSIGNING <ls_statement>
+      LOOP AT io_scan->statements ASSIGNING <ls_statement>
           WHERE level = lv_level.
-        LOOP AT it_tokens ASSIGNING <ls_token>
+        LOOP AT io_scan->tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from TO <ls_statement>-to.
 
           lv_len = <ls_token>-col + <ls_token>-len1.

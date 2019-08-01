@@ -31,11 +31,11 @@ CLASS ZCL_AOC_CHECK_05 IMPLEMENTATION.
           lv_line TYPE token_row,
           lv_bad  TYPE c.
 
-    FIELD-SYMBOLS: <ls_level> LIKE LINE OF it_levels,
+    FIELD-SYMBOLS: <ls_level> LIKE LINE OF io_scan->levels,
                    <lv_code>  LIKE LINE OF lt_code.
 
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
       lt_code = get_source( <ls_level> ).
       LOOP AT lt_code ASSIGNING <lv_code>.
         lv_line = sy-tabix.

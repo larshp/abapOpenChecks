@@ -87,7 +87,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
-    IF sy-saprl = '750'.
+    IF sy-saprl >= '750'.
 * 750 pretty prints code inside macro definitions
       cl_abap_unit_assert=>assert_equals( exp = '001'
                                           act = ms_result-code ).
