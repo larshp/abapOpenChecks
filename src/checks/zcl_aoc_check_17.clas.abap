@@ -33,9 +33,11 @@ CLASS zcl_aoc_check_17 DEFINITION
         VALUE(rv_exit) TYPE abap_bool.
 
   PRIVATE SECTION.
-    DATA ms_statement TYPE sstmnt.
-    DATA ms_token TYPE stokesx.
-    DATA mv_mode TYPE i.
+
+    DATA ms_statement TYPE sstmnt .
+    DATA ms_token TYPE stokesx .
+    DATA mv_mode TYPE i .
+    DATA mo_scan TYPE REF TO zcl_aoc_scan .
 ENDCLASS.
 
 
@@ -57,6 +59,8 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
 
 
     lv_others = mv_constants + mv_data + mv_fs + mv_statics + mv_types + mv_define.
+
+    mo_scan = io_scan.
 
     LOOP AT io_scan->structures ASSIGNING <ls_structure>
         WHERE type = scan_struc_type-routine.
@@ -124,7 +128,7 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
     IF mv_mode > iv_type.
       rv_exit = abap_true.
 
-      lv_include = get_include( p_level = ms_statement-level ).
+      lv_include = mo_scan->get_include( ms_statement-level ).
 
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include

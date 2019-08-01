@@ -87,7 +87,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
           EXIT. " current loop
         ENDIF.
 
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
                 p_position     = lv_position
@@ -101,7 +101,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
         CONTINUE. " current loop
       ENDIF.
 
-      lv_include = get_include( p_level = <ls_statement>-level ).
+      lv_include = io_scan->get_include( <ls_statement>-level ).
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
               p_position     = lv_position

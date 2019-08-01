@@ -75,7 +75,7 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
 
         IF lv_subrc = abap_true.
           inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = get_include( p_level = <ls_statement>-level )
+                  p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
                   p_line         = <ls_token>-row
                   p_column       = <ls_token>-col
                   p_kind         = mv_errty

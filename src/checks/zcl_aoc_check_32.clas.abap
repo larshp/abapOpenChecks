@@ -74,7 +74,7 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
           ENDIF.
         ENDIF.
 
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
 
         IF mv_ignore_ltcl = abap_true
             AND object_type = 'CLAS'

@@ -19,7 +19,8 @@ CLASS zcl_aoc_check_01 DEFINITION
         VALUE(rv_bool) TYPE abap_bool .
     METHODS run_check
       IMPORTING
-        !io_structure TYPE REF TO zcl_aoc_structure .
+        !io_structure TYPE REF TO zcl_aoc_structure
+        !io_scan      TYPE REF TO zcl_aoc_scan .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -42,7 +43,9 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
       it_statements = io_scan->statements
       it_structures = io_scan->structures ).
 
-    run_check( lo_structure ).
+    run_check(
+      io_structure = lo_structure
+      io_scan      = io_scan ).
 
   ENDMETHOD.
 
@@ -136,7 +139,7 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
     ENDIF.
 
     IF lv_if = 1 AND lv_other = 0.
-      lv_include = get_include( p_level = io_structure->get_statement( )-level ).
+      lv_include = io_scan->get_include( io_structure->get_statement( )-level ).
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
               p_line = io_structure->get_statement( )-row
@@ -145,7 +148,8 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
               p_code = '001' ).
     ELSE.
       LOOP AT io_structure->get_structure( ) INTO lo_structure.
-        run_check( lo_structure ).
+        run_check( io_structure = lo_structure
+                   io_scan      = io_scan ).
       ENDLOOP.
     ENDIF.
 

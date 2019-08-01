@@ -17,17 +17,18 @@ CLASS zcl_aoc_check_34 DEFINITION
         REDEFINITION.
     METHODS put_attributes
         REDEFINITION.
-  PROTECTED SECTION.
+protected section.
 
-    DATA mv_lines TYPE i .
-    DATA mv_incl_comments TYPE flag .
+  data MV_LINES type I .
+  data MV_INCL_COMMENTS type FLAG .
 
-    METHODS run_logic
-      IMPORTING
-        !is_statement     TYPE sstmnt
-        !is_token         TYPE stokesx
-        !iv_start         TYPE i
-        !iv_comment_lines TYPE i .
+  methods RUN_LOGIC
+    importing
+      !IS_STATEMENT type SSTMNT
+      !IS_TOKEN type STOKESX
+      !IV_START type I
+      !IV_COMMENT_LINES type I
+      !IO_SCAN type ref to ZCL_AOC_SCAN .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -62,7 +63,8 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
             is_statement     = <ls_statement>
             is_token         = <ls_token>
             iv_start         = lv_start
-            iv_comment_lines = lv_comment_lines ).
+            iv_comment_lines = lv_comment_lines
+            io_scan          = io_scan ).
           lv_comment_lines = 0.
           lv_start = <ls_token>-row.
         WHEN 'ENDCASE'.
@@ -70,7 +72,8 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
             is_statement     = <ls_statement>
             is_token         = <ls_token>
             iv_start         = lv_start
-            iv_comment_lines = lv_comment_lines ).
+            iv_comment_lines = lv_comment_lines
+            io_scan          = io_scan ).
           lv_comment_lines = 0.
           lv_start = 0.
         WHEN OTHERS.
@@ -163,7 +166,7 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
         OR ( mv_incl_comments = abap_false
         AND iv_start + mv_lines < is_token-row - iv_comment_lines ) ).
 
-      lv_include = get_include( p_level = is_statement-level ).
+      lv_include = io_scan->get_include( is_statement-level ).
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
               p_line         = iv_start

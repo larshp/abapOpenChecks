@@ -78,7 +78,7 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
           OR lv_statement CP 'ASSIGN COMPONENT *'
           OR lv_statement CP 'ASSIGN (*'.
         IF lv_check = abap_true.
-          lv_include = get_include( p_level = <ls_statement>-level ).
+          lv_include = io_scan->get_include( <ls_statement>-level ).
           inform( p_sub_obj_type = c_type_include
                   p_sub_obj_name = lv_include
                   p_line         = lv_row
@@ -110,7 +110,7 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
       IF lv_check = abap_true
           AND NOT lv_statement CP '* SY-SUBRC *'
           AND NOT lv_statement CP '*CL_ABAP_UNIT_ASSERT=>ASSERT_SUBRC*'.
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
                 p_line         = lv_row
@@ -124,7 +124,7 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
       LOOP AT lt_stack INTO ls_stack WHERE stackposition = lv_stack.
         IF NOT lv_statement CP '* SY-SUBRC *'
             AND NOT lv_statement CP '*CL_ABAP_UNIT_ASSERT=>ASSERT_SUBRC*'.
-          lv_include = get_include( p_level = <ls_statement>-level ).
+          lv_include = io_scan->get_include( <ls_statement>-level ).
           inform( p_sub_obj_type = c_type_include
                   p_sub_obj_name = lv_include
                   p_line         = ls_stack-row

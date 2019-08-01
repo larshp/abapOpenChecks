@@ -70,7 +70,7 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
           CONTINUE.
         ENDIF.
 
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
         IF mv_skipc = abap_true
             AND is_class_definition( lv_include ) = abap_true.
           CONTINUE. " current loop
