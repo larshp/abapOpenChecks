@@ -16,34 +16,34 @@ CLASS zcl_aoc_check_25 DEFINITION
         REDEFINITION.
     METHODS put_attributes
         REDEFINITION.
-protected section.
+  PROTECTED SECTION.
 
-  types:
-    BEGIN OF ty_field,
+    TYPES:
+      BEGIN OF ty_field,
         name  TYPE string,
         level TYPE i,
         row   TYPE token_row,
       END OF ty_field .
-  types:
-    ty_fields_tt TYPE STANDARD TABLE OF ty_field WITH NON-UNIQUE DEFAULT KEY .
+    TYPES:
+      ty_fields_tt TYPE STANDARD TABLE OF ty_field WITH NON-UNIQUE DEFAULT KEY .
 
-  data MV_SKIP_RADIO type SYCHAR01 .
+    DATA mv_skip_radio TYPE sychar01 .
 
-  methods STRIP
-    importing
-      !IV_INPUT type STRING
-    returning
-      value(RV_OUTPUT) type STRING .
-  methods ANALYZE
-    importing
-      !IO_SCAN type ref to ZCL_AOC_SCAN
-      !IT_FIELDS type TY_FIELDS_TT .
-  methods FIND_FIELDS
-    importing
-      !IT_TOKENS type STOKESX_TAB
-      !IT_STATEMENTS type SSTMNT_TAB
-    returning
-      value(RT_FIELDS) type TY_FIELDS_TT .
+    METHODS strip
+      IMPORTING
+        !iv_input        TYPE string
+      RETURNING
+        VALUE(rv_output) TYPE string .
+    METHODS analyze
+      IMPORTING
+        !io_scan   TYPE REF TO zcl_aoc_scan
+        !it_fields TYPE ty_fields_tt .
+    METHODS find_fields
+      IMPORTING
+        !it_tokens       TYPE stokesx_tab
+        !it_statements   TYPE sstmnt_tab
+      RETURNING
+        VALUE(rt_fields) TYPE ty_fields_tt .
   PRIVATE SECTION.
 ENDCLASS.
 

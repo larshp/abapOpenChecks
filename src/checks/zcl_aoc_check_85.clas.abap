@@ -8,15 +8,15 @@ CLASS zcl_aoc_check_85 DEFINITION
     METHODS constructor .
 
     METHODS check
-         REDEFINITION .
+        REDEFINITION .
     METHODS get_message_text
-         REDEFINITION .
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
     METHODS check_compute
       IMPORTING
-        !it_tokens               TYPE stokesx_tab
+        !io_scan                 TYPE REF TO zcl_aoc_scan
         !is_statement            TYPE sstmnt
         !io_compiler             TYPE REF TO cl_abap_compiler
       CHANGING
@@ -70,7 +70,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
         WHEN 'COMPUTE'.
           check_compute(
             EXPORTING
-              it_tokens    = io_scan->tokens
+              io_scan      = io_scan
               is_statement = statement_wa
               io_compiler  = lo_compiler
             CHANGING
@@ -102,15 +102,15 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
       lo_data_assignment TYPE REF TO cl_abap_comp_data.
 
     FIELD-SYMBOLS:
-      <ls_token> LIKE LINE OF it_tokens.
+      <ls_token> LIKE LINE OF io_scan->tokens.
 
     "concate statement for debugging purpose and inform
     lv_statement = get_statement(
-      it_tokens     = it_tokens
+      it_tokens     = io_scan->tokens
       is_statement  = is_statement ).
 
     "check for multiplication and division
-    LOOP AT it_tokens ASSIGNING <ls_token> FROM is_statement-from TO is_statement-to
+    LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM is_statement-from TO is_statement-to
         WHERE str = '*'
            OR str = '/'.
       lv_inform = abap_true.
@@ -119,7 +119,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
 
     IF lv_inform = abap_false.
       "collect all types of compute statement
-      LOOP AT it_tokens ASSIGNING <ls_token> FROM is_statement-from TO is_statement-to
+      LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM is_statement-from TO is_statement-to
           WHERE str <> '='.
         lv_column = <ls_token>-col + <ls_token>-len1 - 1. "end of token
         io_compiler->get_full_name_for_position(
@@ -172,13 +172,13 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
     IF lv_inform = abap_true.
       cv_save_to_change = abap_false.
       "get token for line/col
-      LOOP AT it_tokens ASSIGNING <ls_token> FROM is_statement-from TO is_statement-to.
+      LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM is_statement-from TO is_statement-to.
         EXIT.
       ENDLOOP.
 
       inform(
         p_sub_obj_type = c_type_include
-        p_sub_obj_name = get_include( p_level = is_statement-level )
+        p_sub_obj_name = io_scan->get_include( is_statement-level )
         p_line         = <ls_token>-row
         p_column       = <ls_token>-col
         p_kind         = 'N'

@@ -17,18 +17,18 @@ CLASS zcl_aoc_check_34 DEFINITION
         REDEFINITION.
     METHODS put_attributes
         REDEFINITION.
-protected section.
+  PROTECTED SECTION.
 
-  data MV_LINES type I .
-  data MV_INCL_COMMENTS type FLAG .
+    DATA mv_lines TYPE i .
+    DATA mv_incl_comments TYPE flag .
 
-  methods RUN_LOGIC
-    importing
-      !IS_STATEMENT type SSTMNT
-      !IS_TOKEN type STOKESX
-      !IV_START type I
-      !IV_COMMENT_LINES type I
-      !IO_SCAN type ref to ZCL_AOC_SCAN .
+    METHODS run_logic
+      IMPORTING
+        !is_statement     TYPE sstmnt
+        !is_token         TYPE stokesx
+        !iv_start         TYPE i
+        !iv_comment_lines TYPE i
+        !io_scan          TYPE REF TO zcl_aoc_scan .
   PRIVATE SECTION.
 ENDCLASS.
 
