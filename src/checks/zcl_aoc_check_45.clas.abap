@@ -17,16 +17,16 @@ CLASS zcl_aoc_check_45 DEFINITION
         REDEFINITION.
     METHODS if_ci_test~query_attributes
         REDEFINITION.
-protected section.
+  PROTECTED SECTION.
 
-  methods CHECK_LOOP
-    importing
-      !IT_STATEMENTS type ZCL_AOC_SCAN=>TY_STATEMENTS
-    returning
-      value(RV_BOOL) type ABAP_BOOL .
-  methods SUPPORT_740SP02
-    returning
-      value(RV_SUPPORTED) type ABAP_BOOL .
+    METHODS check_loop
+      IMPORTING
+        !it_statements TYPE zcl_aoc_scan=>ty_statements
+      RETURNING
+        VALUE(rv_bool) TYPE abap_bool .
+    METHODS support_740sp02
+      RETURNING
+        VALUE(rv_supported) TYPE abap_bool .
   PRIVATE SECTION.
 
     DATA mv_lines TYPE flag .

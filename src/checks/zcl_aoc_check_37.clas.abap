@@ -12,13 +12,13 @@ CLASS zcl_aoc_check_37 DEFINITION
     METHODS get_message_text
         REDEFINITION.
   PROTECTED SECTION.
-private section.
+  PRIVATE SECTION.
 
-  methods REPORT
-    importing
-      !IV_PROGRAM type PROGRAM
-      !IS_TOKEN type STOKESX
-      !IV_CODE type SCI_ERRC .
+    METHODS report
+      IMPORTING
+        !iv_program TYPE program
+        !is_token   TYPE stokesx
+        !iv_code    TYPE sci_errc .
 ENDCLASS.
 
 
