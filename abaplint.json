@@ -29,7 +29,7 @@
     },
     "class_attribute_names": {
       "enabled": true,
-      "exclude": ["zcl_aoc_scan\.clas\.abap"],
+      "exclude": ["zcl_aoc_scan\\.clas\\.abap"],
       "ignoreExceptions": true,
       "statics": "^G._.*$",
       "instance": "^M._.*$"
@@ -190,7 +190,7 @@
     },
     "no_public_attributes": {
       "enabled": true,
-      "exclude": ["zcl_aoc_scan\.clas\.abap"]
+      "exclude": ["zcl_aoc_scan\\.clas\\.abap"]
     },
     "object_naming": {
       "enabled": true,
