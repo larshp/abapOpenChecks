@@ -31,7 +31,7 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_code       TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
@@ -41,9 +41,7 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    lt_statements = build_statements(
-        it_tokens     = io_scan->tokens
-        it_statements = io_scan->statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.

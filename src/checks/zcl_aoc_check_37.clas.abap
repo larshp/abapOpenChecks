@@ -12,13 +12,13 @@ CLASS zcl_aoc_check_37 DEFINITION
     METHODS get_message_text
         REDEFINITION.
   PROTECTED SECTION.
-  PRIVATE SECTION.
+private section.
 
-    METHODS report
-      IMPORTING
-        !is_statement TYPE sstmnt
-        !is_token     TYPE stokesx
-        !iv_code      TYPE sci_errc.
+  methods REPORT
+    importing
+      !IV_PROGRAM type PROGRAM
+      !IS_TOKEN type STOKESX
+      !IV_CODE type SCI_ERRC .
 ENDCLASS.
 
 
@@ -57,14 +57,14 @@ CLASS ZCL_AOC_CHECK_37 IMPLEMENTATION.
 
       IF lv_statement CP 'MESSAGE ''*'
           OR lv_statement CP 'MESSAGE text-+++ *'.
-        report( is_statement = <ls_statement>
-                is_token     = <ls_token>
-                iv_code      = '001' ).
+        report( iv_program = io_scan->get_include( <ls_statement>-level )
+                is_token   = <ls_token>
+                iv_code    = '001' ).
       ENDIF.
 
       IF lv_statement CP 'MESSAGE *->GET_TEXT( ) *'
           OR lv_statement CP 'MESSAGE *->IF_MESSAGE~GET_TEXT( ) *'.
-        report( is_statement = <ls_statement>
+        report( iv_program = io_scan->get_include( <ls_statement>-level )
                 is_token     = <ls_token>
                 iv_code      = '002' ).
       ENDIF.
@@ -79,9 +79,9 @@ CLASS ZCL_AOC_CHECK_37 IMPLEMENTATION.
           AND arbgb = lv_class
           AND msgnr = lv_number.
         IF sy-subrc = 0 AND lv_text CO '&12345678 '.
-          report( is_statement = <ls_statement>
-                  is_token     = <ls_token>
-                  iv_code      = '003' ).
+          report( iv_program = io_scan->get_include( <ls_statement>-level )
+                  is_token   = <ls_token>
+                  iv_code    = '003' ).
         ENDIF.
       ENDIF.
 
@@ -129,13 +129,8 @@ CLASS ZCL_AOC_CHECK_37 IMPLEMENTATION.
 
   METHOD report.
 
-    DATA: lv_include TYPE sobj_name.
-
-
-    lv_include = get_include( p_level = is_statement-level ).
-
     inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = lv_include
+            p_sub_obj_name = iv_program
             p_line         = is_token-row
             p_kind         = mv_errty
             p_test         = myname

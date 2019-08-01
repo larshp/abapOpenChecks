@@ -12,46 +12,45 @@ CLASS zcl_aoc_check_79 DEFINITION
     METHODS get_message_text
         REDEFINITION .
   PROTECTED SECTION.
-  PRIVATE SECTION.
+private section.
 
-    TYPES:
-      BEGIN OF ty_method,
+  types:
+    BEGIN OF ty_method,
         clsname TYPE seoclsname,
         cpdname TYPE seocpdname,
         include TYPE programm,
       END OF ty_method .
-    TYPES:
-      ty_methods_tt TYPE STANDARD TABLE OF ty_method WITH DEFAULT KEY .
+  types:
+    ty_methods_tt TYPE STANDARD TABLE OF ty_method WITH DEFAULT KEY .
 
-    DATA mt_compiler TYPE scr_refs .
-    DATA mt_statements TYPE ty_statements .
+  data MT_COMPILER type SCR_REFS .
+  data MT_STATEMENTS type ZCL_AOC_SCAN=>TY_STATEMENTS .
 
-    METHODS check_local
-      IMPORTING
-        !is_method      TYPE ty_method
-        !is_local       TYPE scr_ref
-      RETURNING
-        VALUE(rv_error) TYPE abap_bool .
-    METHODS find_writes
-      IMPORTING
-        !is_method       TYPE ty_method
-        !is_local        TYPE scr_ref
-      RETURNING
-        VALUE(rt_writes) TYPE scr_refs .
-    METHODS initialize
-      IMPORTING
-        !it_tokens     TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab .
-    METHODS find_locals
-      IMPORTING
-        !is_method       TYPE ty_method
-      RETURNING
-        VALUE(rt_locals) TYPE scr_refs .
-    METHODS find_methods
-      IMPORTING
-        !it_levels        TYPE slevel_tab
-      RETURNING
-        VALUE(rt_methods) TYPE ty_methods_tt .
+  methods CHECK_LOCAL
+    importing
+      !IS_METHOD type TY_METHOD
+      !IS_LOCAL type SCR_REF
+    returning
+      value(RV_ERROR) type ABAP_BOOL .
+  methods FIND_WRITES
+    importing
+      !IS_METHOD type TY_METHOD
+      !IS_LOCAL type SCR_REF
+    returning
+      value(RT_WRITES) type SCR_REFS .
+  methods INITIALIZE
+    importing
+      !IO_SCAN type ref to ZCL_AOC_SCAN .
+  methods FIND_LOCALS
+    importing
+      !IS_METHOD type TY_METHOD
+    returning
+      value(RT_LOCALS) type SCR_REFS .
+  methods FIND_METHODS
+    importing
+      !IT_LEVELS type SLEVEL_TAB
+    returning
+      value(RT_METHODS) type TY_METHODS_TT .
 ENDCLASS.
 
 
@@ -77,9 +76,7 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    initialize(
-      it_tokens     = io_scan->tokens
-      it_statements = io_scan->statements ).
+    initialize( io_scan ).
 
     lt_methods = find_methods( io_scan->levels ).
 
@@ -250,9 +247,7 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
       iv_object_type = object_type
       iv_object_name = object_name )->get_result( ).
 
-    mt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+    mt_statements = io_scan->build_statements( ).
 
   ENDMETHOD.
 ENDCLASS.

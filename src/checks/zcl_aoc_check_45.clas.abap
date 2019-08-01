@@ -17,16 +17,16 @@ CLASS zcl_aoc_check_45 DEFINITION
         REDEFINITION.
     METHODS if_ci_test~query_attributes
         REDEFINITION.
-  PROTECTED SECTION.
+protected section.
 
-    METHODS check_loop
-      IMPORTING
-        !it_statements TYPE ty_statements
-      RETURNING
-        VALUE(rv_bool) TYPE abap_bool .
-    METHODS support_740sp02
-      RETURNING
-        VALUE(rv_supported) TYPE abap_bool .
+  methods CHECK_LOOP
+    importing
+      !IT_STATEMENTS type ZCL_AOC_SCAN=>TY_STATEMENTS
+    returning
+      value(RV_BOOL) type ABAP_BOOL .
+  methods SUPPORT_740SP02
+    returning
+      value(RV_SUPPORTED) type ABAP_BOOL .
   PRIVATE SECTION.
 
     DATA mv_lines TYPE flag .
@@ -54,16 +54,14 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
-          lt_procedure  TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
+          lt_procedure  TYPE zcl_aoc_scan=>ty_statements,
           lv_code       TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
 
 
-    lt_statements = build_statements(
-        it_tokens     = io_scan->tokens
-        it_statements = io_scan->statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.

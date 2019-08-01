@@ -34,7 +34,7 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_max        TYPE i,
           ls_max        LIKE LINE OF lt_statements,
           lv_level      TYPE i,
@@ -46,9 +46,7 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
 
 * todo, test how this works with macros
 
-    lt_statements = build_statements(
-      it_tokens     = io_scan->tokens
-      it_statements = io_scan->statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT io_scan->levels ASSIGNING <ls_level>.
       lv_level = sy-tabix.

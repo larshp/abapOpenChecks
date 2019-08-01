@@ -36,24 +36,6 @@ CLASS zcl_aoc_super DEFINITION
   PROTECTED SECTION.
 
     TYPES:
-      BEGIN OF ty_position,
-        row TYPE token_row,
-        col TYPE token_col,
-      END OF ty_position .
-    TYPES:
-      BEGIN OF ty_statement,
-        str        TYPE string,
-        start      TYPE ty_position,
-        end        TYPE ty_position,
-        include    TYPE programm,
-        level      TYPE stmnt_levl,
-        count      TYPE i,
-        terminator TYPE stmnt_term,
-        index      TYPE i,
-      END OF ty_statement .
-    TYPES:
-      ty_statements TYPE STANDARD TABLE OF ty_statement WITH DEFAULT KEY .
-    TYPES:
       BEGIN OF ty_destination_cache,
         srcid   TYPE sysuuid_x,
         rfcdest TYPE rfcdest,
@@ -68,12 +50,6 @@ CLASS zcl_aoc_super DEFINITION
         !is_level      TYPE slevel
       RETURNING
         VALUE(rt_code) TYPE string_table .
-    METHODS build_statements
-      IMPORTING
-        !it_tokens           TYPE stokesx_tab
-        !it_statements       TYPE sstmnt_tab
-      RETURNING
-        VALUE(rt_statements) TYPE ty_statements .
     METHODS is_class_pool
       IMPORTING
         !iv_include    TYPE level_name
@@ -102,11 +78,6 @@ CLASS zcl_aoc_super DEFINITION
 
     DATA mt_source TYPE ty_source_tt .
 
-    CLASS-METHODS token_position
-      IMPORTING
-        !is_token          TYPE stokesx
-      RETURNING
-        VALUE(rs_position) TYPE ty_position .
     METHODS check_class
       IMPORTING
         !iv_sub_obj_name TYPE sobj_name
@@ -124,57 +95,6 @@ ENDCLASS.
 
 
 CLASS ZCL_AOC_SUPER IMPLEMENTATION.
-
-
-  METHOD build_statements.
-
-    DATA: lv_str   TYPE string,
-          ls_start TYPE ty_position,
-          ls_end   TYPE ty_position,
-          lv_index TYPE i,
-          lv_count TYPE i.
-
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_add>       LIKE LINE OF rt_statements.
-
-
-    LOOP AT it_statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-empty
-        AND type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-pragma.
-      lv_index = sy-tabix.
-
-      CLEAR lv_str.
-      lv_count = 0.
-
-      LOOP AT it_tokens ASSIGNING <ls_token>
-          FROM <ls_statement>-from TO <ls_statement>-to.
-        IF lv_str IS INITIAL.
-          lv_str = <ls_token>-str.
-          ls_start = token_position( <ls_token> ).
-        ELSE.
-          CONCATENATE lv_str <ls_token>-str INTO lv_str SEPARATED BY space.
-        ENDIF.
-        lv_count = lv_count + 1.
-        ls_end = token_position( <ls_token> ).
-      ENDLOOP.
-      IF sy-subrc = 0.
-        APPEND INITIAL LINE TO rt_statements ASSIGNING <ls_add>.
-        <ls_add>-str        = lv_str.
-        <ls_add>-include    = get_include( p_level = <ls_statement>-level ).
-        <ls_add>-level      = <ls_statement>-level.
-        <ls_add>-start      = ls_start.
-        <ls_add>-end        = ls_end.
-        <ls_add>-count      = lv_count.
-        <ls_add>-index      = lv_index.
-        <ls_add>-terminator = <ls_statement>-terminator.
-      ENDIF.
-
-    ENDLOOP.
-
-  ENDMETHOD.
 
 
   METHOD check.
@@ -695,14 +615,6 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     IF sy-subrc = 0.
       <lv_uses_checksum> = abap_true.
     ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD token_position.
-
-    rs_position-col = is_token-col.
-    rs_position-row = is_token-row.
 
   ENDMETHOD.
 ENDCLASS.

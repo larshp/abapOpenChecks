@@ -126,7 +126,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
           EXPORTING
             p_line    = <ls_token>-row
             p_column  = lv_column
-            p_include = get_include( p_level = is_statement-level )
+            p_include = io_scan->get_include( is_statement-level )
           IMPORTING
             p_full_name = lv_full
           EXCEPTIONS

@@ -15,21 +15,21 @@ CLASS zcl_aoc_check_62 DEFINITION
 
     METHODS check_continue
       IMPORTING
-        !is_statement  TYPE ty_statement
-        !is_next       TYPE ty_statement
-        !is_next_next  TYPE ty_statement
+        !is_statement  TYPE zcl_aoc_scan=>ty_statement
+        !is_next       TYPE zcl_aoc_scan=>ty_statement
+        !is_next_next  TYPE zcl_aoc_scan=>ty_statement
       RETURNING
         VALUE(rv_code) TYPE sci_errc .
     METHODS check_delete
       IMPORTING
-        !is_statement  TYPE ty_statement
-        !is_next       TYPE ty_statement
+        !is_statement  TYPE zcl_aoc_scan=>ty_statement
+        !is_next       TYPE zcl_aoc_scan=>ty_statement
       RETURNING
         VALUE(rv_code) TYPE sci_errc .
     METHODS check_lines
       IMPORTING
-        !is_statement  TYPE ty_statement
-        !is_next       TYPE ty_statement
+        !is_statement  TYPE zcl_aoc_scan=>ty_statement
+        !is_next       TYPE zcl_aoc_scan=>ty_statement
       RETURNING
         VALUE(rv_code) TYPE sci_errc .
   PRIVATE SECTION.
@@ -46,7 +46,7 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_index      TYPE i,
           lv_code       TYPE sci_errc.
 
@@ -55,9 +55,7 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
                    <ls_next_next> LIKE LINE OF lt_statements.
 
 
-    lt_statements = build_statements(
-      it_tokens     = io_scan->tokens
-      it_statements = io_scan->statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       lv_index = sy-tabix + 1.

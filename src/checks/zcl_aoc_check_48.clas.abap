@@ -15,13 +15,10 @@ CLASS zcl_aoc_check_48 DEFINITION
 
     METHODS check_table_body_access
       IMPORTING
-        !it_tokens     TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab
-        !it_levels     TYPE slevel_tab .
+        !io_scan TYPE REF TO zcl_aoc_scan .
     METHODS check_table_key
       IMPORTING
-        !it_tokens     TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab .
+        !io_scan TYPE REF TO zcl_aoc_scan .
     METHODS support_empty_key
       RETURNING
         VALUE(rv_supported) TYPE abap_bool .
@@ -42,14 +39,9 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    check_table_key(
-      it_tokens     = io_scan->tokens
-      it_statements = io_scan->statements ).
+    check_table_key( io_scan ).
 
-    check_table_body_access(
-      it_tokens     = io_scan->tokens
-      it_statements = io_scan->statements
-      it_levels     = io_scan->levels ).
+    check_table_body_access( io_scan ).
 
   ENDMETHOD.
 
@@ -58,25 +50,25 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
     DATA: lv_level LIKE sy-tabix.
 
-    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_statement> LIKE LINE OF it_statements,
-                   <ls_level>     LIKE LINE OF it_levels.
+    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_level>     LIKE LINE OF io_scan->levels.
 
 
     IF object_type <> 'CLAS'.
       RETURN.
     ENDIF.
 
-    LOOP AT it_levels ASSIGNING <ls_level>.
+    LOOP AT io_scan->levels ASSIGNING <ls_level>.
       lv_level = sy-tabix.
-      LOOP AT it_statements ASSIGNING <ls_statement> WHERE level = lv_level.
-        LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to
+      LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE level = lv_level.
+        LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to
             WHERE type <> scan_token_type-literal
             AND type <> scan_token_type-comment.
 
           IF <ls_token>-str CP '*+[]*'.
             inform( p_sub_obj_type = c_type_include
-                    p_sub_obj_name = get_include( p_level = lv_level )
+                    p_sub_obj_name = io_scan->get_include( lv_level )
                     p_line         = <ls_token>-row
                     p_kind         = mv_errty
                     p_test         = myname
@@ -92,15 +84,13 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
   METHOD check_table_key.
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_code       TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
 
 
-    lt_statements = build_statements(
-        it_tokens     = it_tokens
-        it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
