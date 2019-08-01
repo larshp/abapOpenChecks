@@ -43,13 +43,13 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 * MIT License
 
     check_table_key(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+      it_tokens     = io_scan->tokens
+      it_statements = io_scan->statements ).
 
     check_table_body_access(
-      it_tokens     = it_tokens
-      it_statements = it_statements
-      it_levels     = it_levels ).
+      it_tokens     = io_scan->tokens
+      it_statements = io_scan->statements
+      it_levels     = io_scan->levels ).
 
   ENDMETHOD.
 
