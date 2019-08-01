@@ -34,22 +34,22 @@ CLASS ZCL_AOC_CHECK_91 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures.
+    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF io_scan->structures.
     DATA ls_statement TYPE sstmnt.
     DATA ls_token TYPE stokesx.
     DATA lv_row TYPE token_row.
     DATA lv_count TYPE i.
     DATA lv_include TYPE program.
 
-    LOOP AT it_structures ASSIGNING <ls_structure>
+    LOOP AT io_scan->structures ASSIGNING <ls_structure>
         WHERE type = scan_struc_type-routine.
 
-      LOOP AT it_statements INTO ls_statement
+      LOOP AT io_scan->statements INTO ls_statement
           FROM <ls_structure>-stmnt_from + 1
           TO <ls_structure>-stmnt_to - 1
           WHERE type <> scan_stmnt_type-macro_call.
 
-        READ TABLE it_tokens INTO ls_token INDEX ls_statement-from.
+        READ TABLE io_scan->tokens INTO ls_token INDEX ls_statement-from.
         IF sy-subrc <> 0
             OR ls_token-type = scan_token_type-comment
             OR ls_token-type = scan_token_type-pragma.
@@ -65,7 +65,7 @@ CLASS ZCL_AOC_CHECK_91 IMPLEMENTATION.
       ENDLOOP.
 
       IF lv_count > mv_maxlength.
-        lv_include = get_include( p_level = ls_statement-level ).
+        lv_include = io_scan->get_include( ls_statement-level ).
 
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include

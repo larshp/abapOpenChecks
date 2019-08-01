@@ -17,33 +17,33 @@ CLASS zcl_aoc_check_25 DEFINITION
     METHODS put_attributes
         REDEFINITION.
   PROTECTED SECTION.
+
     TYPES:
       BEGIN OF ty_field,
         name  TYPE string,
         level TYPE i,
         row   TYPE token_row,
-      END OF ty_field.
+      END OF ty_field .
     TYPES:
-      ty_fields_tt TYPE STANDARD TABLE OF ty_field WITH NON-UNIQUE DEFAULT KEY.
+      ty_fields_tt TYPE STANDARD TABLE OF ty_field WITH NON-UNIQUE DEFAULT KEY .
 
-    DATA mv_skip_radio TYPE sychar01.
+    DATA mv_skip_radio TYPE sychar01 .
 
     METHODS strip
       IMPORTING
         !iv_input        TYPE string
       RETURNING
-        VALUE(rv_output) TYPE string.
+        VALUE(rv_output) TYPE string .
     METHODS analyze
       IMPORTING
-        !it_tokens     TYPE stokesx_tab
-        !it_fields     TYPE ty_fields_tt
-        !it_statements TYPE sstmnt_tab.
+        !io_scan   TYPE REF TO zcl_aoc_scan
+        !it_fields TYPE ty_fields_tt .
     METHODS find_fields
       IMPORTING
         !it_tokens       TYPE stokesx_tab
         !it_statements   TYPE sstmnt_tab
       RETURNING
-        VALUE(rt_fields) TYPE ty_fields_tt.
+        VALUE(rt_fields) TYPE ty_fields_tt .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -60,15 +60,15 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
           lv_name    TYPE string,
           lt_fields  LIKE it_fields.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
                    <ls_field>     LIKE LINE OF it_fields,
-                   <ls_token>     LIKE LINE OF it_tokens.
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
     lt_fields = it_fields.
 
-    LOOP AT it_statements ASSIGNING <ls_statement>.
-      LOOP AT it_tokens ASSIGNING <ls_token>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from
           TO <ls_statement>-to
           WHERE type <> scan_token_type-comment
@@ -83,7 +83,7 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
 
     LOOP AT lt_fields ASSIGNING <ls_field>.
 
-      lv_include = get_include( p_level = <ls_field>-level ).
+      lv_include = io_scan->get_include( <ls_field>-level ).
 
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
@@ -106,12 +106,11 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
     DATA: lt_fields TYPE ty_fields_tt.
 
 
-    lt_fields = find_fields( it_tokens     = it_tokens
-                             it_statements = it_statements ).
+    lt_fields = find_fields( it_tokens     = io_scan->tokens
+                             it_statements = io_scan->statements ).
 
-    analyze( it_tokens     = it_tokens
-             it_fields     = lt_fields
-             it_statements = it_statements ).
+    analyze( io_scan   = io_scan
+             it_fields = lt_fields ).
 
   ENDMETHOD.
 

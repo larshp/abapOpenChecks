@@ -27,7 +27,8 @@ CLASS zcl_aoc_check_34 DEFINITION
         !is_statement     TYPE sstmnt
         !is_token         TYPE stokesx
         !iv_start         TYPE i
-        !iv_comment_lines TYPE i .
+        !iv_comment_lines TYPE i
+        !io_scan          TYPE REF TO zcl_aoc_scan .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -45,15 +46,15 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
     DATA: lv_start         TYPE i,
           lv_comment_lines TYPE i.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE type = scan_stmnt_type-standard OR
               type = scan_stmnt_type-comment.
 
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       ASSERT sy-subrc = 0.
 
       CASE <ls_token>-str.
@@ -62,7 +63,8 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
             is_statement     = <ls_statement>
             is_token         = <ls_token>
             iv_start         = lv_start
-            iv_comment_lines = lv_comment_lines ).
+            iv_comment_lines = lv_comment_lines
+            io_scan          = io_scan ).
           lv_comment_lines = 0.
           lv_start = <ls_token>-row.
         WHEN 'ENDCASE'.
@@ -70,7 +72,8 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
             is_statement     = <ls_statement>
             is_token         = <ls_token>
             iv_start         = lv_start
-            iv_comment_lines = lv_comment_lines ).
+            iv_comment_lines = lv_comment_lines
+            io_scan          = io_scan ).
           lv_comment_lines = 0.
           lv_start = 0.
         WHEN OTHERS.
@@ -163,7 +166,7 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
         OR ( mv_incl_comments = abap_false
         AND iv_start + mv_lines < is_token-row - iv_comment_lines ) ).
 
-      lv_include = get_include( p_level = is_statement-level ).
+      lv_include = io_scan->get_include( is_statement-level ).
       inform( p_sub_obj_type = c_type_include
               p_sub_obj_name = lv_include
               p_line         = iv_start

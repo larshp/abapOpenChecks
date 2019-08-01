@@ -59,14 +59,14 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
           ln_join_number         TYPE i,
           lf_read_prev_again     TYPE abap_bool.
 
-    FIELD-SYMBOLS: <ls_statement>       LIKE LINE OF it_statements,
+    FIELD-SYMBOLS: <ls_statement>       LIKE LINE OF io_scan->statements,
                    <ls_statement_token> LIKE LINE OF lt_statement_tokens,
-                   <ls_token>           LIKE LINE OF it_tokens.
+                   <ls_token>           LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
 
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       IF sy-subrc <> 0.
         CONTINUE.
       ENDIF.
@@ -77,7 +77,7 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
 
         lt_statement_tokens = get_tokens_for_statement(
           is_statement = <ls_statement>
-          it_tokens    = it_tokens ).
+          it_tokens    = io_scan->tokens ).
 
         READ TABLE lt_statement_tokens WITH KEY str = 'JOIN' TRANSPORTING NO FIELDS.
         CHECK sy-subrc = 0.
@@ -136,7 +136,7 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
 
         CHECK lf_relevant_join_found = abap_true.
 
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
 
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include

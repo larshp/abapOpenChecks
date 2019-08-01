@@ -25,12 +25,12 @@ CLASS zcl_aoc_check_66 DEFINITION
 
     METHODS check_exists
       IMPORTING
-        !is_statement  TYPE ty_statement
+        !is_statement  TYPE zcl_aoc_scan=>ty_statement
       RETURNING
         VALUE(rv_code) TYPE sci_errc .
     METHODS check_simplification
       IMPORTING
-        !is_statement  TYPE ty_statement
+        !is_statement  TYPE zcl_aoc_scan=>ty_statement
       RETURNING
         VALUE(rv_code) TYPE sci_errc .
 ENDCLASS.
@@ -46,15 +46,13 @@ CLASS ZCL_AOC_CHECK_66 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_code       TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
 
 
-    lt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>
         WHERE str CP 'RAISE EXCEPTION TYPE *'.

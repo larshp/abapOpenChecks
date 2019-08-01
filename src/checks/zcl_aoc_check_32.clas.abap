@@ -39,20 +39,20 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
           lv_devclass  TYPE tadir-devclass,
           lv_include   TYPE sobj_name.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
     IF mt_devclass IS INITIAL.
       RETURN.
     ENDIF.
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE type = scan_stmnt_type-standard
         OR type = scan_stmnt_type-method_direct.
 
       CLEAR lv_statement.
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
           WHERE type = scan_token_type-identifier.
         IF lv_statement IS INITIAL.
@@ -74,7 +74,7 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
           ENDIF.
         ENDIF.
 
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
 
         IF mv_ignore_ltcl = abap_true
             AND object_type = 'CLAS'

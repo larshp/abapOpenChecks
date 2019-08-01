@@ -32,17 +32,17 @@ CLASS ZCL_AOC_CHECK_12 IMPLEMENTATION.
           lt_results        TYPE TABLE OF string,
           lv_statement      LIKE LINE OF lt_results.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
 
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       CHECK sy-subrc = 0 AND <ls_token>-str = 'SORT'.
 
       CLEAR lv_statement.
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to.
         IF lv_statement IS INITIAL.
           lv_statement = <ls_token>-str.
@@ -86,7 +86,7 @@ CLASS ZCL_AOC_CHECK_12 IMPLEMENTATION.
       ENDLOOP.
 
       IF lv_error = abap_true.
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
 
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include

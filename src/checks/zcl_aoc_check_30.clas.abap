@@ -40,16 +40,16 @@ CLASS ZCL_AOC_CHECK_30 IMPLEMENTATION.
           ls_stack   LIKE LINE OF lt_stack,
           lv_include TYPE sobj_name.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE type = scan_stmnt_type-standard
         OR type = scan_stmnt_type-compute_direct
         OR type = scan_stmnt_type-method_direct.
 
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
           WHERE type = scan_token_type-identifier.
 
@@ -64,7 +64,7 @@ CLASS ZCL_AOC_CHECK_30 IMPLEMENTATION.
               AND ls_stack-receiv = abap_false
               AND ls_stack-exceptions = abap_false
               AND ls_stack-changing = abap_false.
-            lv_include = get_include( p_level = <ls_statement>-level ).
+            lv_include = io_scan->get_include( <ls_statement>-level ).
             inform( p_sub_obj_type = c_type_include
                     p_sub_obj_name = lv_include
                     p_line         = ls_stack-row

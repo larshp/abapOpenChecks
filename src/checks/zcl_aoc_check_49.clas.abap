@@ -97,9 +97,9 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
     DATA: lt_code TYPE ty_code_tt.
 
 
-    lt_code = build( it_tokens     = it_tokens
-                     it_statements = it_statements
-                     it_levels     = it_levels ).
+    lt_code = build( it_tokens     = io_scan->tokens
+                     it_statements = io_scan->statements
+                     it_levels     = io_scan->levels ).
 
     check_code( lt_code ).
 

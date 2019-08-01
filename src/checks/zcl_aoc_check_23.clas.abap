@@ -27,14 +27,14 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
 * MIT License
 
     DATA: lv_code       TYPE sci_errc,
-          lt_statements LIKE it_statements,
+          lt_statements LIKE io_scan->statements,
           lv_include    TYPE program.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    lt_statements = it_statements.
+    lt_statements = io_scan->statements.
 
     LOOP AT lt_statements ASSIGNING <ls_statement>
         WHERE coloncol <> 0
@@ -42,7 +42,7 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
 
       CLEAR lv_code.
 
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       IF sy-subrc <> 0.
         CONTINUE.
       ENDIF.
@@ -82,7 +82,7 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
       ENDIF.
 
       IF lv_code IS INITIAL.
-        LOOP AT it_tokens ASSIGNING <ls_token>
+        LOOP AT io_scan->tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from TO <ls_statement>-to
             WHERE row = <ls_statement>-colonrow.
           IF <ls_token>-col = <ls_statement>-coloncol + 1.
@@ -93,7 +93,7 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
 
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include

@@ -114,20 +114,20 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_tokens  LIKE it_tokens,
+    DATA: lt_tokens  LIKE io_scan->tokens,
           lv_code    TYPE sci_errc,
           lv_include TYPE sobj_name.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE type = scan_stmnt_type-standard.
 
       CLEAR lt_tokens.
 
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to.
         APPEND <ls_token> TO lt_tokens.
       ENDLOOP.
@@ -135,7 +135,7 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
       lv_code = analyze( lt_tokens ).
 
       IF NOT lv_code IS INITIAL AND <ls_token>-row > 0.
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
                 p_kind         = mv_errty

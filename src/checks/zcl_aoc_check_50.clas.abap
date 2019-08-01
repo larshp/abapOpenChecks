@@ -26,7 +26,7 @@ CLASS ZCL_AOC_CHECK_50 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_code       TYPE sci_errc,
           lv_category   TYPE seoclassdf-category.
 
@@ -42,9 +42,7 @@ CLASS ZCL_AOC_CHECK_50 IMPLEMENTATION.
       WHERE clsname = object_name
       AND version = '1'.                                  "#EC CI_SUBRC
 
-    lt_statements = build_statements(
-        it_tokens     = it_tokens
-        it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.

@@ -36,7 +36,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_index      TYPE i,
           lv_code       TYPE sci_errc,
           ls_prev       LIKE LINE OF lt_statements.
@@ -48,9 +48,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    lt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       lv_index = sy-tabix - 1.

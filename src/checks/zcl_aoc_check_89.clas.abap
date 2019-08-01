@@ -54,7 +54,7 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
     IF lv_actual_length < mv_minlength.
 
-      READ TABLE it_levels
+      READ TABLE io_scan->levels
         WITH KEY level = 0
         ASSIGNING <ls_level>.
 

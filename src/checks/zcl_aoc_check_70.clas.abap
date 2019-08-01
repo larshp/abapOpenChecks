@@ -66,21 +66,21 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
       lt_tokens        TYPE stokesx_tab.
 
     FIELD-SYMBOLS:
-      <ls_level>   LIKE LINE OF it_levels,
+      <ls_level>   LIKE LINE OF io_scan->levels,
       <lv_pattern> LIKE LINE OF mt_pattern_info.
 
     IF mt_pattern_info IS INITIAL AND mt_pattern_warning IS INITIAL AND mt_pattern_error IS INITIAL.
       RETURN.
     ENDIF.
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
       CLEAR:
         lt_comment_texts,
         lt_comments,
         lt_tokens.
 
-      lt_tokens = get_tokens( it_tokens     = it_tokens
-                              it_statements = it_statements
+      lt_tokens = get_tokens( it_tokens     = io_scan->tokens
+                              it_statements = io_scan->statements
                               iv_level      = sy-tabix ).
 
       lt_comments = get_comment_tokens( lt_tokens ).

@@ -38,41 +38,43 @@ CLASS zcl_aoc_check_24 DEFINITION
         statement TYPE string,
         level     TYPE i,
         row       TYPE token_row,
-      END OF ty_code.
+      END OF ty_code .
     TYPES:
-      ty_code_tt TYPE STANDARD TABLE OF ty_code WITH NON-UNIQUE DEFAULT KEY.
+      ty_code_tt TYPE STANDARD TABLE OF ty_code WITH NON-UNIQUE DEFAULT KEY .
     TYPES:
       BEGIN OF ty_block,
         statements     TYPE string,
         statement_list TYPE STANDARD TABLE OF string WITH DEFAULT KEY,
         level          TYPE i,
         row            TYPE token_row,
-      END OF ty_block.
+      END OF ty_block .
     TYPES:
-      ty_block_tt TYPE STANDARD TABLE OF ty_block WITH NON-UNIQUE DEFAULT KEY.
+      ty_block_tt TYPE STANDARD TABLE OF ty_block WITH NON-UNIQUE DEFAULT KEY .
 
-    DATA mv_statements TYPE i.
+    DATA mv_statements TYPE i .
 
     METHODS pack
       IMPORTING
         !it_list         TYPE ty_list_tt
       RETURNING
-        VALUE(rv_string) TYPE string.
+        VALUE(rv_string) TYPE string .
     METHODS analyze
+      IMPORTING
+        !io_scan   TYPE REF TO zcl_aoc_scan
       CHANGING
-        !ct_blocks TYPE ty_block_tt.
+        !ct_blocks TYPE ty_block_tt .
     METHODS build_blocks
       IMPORTING
         !it_code         TYPE ty_code_tt
       RETURNING
-        VALUE(rt_blocks) TYPE ty_block_tt.
+        VALUE(rt_blocks) TYPE ty_block_tt .
     METHODS build_code
       IMPORTING
         !it_tokens     TYPE stokesx_tab
         !it_statements TYPE sstmnt_tab
         !it_levels     TYPE slevel_tab
       RETURNING
-        VALUE(rt_code) TYPE ty_code_tt.
+        VALUE(rt_code) TYPE ty_code_tt .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -106,8 +108,8 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
       ENDIF.
 
       IF <ls_block>-statements = ls_prev-statements.
-        lv_include1 = get_include( p_level = ls_prev-level ).
-        lv_include2 = get_include( p_level = <ls_block>-level ).
+        lv_include1 = io_scan->get_include( ls_prev-level ).
+        lv_include2 = io_scan->get_include( <ls_block>-level ).
 
         ls_list-proc_name1 = lv_include1.
         ls_list-line1      = ls_prev-row.
@@ -249,13 +251,15 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
 
 
     lt_code = build_code(
-        it_tokens     = it_tokens
-        it_statements = it_statements
-        it_levels     = it_levels ).
+        it_tokens     = io_scan->tokens
+        it_statements = io_scan->statements
+        it_levels     = io_scan->levels ).
 
     lt_blocks = build_blocks( lt_code ).
 
-    analyze( CHANGING ct_blocks = lt_blocks ).
+    analyze(
+      EXPORTING io_scan = io_scan
+      CHANGING ct_blocks = lt_blocks ).
 
   ENDMETHOD.
 

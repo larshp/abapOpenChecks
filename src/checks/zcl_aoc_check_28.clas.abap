@@ -39,12 +39,12 @@ CLASS ZCL_AOC_CHECK_28 IMPLEMENTATION.
           lv_code  LIKE LINE OF lt_code,
           lv_level TYPE stmnt_levl.
 
-    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                   <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF io_scan->levels,
+                   <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
       lv_level = sy-tabix.
 
       IF is_class_pool( <ls_level>-name ) = abap_true.
@@ -54,13 +54,13 @@ CLASS ZCL_AOC_CHECK_28 IMPLEMENTATION.
         CONTINUE. " current loop
       ENDIF.
 
-      LOOP AT it_statements ASSIGNING <ls_statement>
+      LOOP AT io_scan->statements ASSIGNING <ls_statement>
           WHERE type <> scan_stmnt_type-comment
           AND type <> scan_stmnt_type-comment_in_stmnt
           AND terminator <> ''
           AND level = lv_level.
 
-        READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-to.
+        READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-to.
         IF sy-subrc <> 0.
           CONTINUE.
         ENDIF.

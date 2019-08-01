@@ -28,11 +28,11 @@ CLASS ZCL_AOC_CHECK_09 IMPLEMENTATION.
     DATA: lt_code TYPE string_table,
           lv_line TYPE token_row.
 
-    FIELD-SYMBOLS: <ls_level> LIKE LINE OF it_levels,
+    FIELD-SYMBOLS: <ls_level> LIKE LINE OF io_scan->levels,
                    <lv_code>  LIKE LINE OF lt_code.
 
 
-    LOOP AT it_levels ASSIGNING <ls_level>.
+    LOOP AT io_scan->levels ASSIGNING <ls_level>.
 
       lt_code = get_source( <ls_level> ).
 

@@ -26,19 +26,19 @@ CLASS zcl_aoc_check_06 DEFINITION
     DATA mv_lokey TYPE flag.
     DATA mv_flow TYPE flag.
   PRIVATE SECTION.
+
     METHODS build_option
       RETURNING
-        VALUE(rv_option) TYPE string.
+        VALUE(rv_option) TYPE string .
     METHODS check_flow .
     METHODS check_source
       IMPORTING
-        !it_levels     TYPE slevel_tab
-        !it_statements TYPE sstmnt_tab.
+        !io_scan TYPE REF TO zcl_aoc_scan .
     METHODS pretty_print
       IMPORTING
         !it_code         TYPE string_table
       RETURNING
-        VALUE(rt_pretty) TYPE string_table.
+        VALUE(rt_pretty) TYPE string_table .
 ENDCLASS.
 
 
@@ -94,8 +94,7 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    check_source( it_levels     = it_levels
-                  it_statements = it_statements ).
+    check_source( io_scan ).
 
     IF mv_flow = abap_true.
       check_flow( ).
@@ -177,13 +176,13 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
           lv_level  TYPE i,
           lv_row    TYPE i.
 
-    FIELD-SYMBOLS: <ls_level>  LIKE LINE OF it_levels,
+    FIELD-SYMBOLS: <ls_level>  LIKE LINE OF io_scan->levels,
                    <lv_code>   LIKE LINE OF lt_code,
                    <lv_pretty> LIKE LINE OF lt_pretty.
 
 
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
       lv_level = sy-tabix.
 
       IF is_class_pool( <ls_level>-name ) = abap_true.
@@ -201,7 +200,7 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
 
 * make sure the source code is not empty, as it will cause the pretty
 * printer to show an error message
-      READ TABLE it_statements WITH KEY level = lv_level TRANSPORTING NO FIELDS.
+      READ TABLE io_scan->statements WITH KEY level = lv_level TRANSPORTING NO FIELDS.
       IF sy-subrc <> 0.
         CONTINUE.
       ENDIF.

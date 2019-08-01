@@ -21,7 +21,7 @@ CLASS zcl_aoc_check_45 DEFINITION
 
     METHODS check_loop
       IMPORTING
-        !it_statements TYPE ty_statements
+        !it_statements TYPE zcl_aoc_scan=>ty_statements
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
     METHODS support_740sp02
@@ -54,16 +54,14 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
-          lt_procedure  TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
+          lt_procedure  TYPE zcl_aoc_scan=>ty_statements,
           lv_code       TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
 
 
-    lt_statements = build_statements(
-        it_tokens     = it_tokens
-        it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.

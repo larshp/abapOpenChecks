@@ -30,18 +30,18 @@ CLASS ZCL_AOC_CHECK_15 IMPLEMENTATION.
           lv_include   TYPE sobj_name,
           lv_statement TYPE string.
 
-    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_statement> LIKE LINE OF it_statements.
+    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE type <> scan_stmnt_type-empty
         AND type <> scan_stmnt_type-comment.
 
       lv_position = sy-tabix.
       CLEAR lv_statement.
 
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
           WHERE type <> scan_token_type-comment.
         IF lv_statement IS INITIAL.
@@ -63,7 +63,7 @@ CLASS ZCL_AOC_CHECK_15 IMPLEMENTATION.
         CONTINUE.
       ELSEIF lv_statement CP 'CALL *'
           OR lv_statement CP 'SYSTEM-CALL *'.
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
                 p_position     = lv_position

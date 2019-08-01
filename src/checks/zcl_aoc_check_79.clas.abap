@@ -24,7 +24,7 @@ CLASS zcl_aoc_check_79 DEFINITION
       ty_methods_tt TYPE STANDARD TABLE OF ty_method WITH DEFAULT KEY .
 
     DATA mt_compiler TYPE scr_refs .
-    DATA mt_statements TYPE ty_statements .
+    DATA mt_statements TYPE zcl_aoc_scan=>ty_statements .
 
     METHODS check_local
       IMPORTING
@@ -40,8 +40,7 @@ CLASS zcl_aoc_check_79 DEFINITION
         VALUE(rt_writes) TYPE scr_refs .
     METHODS initialize
       IMPORTING
-        !it_tokens     TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab .
+        !io_scan TYPE REF TO zcl_aoc_scan .
     METHODS find_locals
       IMPORTING
         !is_method       TYPE ty_method
@@ -77,11 +76,9 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    initialize(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+    initialize( io_scan ).
 
-    lt_methods = find_methods( it_levels ).
+    lt_methods = find_methods( io_scan->levels ).
 
     LOOP AT lt_methods INTO ls_method.
       lt_locals = find_locals( ls_method ).
@@ -250,9 +247,7 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
       iv_object_type = object_type
       iv_object_name = object_name )->get_result( ).
 
-    mt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+    mt_statements = io_scan->build_statements( ).
 
   ENDMETHOD.
 ENDCLASS.
