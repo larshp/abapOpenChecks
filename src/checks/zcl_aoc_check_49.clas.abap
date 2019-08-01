@@ -3,7 +3,7 @@ CLASS zcl_aoc_check_49 DEFINITION
   INHERITING FROM zcl_aoc_super
   CREATE PUBLIC.
 
-  public SECTION.
+  PUBLIC SECTION.
 
     METHODS constructor.
 
