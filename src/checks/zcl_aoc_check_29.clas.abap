@@ -38,32 +38,32 @@ CLASS ZCL_AOC_CHECK_29 IMPLEMENTATION.
           lv_str   TYPE string,
           lv_level TYPE stmnt_levl.
 
-    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                   <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF io_scan->levels,
+                   <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
       lv_level = sy-tabix.
 
 
-      LOOP AT it_statements ASSIGNING <ls_statement>
+      LOOP AT io_scan->statements ASSIGNING <ls_statement>
           WHERE type <> scan_stmnt_type-comment
           AND type <> scan_stmnt_type-comment_in_stmnt
           AND level = lv_level.
 
-        READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+        READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
         IF sy-subrc <> 0 OR <ls_token>-str <> 'CLASS'.
           CONTINUE.
         ENDIF.
 
-        READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from + 1.
+        READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from + 1.
         ASSERT sy-subrc = 0.
         lv_name = <ls_token>-str.
         TRANSLATE lv_name TO UPPER CASE.
 
         CLEAR lv_str.
-        LOOP AT it_tokens ASSIGNING <ls_token>
+        LOOP AT io_scan->tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from + 2
             TO <ls_statement>-to.
           IF lv_str IS INITIAL.

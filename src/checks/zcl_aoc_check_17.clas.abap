@@ -53,22 +53,22 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
           lv_define TYPE abap_bool,
           lv_others TYPE i.
 
-    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures.
+    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF io_scan->structures.
 
 
     lv_others = mv_constants + mv_data + mv_fs + mv_statics + mv_types + mv_define.
 
-    LOOP AT it_structures ASSIGNING <ls_structure>
+    LOOP AT io_scan->structures ASSIGNING <ls_structure>
         WHERE type = scan_struc_type-routine.
 
       mv_mode = 0.
 
-      LOOP AT it_statements INTO ms_statement
+      LOOP AT io_scan->statements INTO ms_statement
           FROM <ls_structure>-stmnt_from + 1
           TO <ls_structure>-stmnt_to - 1
           WHERE type <> scan_stmnt_type-macro_call.
 
-        READ TABLE it_tokens INTO ms_token INDEX ms_statement-from.
+        READ TABLE io_scan->tokens INTO ms_token INDEX ms_statement-from.
         IF sy-subrc <> 0
             OR ms_token-type = scan_token_type-comment
             OR ms_token-type = scan_token_type-pragma.

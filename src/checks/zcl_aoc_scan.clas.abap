@@ -1,39 +1,39 @@
-class ZCL_AOC_SCAN definition
-  public
-  create public .
+CLASS zcl_aoc_scan DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  types:
-    ty_structures_tt TYPE STANDARD TABLE OF sstruc WITH NON-UNIQUE DEFAULT KEY .
+    TYPES:
+      ty_structures_tt TYPE STANDARD TABLE OF sstruc WITH NON-UNIQUE DEFAULT KEY .
 
-  data TOKENS type STOKESX_TAB read-only .
-  data STATEMENTS type SSTMNT_TAB read-only .
-  data LEVELS type SLEVEL_TAB read-only .
-  data STRUCTURES type TY_STRUCTURES_TT read-only .
+    DATA tokens TYPE stokesx_tab READ-ONLY .
+    DATA statements TYPE sstmnt_tab READ-ONLY .
+    DATA levels TYPE slevel_tab READ-ONLY .
+    DATA structures TYPE ty_structures_tt READ-ONLY .
 
-  methods CONSTRUCTOR
-    importing
-      !IT_TOKENS type STOKESX_TAB
-      !IT_STATEMENTS type SSTMNT_TAB
-      !IT_LEVELS type SLEVEL_TAB
-      !IT_STRUCTURES type TY_STRUCTURES_TT .
-  methods STATEMENT_ROW
-    importing
-      !IV_NUMBER type STMNT_NR
-    returning
-      value(RV_RESULT) type TOKEN_ROW .
-  methods STATEMENT_KEYWORD
-    importing
-      !IV_NUMBER type STMNT_NR
-    returning
-      value(RV_RESULT) type STRING .
-  class-methods CREATE_FROM_REF
-    importing
-      !IO_REF type ref to OBJECT
-    returning
-      value(RO_SCAN) type ref to ZCL_AOC_SCAN .
-protected section.
+    METHODS constructor
+      IMPORTING
+        !it_tokens     TYPE stokesx_tab
+        !it_statements TYPE sstmnt_tab
+        !it_levels     TYPE slevel_tab
+        !it_structures TYPE ty_structures_tt .
+    METHODS statement_row
+      IMPORTING
+        !iv_number       TYPE stmnt_nr
+      RETURNING
+        VALUE(rv_result) TYPE token_row .
+    METHODS statement_keyword
+      IMPORTING
+        !iv_number       TYPE stmnt_nr
+      RETURNING
+        VALUE(rv_result) TYPE string .
+    CLASS-METHODS create_from_ref
+      IMPORTING
+        !io_ref        TYPE REF TO object
+      RETURNING
+        VALUE(ro_scan) TYPE REF TO zcl_aoc_scan .
+  PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 

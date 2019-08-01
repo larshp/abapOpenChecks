@@ -3,7 +3,6 @@ CLASS zcl_aoc_super DEFINITION
   INHERITING FROM cl_ci_test_scan
   ABSTRACT
   CREATE PUBLIC
-
   GLOBAL FRIENDS zcl_aoc_unit_test .
 
   PUBLIC SECTION.

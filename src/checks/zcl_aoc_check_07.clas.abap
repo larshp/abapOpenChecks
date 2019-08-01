@@ -29,31 +29,31 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
           lv_token    LIKE sy-tabix,
           lv_include  TYPE sobj_name.
 
-    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_token1>    LIKE LINE OF it_tokens,
-                   <ls_token2>    LIKE LINE OF it_tokens,
-                   <ls_token3>    LIKE LINE OF it_tokens,
-                   <ls_statement> LIKE LINE OF it_statements.
+    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_token1>    LIKE LINE OF io_scan->tokens,
+                   <ls_token2>    LIKE LINE OF io_scan->tokens,
+                   <ls_token3>    LIKE LINE OF io_scan->tokens,
+                   <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE type = scan_stmnt_type-standard
         OR type = scan_stmnt_type-method_direct.
 
       lv_position = sy-tabix.
 
       lv_token = <ls_statement>-from.
-      READ TABLE it_tokens ASSIGNING <ls_token1> INDEX lv_token.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token1> INDEX lv_token.
       IF sy-subrc <> 0.
         CONTINUE. " current loop
       ENDIF.
       lv_token = lv_token + 1.
-      READ TABLE it_tokens ASSIGNING <ls_token2> INDEX lv_token.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token2> INDEX lv_token.
       IF sy-subrc <> 0.
         CONTINUE. " current loop
       ENDIF.
       lv_token = lv_token + 1.
-      READ TABLE it_tokens ASSIGNING <ls_token3> INDEX lv_token.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token3> INDEX lv_token.
       IF sy-subrc <> 0.
         CONTINUE. " current loop
       ENDIF.
@@ -67,7 +67,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
           WHERE str = 'RECEIVING'
           AND type = scan_token_type-identifier.
@@ -77,7 +77,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
         ENDIF.
 
 * allow if old style exceptions are part of method
-        LOOP AT it_tokens TRANSPORTING NO FIELDS
+        LOOP AT io_scan->tokens TRANSPORTING NO FIELDS
             FROM <ls_statement>-from TO <ls_statement>-to
             WHERE str = 'EXCEPTIONS'
             AND type = scan_token_type-identifier.

@@ -29,11 +29,11 @@ CLASS ZCL_AOC_CHECK_16 IMPLEMENTATION.
     DATA: lv_include TYPE sobj_name,
           lv_ok      TYPE token_row.
 
-    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_statement> LIKE LINE OF it_statements.
+    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE type <> scan_stmnt_type-empty
         AND type <> scan_stmnt_type-macro_definition
         AND type <> scan_stmnt_type-comment
@@ -41,7 +41,7 @@ CLASS ZCL_AOC_CHECK_16 IMPLEMENTATION.
         AND type <> scan_stmnt_type-pragma
         AND type <> scan_stmnt_type-comment_in_stmnt.
 
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
           WHERE type <> scan_token_type-comment
           AND str <> ')'.
@@ -52,7 +52,7 @@ CLASS ZCL_AOC_CHECK_16 IMPLEMENTATION.
       ENDIF.
 
       IF lv_ok <> <ls_statement>-trow.
-        READ TABLE it_tokens WITH KEY row = <ls_statement>-trow
+        READ TABLE io_scan->tokens WITH KEY row = <ls_statement>-trow
           type = scan_token_type-pragma TRANSPORTING NO FIELDS.
         IF sy-subrc = 0.
 * allow if line contains pragma

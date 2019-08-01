@@ -249,9 +249,9 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
 
 
     lt_code = build_code(
-        it_tokens     = it_tokens
-        it_statements = it_statements
-        it_levels     = it_levels ).
+        it_tokens     = io_scan->tokens
+        it_statements = io_scan->statements
+        it_levels     = io_scan->levels ).
 
     lt_blocks = build_blocks( lt_code ).
 

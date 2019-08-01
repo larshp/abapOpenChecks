@@ -70,16 +70,16 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
           lv_token     TYPE string,
           lv_statement TYPE string.
 
-    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_statement> LIKE LINE OF it_statements.
+    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
 
       lv_position = sy-tabix.
       CLEAR lv_statement.
 
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to.
         IF <ls_token>-type <> scan_token_type-identifier.
           lv_token = 'SOMETHING'.

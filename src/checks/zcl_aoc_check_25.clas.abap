@@ -106,12 +106,12 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
     DATA: lt_fields TYPE ty_fields_tt.
 
 
-    lt_fields = find_fields( it_tokens     = it_tokens
-                             it_statements = it_statements ).
+    lt_fields = find_fields( it_tokens     = io_scan->tokens
+                             it_statements = io_scan->statements ).
 
-    analyze( it_tokens     = it_tokens
+    analyze( it_tokens     = io_scan->tokens
              it_fields     = lt_fields
-             it_statements = it_statements ).
+             it_statements = io_scan->statements ).
 
   ENDMETHOD.
 

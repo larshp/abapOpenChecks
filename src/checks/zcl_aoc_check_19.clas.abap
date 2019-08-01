@@ -48,19 +48,19 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
           lv_source    TYPE string,
           lv_name      TYPE string.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
     init_range( ).
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE type <> scan_stmnt_type-comment
         AND type <> scan_stmnt_type-comment_in_stmnt
         AND type <> scan_stmnt_type-empty.
 
       CLEAR lv_statement.
-      LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
+      LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
         IF lv_statement IS INITIAL.
           lv_statement = <ls_token>-str.
         ELSE.
@@ -68,13 +68,13 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
         ENDIF.
       ENDLOOP.
 
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       IF sy-subrc <> 0.
         CONTINUE. " current loop
       ENDIF.
 
       IF <ls_token>-str = 'DATA' OR <ls_token>-str = 'FIELD-SYMBOLS'.
-        READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from + 1.
+        READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from + 1.
         ASSERT sy-subrc = 0.
         lv_name = <ls_token>-str.
 

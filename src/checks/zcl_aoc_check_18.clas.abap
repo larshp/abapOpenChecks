@@ -28,20 +28,20 @@ CLASS ZCL_AOC_CHECK_18 IMPLEMENTATION.
     DATA: lv_include TYPE program,
           lv_found   TYPE abap_bool.
 
-    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures,
-                   <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_statement> LIKE LINE OF it_statements.
+    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF io_scan->structures,
+                   <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    LOOP AT it_structures ASSIGNING <ls_structure>
+    LOOP AT io_scan->structures ASSIGNING <ls_structure>
         WHERE type = scan_struc_type-condition.
 
       lv_found = abap_false.
 
-      LOOP AT it_statements ASSIGNING <ls_statement>
+      LOOP AT io_scan->statements ASSIGNING <ls_statement>
           FROM <ls_structure>-stmnt_from TO <ls_structure>-stmnt_to.
 
-        READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+        READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
         IF sy-subrc <> 0 OR <ls_token>-type = scan_token_type-comment.
           CONTINUE.
         ENDIF.
@@ -56,9 +56,9 @@ CLASS ZCL_AOC_CHECK_18 IMPLEMENTATION.
       ENDLOOP.
 
       IF lv_found = abap_false.
-        READ TABLE it_statements ASSIGNING <ls_statement> INDEX <ls_structure>-stmnt_from.
+        READ TABLE io_scan->statements ASSIGNING <ls_statement> INDEX <ls_structure>-stmnt_from.
         CHECK sy-subrc = 0.
-        READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+        READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
         CHECK sy-subrc = 0.
 
         lv_include = get_include( p_level = <ls_statement>-level ).

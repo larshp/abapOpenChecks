@@ -37,18 +37,18 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
           lv_row    TYPE i,
           lv_offset LIKE mv_offset.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE type <> scan_stmnt_type-comment
         AND type <> scan_stmnt_type-comment_in_stmnt
         AND type <> scan_stmnt_type-empty
         AND type <> scan_stmnt_type-pragma
         AND type <> scan_stmnt_type-macro_definition.
 
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       IF sy-subrc = 0.
         lv_col = <ls_token>-col.
         lv_row = <ls_token>-row.
@@ -77,7 +77,7 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
           lv_offset = mv_offset.
       ENDCASE.
 
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from + 1 TO <ls_statement>-to.
         IF <ls_token>-row = lv_row.
           CONTINUE.

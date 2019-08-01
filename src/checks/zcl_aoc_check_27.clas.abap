@@ -149,18 +149,18 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures.
+    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF io_scan->structures.
 
 
-    LOOP AT it_structures ASSIGNING <ls_structure>
+    LOOP AT io_scan->structures ASSIGNING <ls_structure>
         WHERE stmnt_type = scan_struc_stmnt_type-module
         OR stmnt_type = scan_struc_stmnt_type-function
         OR stmnt_type = scan_struc_stmnt_type-form
         OR stmnt_type = scan_struc_stmnt_type-method.
 
       build( is_structure  = <ls_structure>
-             it_statements = it_statements
-             it_tokens     = it_tokens ).
+             it_statements = io_scan->statements
+             it_tokens     = io_scan->tokens ).
 
       analyze( ).
 

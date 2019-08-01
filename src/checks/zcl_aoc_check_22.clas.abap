@@ -67,9 +67,9 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    loop( zcl_aoc_structure=>build( it_tokens     = it_tokens
-                                    it_statements = it_statements
-                                    it_structures = it_structures ) ).
+    loop( zcl_aoc_structure=>build( it_tokens     = io_scan->tokens
+                                    it_statements = io_scan->statements
+                                    it_structures = io_scan->structures ) ).
 
   ENDMETHOD.
 

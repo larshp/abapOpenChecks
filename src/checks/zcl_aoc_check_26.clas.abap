@@ -48,18 +48,18 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
           lv_include   TYPE program,
           lv_statement TYPE string.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
                    <ls_rt>        LIKE LINE OF ls_result-tokens,
-                   <ls_token>     LIKE LINE OF it_tokens.
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
 
       CLEAR lv_keyword1.
       CLEAR lv_keyword2.
       CLEAR lv_statement.
 
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from
           TO <ls_statement>-to
           WHERE type <> scan_token_type-comment.
