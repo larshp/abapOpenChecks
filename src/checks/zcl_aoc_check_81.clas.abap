@@ -30,17 +30,17 @@ CLASS ZCL_AOC_CHECK_81 IMPLEMENTATION.
     DATA: lv_level TYPE i,
           lv_first TYPE abap_bool,
           lv_code  TYPE sci_errc,
-          ls_next  LIKE LINE OF it_tokens.
+          ls_next  LIKE LINE OF io_scan->tokens.
 
-    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                   <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_statement> LIKE LINE OF it_statements.
+    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF io_scan->levels,
+                   <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    LOOP AT it_levels ASSIGNING <ls_level>.
+    LOOP AT io_scan->levels ASSIGNING <ls_level>.
       lv_level = sy-tabix.
 
-      LOOP AT it_statements ASSIGNING <ls_statement> WHERE level = lv_level
+      LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE level = lv_level
           AND type <> scan_stmnt_type-empty
           AND type <> scan_stmnt_type-macro_definition
           AND type <> scan_stmnt_type-comment
@@ -49,7 +49,7 @@ CLASS ZCL_AOC_CHECK_81 IMPLEMENTATION.
           AND type <> scan_stmnt_type-comment_in_stmnt.
 
         lv_first = abap_true.
-        LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to - 1.
+        LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to - 1.
           IF lv_first = abap_true
               AND ( <ls_token>-str = 'SELECT'
               OR <ls_token>-str = 'UPDATE'
@@ -58,7 +58,7 @@ CLASS ZCL_AOC_CHECK_81 IMPLEMENTATION.
           ENDIF.
           lv_first = abap_false.
 
-          READ TABLE it_tokens INTO ls_next INDEX sy-tabix + 1.
+          READ TABLE io_scan->tokens INTO ls_next INDEX sy-tabix + 1.
           ASSERT sy-subrc = 0.
 
           CLEAR lv_code.

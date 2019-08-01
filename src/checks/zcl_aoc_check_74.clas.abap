@@ -41,16 +41,16 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
           lv_char10     TYPE c LENGTH 10,
           lv_depth      TYPE i.
 
-    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
+    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF io_scan->levels,
                    <ls_statement> LIKE LINE OF lt_statements.
 
 * todo, test how this works with macros
 
     lt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+      it_tokens     = io_scan->tokens
+      it_statements = io_scan->statements ).
 
-    LOOP AT it_levels ASSIGNING <ls_level>.
+    LOOP AT io_scan->levels ASSIGNING <ls_level>.
       lv_level = sy-tabix.
       lv_depth = 0.
       lv_max = 0.

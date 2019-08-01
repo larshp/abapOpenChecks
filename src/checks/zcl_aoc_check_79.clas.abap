@@ -78,10 +78,10 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
     ENDIF.
 
     initialize(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+      it_tokens     = io_scan->tokens
+      it_statements = io_scan->statements ).
 
-    lt_methods = find_methods( it_levels ).
+    lt_methods = find_methods( io_scan->levels ).
 
     LOOP AT lt_methods INTO ls_method.
       lt_locals = find_locals( ls_method ).

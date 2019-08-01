@@ -54,7 +54,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
 
     lo_compiler = cl_abap_compiler=>create( program_name ).
 
-    LOOP AT it_statements INTO statement_wa.
+    LOOP AT io_scan->statements INTO statement_wa.
       lv_keyword = keyword( ).
       IF lv_define = abap_true.
         IF lv_keyword = 'END-OF-DEFINITION'.
@@ -70,7 +70,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
         WHEN 'COMPUTE'.
           check_compute(
             EXPORTING
-              it_tokens    = it_tokens
+              it_tokens    = io_scan->tokens
               is_statement = statement_wa
               io_compiler  = lo_compiler
             CHANGING

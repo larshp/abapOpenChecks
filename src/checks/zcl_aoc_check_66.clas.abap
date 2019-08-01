@@ -53,8 +53,8 @@ CLASS ZCL_AOC_CHECK_66 IMPLEMENTATION.
 
 
     lt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+      it_tokens     = io_scan->tokens
+      it_statements = io_scan->statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>
         WHERE str CP 'RAISE EXCEPTION TYPE *'.

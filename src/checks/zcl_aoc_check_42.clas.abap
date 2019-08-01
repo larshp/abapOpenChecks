@@ -39,19 +39,19 @@ CLASS ZCL_AOC_CHECK_42 IMPLEMENTATION.
           ls_when  LIKE LINE OF lt_when.
 
     FIELD-SYMBOLS: <ls_when>      LIKE LINE OF lt_when,
-                   <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_structure> LIKE LINE OF it_structures.
+                   <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_structure> LIKE LINE OF io_scan->structures.
 
 
-    LOOP AT it_structures ASSIGNING <ls_structure>
+    LOOP AT io_scan->structures ASSIGNING <ls_structure>
         WHERE stmnt_type = scan_struc_stmnt_type-when.
 
       APPEND INITIAL LINE TO lt_when ASSIGNING <ls_when>.
       <ls_when>-back = <ls_structure>-back.
 
       lv_from = <ls_structure>-stmnt_from + 1.
-      LOOP AT it_statements ASSIGNING <ls_statement>
+      LOOP AT io_scan->statements ASSIGNING <ls_statement>
           FROM lv_from
           TO <ls_structure>-stmnt_to
           WHERE type <> scan_stmnt_type-empty
@@ -64,7 +64,7 @@ CLASS ZCL_AOC_CHECK_42 IMPLEMENTATION.
           <ls_when>-include = get_include( p_level = <ls_statement>-level ).
         ENDIF.
 
-        LOOP AT it_tokens ASSIGNING <ls_token>
+        LOOP AT io_scan->tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from TO <ls_statement>-to.
 
           IF <ls_when>-row IS INITIAL.

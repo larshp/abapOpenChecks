@@ -215,7 +215,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    analyze_statements( it_statements ).
+    analyze_statements( io_scan->statements ).
 
   ENDMETHOD.
 

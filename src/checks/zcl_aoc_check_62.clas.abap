@@ -56,8 +56,8 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
 
 
     lt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+      it_tokens     = io_scan->tokens
+      it_statements = io_scan->statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       lv_index = sy-tabix + 1.

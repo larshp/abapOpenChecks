@@ -27,21 +27,21 @@ CLASS ZCL_AOC_CHECK_60 IMPLEMENTATION.
 * MIT License
 
     DATA: lt_statements TYPE ty_statements,
-          lt_tokens     LIKE it_tokens,
+          lt_tokens     LIKE io_scan->tokens,
           lv_code       TYPE sci_errc.
 
-    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
+    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF io_scan->tokens,
                    <ls_statement> LIKE LINE OF lt_statements.
 
 
-    lt_tokens = it_tokens.
+    lt_tokens = io_scan->tokens.
     LOOP AT lt_tokens ASSIGNING <ls_token> WHERE type = scan_token_type-literal.
       <ls_token>-str = 'STR'.
     ENDLOOP.
 
     lt_statements = build_statements(
       it_tokens     = lt_tokens
-      it_statements = it_statements ).
+      it_statements = io_scan->statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
 

@@ -46,13 +46,13 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
           lv_last       TYPE string.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements,
-                   <ls_stmt>      LIKE LINE OF it_statements,
+                   <ls_stmt>      LIKE LINE OF io_scan->statements,
                    <ls_previous>  LIKE LINE OF lt_statements.
 
 
     lt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+      it_tokens     = io_scan->tokens
+      it_statements = io_scan->statements ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       IF sy-tabix = 1.
@@ -92,7 +92,7 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
           CONTINUE.
         ENDIF.
 
-        READ TABLE it_statements INDEX <ls_statement>-index - 1
+        READ TABLE io_scan->statements INDEX <ls_statement>-index - 1
           ASSIGNING <ls_stmt>.                            "#EC CI_SUBRC
         IF <ls_stmt>-type = scan_stmnt_type-comment.
           CONTINUE.

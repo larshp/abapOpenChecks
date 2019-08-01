@@ -33,10 +33,10 @@ CLASS ZCL_AOC_CHECK_52 IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements,
                    <ls_token>     LIKE LINE OF lt_tokens,
                    <ls_next>      LIKE LINE OF lt_tokens,
-                   <ls_level>     LIKE LINE OF it_levels.
+                   <ls_level>     LIKE LINE OF io_scan->levels.
 
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
 
       lt_code = get_source( <ls_level> ).
 

@@ -73,19 +73,19 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
           lv_foobar TYPE string,                            "#EC NEEDED
           lv_str    TYPE string.
 
-    FIELD-SYMBOLS: <ls_top>       LIKE LINE OF it_tokens,
-                   <ls_token>     LIKE LINE OF it_tokens,
+    FIELD-SYMBOLS: <ls_top>       LIKE LINE OF io_scan->tokens,
+                   <ls_token>     LIKE LINE OF io_scan->tokens,
                    <ls_call>      LIKE LINE OF lt_calls,
-                   <ls_statement> LIKE LINE OF it_statements.
+                   <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    lt_calls = get_calls( it_levels ).
+    lt_calls = get_calls( io_scan->levels ).
     IF lt_calls IS INITIAL.
       RETURN.
     ENDIF.
 
-    LOOP AT it_statements ASSIGNING <ls_statement>.
-      LOOP AT it_tokens ASSIGNING <ls_top> FROM <ls_statement>-from TO <ls_statement>-to.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
+      LOOP AT io_scan->tokens ASSIGNING <ls_top> FROM <ls_statement>-from TO <ls_statement>-to.
         lv_index = sy-tabix.
 
         LOOP AT lt_calls ASSIGNING <ls_call>
@@ -94,7 +94,7 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
             AND start_column = <ls_top>-col.
 
           CLEAR lv_str.
-          LOOP AT it_tokens ASSIGNING <ls_token> FROM lv_index TO <ls_statement>-to.
+          LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM lv_index TO <ls_statement>-to.
             IF <ls_token>-row > <ls_call>-end_line
                 OR ( <ls_token>-row = <ls_call>-end_line
                 AND <ls_token>-col + strlen( <ls_token>-str ) >= <ls_call>-end_column ).

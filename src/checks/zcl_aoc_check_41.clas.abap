@@ -39,13 +39,13 @@ CLASS ZCL_AOC_CHECK_41 IMPLEMENTATION.
           lv_len     TYPE i,
           lv_prev    TYPE i.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_scomment>  LIKE LINE OF it_statements,
-                   <ls_tcomment>  LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_scomment>  LIKE LINE OF io_scan->statements,
+                   <ls_tcomment>  LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE type <> scan_stmnt_type-empty
         AND type <> scan_stmnt_type-comment
         AND type <> scan_stmnt_type-comment_in_stmnt
@@ -55,7 +55,7 @@ CLASS ZCL_AOC_CHECK_41 IMPLEMENTATION.
 
       CLEAR lv_prev.
 
-      LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
+      LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
         lv_len = strlen( <ls_token>-str ) - 1.
         IF <ls_token>-str(1) = '(' AND <ls_token>-str+lv_len(1) = ')'.
 * special case see unit test 05, SAP is fun
@@ -75,10 +75,10 @@ CLASS ZCL_AOC_CHECK_41 IMPLEMENTATION.
         ENDIF.
 
         lv_comment = abap_false.
-        LOOP AT it_statements ASSIGNING <ls_scomment>
+        LOOP AT io_scan->statements ASSIGNING <ls_scomment>
             WHERE type = scan_stmnt_type-comment_in_stmnt
             AND level = <ls_statement>-level.
-          LOOP AT it_tokens ASSIGNING <ls_tcomment>
+          LOOP AT io_scan->tokens ASSIGNING <ls_tcomment>
               FROM <ls_statement>-from TO <ls_statement>-to.
             IF <ls_tcomment>-row = lv_prev.
               lv_comment = abap_true.
