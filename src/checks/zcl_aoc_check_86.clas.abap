@@ -58,8 +58,6 @@ CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
     attributes_ok  = abap_true.
     has_display_consolidation = abap_true.
 
-    mv_errty = c_error.
-
     add_obj_type( c_type_program ).
     add_obj_type( 'DOMA' ).
     add_obj_type( 'DTEL' ).

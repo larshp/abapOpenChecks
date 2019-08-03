@@ -185,7 +185,6 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
     mv_001 = abap_true.
     mv_002 = abap_true.
     mv_003 = abap_true.

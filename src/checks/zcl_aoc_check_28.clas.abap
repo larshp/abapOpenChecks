@@ -101,7 +101,6 @@ CLASS ZCL_AOC_CHECK_28 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_skipc = abap_true.
 
   ENDMETHOD.

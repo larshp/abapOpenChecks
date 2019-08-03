@@ -143,7 +143,7 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
 
     mv_default_error = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

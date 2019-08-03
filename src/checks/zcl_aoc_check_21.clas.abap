@@ -129,9 +129,7 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty       = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD find_parameters.

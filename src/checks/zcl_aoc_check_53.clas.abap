@@ -151,8 +151,6 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
-
     mv_reuse_alv_grid_display    = abap_true.
     mv_so_new_document_att_send  = abap_true.
     mv_sapgui_progress_indicator = abap_true.
@@ -167,7 +165,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     mv_base64                    = abap_true.
     mv_binary                    = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

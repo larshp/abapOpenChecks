@@ -162,9 +162,7 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
     mv_data      = 2.
     mv_fs        = 3.
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

@@ -84,11 +84,10 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty     = c_error.
     mv_maxlength = 90.
     mv_skipc     = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

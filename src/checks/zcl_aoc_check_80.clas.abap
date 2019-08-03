@@ -91,8 +91,6 @@ CLASS ZCL_AOC_CHECK_80 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
     enable_rfc( ).
 
   ENDMETHOD.

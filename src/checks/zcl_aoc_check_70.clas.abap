@@ -145,7 +145,7 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
     INSERT ls_scimessage INTO TABLE scimessages.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

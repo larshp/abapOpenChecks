@@ -79,8 +79,6 @@ CLASS ZCL_AOC_CHECK_87 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
     add_obj_type( 'PROG' ).
     add_obj_type( 'FUGR' ).
 

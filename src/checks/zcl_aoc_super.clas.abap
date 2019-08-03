@@ -242,6 +242,8 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ENDIF.
 
     category = 'ZCL_AOC_CATEGORY'.
+    mv_errty = 'E'.
+
   ENDMETHOD.
 
 

@@ -98,7 +98,6 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
 
     super->constructor( ).
 
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '074'.
 
@@ -107,10 +106,9 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_depth = 4.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

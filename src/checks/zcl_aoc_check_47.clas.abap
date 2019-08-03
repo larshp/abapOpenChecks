@@ -95,9 +95,7 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_message_text.

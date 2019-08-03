@@ -110,11 +110,10 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty       = c_error.
     mv_offset      = 2.
     mv_nest_offset = 4.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

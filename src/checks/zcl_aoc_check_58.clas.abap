@@ -264,7 +264,6 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty     = c_error.
     mv_skip_ccau = abap_true.
 
   ENDMETHOD.

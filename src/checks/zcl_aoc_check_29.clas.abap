@@ -110,10 +110,9 @@ CLASS ZCL_AOC_CHECK_29 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_name = 'LTCL_+*'.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

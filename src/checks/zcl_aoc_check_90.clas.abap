@@ -31,8 +31,6 @@ CLASS ZCL_AOC_CHECK_90 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
     ls_scimessage-test = myname.
     ls_scimessage-code = '001'.
     ls_scimessage-kind = mv_errty.

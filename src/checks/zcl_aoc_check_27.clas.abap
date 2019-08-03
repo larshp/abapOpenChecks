@@ -182,8 +182,6 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
-
   ENDMETHOD.
 
 

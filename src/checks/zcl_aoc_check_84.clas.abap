@@ -31,8 +31,6 @@ CLASS ZCL_AOC_CHECK_84 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
     add_obj_type( 'INTF' ).
     add_obj_type( 'CLAS' ).
 

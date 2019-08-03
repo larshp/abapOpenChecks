@@ -127,11 +127,10 @@ CLASS ZCL_AOC_CHECK_66 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
     mv_exists = abap_true.
     mv_simplification = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

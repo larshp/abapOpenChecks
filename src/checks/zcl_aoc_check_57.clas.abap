@@ -108,12 +108,11 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty   = c_error.
     mv_into    = abap_true.
     mv_raising = abap_true.
     mv_unreachable = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

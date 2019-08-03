@@ -39,8 +39,6 @@ CLASS ZCL_AOC_CHECK_75 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
     mv_language = sy-langu.
 
     add_obj_type( 'TRAN' ).

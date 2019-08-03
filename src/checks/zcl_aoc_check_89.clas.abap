@@ -85,7 +85,6 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_minlength = 10.
 
     ls_scimessage-test = myname.
@@ -97,7 +96,7 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
     INSERT ls_scimessage INTO TABLE scimessages.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

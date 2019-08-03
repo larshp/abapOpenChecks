@@ -99,19 +99,16 @@ CLASS ZCL_AOC_CHECK_91 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_maxlength = 50.
 
     ls_scimessage-test = myname.
     ls_scimessage-code = '001'.
     ls_scimessage-kind = c_error.
     ls_scimessage-text = 'Maximum statements per processing block exceeded: &1'(m01).
-    ls_scimessage-pcom = ''.
-    ls_scimessage-pcom_alt = ''.
 
     INSERT ls_scimessage INTO TABLE scimessages.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

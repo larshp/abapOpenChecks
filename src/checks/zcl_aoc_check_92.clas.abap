@@ -51,14 +51,11 @@ CLASS ZCL_AOC_CHECK_92 IMPLEMENTATION.
 
     super->constructor( ).
 
-    category = 'ZCL_AOC_CATEGORY'.
     version  = '001'.
     position = '092'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
-
-    mv_errty = c_error.
 
   ENDMETHOD.
 

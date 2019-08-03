@@ -62,9 +62,7 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD contains_else.

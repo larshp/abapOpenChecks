@@ -127,10 +127,9 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_skip_radio = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD find_fields.

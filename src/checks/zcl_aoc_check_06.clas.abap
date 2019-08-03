@@ -241,7 +241,6 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty       = c_error.
     mv_hikey       = abap_true.
     mv_lokey       = abap_false.
     mv_lower       = abap_false.

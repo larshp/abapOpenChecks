@@ -207,8 +207,6 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
-
     mv_lines           = abap_true.
     mv_new             = abap_true.
     mv_inline_decl     = abap_true.
