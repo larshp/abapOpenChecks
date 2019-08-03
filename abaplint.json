@@ -6,6 +6,13 @@
     "skipGeneratedFunctionGroups": true,
     "applyUnspecifiedRules": false
   },
+  "dependencies": [
+    {
+      "url": "https://github.com/abaplint/deps",
+      "folder": "/deps",
+      "files": "/src/**/*.*"
+    }
+  ],
   "rules": {
     "7bit_ascii": {
       "enabled": true,
@@ -194,7 +201,7 @@
     },
     "object_naming": {
       "enabled": true,
-      "exclude": ["deps\\/src\\/"],
+      "exclude": [],
       "clas": "^ZC(L|X)\\_",
       "intf": "^ZIF\\_",
       "prog": "^Z",
@@ -263,7 +270,7 @@
       "exclude": []
     },
     "superclass_final": {
-      "enabled": false,
+      "enabled": true,
       "exclude": []
     },
     "tabl_enhancement_category": {
