@@ -92,7 +92,7 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
 
         READ TABLE io_scan->statements INDEX <ls_statement>-index - 1
           ASSIGNING <ls_stmt>.                            "#EC CI_SUBRC
-        IF <ls_stmt>-type = scan_stmnt_type-comment.
+        IF <ls_stmt>-type = io_scan->gc_statement-comment.
           CONTINUE.
         ENDIF.
 

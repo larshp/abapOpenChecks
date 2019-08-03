@@ -73,7 +73,7 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       CLEAR:
         lt_comment_texts,
         lt_comments,
@@ -165,7 +165,7 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_token> LIKE LINE OF it_tokens.
 
     "only meaningful comments
-    LOOP AT it_tokens ASSIGNING <ls_token> WHERE type = scan_token_type-comment AND str CN '*"-&'.
+    LOOP AT it_tokens ASSIGNING <ls_token> WHERE type = zcl_aoc_scan=>gc_token-comment AND str CN '*"-&'.
       APPEND <ls_token> TO rt_comments.
     ENDLOOP.
 

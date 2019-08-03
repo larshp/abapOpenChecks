@@ -206,7 +206,7 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
 
 
     LOOP AT it_levels ASSIGNING <ls_level>
-        WHERE type <> scan_level_type-macro_define.
+        WHERE type <> zcl_aoc_scan=>gc_level-macro_define.
       lv_level = sy-tabix.
 
       LOOP AT it_statements ASSIGNING <ls_statement> WHERE level = lv_level.
@@ -215,7 +215,7 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
         LOOP AT it_tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from
             TO <ls_statement>-to
-            WHERE type <> scan_token_type-comment.
+            WHERE type <> zcl_aoc_scan=>gc_token-comment.
           IF lv_statement IS INITIAL.
             lv_statement = <ls_token>-str.
           ELSE.

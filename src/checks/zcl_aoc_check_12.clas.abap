@@ -36,7 +36,7 @@ CLASS ZCL_AOC_CHECK_12 IMPLEMENTATION.
                    <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE type = io_scan->gc_statement-standard.
 
       READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       CHECK sy-subrc = 0 AND <ls_token>-str = 'SORT'.

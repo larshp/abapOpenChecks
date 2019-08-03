@@ -376,7 +376,7 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
 
   METHOD remove_strings.
 
-    LOOP AT io_tokens->get_tokens( ) TRANSPORTING NO FIELDS WHERE type = scan_token_type-literal.
+    LOOP AT io_tokens->get_tokens( ) TRANSPORTING NO FIELDS WHERE type = zcl_aoc_scan=>gc_token-literal.
       io_tokens->replace(
         iv_str   = 'str'
         iv_start = sy-tabix ).

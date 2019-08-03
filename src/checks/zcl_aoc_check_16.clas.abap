@@ -34,16 +34,16 @@ CLASS ZCL_AOC_CHECK_16 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-empty
-        AND type <> scan_stmnt_type-macro_definition
-        AND type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-native_sql
-        AND type <> scan_stmnt_type-pragma
-        AND type <> scan_stmnt_type-comment_in_stmnt.
+        WHERE type <> io_scan->gc_statement-empty
+        AND type <> io_scan->gc_statement-macro_definition
+        AND type <> io_scan->gc_statement-comment
+        AND type <> io_scan->gc_statement-native_sql
+        AND type <> io_scan->gc_statement-pragma
+        AND type <> io_scan->gc_statement-comment_in_stmnt.
 
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
-          WHERE type <> scan_token_type-comment
+          WHERE type <> io_scan->gc_token-comment
           AND str <> ')'.
         lv_ok = <ls_token>-row.
       ENDLOOP.
@@ -53,7 +53,7 @@ CLASS ZCL_AOC_CHECK_16 IMPLEMENTATION.
 
       IF lv_ok <> <ls_statement>-trow.
         READ TABLE io_scan->tokens WITH KEY row = <ls_statement>-trow
-          type = scan_token_type-pragma TRANSPORTING NO FIELDS.
+          type = io_scan->gc_token-pragma TRANSPORTING NO FIELDS.
         IF sy-subrc = 0.
 * allow if line contains pragma
           CONTINUE.

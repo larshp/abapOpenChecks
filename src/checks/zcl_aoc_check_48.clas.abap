@@ -63,8 +63,8 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
       lv_level = sy-tabix.
       LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE level = lv_level.
         LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to
-            WHERE type <> scan_token_type-literal
-            AND type <> scan_token_type-comment.
+            WHERE type <> io_scan->gc_token-literal
+            AND type <> io_scan->gc_token-comment.
 
           IF <ls_token>-str CP '*+[]*'.
             inform( p_sub_obj_type = c_type_include

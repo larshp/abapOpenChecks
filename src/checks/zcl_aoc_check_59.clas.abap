@@ -123,7 +123,7 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type = scan_stmnt_type-standard.
+        WHERE type = io_scan->gc_statement-standard.
 
       CLEAR lt_tokens.
 

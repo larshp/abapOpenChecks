@@ -182,7 +182,7 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
 
 
 
-    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       lv_level = sy-tabix.
 
       IF is_class_pool( <ls_level>-name ) = abap_true.

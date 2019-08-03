@@ -37,7 +37,7 @@ CLASS ZCL_AOC_CHECK_82 IMPLEMENTATION.
     LOOP AT io_scan->levels ASSIGNING <ls_level>.
       lv_level = sy-tabix.
       LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE level = lv_level
-          AND type = scan_stmnt_type-comment_in_stmnt.
+          AND type = io_scan->gc_statement-comment_in_stmnt.
         LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
           IF strlen( <ls_token>-str ) > 4 AND <ls_token>-str(4) = '"#EC'.
             inform( p_sub_obj_type = c_type_include

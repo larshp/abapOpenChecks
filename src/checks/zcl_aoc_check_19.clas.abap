@@ -55,9 +55,9 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
     init_range( ).
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-empty.
+        WHERE type <> io_scan->gc_statement-comment
+        AND type <> io_scan->gc_statement-comment_in_stmnt
+        AND type <> io_scan->gc_statement-empty.
 
       CLEAR lv_statement.
       LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.

@@ -81,7 +81,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
 
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to.
-        IF <ls_token>-type <> scan_token_type-identifier.
+        IF <ls_token>-type <> io_scan->gc_token-identifier.
           lv_token = 'SOMETHING'.
         ELSE.
           lv_token = <ls_token>-str.

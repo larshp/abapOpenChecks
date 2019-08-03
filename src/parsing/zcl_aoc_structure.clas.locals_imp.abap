@@ -24,7 +24,7 @@ CLASS lcl_simplify IMPLEMENTATION.
 
     ro_structure = io_structure.
 
-    IF io_structure->mv_type = scan_struc_type-sequence AND lines( io_structure->mt_structure ) = 1.
+    IF io_structure->mv_type = zcl_aoc_scan=>gc_structure-sequence AND lines( io_structure->mt_structure ) = 1.
 * simplify sequences with one statement
       READ TABLE io_structure->mt_structure INDEX 1 INTO ro_structure. "#EC CI_SUBRC
     ENDIF.
@@ -154,7 +154,7 @@ CLASS lcl_build IMPLEMENTATION.
       ENDLOOP.
     ENDIF.
 
-  ENDMETHOD.                    "construct
+  ENDMETHOD.
 
   METHOD build_sstr.
 
@@ -170,7 +170,7 @@ CLASS lcl_build IMPLEMENTATION.
       LOOP AT mt_tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from
           TO <ls_statement>-to.
-        IF <ls_token>-type = scan_token_type-comment OR <ls_token>-type = scan_token_type-pragma.
+        IF <ls_token>-type = zcl_aoc_scan=>gc_token-comment OR <ls_token>-type = zcl_aoc_scan=>gc_token-pragma.
 * nothing, but make sure to add to mt_sstr
         ELSEIF lv_string IS INITIAL.
           lv_string = <ls_token>-str.
@@ -189,6 +189,6 @@ CLASS lcl_build IMPLEMENTATION.
       APPEND ls_statement TO mt_sstr.
     ENDLOOP.
 
-  ENDMETHOD.                    "build_str
+  ENDMETHOD.
 
-ENDCLASS.                    "lcl_build IMPLEMENTATION
+ENDCLASS.

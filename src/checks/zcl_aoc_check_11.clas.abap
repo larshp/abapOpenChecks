@@ -49,7 +49,7 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE terminator = '.'
-        AND type <> scan_stmnt_type-pragma.
+        AND type <> io_scan->gc_statement-pragma.
 
       lv_position = sy-tabix.
 
@@ -65,8 +65,8 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
 
       IF <ls_statement>-level = lv_prev_level AND <ls_token_from>-row = lv_prev_row.
         READ TABLE io_scan->levels ASSIGNING <ls_level> INDEX <ls_statement>-level.
-        IF sy-subrc = 0 AND ( <ls_level>-type = scan_level_type-macro_define
-            OR <ls_level>-type = scan_level_type-macro_trmac ).
+        IF sy-subrc = 0 AND ( <ls_level>-type = io_scan->gc_level-macro_define
+            OR <ls_level>-type = io_scan->gc_level-macro_trmac ).
           CONTINUE.
         ENDIF.
 

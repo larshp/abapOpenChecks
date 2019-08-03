@@ -43,13 +43,13 @@ CLASS ZCL_AOC_CHECK_29 IMPLEMENTATION.
                    <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       lv_level = sy-tabix.
 
 
       LOOP AT io_scan->statements ASSIGNING <ls_statement>
-          WHERE type <> scan_stmnt_type-comment
-          AND type <> scan_stmnt_type-comment_in_stmnt
+          WHERE type <> io_scan->gc_statement-comment
+          AND type <> io_scan->gc_statement-comment_in_stmnt
           AND level = lv_level.
 
         READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.

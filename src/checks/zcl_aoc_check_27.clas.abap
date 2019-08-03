@@ -112,9 +112,9 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
     LOOP AT it_statements ASSIGNING <ls_statement>
         FROM is_structure-stmnt_from TO is_structure-stmnt_to
-        WHERE type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-macro_call
+        WHERE type <> zcl_aoc_scan=>gc_statement-comment
+        AND type <> zcl_aoc_scan=>gc_statement-comment_in_stmnt
+        AND type <> zcl_aoc_scan=>gc_statement-macro_call
         AND trow <> 0. " skip macro calls
 
       CLEAR ls_statement.

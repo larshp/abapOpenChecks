@@ -45,13 +45,13 @@ CLASS ZCL_AOC_CHECK_30 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type = scan_stmnt_type-standard
-        OR type = scan_stmnt_type-compute_direct
-        OR type = scan_stmnt_type-method_direct.
+        WHERE type = io_scan->gc_statement-standard
+        OR type = io_scan->gc_statement-compute_direct
+        OR type = io_scan->gc_statement-method_direct.
 
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
-          WHERE type = scan_token_type-identifier.
+          WHERE type = io_scan->gc_token-identifier.
 
         lv_i = strlen( <ls_token>-str ) - 1.
         IF <ls_token>-str+lv_i(1) = '('.

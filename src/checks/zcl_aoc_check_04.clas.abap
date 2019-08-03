@@ -42,7 +42,7 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
                    <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       lv_level = sy-tabix.
 
       IF mv_skipc = abap_true

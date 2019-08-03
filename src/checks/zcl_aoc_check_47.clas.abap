@@ -36,11 +36,11 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-empty
-        AND type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-macro_definition
-        AND type <> scan_stmnt_type-pragma.
+        WHERE type <> io_scan->gc_statement-empty
+        AND type <> io_scan->gc_statement-comment
+        AND type <> io_scan->gc_statement-comment_in_stmnt
+        AND type <> io_scan->gc_statement-macro_definition
+        AND type <> io_scan->gc_statement-pragma.
 
       CLEAR lv_statement.
       CLEAR lv_fourth.
@@ -48,8 +48,8 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
 
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
-          WHERE type = scan_token_type-identifier
-          OR type = scan_token_type-literal.
+          WHERE type = io_scan->gc_token-identifier
+          OR type = io_scan->gc_token-literal.
         lv_count = lv_count + 1.
 
         IF lv_count = 4.

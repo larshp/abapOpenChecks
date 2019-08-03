@@ -38,7 +38,7 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
 
     LOOP AT lt_statements ASSIGNING <ls_statement>
         WHERE coloncol <> 0
-        AND type <> scan_stmnt_type-pragma.
+        AND type <> io_scan->gc_statement-pragma.
 
       CLEAR lv_code.
 

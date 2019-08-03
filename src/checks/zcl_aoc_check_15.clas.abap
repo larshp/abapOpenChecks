@@ -35,15 +35,15 @@ CLASS ZCL_AOC_CHECK_15 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-empty
-        AND type <> scan_stmnt_type-comment.
+        WHERE type <> io_scan->gc_statement-empty
+        AND type <> io_scan->gc_statement-comment.
 
       lv_position = sy-tabix.
       CLEAR lv_statement.
 
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
-          WHERE type <> scan_token_type-comment.
+          WHERE type <> io_scan->gc_token-comment.
         IF lv_statement IS INITIAL.
           lv_statement = <ls_token>-str.
         ELSE.

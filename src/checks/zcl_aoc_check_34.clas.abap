@@ -51,8 +51,8 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type = scan_stmnt_type-standard OR
-              type = scan_stmnt_type-comment.
+        WHERE type = io_scan->gc_statement-standard OR
+              type = io_scan->gc_statement-comment.
 
       READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       ASSERT sy-subrc = 0.
@@ -77,7 +77,7 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
           lv_comment_lines = 0.
           lv_start = 0.
         WHEN OTHERS.
-          IF <ls_statement>-type = scan_stmnt_type-comment.
+          IF <ls_statement>-type = io_scan->gc_statement-comment.
             lv_comment_lines = lv_comment_lines + <ls_statement>-to - <ls_statement>-from.
           ENDIF.
       ENDCASE.

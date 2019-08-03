@@ -54,11 +54,11 @@ CLASS ZCL_AOC_CHECK_42 IMPLEMENTATION.
       LOOP AT io_scan->statements ASSIGNING <ls_statement>
           FROM lv_from
           TO <ls_structure>-stmnt_to
-          WHERE type <> scan_stmnt_type-empty
-          AND type <> scan_stmnt_type-comment
-          AND type <> scan_stmnt_type-comment_in_stmnt
-          AND type <> scan_stmnt_type-macro_definition
-          AND type <> scan_stmnt_type-pragma.
+          WHERE type <> io_scan->gc_statement-empty
+          AND type <> io_scan->gc_statement-comment
+          AND type <> io_scan->gc_statement-comment_in_stmnt
+          AND type <> io_scan->gc_statement-macro_definition
+          AND type <> io_scan->gc_statement-pragma.
 
         IF <ls_when>-include IS INITIAL.
           <ls_when>-include = io_scan->get_include( <ls_statement>-level ).

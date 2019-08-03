@@ -53,7 +53,7 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
                    <ls_code>      LIKE LINE OF rt_code.
 
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = zcl_aoc_scan=>gc_level-program.
       lv_level = sy-tabix.
 
       LOOP AT it_statements ASSIGNING <ls_statement>
@@ -63,7 +63,7 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
         UNASSIGN <ls_code>.
         LOOP AT it_tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from TO <ls_statement>-to
-            WHERE type <> scan_token_type-comment.
+            WHERE type <> zcl_aoc_scan=>gc_token-comment.
           IF NOT <ls_code> IS ASSIGNED.
             APPEND INITIAL LINE TO rt_code ASSIGNING <ls_code>.
             <ls_code>-name = <ls_level>-name.
@@ -74,7 +74,7 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
           ENDIF.
 
           lv_str = <ls_token>-str.
-          IF <ls_token>-type = scan_token_type-literal.
+          IF <ls_token>-type = zcl_aoc_scan=>gc_token-literal.
             REPLACE ALL OCCURRENCES OF ` ` IN lv_str WITH 'A'.
           ENDIF.
 

@@ -335,8 +335,8 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_source> LIKE LINE OF mt_source.
 
 
-    IF is_level-type = scan_level_type-macro_define
-        OR is_level-type = scan_level_type-macro_trmac.
+    IF is_level-type = zcl_aoc_scan=>gc_level-macro_define
+        OR is_level-type = zcl_aoc_scan=>gc_level-macro_trmac.
       RETURN.
     ENDIF.
 

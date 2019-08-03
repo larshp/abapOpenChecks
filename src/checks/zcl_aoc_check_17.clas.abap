@@ -63,19 +63,19 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
     mo_scan = io_scan.
 
     LOOP AT io_scan->structures ASSIGNING <ls_structure>
-        WHERE type = scan_struc_type-routine.
+        WHERE type = io_scan->gc_structure-routine.
 
       mv_mode = 0.
 
       LOOP AT io_scan->statements INTO ms_statement
           FROM <ls_structure>-stmnt_from + 1
           TO <ls_structure>-stmnt_to - 1
-          WHERE type <> scan_stmnt_type-macro_call.
+          WHERE type <> io_scan->gc_statement-macro_call.
 
         READ TABLE io_scan->tokens INTO ms_token INDEX ms_statement-from.
         IF sy-subrc <> 0
-            OR ms_token-type = scan_token_type-comment
-            OR ms_token-type = scan_token_type-pragma.
+            OR ms_token-type = io_scan->gc_token-comment
+            OR ms_token-type = io_scan->gc_token-pragma.
           CONTINUE. " current loop
         ENDIF.
 

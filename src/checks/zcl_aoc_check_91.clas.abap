@@ -42,17 +42,17 @@ CLASS ZCL_AOC_CHECK_91 IMPLEMENTATION.
     DATA lv_include TYPE program.
 
     LOOP AT io_scan->structures ASSIGNING <ls_structure>
-        WHERE type = scan_struc_type-routine.
+        WHERE type = io_scan->gc_structure-routine.
 
       LOOP AT io_scan->statements INTO ls_statement
           FROM <ls_structure>-stmnt_from + 1
           TO <ls_structure>-stmnt_to - 1
-          WHERE type <> scan_stmnt_type-macro_call.
+          WHERE type <> io_scan->gc_statement-macro_call.
 
         READ TABLE io_scan->tokens INTO ls_token INDEX ls_statement-from.
         IF sy-subrc <> 0
-            OR ls_token-type = scan_token_type-comment
-            OR ls_token-type = scan_token_type-pragma.
+            OR ls_token-type = io_scan->gc_token-comment
+            OR ls_token-type = io_scan->gc_token-pragma.
           CONTINUE. " current loop
         ENDIF.
 

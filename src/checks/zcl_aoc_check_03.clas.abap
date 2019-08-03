@@ -57,10 +57,10 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-empty
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-pragma.
+        WHERE type <> io_scan->gc_statement-comment
+        AND type <> io_scan->gc_statement-empty
+        AND type <> io_scan->gc_statement-comment_in_stmnt
+        AND type <> io_scan->gc_statement-pragma.
 
       lv_position = sy-tabix.
 

@@ -44,7 +44,7 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
 
       LOOP AT io_scan->statements ASSIGNING <ls_statement>
           WHERE level = lv_level
-          AND type = scan_stmnt_type-comment.
+          AND type = io_scan->gc_statement-comment.
         lv_next = sy-tabix + 1.
 
         CLEAR lv_comment.
@@ -59,7 +59,7 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
         READ TABLE io_scan->statements INDEX lv_next INTO ls_next.
         IF sy-subrc <> 0
             OR ls_next-level <> lv_level
-            OR ls_next-type = scan_stmnt_type-comment.
+            OR ls_next-type = io_scan->gc_statement-comment.
           CONTINUE.
         ENDIF.
 
