@@ -22,18 +22,19 @@ CLASS zcl_aoc_check_27 DEFINITION
         col       TYPE token_col,
         col_to    TYPE token_col,
       END OF ty_stmnt .
+    TYPES:
+      ty_stmnt_tt TYPE STANDARD TABLE OF ty_stmnt WITH DEFAULT KEY .
 
-    TYPES: ty_stmnt_tt TYPE STANDARD TABLE OF ty_stmnt WITH DEFAULT KEY.
-
-    DATA:
-      mt_statements TYPE ty_stmnt_tt.
+    DATA mt_statements TYPE ty_stmnt_tt .
 
     METHODS is_local
       IMPORTING
         !it_statements TYPE ty_stmnt_tt
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
-    METHODS analyze .
+    METHODS analyze
+      IMPORTING
+        !io_scan TYPE REF TO zcl_aoc_scan .
     METHODS build
       IMPORTING
         !is_structure  TYPE sstruc
@@ -83,7 +84,7 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
-        lv_include = get_include( p_level = ls_statement-level ).
+        lv_include = io_scan->get_include( ls_statement-level ).
 
         inform( p_sub_obj_type = c_type_include
                 p_sub_obj_name = lv_include
@@ -162,7 +163,7 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
              it_statements = io_scan->statements
              it_tokens     = io_scan->tokens ).
 
-      analyze( ).
+      analyze( io_scan ).
 
     ENDLOOP.
 
