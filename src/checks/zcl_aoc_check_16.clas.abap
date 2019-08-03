@@ -60,8 +60,7 @@ CLASS ZCL_AOC_CHECK_16 IMPLEMENTATION.
         ENDIF.
 
         lv_include = io_scan->get_include( <ls_statement>-level ).
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line         = <ls_statement>-trow
                 p_kind         = mv_errty
                 p_test         = myname

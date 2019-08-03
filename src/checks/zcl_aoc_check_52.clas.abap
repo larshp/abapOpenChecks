@@ -63,8 +63,7 @@ CLASS ZCL_AOC_CHECK_52 IMPLEMENTATION.
         IF sy-subrc = 0 AND <ls_next>-type <> io_scan->gc_token-pragma
             AND <ls_next>-str <> '.'
             AND <ls_next>-str <> ','.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = <ls_level>-name
+          inform( p_sub_obj_name = <ls_level>-name
                   p_line         = <ls_token>-row
                   p_kind         = mv_errty
                   p_test         = myname

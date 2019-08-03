@@ -88,8 +88,7 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
           is_method = ls_method
           is_local  = ls_local ).
         IF lv_error = abap_true.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = ls_method-include
+          inform( p_sub_obj_name = ls_method-include
                   p_line         = ls_local-line
                   p_kind         = mv_errty
                   p_test         = myname

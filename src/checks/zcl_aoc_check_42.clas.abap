@@ -93,8 +93,7 @@ CLASS ZCL_AOC_CHECK_42 IMPLEMENTATION.
       IF sy-subrc = 0
           AND <ls_when>-back = ls_when-back
           AND <ls_when>-code = ls_when-code.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_when>-include
+        inform( p_sub_obj_name = <ls_when>-include
                 p_line         = <ls_when>-row
                 p_kind         = mv_errty
                 p_test         = myname

@@ -166,8 +166,7 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
         AND iv_start + mv_lines < is_token-row - iv_comment_lines ) ).
 
       lv_include = io_scan->get_include( is_statement-level ).
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      inform( p_sub_obj_name = lv_include
               p_line         = iv_start
               p_kind         = mv_errty
               p_test         = myname

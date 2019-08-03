@@ -179,8 +179,7 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_error IS INITIAL.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_code>-name
+        inform( p_sub_obj_name = <ls_code>-name
                 p_line         = <ls_code>-row
                 p_kind         = mv_errty
                 p_test         = myname

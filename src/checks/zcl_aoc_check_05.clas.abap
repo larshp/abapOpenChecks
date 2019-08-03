@@ -46,8 +46,7 @@ CLASS ZCL_AOC_CHECK_05 IMPLEMENTATION.
           IMPORTING
             bad_chars = lv_bad ).
         IF lv_bad <> space.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = <ls_level>-name
+          inform( p_sub_obj_name = <ls_level>-name
                   p_line         = lv_line
                   p_kind         = mv_errty
                   p_test         = myname

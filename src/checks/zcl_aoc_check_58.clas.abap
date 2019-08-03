@@ -113,8 +113,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
           lv_include = cl_oo_classname_service=>get_interfacepool_name( <ls_constant>-clsname ).
         ENDIF.
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_kind         = mv_errty
                 p_test         = myname
                 p_code         = '002'
@@ -242,8 +241,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
           lv_include = cl_oo_classname_service=>get_interfacepool_name( <ls_type>-clsname ).
         ENDIF.
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_kind         = mv_errty
                 p_test         = myname
                 p_code         = '006'
@@ -467,8 +465,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = lv_include
+    inform( p_sub_obj_name = lv_include
             p_kind         = mv_errty
             p_test         = myname
             p_code         = iv_err_code ).

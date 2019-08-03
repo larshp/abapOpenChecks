@@ -84,8 +84,7 @@ CLASS ZCL_AOC_CHECK_29 IMPLEMENTATION.
         ENDIF.
 
         IF NOT lv_name CP mv_name.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = <ls_level>-name
+          inform( p_sub_obj_name = <ls_level>-name
                   p_line         = <ls_token>-row
                   p_kind         = mv_errty
                   p_test         = myname

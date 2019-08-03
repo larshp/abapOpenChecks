@@ -67,8 +67,7 @@ CLASS ZCL_AOC_CHECK_80 IMPLEMENTATION.
         ENDLOOP.
 
         IF lv_report = abap_true.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = <ls_level>-name
+          inform( p_sub_obj_name = <ls_level>-name
                   p_line         = lv_line
                   p_kind         = mv_errty
                   p_test         = myname

@@ -80,8 +80,7 @@ CLASS ZCL_AOC_CHECK_46 IMPLEMENTATION.
 
       READ TABLE lt_result WITH KEY full_name = lv_name TRANSPORTING NO FIELDS.
       IF sy-subrc = 0.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line         = lv_line
                 p_kind         = mv_errty
                 p_test         = myname

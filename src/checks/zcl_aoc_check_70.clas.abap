@@ -264,7 +264,6 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
           ENDIF.
 
           inform(
-            p_sub_obj_type = c_type_include
             p_sub_obj_name = is_level-name
             p_line         = <ls_comment>-row
             p_column       = <ls_comment>-col

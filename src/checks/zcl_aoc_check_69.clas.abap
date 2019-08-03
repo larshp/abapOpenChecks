@@ -814,8 +814,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     FIND REGEX lv_regex IN iv_name IGNORING CASE.
     IF sy-subrc <> 0.
       lv_include = get_include( p_level = statement_wa-level ).
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      inform( p_sub_obj_name = lv_include
               p_line         = get_line_rel( iv_relative )
               p_column       = get_column_rel( iv_relative )
               p_position     = mv_position
@@ -844,8 +843,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ENDIF.
 
     IF ro_generic IS INITIAL.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = get_include( p_level = statement_wa-level )
+      inform( p_sub_obj_name = get_include( p_level = statement_wa-level )
               p_line         = get_line_rel( 2 )
               p_column       = get_column_rel( 2 )
               p_kind         = mv_errty
@@ -875,8 +873,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ENDTRY.
     IF ro_class IS INITIAL.
       lv_include = get_include( p_level = statement_wa-level ).
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      inform( p_sub_obj_name = lv_include
               p_line         = get_line_rel( 2 )
               p_column       = get_column_rel( 2 )
               p_kind         = mv_errty
@@ -1230,8 +1227,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         meaningless_statement = 4
         OTHERS                = 5.
     IF sy-subrc <> 0.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = get_include( p_level = statement_wa-level )
+      inform( p_sub_obj_name = get_include( p_level = statement_wa-level )
               p_line         = get_line_rel( 2 )
               p_column       = get_column_rel( 2 )
               p_kind         = mv_errty

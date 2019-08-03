@@ -77,8 +77,7 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
         ENDIF.
         IF lv_prev_inform_row <> <ls_token_from>-row
             OR lv_prev_inform_level <> <ls_statement>-level.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = lv_include
+          inform( p_sub_obj_name = lv_include
                   p_position     = lv_position
                   p_line         = <ls_token_from>-row
                   p_kind         = mv_errty

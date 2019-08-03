@@ -69,8 +69,7 @@ CLASS ZCL_AOC_CHECK_81 IMPLEMENTATION.
           ENDIF.
 
           IF NOT lv_code IS INITIAL.
-            inform( p_sub_obj_type = c_type_include
-                    p_sub_obj_name = <ls_level>-name
+            inform( p_sub_obj_name = <ls_level>-name
                     p_line         = <ls_token>-row
                     p_column       = <ls_token>-col + <ls_token>-len1
                     p_kind         = mv_errty

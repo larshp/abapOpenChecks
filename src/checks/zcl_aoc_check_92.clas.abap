@@ -36,8 +36,7 @@ CLASS ZCL_AOC_CHECK_92 IMPLEMENTATION.
 
     IF lines( lt_unit_tests ) = 0.
 
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = me->program_name
+      inform( p_sub_obj_name = me->program_name
               p_kind         = mv_errty
               p_test         = me->myname
               p_code         = '001' ).

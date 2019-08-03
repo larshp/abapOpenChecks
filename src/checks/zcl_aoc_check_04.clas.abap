@@ -57,8 +57,7 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
 
           lv_len = <ls_token>-col + <ls_token>-len1.
           IF lv_len > mv_maxlength.
-            inform( p_sub_obj_type = c_type_include
-                    p_sub_obj_name = <ls_level>-name
+            inform( p_sub_obj_name = <ls_level>-name
                     p_line         = <ls_token>-row
                     p_kind         = mv_errty
                     p_test         = myname

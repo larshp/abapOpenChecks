@@ -128,8 +128,7 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
           <ls_list>-line2 = <ls_list>-line2 + lv_add.
         ENDLOOP.
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include1
+        inform( p_sub_obj_name = lv_include1
                 p_line         = ls_prev-row
                 p_kind         = mv_errty
                 p_test         = myname

@@ -67,8 +67,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
             AND type <> io_scan->gc_token-comment.
 
           IF <ls_token>-str CP '*+[]*'.
-            inform( p_sub_obj_type = c_type_include
-                    p_sub_obj_name = io_scan->get_include( lv_level )
+            inform( p_sub_obj_name = io_scan->get_include( lv_level )
                     p_line         = <ls_token>-row
                     p_kind         = mv_errty
                     p_test         = myname
@@ -103,8 +102,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_statement>-include
+        inform( p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
                 p_kind         = mv_errty
                 p_position     = <ls_statement>-index

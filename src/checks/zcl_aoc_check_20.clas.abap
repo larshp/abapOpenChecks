@@ -57,8 +57,7 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
       ENDIF.
 
       IF <ls_token>-col MOD 2 <> 0.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
+        inform( p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -83,8 +82,7 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
           CONTINUE.
         ENDIF.
         IF <ls_token>-col < lv_col + lv_offset.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
+          inform( p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
                   p_line         = <ls_token>-row
                   p_kind         = mv_errty
                   p_test         = myname

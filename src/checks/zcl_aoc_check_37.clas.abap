@@ -127,8 +127,7 @@ CLASS ZCL_AOC_CHECK_37 IMPLEMENTATION.
 
   METHOD report.
 
-    inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = iv_program
+    inform( p_sub_obj_name = iv_program
             p_line         = is_token-row
             p_kind         = mv_errty
             p_test         = myname

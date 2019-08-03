@@ -186,8 +186,7 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
     ENDLOOP.
 
     IF zcl_aoc_parser=>run( it_commented )-match = abap_true.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = is_level-name
+      inform( p_sub_obj_name = is_level-name
               p_line         = iv_line
               p_kind         = mv_errty
               p_test         = myname

@@ -102,8 +102,7 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
         READ TABLE io_scan->tokens INDEX ls_form_stmnt-from ASSIGNING <ls_token>.
         ASSERT sy-subrc = 0.
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = io_scan->get_include( ls_form_stmnt-level )
+        inform( p_sub_obj_name = io_scan->get_include( ls_form_stmnt-level )
                 p_position     = <ls_structure>-stmnt_from
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty

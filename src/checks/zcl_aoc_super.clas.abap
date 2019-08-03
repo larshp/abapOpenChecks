@@ -415,16 +415,22 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
   METHOD inform.
 
-    DATA: lv_cnam   TYPE reposrc-cnam,
-          lv_area   TYPE tvdir-area,
-          lv_skip   TYPE abap_bool,
-          lv_line   LIKE p_line,
-          lv_column LIKE p_column.
+    DATA: lv_cnam         TYPE reposrc-cnam,
+          lv_area         TYPE tvdir-area,
+          lv_skip         TYPE abap_bool,
+          lv_sub_obj_type LIKE p_sub_obj_type,
+          lv_line         LIKE p_line,
+          lv_column       LIKE p_column.
 
     FIELD-SYMBOLS: <ls_message> LIKE LINE OF scimessages.
 
 
-    IF p_sub_obj_type = 'PROG' AND p_sub_obj_name <> ''.
+    lv_sub_obj_type = p_sub_obj_type.
+    IF lv_sub_obj_type IS INITIAL AND NOT p_sub_obj_name IS INITIAL.
+      lv_sub_obj_type = 'PROG'.
+    ENDIF.
+
+    IF lv_sub_obj_type = 'PROG' AND p_sub_obj_name <> ''.
       IF p_sub_obj_name CP 'MP9+++BI' OR p_sub_obj_name CP 'MP9+++00'.
         RETURN. " custom HR infotype includes
       ENDIF.
@@ -442,7 +448,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ENDIF.
 
     IF object_type = 'SSFO'
-        AND p_sub_obj_type = 'PROG'
+        AND lv_sub_obj_type = 'PROG'
         AND ( p_sub_obj_name CP '/1BCDWB/LSF*'
         OR p_sub_obj_name CP '/1BCDWB/SAPL*' ).
       RETURN.
@@ -464,7 +470,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    lv_skip = check_wdy( iv_sub_obj_type = p_sub_obj_type
+    lv_skip = check_wdy( iv_sub_obj_type = lv_sub_obj_type
                          iv_sub_obj_name = p_sub_obj_name
                          iv_line         = p_line ).
     IF lv_skip = abap_true.
@@ -505,7 +511,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ENDIF.
 
     super->inform(
-        p_sub_obj_type = p_sub_obj_type
+        p_sub_obj_type = lv_sub_obj_type
         p_sub_obj_name = p_sub_obj_name
         p_position     = p_position
         p_line         = lv_line

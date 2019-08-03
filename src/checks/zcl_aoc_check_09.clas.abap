@@ -39,8 +39,7 @@ CLASS ZCL_AOC_CHECK_09 IMPLEMENTATION.
       LOOP AT lt_code ASSIGNING <lv_code>.
         lv_line = sy-tabix.
         IF <lv_code> CA cl_abap_char_utilities=>horizontal_tab.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = <ls_level>-name
+          inform( p_sub_obj_name = <ls_level>-name
                   p_line         = lv_line
                   p_kind         = mv_errty
                   p_test         = myname
