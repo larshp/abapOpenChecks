@@ -53,7 +53,7 @@ CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
     version  = '001'.
     position = '086'.
 
-    has_documentation = c_true.
+    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
     has_display_consolidation = abap_true.
