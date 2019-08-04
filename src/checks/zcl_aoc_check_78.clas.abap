@@ -44,7 +44,7 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
 
       LOOP AT io_scan->statements ASSIGNING <ls_statement>
           WHERE level = lv_level
-          AND type = scan_stmnt_type-comment.
+          AND type = io_scan->gc_statement-comment.
         lv_next = sy-tabix + 1.
 
         CLEAR lv_comment.
@@ -59,7 +59,7 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
         READ TABLE io_scan->statements INDEX lv_next INTO ls_next.
         IF sy-subrc <> 0
             OR ls_next-level <> lv_level
-            OR ls_next-type = scan_stmnt_type-comment.
+            OR ls_next-type = io_scan->gc_statement-comment.
           CONTINUE.
         ENDIF.
 
@@ -74,8 +74,7 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
         ENDLOOP.
 
         IF lv_subrc = abap_true.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
+          inform( p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
                   p_line         = <ls_token>-row
                   p_column       = <ls_token>-col
                   p_kind         = mv_errty
@@ -94,7 +93,6 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
 
     super->constructor( ).
 
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '078'.
 
@@ -102,8 +100,6 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
-
-    mv_errty = c_error.
 
   ENDMETHOD.
 

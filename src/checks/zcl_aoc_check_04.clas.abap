@@ -42,7 +42,7 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
                    <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       lv_level = sy-tabix.
 
       IF mv_skipc = abap_true
@@ -57,8 +57,7 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
 
           lv_len = <ls_token>-col + <ls_token>-len1.
           IF lv_len > mv_maxlength.
-            inform( p_sub_obj_type = c_type_include
-                    p_sub_obj_name = <ls_level>-name
+            inform( p_sub_obj_name = <ls_level>-name
                     p_line         = <ls_token>-row
                     p_kind         = mv_errty
                     p_test         = myname
@@ -84,11 +83,10 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty     = c_error.
     mv_maxlength = 90.
     mv_skipc     = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

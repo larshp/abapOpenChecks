@@ -40,8 +40,7 @@ CLASS ZCL_AOC_CHECK_10 IMPLEMENTATION.
           FROM <ls_statement>-from TO <ls_statement>-to
           WHERE str CP '''@++@'''.
         lv_include = io_scan->get_include( <ls_statement>-level ).
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_position     = lv_position
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
@@ -67,9 +66,7 @@ CLASS ZCL_AOC_CHECK_10 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_message_text.

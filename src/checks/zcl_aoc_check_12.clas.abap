@@ -36,7 +36,7 @@ CLASS ZCL_AOC_CHECK_12 IMPLEMENTATION.
                    <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE type = io_scan->gc_statement-standard.
 
       READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       CHECK sy-subrc = 0 AND <ls_token>-str = 'SORT'.
@@ -88,8 +88,7 @@ CLASS ZCL_AOC_CHECK_12 IMPLEMENTATION.
       IF lv_error = abap_true.
         lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -113,9 +112,7 @@ CLASS ZCL_AOC_CHECK_12 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_message_text.

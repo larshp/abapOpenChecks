@@ -41,12 +41,12 @@ CLASS ZCL_AOC_CHECK_81 IMPLEMENTATION.
       lv_level = sy-tabix.
 
       LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE level = lv_level
-          AND type <> scan_stmnt_type-empty
-          AND type <> scan_stmnt_type-macro_definition
-          AND type <> scan_stmnt_type-comment
-          AND type <> scan_stmnt_type-native_sql
-          AND type <> scan_stmnt_type-pragma
-          AND type <> scan_stmnt_type-comment_in_stmnt.
+          AND type <> io_scan->gc_statement-empty
+          AND type <> io_scan->gc_statement-macro_definition
+          AND type <> io_scan->gc_statement-comment
+          AND type <> io_scan->gc_statement-native_sql
+          AND type <> io_scan->gc_statement-pragma
+          AND type <> io_scan->gc_statement-comment_in_stmnt.
 
         lv_first = abap_true.
         LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to - 1.
@@ -69,8 +69,7 @@ CLASS ZCL_AOC_CHECK_81 IMPLEMENTATION.
           ENDIF.
 
           IF NOT lv_code IS INITIAL.
-            inform( p_sub_obj_type = c_type_include
-                    p_sub_obj_name = <ls_level>-name
+            inform( p_sub_obj_name = <ls_level>-name
                     p_line         = <ls_token>-row
                     p_column       = <ls_token>-col + <ls_token>-len1
                     p_kind         = mv_errty
@@ -90,14 +89,11 @@ CLASS ZCL_AOC_CHECK_81 IMPLEMENTATION.
 
     super->constructor( ).
 
-    category = 'ZCL_AOC_CATEGORY'.
     version  = '001'.
     position = '081'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
-
-    mv_errty = c_error.
 
     enable_rfc( ).
 

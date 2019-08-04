@@ -85,8 +85,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
         ASSERT 0 = 1.
       ENDIF.
 
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = <ls_statement>-include
+      inform( p_sub_obj_name = <ls_statement>-include
               p_line         = <ls_statement>-start-row
               p_kind         = mv_errty
               p_test         = myname
@@ -108,12 +107,11 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty   = c_error.
     mv_into    = abap_true.
     mv_raising = abap_true.
     mv_unreachable = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

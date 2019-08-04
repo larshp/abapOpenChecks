@@ -132,12 +132,11 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
-        inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = <ls_statement>-include
-            p_line         = <ls_statement>-start-row
-            p_kind         = mv_errty
-            p_test         = myname
-            p_code         = lv_code ).
+        inform( p_sub_obj_name = <ls_statement>-include
+                p_line         = <ls_statement>-start-row
+                p_kind         = mv_errty
+                p_test         = myname
+                p_code         = lv_code ).
       ENDIF.
     ENDLOOP.
 
@@ -206,8 +205,6 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
-
-    mv_errty = c_error.
 
     mv_lines           = abap_true.
     mv_new             = abap_true.

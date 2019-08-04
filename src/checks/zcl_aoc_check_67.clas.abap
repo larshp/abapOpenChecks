@@ -28,15 +28,13 @@ CLASS ZCL_AOC_CHECK_67 IMPLEMENTATION.
     version     = '001'.
     position    = '067'.
 
-    has_documentation = c_true.
+    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
     add_obj_type( 'DDLS' ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_message_text.

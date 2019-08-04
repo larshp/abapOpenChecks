@@ -45,17 +45,16 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
     version        = '001'.
     position       = '064'.
 
-    has_documentation = c_true.
+    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty    = c_error.
     mv_duration = if_aunit_attribute_enums=>c_duration-medium.
     mv_risk     = if_aunit_attribute_enums=>c_risk_level-harmless.
 
     add_obj_type( 'CLAS' ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

@@ -151,11 +151,9 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
     version  = '002'.
     position = '061'.
 
-    has_documentation = c_true.
+    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
-
-    mv_errty = c_error.
 
     add_obj_type( 'TRAN' ).
     add_obj_type( 'CLAS' ).

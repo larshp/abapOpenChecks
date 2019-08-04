@@ -38,7 +38,7 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
 
     LOOP AT lt_statements ASSIGNING <ls_statement>
         WHERE coloncol <> 0
-        AND type <> scan_stmnt_type-pragma.
+        AND type <> io_scan->gc_statement-pragma.
 
       CLEAR lv_code.
 
@@ -95,8 +95,7 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
       IF NOT lv_code IS INITIAL.
         lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line = <ls_token>-row
                 p_kind = mv_errty
                 p_test = myname
@@ -126,9 +125,7 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_message_text.

@@ -292,11 +292,10 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty      = c_error.
     mv_referenced = abap_true.
     mv_supplied   = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD find_where_used.
@@ -414,8 +413,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           ls_mtdkey-clsname = is_method-clsname.
           ls_mtdkey-cpdname = is_method-cmpname.
           lv_include = cl_oo_classname_service=>get_method_include( ls_mtdkey ).
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = lv_include
+          inform( p_sub_obj_name = lv_include
                   p_param_1      = <ls_parameter>-sconame
                   p_kind         = mv_errty
                   p_test         = myname
@@ -471,8 +469,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
         OTHERS = 0 ).
 
     IF lv_include IS NOT INITIAL.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      inform( p_sub_obj_name = lv_include
               p_param_1      = is_parameter-sconame
               p_kind         = mv_errty
               p_test         = myname

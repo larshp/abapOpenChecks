@@ -53,7 +53,7 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
                    <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE type = io_scan->gc_statement-standard.
 
       CLEAR lv_keyword1.
       CLEAR lv_keyword2.
@@ -62,7 +62,7 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from
           TO <ls_statement>-to
-          WHERE type <> scan_token_type-comment.
+          WHERE type <> io_scan->gc_token-comment.
 
         IF lv_keyword1 IS INITIAL.
           lv_keyword1 = <ls_token>-str.
@@ -111,8 +111,7 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
           AND <ls_rt>-code IN mt_tables.
         lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -135,7 +134,6 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
     CLEAR mt_tables.
 
     enable_rfc( ).

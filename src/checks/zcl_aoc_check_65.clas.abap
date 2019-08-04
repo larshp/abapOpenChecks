@@ -29,15 +29,13 @@ CLASS ZCL_AOC_CHECK_65 IMPLEMENTATION.
     version     = '001'.
     position    = '065'.
 
-    has_documentation = c_true.
+    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
     add_obj_type( 'SSFO' ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_message_text.

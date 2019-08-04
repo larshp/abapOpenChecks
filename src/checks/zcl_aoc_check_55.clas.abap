@@ -92,12 +92,11 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
 
         READ TABLE io_scan->statements INDEX <ls_statement>-index - 1
           ASSIGNING <ls_stmt>.                            "#EC CI_SUBRC
-        IF <ls_stmt>-type = scan_stmnt_type-comment.
+        IF <ls_stmt>-type = io_scan->gc_statement-comment.
           CONTINUE.
         ENDIF.
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_statement>-include
+        inform( p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -125,10 +124,9 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_skipc = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

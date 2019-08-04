@@ -59,8 +59,7 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
         ASSIGNING <ls_level>.
 
       IF sy-subrc = 0.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_level>-name
+        inform( p_sub_obj_name = <ls_level>-name
                 p_kind         = mv_errty
                 p_test         = myname
                 p_code         = '001'
@@ -85,7 +84,6 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_minlength = 10.
 
     ls_scimessage-test = myname.
@@ -97,7 +95,7 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
     INSERT ls_scimessage INTO TABLE scimessages.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

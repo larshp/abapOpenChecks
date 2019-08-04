@@ -55,9 +55,9 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
     init_range( ).
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-empty.
+        WHERE type <> io_scan->gc_statement-comment
+        AND type <> io_scan->gc_statement-comment_in_stmnt
+        AND type <> io_scan->gc_statement-empty.
 
       CLEAR lv_statement.
       LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
@@ -128,8 +128,7 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
 
         READ TABLE lt_not WITH KEY name = lv_name TRANSPORTING NO FIELDS.
         IF sy-subrc = 0.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
+          inform( p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
                   p_line         = <ls_token>-row
                   p_kind         = mv_errty
                   p_test         = myname
@@ -154,11 +153,10 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty  = c_error.
     mv_obj    = abap_true.
     mv_simple = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

@@ -46,11 +46,11 @@ CLASS ZCL_AOC_CHECK_41 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-empty
-        AND type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-macro_definition
-        AND type <> scan_stmnt_type-pragma
+        WHERE type <> io_scan->gc_statement-empty
+        AND type <> io_scan->gc_statement-comment
+        AND type <> io_scan->gc_statement-comment_in_stmnt
+        AND type <> io_scan->gc_statement-macro_definition
+        AND type <> io_scan->gc_statement-pragma
         AND colonrow = 0.
 
       CLEAR lv_prev.
@@ -76,7 +76,7 @@ CLASS ZCL_AOC_CHECK_41 IMPLEMENTATION.
 
         lv_comment = abap_false.
         LOOP AT io_scan->statements ASSIGNING <ls_scomment>
-            WHERE type = scan_stmnt_type-comment_in_stmnt
+            WHERE type = io_scan->gc_statement-comment_in_stmnt
             AND level = <ls_statement>-level.
           LOOP AT io_scan->tokens ASSIGNING <ls_tcomment>
               FROM <ls_statement>-from TO <ls_statement>-to.
@@ -88,8 +88,7 @@ CLASS ZCL_AOC_CHECK_41 IMPLEMENTATION.
 
         IF mv_ignore = abap_false OR lv_comment = abap_false.
           lv_include = io_scan->get_include( <ls_statement>-level ).
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = lv_include
+          inform( p_sub_obj_name = lv_include
                   p_line         = <ls_token>-row
                   p_kind         = mv_errty
                   p_test         = myname
@@ -118,9 +117,7 @@ CLASS ZCL_AOC_CHECK_41 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

@@ -71,8 +71,8 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from
           TO <ls_statement>-to
-          WHERE type <> scan_token_type-comment
-          AND type <> scan_token_type-literal.
+          WHERE type <> io_scan->gc_token-comment
+          AND type <> io_scan->gc_token-literal.
         lv_name = strip( <ls_token>-str ).
         DELETE lt_fields
           WHERE name = lv_name
@@ -85,8 +85,7 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
 
       lv_include = io_scan->get_include( <ls_field>-level ).
 
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      inform( p_sub_obj_name = lv_include
               p_line         = <ls_field>-row
               p_kind         = mv_errty
               p_test         = myname
@@ -127,10 +126,9 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_skip_radio = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD find_fields.
@@ -146,7 +144,8 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
                    <ls_token>     LIKE LINE OF it_tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
+    LOOP AT it_statements ASSIGNING <ls_statement>
+        WHERE type = zcl_aoc_scan=>gc_statement-standard.
 
       CLEAR lv_keyword.
       CLEAR lv_statement.
@@ -154,7 +153,7 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
       LOOP AT it_tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from
           TO <ls_statement>-to
-          WHERE type <> scan_token_type-comment.
+          WHERE type <> zcl_aoc_scan=>gc_token-comment.
 
         IF lv_keyword IS INITIAL.
           lv_keyword = <ls_token>-str.

@@ -168,8 +168,7 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
     READ TABLE lt_parameters WITH KEY sconame = lv_parameter
       TRANSPORTING NO FIELDS.
     IF sy-subrc = 0.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = is_call-program
+      inform( p_sub_obj_name = is_call-program
               p_line         = is_call-start_line
               p_kind         = mv_errty
               p_test         = myname
@@ -190,9 +189,7 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_calls.

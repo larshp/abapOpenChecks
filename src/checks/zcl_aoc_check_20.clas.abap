@@ -42,11 +42,11 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-empty
-        AND type <> scan_stmnt_type-pragma
-        AND type <> scan_stmnt_type-macro_definition.
+        WHERE type <> io_scan->gc_statement-comment
+        AND type <> io_scan->gc_statement-comment_in_stmnt
+        AND type <> io_scan->gc_statement-empty
+        AND type <> io_scan->gc_statement-pragma
+        AND type <> io_scan->gc_statement-macro_definition.
 
       READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       IF sy-subrc = 0.
@@ -57,8 +57,7 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
       ENDIF.
 
       IF <ls_token>-col MOD 2 <> 0.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
+        inform( p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -83,8 +82,7 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
           CONTINUE.
         ENDIF.
         IF <ls_token>-col < lv_col + lv_offset.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
+          inform( p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
                   p_line         = <ls_token>-row
                   p_kind         = mv_errty
                   p_test         = myname
@@ -110,11 +108,10 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty       = c_error.
     mv_offset      = 2.
     mv_nest_offset = 4.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

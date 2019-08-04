@@ -34,7 +34,7 @@ CLASS ZCL_AOC_CHECK_18 IMPLEMENTATION.
 
 
     LOOP AT io_scan->structures ASSIGNING <ls_structure>
-        WHERE type = scan_struc_type-condition.
+        WHERE type = io_scan->gc_structure-condition.
 
       lv_found = abap_false.
 
@@ -42,7 +42,7 @@ CLASS ZCL_AOC_CHECK_18 IMPLEMENTATION.
           FROM <ls_structure>-stmnt_from TO <ls_structure>-stmnt_to.
 
         READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-        IF sy-subrc <> 0 OR <ls_token>-type = scan_token_type-comment.
+        IF sy-subrc <> 0 OR <ls_token>-type = io_scan->gc_token-comment.
           CONTINUE.
         ENDIF.
 
@@ -63,8 +63,7 @@ CLASS ZCL_AOC_CHECK_18 IMPLEMENTATION.
 
         lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_position     = <ls_structure>-stmnt_from
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
@@ -90,9 +89,7 @@ CLASS ZCL_AOC_CHECK_18 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_message_text.

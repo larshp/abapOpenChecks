@@ -123,7 +123,7 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type = scan_stmnt_type-standard.
+        WHERE type = io_scan->gc_statement-standard.
 
       CLEAR lt_tokens.
 
@@ -136,8 +136,7 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
 
       IF NOT lv_code IS INITIAL AND <ls_token>-row > 0.
         lv_include = io_scan->get_include( <ls_statement>-level ).
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_kind         = mv_errty
                 p_line         = <ls_token>-row
                 p_test         = myname
@@ -161,10 +160,9 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_parser_errors = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

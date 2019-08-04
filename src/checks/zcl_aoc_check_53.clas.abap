@@ -124,8 +124,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
       ENDCASE.
 
       IF NOT lv_code IS INITIAL.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_statement>-include
+        inform( p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
                 p_position     = <ls_statement>-index
                 p_param_1      = lv_name
@@ -151,8 +150,6 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
-
     mv_reuse_alv_grid_display    = abap_true.
     mv_so_new_document_att_send  = abap_true.
     mv_sapgui_progress_indicator = abap_true.
@@ -167,7 +164,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     mv_base64                    = abap_true.
     mv_binary                    = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

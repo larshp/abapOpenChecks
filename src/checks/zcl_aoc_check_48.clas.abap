@@ -63,12 +63,11 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
       lv_level = sy-tabix.
       LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE level = lv_level.
         LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to
-            WHERE type <> scan_token_type-literal
-            AND type <> scan_token_type-comment.
+            WHERE type <> io_scan->gc_token-literal
+            AND type <> io_scan->gc_token-comment.
 
           IF <ls_token>-str CP '*+[]*'.
-            inform( p_sub_obj_type = c_type_include
-                    p_sub_obj_name = io_scan->get_include( lv_level )
+            inform( p_sub_obj_name = io_scan->get_include( lv_level )
                     p_line         = <ls_token>-row
                     p_kind         = mv_errty
                     p_test         = myname
@@ -103,8 +102,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_statement>-include
+        inform( p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
                 p_kind         = mv_errty
                 p_position     = <ls_statement>-index
@@ -128,8 +126,6 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
-
-    mv_errty = c_error.
 
     ls_message-test = myname.
     ls_message-code = '001'.

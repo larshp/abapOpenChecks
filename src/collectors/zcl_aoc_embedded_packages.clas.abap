@@ -170,7 +170,7 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
         RETURN.
       ENDIF.
       IF lines( mt_packages ) > 0.
-        attributes_ok = c_true.
+        attributes_ok = abap_true.
         EXIT. " current loop
       ENDIF.
     ENDDO.

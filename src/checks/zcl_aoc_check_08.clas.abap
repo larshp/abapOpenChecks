@@ -81,7 +81,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
 
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to.
-        IF <ls_token>-type <> scan_token_type-identifier.
+        IF <ls_token>-type <> io_scan->gc_token-identifier.
           lv_token = 'SOMETHING'.
         ELSE.
           lv_token = <ls_token>-str.
@@ -158,8 +158,7 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
 
       IF NOT lv_code IS INITIAL.
         lv_include = io_scan->get_include( <ls_statement>-level ).
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_position     = lv_position
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
@@ -185,7 +184,6 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
     mv_001 = abap_true.
     mv_002 = abap_true.
     mv_003 = abap_true.

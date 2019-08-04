@@ -43,13 +43,13 @@ CLASS ZCL_AOC_CHECK_29 IMPLEMENTATION.
                    <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       lv_level = sy-tabix.
 
 
       LOOP AT io_scan->statements ASSIGNING <ls_statement>
-          WHERE type <> scan_stmnt_type-comment
-          AND type <> scan_stmnt_type-comment_in_stmnt
+          WHERE type <> io_scan->gc_statement-comment
+          AND type <> io_scan->gc_statement-comment_in_stmnt
           AND level = lv_level.
 
         READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
@@ -84,8 +84,7 @@ CLASS ZCL_AOC_CHECK_29 IMPLEMENTATION.
         ENDIF.
 
         IF NOT lv_name CP mv_name.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = <ls_level>-name
+          inform( p_sub_obj_name = <ls_level>-name
                   p_line         = <ls_token>-row
                   p_kind         = mv_errty
                   p_test         = myname
@@ -110,10 +109,9 @@ CLASS ZCL_AOC_CHECK_29 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_name = 'LTCL_+*'.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

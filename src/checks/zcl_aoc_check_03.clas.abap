@@ -57,10 +57,10 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-empty
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-pragma.
+        WHERE type <> io_scan->gc_statement-comment
+        AND type <> io_scan->gc_statement-empty
+        AND type <> io_scan->gc_statement-comment_in_stmnt
+        AND type <> io_scan->gc_statement-pragma.
 
       lv_position = sy-tabix.
 
@@ -88,8 +88,7 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
       ELSEIF <ls_token>-str = 'ENDTRY'.
         IF lv_error = abap_true AND NOT lv_exception IS INITIAL.
           lv_include = io_scan->get_include( <ls_statement>-level ).
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = lv_include
+          inform( p_sub_obj_name = lv_include
                   p_position     = lv_position
                   p_line         = <ls_token>-row
                   p_kind         = mv_errty
@@ -152,8 +151,7 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
         lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_position     = <ls_structure>-stmnt_from
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
@@ -179,9 +177,7 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_message_text.

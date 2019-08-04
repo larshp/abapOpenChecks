@@ -51,7 +51,7 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
                    <lv_code>  LIKE LINE OF lt_code.
 
 
-    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       lt_code = get_source( <ls_level> ).
 
       LOOP AT lt_code ASSIGNING <lv_code>.
@@ -97,7 +97,6 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty           = c_error.
     mv_one_per_include = abap_false.
 
     enable_rfc( ).
@@ -187,8 +186,7 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
     ENDLOOP.
 
     IF zcl_aoc_parser=>run( it_commented )-match = abap_true.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = is_level-name
+      inform( p_sub_obj_name = is_level-name
               p_line         = iv_line
               p_kind         = mv_errty
               p_test         = myname

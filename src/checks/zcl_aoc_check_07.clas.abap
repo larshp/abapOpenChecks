@@ -37,8 +37,8 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type = scan_stmnt_type-standard
-        OR type = scan_stmnt_type-method_direct.
+        WHERE type = io_scan->gc_statement-standard
+        OR type = io_scan->gc_statement-method_direct.
 
       lv_position = sy-tabix.
 
@@ -70,7 +70,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
           WHERE str = 'RECEIVING'
-          AND type = scan_token_type-identifier.
+          AND type = io_scan->gc_token-identifier.
 
         IF <ls_token1>-str = 'CALL' OR <ls_token2>-str = 'BADI'.
           EXIT.
@@ -80,7 +80,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
         LOOP AT io_scan->tokens TRANSPORTING NO FIELDS
             FROM <ls_statement>-from TO <ls_statement>-to
             WHERE str = 'EXCEPTIONS'
-            AND type = scan_token_type-identifier.
+            AND type = io_scan->gc_token-identifier.
           EXIT.
         ENDLOOP.
         IF sy-subrc = 0.
@@ -88,8 +88,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
         ENDIF.
 
         lv_include = io_scan->get_include( <ls_statement>-level ).
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_position     = lv_position
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
@@ -102,8 +101,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
       ENDIF.
 
       lv_include = io_scan->get_include( <ls_statement>-level ).
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      inform( p_sub_obj_name = lv_include
               p_position     = lv_position
               p_line         = <ls_token1>-row
               p_kind         = mv_errty
@@ -128,9 +126,7 @@ CLASS ZCL_AOC_CHECK_07 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_message_text.

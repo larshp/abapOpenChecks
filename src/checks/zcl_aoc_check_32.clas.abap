@@ -48,13 +48,13 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
     ENDIF.
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
-        WHERE type = scan_stmnt_type-standard
-        OR type = scan_stmnt_type-method_direct.
+        WHERE type = io_scan->gc_statement-standard
+        OR type = io_scan->gc_statement-method_direct.
 
       CLEAR lv_statement.
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
-          WHERE type = scan_token_type-identifier.
+          WHERE type = io_scan->gc_token-identifier.
         IF lv_statement IS INITIAL.
           lv_statement = <ls_token>-str.
         ELSE.
@@ -83,8 +83,7 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
           CONTINUE.
         ENDIF.
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -113,10 +112,9 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_ignore_ltcl = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

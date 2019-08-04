@@ -71,8 +71,7 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
 
         lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_position     = lv_index
                 p_line         = lv_line
                 p_kind         = mv_errty
@@ -89,8 +88,8 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '001'.
-    position       = '002'.
+    version  = '001'.
+    position = '002'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
@@ -98,11 +97,10 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
     mv_check = abap_true.
     mv_exit  = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.

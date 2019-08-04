@@ -4,6 +4,39 @@ CLASS zcl_aoc_scan DEFINITION
 
   PUBLIC SECTION.
 
+    CONSTANTS: BEGIN OF gc_token,
+                 comment    TYPE c LENGTH 1 VALUE 'C',
+                 identifier TYPE c LENGTH 1 VALUE 'I',
+                 list       TYPE c LENGTH 1 VALUE 'L',
+                 literal    TYPE c LENGTH 1 VALUE 'S',
+                 pragma     TYPE c LENGTH 1 VALUE 'P',
+               END OF gc_token.
+
+    CONSTANTS: BEGIN OF gc_statement,
+                 comment          TYPE c LENGTH 1 VALUE 'P',
+                 comment_in_stmnt TYPE c LENGTH 1 VALUE 'S',
+                 compute_direct   TYPE c LENGTH 1 VALUE 'C',
+                 empty            TYPE c LENGTH 1 VALUE 'N',
+                 macro_call       TYPE c LENGTH 1 VALUE 'D',
+                 macro_definition TYPE c LENGTH 1 VALUE 'M',
+                 method_direct    TYPE c LENGTH 1 VALUE 'A',
+                 native_sql       TYPE c LENGTH 1 VALUE 'E',
+                 pragma           TYPE c LENGTH 1 VALUE 'G',
+                 standard         TYPE c LENGTH 1 VALUE 'K',
+               END OF gc_statement.
+
+    CONSTANTS: BEGIN OF gc_structure,
+                 condition TYPE c LENGTH 1 VALUE  'C',
+                 routine   TYPE c LENGTH 1 VALUE  'R',
+                 sequence  TYPE c LENGTH 1 VALUE  'S',
+               END OF gc_structure.
+
+    CONSTANTS: BEGIN OF gc_level,
+                 macro_define TYPE c LENGTH 1 VALUE 'D',
+                 macro_trmac  TYPE c LENGTH 1 VALUE 'R',
+                 program      TYPE c LENGTH 1 VALUE 'P',
+               END OF gc_level.
+
     TYPES:
       BEGIN OF ty_position,
         row TYPE token_row,
@@ -30,37 +63,37 @@ CLASS zcl_aoc_scan DEFINITION
     DATA levels TYPE slevel_tab READ-ONLY .
     DATA structures TYPE ty_structures_tt READ-ONLY .
 
+    CLASS-METHODS create_from_ref
+      IMPORTING
+        !io_ref        TYPE REF TO object
+      RETURNING
+        VALUE(ro_scan) TYPE REF TO zcl_aoc_scan .
+    METHODS build_statements
+      IMPORTING
+        !iv_literals         TYPE abap_bool DEFAULT abap_false
+      RETURNING
+        VALUE(rt_statements) TYPE ty_statements .
     METHODS constructor
       IMPORTING
         !it_tokens     TYPE stokesx_tab
         !it_statements TYPE sstmnt_tab
         !it_levels     TYPE slevel_tab
         !it_structures TYPE ty_structures_tt .
-    METHODS statement_row
-      IMPORTING
-        !iv_number       TYPE stmnt_nr
-      RETURNING
-        VALUE(rv_result) TYPE token_row .
-    METHODS build_statements
-      IMPORTING
-        !iv_literals         TYPE abap_bool DEFAULT abap_false
-      RETURNING
-        VALUE(rt_statements) TYPE ty_statements .
-    METHODS statement_keyword
-      IMPORTING
-        !iv_number       TYPE stmnt_nr
-      RETURNING
-        VALUE(rv_result) TYPE string .
-    CLASS-METHODS create_from_ref
-      IMPORTING
-        !io_ref        TYPE REF TO object
-      RETURNING
-        VALUE(ro_scan) TYPE REF TO zcl_aoc_scan .
     METHODS get_include
       IMPORTING
         !iv_level         TYPE i
       RETURNING
         VALUE(rv_program) TYPE program .
+    METHODS statement_keyword
+      IMPORTING
+        !iv_number       TYPE stmnt_nr
+      RETURNING
+        VALUE(rv_result) TYPE string .
+    METHODS statement_row
+      IMPORTING
+        !iv_number       TYPE stmnt_nr
+      RETURNING
+        VALUE(rv_result) TYPE token_row .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -93,16 +126,16 @@ CLASS ZCL_AOC_SCAN IMPLEMENTATION.
     lt_tokens = tokens.
 
     IF iv_literals = abap_true.
-      LOOP AT lt_tokens ASSIGNING <ls_token> WHERE type = scan_token_type-literal.
+      LOOP AT lt_tokens ASSIGNING <ls_token> WHERE type = gc_token-literal.
         <ls_token>-str = 'STR'.
       ENDLOOP.
     ENDIF.
 
     LOOP AT statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-empty
-        AND type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-pragma.
+        WHERE type <> gc_statement-empty
+        AND type <> gc_statement-comment
+        AND type <> gc_statement-comment_in_stmnt
+        AND type <> gc_statement-pragma.
       lv_index = sy-tabix.
 
       CLEAR lv_str.

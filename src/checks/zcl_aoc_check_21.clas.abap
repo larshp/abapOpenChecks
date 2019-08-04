@@ -67,7 +67,7 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
 
 
     LOOP AT io_scan->structures ASSIGNING <ls_structure>
-        WHERE type = scan_struc_type-routine
+        WHERE type = io_scan->gc_structure-routine
         AND stmnt_type = scan_struc_stmnt_type-form.
 
       lv_form = abap_true.
@@ -75,9 +75,9 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
       LOOP AT io_scan->statements ASSIGNING <ls_statement>
           FROM <ls_structure>-stmnt_from
           TO <ls_structure>-stmnt_to
-          WHERE type <> scan_stmnt_type-empty
-          AND type <> scan_stmnt_type-comment
-          AND type <> scan_stmnt_type-comment_in_stmnt.
+          WHERE type <> io_scan->gc_statement-empty
+          AND type <> io_scan->gc_statement-comment
+          AND type <> io_scan->gc_statement-comment_in_stmnt.
 
         lv_statement = build_statement(
             is_statement = <ls_statement>
@@ -102,8 +102,7 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
         READ TABLE io_scan->tokens INDEX ls_form_stmnt-from ASSIGNING <ls_token>.
         ASSERT sy-subrc = 0.
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = io_scan->get_include( ls_form_stmnt-level )
+        inform( p_sub_obj_name = io_scan->get_include( ls_form_stmnt-level )
                 p_position     = <ls_structure>-stmnt_from
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
@@ -129,9 +128,7 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty       = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD find_parameters.

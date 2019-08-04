@@ -197,7 +197,7 @@
     },
     "no_public_attributes": {
       "enabled": true,
-      "exclude": ["zcl_aoc_scan\\.clas\\.abap"]
+      "exclude": ["zcl_aoc_scan\\.clas\\.abap", "zcl_aoc_parser_node\\.clas\\.abap"]
     },
     "object_naming": {
       "enabled": true,

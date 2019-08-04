@@ -138,8 +138,7 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
 
         lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line         = ln_line
                 p_column       = ln_column
                 p_kind         = mv_errty
@@ -164,9 +163,7 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty   = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.
