@@ -58,10 +58,10 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
       ENDIF.
 
       LOOP AT io_scan->structures TRANSPORTING NO FIELDS
-          WHERE ( stmnt_type = scan_struc_stmnt_type-loop
-          OR stmnt_type = scan_struc_stmnt_type-while
-          OR stmnt_type = scan_struc_stmnt_type-do
-          OR stmnt_type = scan_struc_stmnt_type-select )
+          WHERE ( stmnt_type = zcl_aoc_scan=>gc_structure_statement-loop
+          OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-while
+          OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-do
+          OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-select )
           AND stmnt_from <= lv_index
           AND stmnt_to >= lv_index.
         EXIT. " current loop

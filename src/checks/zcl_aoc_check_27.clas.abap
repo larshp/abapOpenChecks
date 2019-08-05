@@ -153,10 +153,10 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
 
     LOOP AT io_scan->structures ASSIGNING <ls_structure>
-        WHERE stmnt_type = scan_struc_stmnt_type-module
-        OR stmnt_type = scan_struc_stmnt_type-function
-        OR stmnt_type = scan_struc_stmnt_type-form
-        OR stmnt_type = scan_struc_stmnt_type-method.
+        WHERE stmnt_type = zcl_aoc_scan=>gc_structure_statement-module
+        OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-function
+        OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-form
+        OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-method.
 
       build( is_structure  = <ls_structure>
              it_statements = io_scan->statements

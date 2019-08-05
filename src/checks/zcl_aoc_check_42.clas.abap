@@ -45,7 +45,7 @@ CLASS ZCL_AOC_CHECK_42 IMPLEMENTATION.
 
 
     LOOP AT io_scan->structures ASSIGNING <ls_structure>
-        WHERE stmnt_type = scan_struc_stmnt_type-when.
+        WHERE stmnt_type = zcl_aoc_scan=>gc_structure_statement-when.
 
       APPEND INITIAL LINE TO lt_when ASSIGNING <ls_when>.
       <ls_when>-back = <ls_structure>-back.

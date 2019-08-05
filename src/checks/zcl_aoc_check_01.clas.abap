@@ -71,7 +71,7 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
 
     LOOP AT io_structure->get_structure( ) INTO lo_structure.
-      IF lo_structure->get_type( ) = scan_struc_stmnt_type-else.
+      IF lo_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-else.
         rv_bool = abap_true.
         RETURN.
       ENDIF.
@@ -105,16 +105,17 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
           lv_other     TYPE i.
 
 
-    IF io_structure->get_type( ) = scan_struc_stmnt_type-if
-        OR io_structure->get_type( ) = scan_struc_stmnt_type-else.
+    IF io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if
+        OR io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-else.
 
-      IF io_structure->get_type( ) = scan_struc_stmnt_type-if.
+      IF io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if.
         READ TABLE io_structure->get_structure( ) INDEX 1 INTO lo_then.
         ASSERT sy-subrc = 0.
 
         LOOP AT io_structure->get_structure( ) INTO lo_structure.
           CASE lo_structure->get_type( ).
-            WHEN scan_struc_stmnt_type-elseif OR scan_struc_stmnt_type-else.
+            WHEN zcl_aoc_scan=>gc_structure_statement-elseif
+                OR zcl_aoc_scan=>gc_structure_statement-else.
               lv_if = lv_if + 2.
           ENDCASE.
         ENDLOOP.
@@ -124,9 +125,9 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
       LOOP AT lo_then->get_structure( ) INTO lo_structure.
         CASE lo_structure->get_type( ).
-          WHEN scan_struc_stmnt_type-if.
+          WHEN zcl_aoc_scan=>gc_structure_statement-if.
             IF contains_else( lo_structure ) = abap_true
-                AND io_structure->get_type( ) = scan_struc_stmnt_type-if.
+                AND io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if.
               lv_if = lv_if + 1.
             ENDIF.
             lv_if = lv_if + 1.

@@ -31,6 +31,25 @@ CLASS zcl_aoc_scan DEFINITION
                  sequence  TYPE c LENGTH 1 VALUE  'S',
                END OF gc_structure.
 
+    CONSTANTS: BEGIN OF gc_structure_statement,
+                 case     TYPE c LENGTH 1 VALUE 'c',
+                 catch    TYPE c LENGTH 1 VALUE '+',
+                 cleanup  TYPE c LENGTH 1 VALUE '-',
+                 do       TYPE c LENGTH 1 VALUE 'D',
+                 else     TYPE c LENGTH 1 VALUE 'e',
+                 elseif   TYPE c LENGTH 1 VALUE 'f',
+                 form     TYPE c LENGTH 1 VALUE 'O',
+                 function TYPE c LENGTH 1 VALUE 'U',
+                 if       TYPE c LENGTH 1 VALUE 'i',
+                 loop     TYPE c LENGTH 1 VALUE 'L',
+                 method   TYPE c LENGTH 1 VALUE 'H',
+                 module   TYPE c LENGTH 1 VALUE 'M',
+                 select   TYPE c LENGTH 1 VALUE 'S',
+                 try      TYPE c LENGTH 1 VALUE '_',
+                 when     TYPE c LENGTH 1 VALUE 'w',
+                 while    TYPE c LENGTH 1 VALUE 'W',
+               END OF gc_structure_statement.
+
     CONSTANTS: BEGIN OF gc_level,
                  macro_define TYPE c LENGTH 1 VALUE 'D',
                  macro_trmac  TYPE c LENGTH 1 VALUE 'R',

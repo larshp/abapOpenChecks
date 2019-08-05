@@ -40,9 +40,9 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
 * IFs must contain ELSE, CASE must contain OTHERS
     LOOP AT io_structure->get_structure( ) INTO lo_structure.
-      IF ( io_structure->get_type( ) = scan_struc_stmnt_type-if
+      IF ( io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if
           AND lo_structure->get_statement( )-statement = 'ELSE' )
-          OR ( io_structure->get_type( ) = scan_struc_stmnt_type-case
+          OR ( io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-case
           AND lo_structure->get_statement( )-statement = 'WHEN OTHERS' ).
         lv_found = abap_true.
         EXIT. " current loop.
@@ -171,7 +171,8 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
 
     CASE io_structure->get_type( ).
-      WHEN scan_struc_stmnt_type-if OR scan_struc_stmnt_type-case.
+      WHEN zcl_aoc_scan=>gc_structure_statement-if
+          OR zcl_aoc_scan=>gc_structure_statement-case.
         analyze_condition( io_structure ).
     ENDCASE.
 
