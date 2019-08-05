@@ -177,7 +177,6 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
       ENDLOOP.
 
       inform(
-        p_sub_obj_type = c_type_include
         p_sub_obj_name = io_scan->get_include( is_statement-level )
         p_line         = <ls_token>-row
         p_column       = <ls_token>-col
