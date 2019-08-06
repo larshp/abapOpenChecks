@@ -33,7 +33,7 @@
     "check_variables": {
       "enabled": false,
       "globalConstants": ["sana_tok_field_def","sana_tok_word","seoc_category_exception","seoc_category_p_agent","seoc_category_test_class","seoc_category_webdynpro_class","seoc_version_inactive","seor_reltype_inheritance","slin_errlv","slin_todo"],      
-      "exclude": []
+      "exclude": ["zcl_aoc_check_69"]
     },
     "class_attribute_names": {
       "enabled": true,
