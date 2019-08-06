@@ -8,8 +8,6 @@ CLASS zcl_aoc_check_53 DEFINITION PUBLIC INHERITING FROM zcl_aoc_super CREATE PU
         REDEFINITION.
     METHODS get_attributes
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
     METHODS put_attributes
         REDEFINITION.
     METHODS if_ci_test~query_attributes
@@ -34,7 +32,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
+CLASS zcl_aoc_check_53 IMPLEMENTATION.
 
 
   METHOD check.
@@ -150,6 +148,59 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
+    insert_scimessage(
+      EXPORTING
+        iv_code = '001'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+      EXPORTING
+        iv_code = '002'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+      EXPORTING
+        iv_code = '003'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+      EXPORTING
+        iv_code = '004'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+      EXPORTING
+        iv_code = '005'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+      EXPORTING
+        iv_code = '006'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+      EXPORTING
+        iv_code = '007'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+      EXPORTING
+        iv_code = '008'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+      EXPORTING
+        iv_code = '009'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+      EXPORTING
+        iv_code = '010'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+      EXPORTING
+        iv_code = '011'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+      EXPORTING
+        iv_code = '012'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+      EXPORTING
+        iv_code = '013'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+
     mv_reuse_alv_grid_display    = abap_true.
     mv_so_new_document_att_send  = abap_true.
     mv_sapgui_progress_indicator = abap_true.
@@ -185,15 +236,6 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
       mv_base64                    = mv_base64
       mv_binary                    = mv_binary
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    p_text = 'Function &1 used, see documentation'.         "#EC NOTEXT
 
   ENDMETHOD.
 

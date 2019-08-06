@@ -61,6 +61,14 @@ CLASS zcl_aoc_super DEFINITION
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
     METHODS set_uses_checksum .
+    METHODS insert_scimessage
+      IMPORTING
+        iv_test     TYPE scimessage-test OPTIONAL
+        iv_code     TYPE scimessage-code
+        iv_kind     TYPE scimessage-kind OPTIONAL
+        iv_text     TYPE text255
+        iv_pcom     TYPE scimessage-pcom OPTIONAL
+        iv_pcom_alt TYPE scimessage-pcom_alt OPTIONAL.
 
     METHODS get_include
         REDEFINITION .
@@ -94,7 +102,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_SUPER IMPLEMENTATION.
+CLASS zcl_aoc_super IMPLEMENTATION.
 
 
   METHOD check.
@@ -623,6 +631,33 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     IF sy-subrc = 0.
       <lv_uses_checksum> = abap_true.
     ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD insert_scimessage.
+
+* Insert entry into table scimessages. This table is used to determine the message text for a finding.
+    DATA ls_scimessage LIKE LINE OF scimessages.
+
+    IF iv_test IS NOT INITIAL.
+      ls_scimessage-test = iv_test.
+    ELSE.
+      ls_scimessage-test = myname.
+    ENDIF.
+
+    IF iv_kind IS NOT INITIAL.
+      ls_scimessage-kind = iv_kind.
+    ELSE.
+      ls_scimessage-kind = mv_errty.
+    ENDIF.
+
+    ls_scimessage-code     = iv_code.
+    ls_scimessage-text     = iv_text.
+    ls_scimessage-pcom     = iv_pcom.
+    ls_scimessage-pcom_alt = iv_pcom_alt.
+
+    INSERT ls_scimessage INTO TABLE scimessages.
 
   ENDMETHOD.
 ENDCLASS.

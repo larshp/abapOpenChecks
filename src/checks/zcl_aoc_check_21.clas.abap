@@ -8,8 +8,6 @@ CLASS zcl_aoc_check_21 DEFINITION
 
     METHODS check
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
   PROTECTED SECTION.
 
     METHODS build_statement
@@ -28,7 +26,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
+CLASS zcl_aoc_check_21 IMPLEMENTATION.
 
 
   METHOD build_statement.
@@ -128,6 +126,11 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
+    insert_scimessage(
+      EXPORTING
+        iv_code = '001'
+        iv_text = 'Unused FORM parameter &1'(m01) ).
+
   ENDMETHOD.
 
 
@@ -151,20 +154,4 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Unused FORM parameter &1'.                "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 ENDCLASS.
