@@ -104,6 +104,7 @@ CLASS zcl_aoc_check_69 DEFINITION
         VALUE(rv_skip) TYPE abap_bool .
   PRIVATE SECTION.
 
+    DATA mo_scan TYPE REF TO zcl_aoc_scan .
     DATA ms_naming TYPE zaoc_naming .
     DATA mo_compiler TYPE REF TO cl_abap_compiler .
     DATA mo_stack TYPE REF TO lcl_stack .
@@ -193,6 +194,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     DATA: lv_subrc LIKE sy-subrc,
           lv_subc  TYPE reposrc-subc.
 
+
+    mo_scan = io_scan.
 
     IF object_type = 'WDYN'.
       RETURN. " todo, WDYN
@@ -813,7 +816,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     FIND REGEX lv_regex IN iv_name IGNORING CASE.
     IF sy-subrc <> 0.
-      lv_include = get_include( p_level = statement_wa-level ).
+      lv_include = mo_scan->get_include( statement_wa-level ).
       inform( p_sub_obj_name = lv_include
               p_line         = get_line_rel( iv_relative )
               p_column       = get_column_rel( iv_relative )
@@ -843,7 +846,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ENDIF.
 
     IF ro_generic IS INITIAL.
-      inform( p_sub_obj_name = get_include( p_level = statement_wa-level )
+      inform( p_sub_obj_name = mo_scan->get_include( statement_wa-level )
               p_line         = get_line_rel( 2 )
               p_column       = get_column_rel( 2 )
               p_kind         = mv_errty
@@ -872,7 +875,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       CATCH cx_sy_move_cast_error ##NO_HANDLER.
     ENDTRY.
     IF ro_class IS INITIAL.
-      lv_include = get_include( p_level = statement_wa-level ).
+      lv_include = mo_scan->get_include( statement_wa-level ).
       inform( p_sub_obj_name = lv_include
               p_line         = get_line_rel( 2 )
               p_column       = get_column_rel( 2 )
@@ -1148,9 +1151,9 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     lv_name = object_name.
     IF cl_oo_classname_service=>get_ccdef_name( lv_name )
-          = get_include( p_level = statement_wa-level )
+          = mo_scan->get_include( statement_wa-level )
         OR cl_oo_classname_service=>get_ccimp_name( lv_name )
-          = get_include( p_level = statement_wa-level ).
+          = mo_scan->get_include( statement_wa-level ).
       RETURN.
     ENDIF.
 
@@ -1227,7 +1230,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         meaningless_statement = 4
         OTHERS                = 5.
     IF sy-subrc <> 0.
-      inform( p_sub_obj_name = get_include( p_level = statement_wa-level )
+      inform( p_sub_obj_name = mo_scan->get_include( statement_wa-level )
               p_line         = get_line_rel( 2 )
               p_column       = get_column_rel( 2 )
               p_kind         = mv_errty

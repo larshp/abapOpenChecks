@@ -62,8 +62,6 @@ CLASS zcl_aoc_super DEFINITION
         VALUE(rv_bool) TYPE abap_bool .
     METHODS set_uses_checksum .
 
-    METHODS get_include
-        REDEFINITION .
     METHODS inform
         REDEFINITION .
   PRIVATE SECTION.
@@ -307,23 +305,6 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
             cx_sy_dyn_call_illegal_method.
         rv_result = |NONE|.
     ENDTRY.
-
-  ENDMETHOD.
-
-
-  METHOD get_include.
-
-    IF p_level = 0.
-* in case INCLUDE doesnt exist in the system
-      RETURN.
-    ENDIF.
-
-    IF ref_scan IS BOUND.
-* not bound during unit testing
-      p_result = super->get_include(
-          p_ref_scan = p_ref_scan
-          p_level    = p_level ).
-    ENDIF.
 
   ENDMETHOD.
 
