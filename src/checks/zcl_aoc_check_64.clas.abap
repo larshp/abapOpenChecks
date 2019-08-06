@@ -239,7 +239,7 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
 
     IF mv_covered = abap_false.
       lv_clsname = object_name.
-      inform( p_sub_obj_type = c_type_include
+      inform( p_sub_obj_type = 'PROG'
               p_sub_obj_name = cl_oo_classname_service=>get_ccau_name( lv_clsname )
               p_line         = 1
               p_kind         = mv_errty

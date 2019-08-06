@@ -122,20 +122,20 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
 
 
     LOOP AT io_scan->structures ASSIGNING <ls_structure>
-        WHERE stmnt_type = scan_struc_stmnt_type-try.
+        WHERE stmnt_type = zcl_aoc_scan=>gc_structure_statement-try.
       lv_index = sy-tabix.
 
       lv_found = abap_false.
 
       READ TABLE io_scan->structures
-        WITH KEY stmnt_type = scan_struc_stmnt_type-catch back = lv_index
+        WITH KEY stmnt_type = zcl_aoc_scan=>gc_structure_statement-catch back = lv_index
         TRANSPORTING NO FIELDS.
       IF sy-subrc = 0.
         lv_found = abap_true.
       ENDIF.
 
       READ TABLE io_scan->structures
-        WITH KEY stmnt_type = scan_struc_stmnt_type-cleanup back = lv_index
+        WITH KEY stmnt_type = zcl_aoc_scan=>gc_structure_statement-cleanup back = lv_index
         TRANSPORTING NO FIELDS.
       IF sy-subrc = 0.
         lv_found = abap_true.

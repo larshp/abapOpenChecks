@@ -68,7 +68,7 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
 
     LOOP AT io_scan->structures ASSIGNING <ls_structure>
         WHERE type = io_scan->gc_structure-routine
-        AND stmnt_type = scan_struc_stmnt_type-form.
+        AND stmnt_type = zcl_aoc_scan=>gc_structure_statement-form.
 
       lv_form = abap_true.
 
