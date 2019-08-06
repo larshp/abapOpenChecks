@@ -45,7 +45,9 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
       lv_save_to_change TYPE abap_bool,
       lv_used_define    TYPE abap_bool,
       lv_define         TYPE abap_bool,
+      ls_statement      LIKE LINE OF io_scan->statements,
       lv_keyword        TYPE string.
+
 
     IF trdir-fixpt = abap_true.
       RETURN.
@@ -54,8 +56,8 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
 
     lo_compiler = cl_abap_compiler=>create( program_name ).
 
-    LOOP AT io_scan->statements INTO statement_wa.
-      lv_keyword = keyword( ).
+    LOOP AT io_scan->statements INTO ls_statement.
+      lv_keyword = io_scan->statement_keyword( sy-tabix ).
       IF lv_define = abap_true.
         IF lv_keyword = 'END-OF-DEFINITION'.
           lv_define = abap_false.
@@ -71,7 +73,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
           check_compute(
             EXPORTING
               io_scan      = io_scan
-              is_statement = statement_wa
+              is_statement = ls_statement
               io_compiler  = lo_compiler
             CHANGING
               cv_save_to_change = lv_save_to_change ).

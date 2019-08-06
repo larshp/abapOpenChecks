@@ -264,6 +264,11 @@ CLASS ZCL_AOC_SCAN IMPLEMENTATION.
     READ TABLE statements ASSIGNING <ls_statement> INDEX iv_number.
     ASSERT sy-subrc = 0.
 
+    IF <ls_statement>-type = gc_statement-compute_direct.
+      rv_result = 'COMPUTE'.
+      RETURN.
+    ENDIF.
+
     IF <ls_statement>-from <= <ls_statement>-to.
       READ TABLE tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       ASSERT sy-subrc = 0.
