@@ -12,18 +12,19 @@ CLASS zcl_aoc_check_22 DEFINITION
     METHODS get_message_text
         REDEFINITION.
   PROTECTED SECTION.
+
+    DATA mo_scan TYPE REF TO zcl_aoc_scan .
+
     METHODS analyze_condition
       IMPORTING
-        !io_structure TYPE REF TO zcl_aoc_structure.
-    CLASS zcl_aoc_structure DEFINITION LOAD.
-    TYPE-POOLS abap.
+        !io_structure TYPE REF TO zcl_aoc_structure .
     METHODS compare
       IMPORTING
         !it_structure  TYPE zcl_aoc_structure=>ty_structure_tt
         !iv_first_last TYPE abap_bool .
     METHODS loop
       IMPORTING
-        !io_structure TYPE REF TO zcl_aoc_structure.
+        !io_structure TYPE REF TO zcl_aoc_structure .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -66,6 +67,8 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 * abapOpenChecks
 * https://github.com/larshp/abapOpenChecks
 * MIT License
+
+    mo_scan = io_scan.
 
     loop( zcl_aoc_structure=>build( it_tokens     = io_scan->tokens
                                     it_statements = io_scan->statements
@@ -124,7 +127,7 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    inform( p_sub_obj_name = get_include( p_level = lo_first->get_statement( )-level )
+    inform( p_sub_obj_name = mo_scan->get_include( lo_first->get_statement( )-level )
             p_line         = lo_first->get_statement( )-row
             p_kind         = mv_errty
             p_test         = myname
