@@ -183,99 +183,75 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
     set_uses_checksum( ).
 
     insert_scimessage(
-      EXPORTING
         iv_code = '001'
         iv_text = 'REFRESH is obsolete'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '002'
         iv_text = 'IS REQUESTED is obsolete'(m02) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '003'
         iv_text = 'LEAVE is obsolete'(m03) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '004'
         iv_text = 'COMPUTE is obsolete'(m04) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '005'
         iv_text = 'MOVE is obsolete'(m05) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '006'
         iv_text = 'Obsolete operator'(m06) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '007'
         iv_text = 'Use new operator'(m07) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '008'
         iv_text = 'DEMAND is obsolete'(m08) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '009'
         iv_text = 'SUPPLY is obsolete'(m09) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '010'
         iv_text = 'CONTEXTS is obsolete'(m10) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '011'
         iv_text = 'ADD is obsolete'(m11) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '012'
         iv_text = 'SUBTRACT is obsolete'(m12) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '013'
         iv_text = 'MULTIPLY is obsolete'(m13) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '014'
         iv_text = 'DIVIDE is obsolete'(m14) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '015'
         iv_text = 'CALL DIALOG is obsolete'(m15) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '016'
         iv_text = 'OCCURS is obsolete'(m16) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '017'
         iv_text = 'WITH HEADER LINE is obsolete'(m17) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '018'
         iv_text = 'RANGES declarations is obsolete'(m18) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '019'
         iv_text = 'Arithmetic CORRESPONDING is obsolete'(m19) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '020'
         iv_text = 'Do not use SET EXTENDED CHECK'(m20) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '021'
         iv_text = 'LOCAL is obsolete'(m21) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '022'
         iv_text = 'DO 1 TIMES'(m22) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '023'
         iv_text = 'DO ... VARYING ...'(m23) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '024'
         iv_text = 'CATCH SYSTEM-EXCEPTIONS is obsolete'(m24) ).
 

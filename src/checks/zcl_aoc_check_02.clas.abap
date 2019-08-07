@@ -99,11 +99,9 @@ CLASS zcl_aoc_check_02 IMPLEMENTATION.
     mv_exit  = abap_true.
 
     insert_scimessage(
-      EXPORTING
         iv_code = '001'
         iv_text = 'EXIT outside loop, use RETURN instead'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '002'
         iv_text = 'CHECK outside of loop'(m02) ).
 

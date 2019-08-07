@@ -89,7 +89,6 @@ CLASS zcl_aoc_check_15 IMPLEMENTATION.
     set_uses_checksum( ).
 
     insert_scimessage(
-      EXPORTING
         iv_code = '001'
         iv_text = 'Kernel CALL'(m01) ).
 

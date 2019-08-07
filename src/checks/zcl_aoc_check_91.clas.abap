@@ -25,7 +25,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_91 IMPLEMENTATION.
+CLASS zcl_aoc_check_91 IMPLEMENTATION.
 
 
   METHOD check.
@@ -86,8 +86,6 @@ CLASS ZCL_AOC_CHECK_91 IMPLEMENTATION.
 
   METHOD constructor.
 
-    DATA ls_scimessage TYPE scimessage.
-
     super->constructor( ).
 
     version        = '001'.
@@ -98,14 +96,11 @@ CLASS ZCL_AOC_CHECK_91 IMPLEMENTATION.
 
     enable_rfc( ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Maximum statements per processing block exceeded: &1'(m01) ).
+
     mv_maxlength = 50.
-
-    ls_scimessage-test = myname.
-    ls_scimessage-code = '001'.
-    ls_scimessage-kind = c_error.
-    ls_scimessage-text = 'Maximum statements per processing block exceeded: &1'(m01).
-
-    INSERT ls_scimessage INTO TABLE scimessages.
 
   ENDMETHOD.
 

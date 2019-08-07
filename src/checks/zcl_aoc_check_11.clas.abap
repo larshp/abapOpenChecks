@@ -108,7 +108,6 @@ CLASS zcl_aoc_check_11 IMPLEMENTATION.
     set_uses_checksum( ).
 
     insert_scimessage(
-      EXPORTING
         iv_code = '001'
         iv_text = 'Max one statement per line'(m01) ).
 

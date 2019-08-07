@@ -63,13 +63,11 @@ CLASS zcl_aoc_super DEFINITION
     METHODS set_uses_checksum .
     METHODS insert_scimessage
       IMPORTING
-        iv_test     TYPE scimessage-test OPTIONAL
-        iv_code     TYPE scimessage-code
-        iv_kind     TYPE scimessage-kind OPTIONAL
-        iv_text     TYPE text255
-        iv_pcom     TYPE scimessage-pcom OPTIONAL
-        iv_pcom_alt TYPE scimessage-pcom_alt OPTIONAL.
+        iv_code TYPE scimessage-code
+        iv_text TYPE text255.
 
+    METHODS get_include
+        REDEFINITION .
     METHODS inform
         REDEFINITION .
   PRIVATE SECTION.
@@ -313,6 +311,23 @@ CLASS zcl_aoc_super IMPLEMENTATION.
             cx_sy_dyn_call_illegal_method.
         rv_result = |NONE|.
     ENDTRY.
+
+  ENDMETHOD.
+
+
+  METHOD get_include.
+
+    IF p_level = 0.
+* in case INCLUDE doesnt exist in the system
+      RETURN.
+    ENDIF.
+
+    IF ref_scan IS BOUND.
+* not bound during unit testing
+      p_result = super->get_include(
+          p_ref_scan = p_ref_scan
+          p_level    = p_level ).
+    ENDIF.
 
   ENDMETHOD.
 
@@ -621,22 +636,10 @@ CLASS zcl_aoc_super IMPLEMENTATION.
 * Insert entry into table scimessages. This table is used to determine the message text for a finding.
     DATA ls_scimessage LIKE LINE OF scimessages.
 
-    IF iv_test IS NOT INITIAL.
-      ls_scimessage-test = iv_test.
-    ELSE.
-      ls_scimessage-test = myname.
-    ENDIF.
-
-    IF iv_kind IS NOT INITIAL.
-      ls_scimessage-kind = iv_kind.
-    ELSE.
-      ls_scimessage-kind = mv_errty.
-    ENDIF.
-
-    ls_scimessage-code     = iv_code.
-    ls_scimessage-text     = iv_text.
-    ls_scimessage-pcom     = iv_pcom.
-    ls_scimessage-pcom_alt = iv_pcom_alt.
+    ls_scimessage-test = myname.
+    ls_scimessage-code = iv_code.
+    ls_scimessage-kind = mv_errty.
+    ls_scimessage-text = iv_text.
 
     INSERT ls_scimessage INTO TABLE scimessages.
 

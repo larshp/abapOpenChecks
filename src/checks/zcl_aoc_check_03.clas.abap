@@ -176,11 +176,9 @@ CLASS zcl_aoc_check_03 IMPLEMENTATION.
     set_uses_checksum( ).
 
     insert_scimessage(
-      EXPORTING
         iv_code = '001'
         iv_text = 'TRY without CATCH'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '002'
         iv_text = 'Nesting with same exception'(m02) ).
 

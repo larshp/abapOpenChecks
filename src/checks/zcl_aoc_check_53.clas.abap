@@ -149,55 +149,42 @@ CLASS zcl_aoc_check_53 IMPLEMENTATION.
     set_uses_checksum( ).
 
     insert_scimessage(
-      EXPORTING
         iv_code = '001'
         iv_text = 'Function &1 used, see documentation'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '002'
         iv_text = 'Function &1 used, see documentation'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '003'
         iv_text = 'Function &1 used, see documentation'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '004'
         iv_text = 'Function &1 used, see documentation'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '005'
         iv_text = 'Function &1 used, see documentation'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '006'
         iv_text = 'Function &1 used, see documentation'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '007'
         iv_text = 'Function &1 used, see documentation'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '008'
         iv_text = 'Function &1 used, see documentation'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '009'
         iv_text = 'Function &1 used, see documentation'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '010'
         iv_text = 'Function &1 used, see documentation'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '011'
         iv_text = 'Function &1 used, see documentation'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '012'
         iv_text = 'Function &1 used, see documentation'(m01) ).
     insert_scimessage(
-      EXPORTING
         iv_code = '013'
         iv_text = 'Function &1 used, see documentation'(m01) ).
 
