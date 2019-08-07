@@ -40,6 +40,7 @@ CLASS zcl_aoc_super DEFINITION
         srcid   TYPE sysuuid_x,
         rfcdest TYPE rfcdest,
       END OF ty_destination_cache .
+    TYPES ty_scimessage_text TYPE c LENGTH 255.
 
     DATA mv_errty TYPE sci_errty .
     CLASS-DATA gs_destination_cache TYPE ty_destination_cache .
@@ -64,7 +65,7 @@ CLASS zcl_aoc_super DEFINITION
     METHODS insert_scimessage
       IMPORTING
         iv_code TYPE scimessage-code
-        iv_text TYPE text255.
+        iv_text TYPE ty_scimessage_text.
 
     METHODS inform
         REDEFINITION .
