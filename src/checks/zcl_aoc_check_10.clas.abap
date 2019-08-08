@@ -8,15 +8,13 @@ CLASS zcl_aoc_check_10 DEFINITION
 
     METHODS check
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_10 IMPLEMENTATION.
+CLASS zcl_aoc_check_10 IMPLEMENTATION.
 
 
   METHOD check.
@@ -66,21 +64,9 @@ CLASS ZCL_AOC_CHECK_10 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Use icon_ constants'(m01) ).
+
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Use icon_ constants'.                     "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 ENDCLASS.

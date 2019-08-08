@@ -11,8 +11,6 @@ CLASS zcl_aoc_check_08 DEFINITION
         REDEFINITION.
     METHODS get_attributes
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
     METHODS put_attributes
         REDEFINITION.
     METHODS if_ci_test~query_attributes
@@ -55,7 +53,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
+CLASS zcl_aoc_check_08 IMPLEMENTATION.
 
 
   METHOD check.
@@ -184,6 +182,79 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'REFRESH is obsolete'(m01) ).
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'IS REQUESTED is obsolete'(m02) ).
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'LEAVE is obsolete'(m03) ).
+    insert_scimessage(
+        iv_code = '004'
+        iv_text = 'COMPUTE is obsolete'(m04) ).
+    insert_scimessage(
+        iv_code = '005'
+        iv_text = 'MOVE is obsolete'(m05) ).
+    insert_scimessage(
+        iv_code = '006'
+        iv_text = 'Obsolete operator'(m06) ).
+    insert_scimessage(
+        iv_code = '007'
+        iv_text = 'Use new operator'(m07) ).
+    insert_scimessage(
+        iv_code = '008'
+        iv_text = 'DEMAND is obsolete'(m08) ).
+    insert_scimessage(
+        iv_code = '009'
+        iv_text = 'SUPPLY is obsolete'(m09) ).
+    insert_scimessage(
+        iv_code = '010'
+        iv_text = 'CONTEXTS is obsolete'(m10) ).
+    insert_scimessage(
+        iv_code = '011'
+        iv_text = 'ADD is obsolete'(m11) ).
+    insert_scimessage(
+        iv_code = '012'
+        iv_text = 'SUBTRACT is obsolete'(m12) ).
+    insert_scimessage(
+        iv_code = '013'
+        iv_text = 'MULTIPLY is obsolete'(m13) ).
+    insert_scimessage(
+        iv_code = '014'
+        iv_text = 'DIVIDE is obsolete'(m14) ).
+    insert_scimessage(
+        iv_code = '015'
+        iv_text = 'CALL DIALOG is obsolete'(m15) ).
+    insert_scimessage(
+        iv_code = '016'
+        iv_text = 'OCCURS is obsolete'(m16) ).
+    insert_scimessage(
+        iv_code = '017'
+        iv_text = 'WITH HEADER LINE is obsolete'(m17) ).
+    insert_scimessage(
+        iv_code = '018'
+        iv_text = 'RANGES declarations is obsolete'(m18) ).
+    insert_scimessage(
+        iv_code = '019'
+        iv_text = 'Arithmetic CORRESPONDING is obsolete'(m19) ).
+    insert_scimessage(
+        iv_code = '020'
+        iv_text = 'Do not use SET EXTENDED CHECK'(m20) ).
+    insert_scimessage(
+        iv_code = '021'
+        iv_text = 'LOCAL is obsolete'(m21) ).
+    insert_scimessage(
+        iv_code = '022'
+        iv_text = 'DO 1 TIMES'(m22) ).
+    insert_scimessage(
+        iv_code = '023'
+        iv_text = 'DO ... VARYING ...'(m23) ).
+    insert_scimessage(
+        iv_code = '024'
+        iv_text = 'CATCH SYSTEM-EXCEPTIONS is obsolete'(m24) ).
+
     mv_001 = abap_true.
     mv_002 = abap_true.
     mv_003 = abap_true.
@@ -243,68 +314,6 @@ CLASS ZCL_AOC_CHECK_08 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'REFRESH is obsolete'.                     "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'IS REQUESTED is obsolete'.                "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'LEAVE is obsolete'.                       "#EC NOTEXT
-      WHEN '004'.
-        p_text = 'COMPUTE is obsolete'.                     "#EC NOTEXT
-      WHEN '005'.
-        p_text = 'MOVE is obsolete'.                        "#EC NOTEXT
-      WHEN '006'.
-        p_text = 'Obsolete operator'.                       "#EC NOTEXT
-      WHEN '007'.
-        p_text = 'Use new operator'.                        "#EC NOTEXT
-      WHEN '008'.
-        p_text = 'DEMAND is obsolete'.                      "#EC NOTEXT
-      WHEN '009'.
-        p_text = 'SUPPLY is obsolete'.                      "#EC NOTEXT
-      WHEN '010'.
-        p_text = 'CONTEXTS is obsolete'.                    "#EC NOTEXT
-      WHEN '011'.
-        p_text = 'ADD is obsolete'.                         "#EC NOTEXT
-      WHEN '012'.
-        p_text = 'SUBTRACT is obsolete'.                    "#EC NOTEXT
-      WHEN '013'.
-        p_text = 'MULTIPLY is obsolete'.                    "#EC NOTEXT
-      WHEN '014'.
-        p_text = 'DIVIDE is obsolete'.                      "#EC NOTEXT
-      WHEN '015'.
-        p_text = 'CALL DIALOG is obsolete'.                 "#EC NOTEXT
-      WHEN '016'.
-        p_text = 'OCCURS is obsolete'.                      "#EC NOTEXT
-      WHEN '017'.
-        p_text = 'WITH HEADER LINE is obsolete'.            "#EC NOTEXT
-      WHEN '018'.
-        p_text = 'RANGES declarations is obsolete'.         "#EC NOTEXT
-      WHEN '019'.
-        p_text = 'Arithmetic CORRESPONDING is obsolete'.    "#EC NOTEXT
-      WHEN '020'.
-        p_text = 'Do not use SET EXTENDED CHECK'.           "#EC NOTEXT
-      WHEN '021'.
-        p_text = 'LOCAL is obsolete'.                       "#EC NOTEXT
-      WHEN '022'.
-        p_text = 'DO 1 TIMES'.                              "#EC NOTEXT
-      WHEN '023'.
-        p_text = 'DO ... VARYING ...'.                      "#EC NOTEXT
-      WHEN '024'.
-        p_text = 'CATCH SYSTEM-EXCEPTIONS is obsolete'.     "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.

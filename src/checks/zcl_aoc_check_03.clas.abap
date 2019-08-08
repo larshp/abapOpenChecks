@@ -9,8 +9,6 @@ CLASS zcl_aoc_check_03 DEFINITION
 
     METHODS check
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
   PROTECTED SECTION.
 
     METHODS check_nested
@@ -24,7 +22,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
+CLASS zcl_aoc_check_03 IMPLEMENTATION.
 
 
   METHOD check.
@@ -177,23 +175,12 @@ CLASS ZCL_AOC_CHECK_03 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'TRY without CATCH'(m01) ).
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Nesting with same exception'(m02) ).
+
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'TRY without CATCH'.                       "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Nesting with same exception'.             "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 ENDCLASS.

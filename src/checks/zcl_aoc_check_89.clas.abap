@@ -35,7 +35,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
+CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
 
   METHOD check.
@@ -73,7 +73,6 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
   METHOD constructor.
 
-    DATA ls_scimessage TYPE scimessage.
     super->constructor( ).
 
     version        = '001'.
@@ -84,16 +83,11 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
     enable_rfc( ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Minimum lines of documentation not reached: &1'(m01) ).
+
     mv_minlength = 10.
-
-    ls_scimessage-test = myname.
-    ls_scimessage-code = '001'.
-    ls_scimessage-kind = c_error.
-    ls_scimessage-text = 'Minimum lines of documentation not reached: &1'(m01).
-    ls_scimessage-pcom = ''.
-    ls_scimessage-pcom_alt = ''.
-
-    INSERT ls_scimessage INTO TABLE scimessages.
 
   ENDMETHOD.
 

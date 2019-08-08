@@ -5,16 +5,14 @@ CLASS zcl_aoc_check_54 DEFINITION PUBLIC INHERITING FROM zcl_aoc_super CREATE PU
     METHODS constructor .
 
     METHODS check
-      REDEFINITION .
-    METHODS get_message_text
-      REDEFINITION .
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_54 IMPLEMENTATION.
+CLASS zcl_aoc_check_54 IMPLEMENTATION.
 
 
   METHOD check.
@@ -66,21 +64,9 @@ CLASS ZCL_AOC_CHECK_54 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Specify AUTHORITY-CHECK'.                 "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Specify AUTHORITY-CHECK'(m01) ).
 
   ENDMETHOD.
 ENDCLASS.

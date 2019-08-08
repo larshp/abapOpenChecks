@@ -40,6 +40,7 @@ CLASS zcl_aoc_super DEFINITION
         srcid   TYPE sysuuid_x,
         rfcdest TYPE rfcdest,
       END OF ty_destination_cache .
+    TYPES ty_scimessage_text TYPE c LENGTH 255.
 
     DATA mv_errty TYPE sci_errty .
     CLASS-DATA gs_destination_cache TYPE ty_destination_cache .
@@ -61,6 +62,10 @@ CLASS zcl_aoc_super DEFINITION
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
     METHODS set_uses_checksum .
+    METHODS insert_scimessage
+      IMPORTING
+        iv_code TYPE scimessage-code
+        iv_text TYPE ty_scimessage_text.
 
     METHODS inform
         REDEFINITION .
@@ -92,7 +97,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_SUPER IMPLEMENTATION.
+CLASS zcl_aoc_super IMPLEMENTATION.
 
 
   METHOD check.
@@ -604,6 +609,21 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     IF sy-subrc = 0.
       <lv_uses_checksum> = abap_true.
     ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD insert_scimessage.
+
+* Insert entry into table scimessages. This table is used to determine the message text for a finding.
+    DATA ls_scimessage LIKE LINE OF scimessages.
+
+    ls_scimessage-test = myname.
+    ls_scimessage-code = iv_code.
+    ls_scimessage-kind = mv_errty.
+    ls_scimessage-text = iv_text.
+
+    INSERT ls_scimessage INTO TABLE scimessages.
 
   ENDMETHOD.
 ENDCLASS.
