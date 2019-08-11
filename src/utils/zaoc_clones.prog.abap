@@ -269,7 +269,7 @@ CLASS lcl_data IMPLEMENTATION.
     rt_combi = analyze( lt_methods ).
 
     SORT rt_combi BY match DESCENDING.
-    DELETE rt_combi FROM p_top.
+    DELETE rt_combi FROM p_top TO lines( rt_combi ).
 
   ENDMETHOD.                    "run
 
