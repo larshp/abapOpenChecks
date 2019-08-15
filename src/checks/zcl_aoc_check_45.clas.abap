@@ -289,7 +289,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     zzaoc_fill_att mv_new 'NEW #( )' ''.                    "#EC NOTEXT
     zzaoc_fill_att mv_inline_decl 'Inline declarations' ''. "#EC NOTEXT
     zzaoc_fill_att mv_condense 'condense( )' ''.            "#EC NOTEXT
-    zzaoc_fill_att mv_concat_lines 'concate_lines_of( )' ''. "#EC NOTEXT
+    zzaoc_fill_att mv_concat_lines 'concat_lines_of( )' ''. "#EC NOTEXT
     zzaoc_fill_att mv_shift 'shift_left( ) or shift_right( )' ''. "#EC NOTEXT
     zzaoc_fill_att mv_translate_to 'to_upper( ) or to_lower( )' ''. "#EC NOTEXT
     zzaoc_fill_att mv_translate_using 'translate( )' ''.    "#EC NOTEXT
