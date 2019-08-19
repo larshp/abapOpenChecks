@@ -28,7 +28,7 @@ CLASS ZCL_AOC_CHECK_92 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    IF NOT me->is_class_pool( me->program_name ) = abap_true.
+    IF me->is_class_pool( me->program_name ) = abap_false.
       RETURN.
     ENDIF.
 
