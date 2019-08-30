@@ -1,4 +1,4 @@
-CLASS zcl_aoc_check_59 DEFINITION
+CLsdfASS zcl_aoc_check_59 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
   CREATE PUBLIC .
