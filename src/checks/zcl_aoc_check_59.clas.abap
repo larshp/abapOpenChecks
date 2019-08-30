@@ -67,8 +67,14 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
     ENDIF.
 
     CASE <ls_token>-str.
-      WHEN 'IF' OR 'ELSEIF' OR 'WHILE' OR 'ASSERT' OR 'CHECK'.
+      WHEN 'IF' OR 'ELSEIF' OR 'WHILE' OR 'CHECK'.
 * nothing
+      WHEN 'ASSERT'.
+        READ TABLE it_tokens INDEX 2 ASSIGNING <ls_token>.
+        ASSERT sy-subrc = 0.
+        IF <ls_token>-str = 'FIELDS'.
+          RETURN.
+        ENDIF.
       WHEN OTHERS.
         RETURN.
     ENDCASE.

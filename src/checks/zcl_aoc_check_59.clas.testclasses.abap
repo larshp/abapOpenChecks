@@ -19,6 +19,7 @@ CLASS ltcl_test DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
       test001_04 FOR TESTING,
+      test001_05 FOR TESTING,
       test002_01 FOR TESTING,
       test002_02 FOR TESTING,
       test002_03 FOR TESTING,
@@ -87,6 +88,16 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_04.
 
     _code 'IF moo Z boo.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_05.
+
+    _code 'ASSERT FIELDS <lv_field1> <lv_field2> CONDITION <lv_check_val> IS NOT INITIAL.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
