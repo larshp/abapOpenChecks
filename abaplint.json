@@ -43,7 +43,7 @@
       "execSQL": true,
       "kernelCall": true,
       "communication": true,
-      "statics": true
+      "statics": false
     },
     "breakpoint": {
       "enabled": true,
