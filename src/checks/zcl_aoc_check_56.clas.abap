@@ -159,7 +159,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     LOOP AT lt_compiler INTO ls_compiler
         WHERE ( tag = cl_abap_compiler=>tag_data OR tag = cl_abap_compiler=>tag_method OR
                 tag = cl_abap_compiler=>tag_message_id OR tag = cl_abap_compiler=>tag_message_number OR
-                tag = cl_abap_compiler=>tag_message_type  )
+                tag = cl_abap_compiler=>tag_message_type )
         AND ( statement->source_info->name = lv_include
         OR statement->source_info->kind = lc_macro ).
       lv_name = get_name( ls_compiler-full_name ).

@@ -28,7 +28,7 @@
       "slin_errlv",
       "slin_todo"
     ],
-    "globalMacros": []
+    "globalMacros": ["_code", "_test", "zzaoc_top", "zzaoc_fill_att", "zzaoc_fill_att_rb", "zzaoc_popup"]
   },
   "rules": {
     "7bit_ascii": {
@@ -41,7 +41,9 @@
       "define": false,
       "endselect": true,
       "execSQL": true,
-      "kernelCall": true
+      "kernelCall": true,
+      "communication": true,
+      "statics": false
     },
     "breakpoint": {
       "enabled": true,
@@ -88,17 +90,15 @@
     },
     "double_space": {
       "enabled": true,
-      "exclude": []
+      "exclude": [],
+      "keywords": true,
+      "startParen": true,
+      "endParen": true
     },
     "empty_line_in_statement": {
       "enabled": true,
       "exclude": [],
       "allowChained": false
-    },
-    "empty_loop": {
-      "enabled": true,
-      "exclude": [],
-      "length": 120
     },
     "empty_statement": {
       "enabled": true,
@@ -231,7 +231,8 @@
       "tran": "^Z",
       "enqu": "^Z",
       "auth": "^Z",
-      "pinf": "^Z"
+      "pinf": "^Z",
+      "idoc": "^Z"
     },
     "obsolete_statement": {
       "enabled": true,
