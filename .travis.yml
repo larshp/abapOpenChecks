@@ -6,7 +6,8 @@ notifications:
 before_script:
   - npm install -g abaplint
 script:
-  - abaplint abaplint.json "src/**/*.*"
+  - abaplint --version
+  - abaplint abaplint.json -f standard --outformat junit --outfile report.xml "src/**/*.*"
 branches:
   only: 
     - master
