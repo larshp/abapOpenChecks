@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "10"
+notifications:
+  email: false
+before_script:
+  - npm install -g abaplint
+script:
+  - abaplint "src/**/*.*"
+branches:
+  only: 
+    - master
