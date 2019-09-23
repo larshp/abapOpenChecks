@@ -14,7 +14,7 @@
     }
   ],
   "syntax": {
-    "version": "v702",
+    "version": "v755",
     "errorNamespace": "^(Z|Y)",
     "globalConstants": [
       "sana_tok_field_def",
