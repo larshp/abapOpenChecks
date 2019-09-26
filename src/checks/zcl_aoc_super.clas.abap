@@ -441,7 +441,9 @@ CLASS zcl_aoc_super IMPLEMENTATION.
     ENDIF.
 
     IF object_type = 'FUGR'.
-      IF p_sub_obj_name CP 'LY*UXX' OR p_sub_obj_name CP 'LZ*UXX'.
+      IF p_sub_obj_name CP 'LY*UXX' OR p_sub_obj_name CP 'LZ*UXX' OR
+         p_sub_obj_name IN zcl_aoc_util_reg_atc_namespace=>get_r_fugr_uxx_from_namespaces(
+            zcl_aoc_util_reg_atc_namespace=>get_namespaces( ) ).
         RETURN.
       ENDIF.
       SELECT SINGLE area FROM tvdir INTO lv_area
