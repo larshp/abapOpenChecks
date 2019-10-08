@@ -1,16 +1,16 @@
-CLASS zcl_aoc_check_93 DEFINITION
-  PUBLIC
-  INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC .
+class ZCL_AOC_CHECK_93 definition
+  public
+  inheriting from ZCL_AOC_SUPER
+  create public .
 
-  PUBLIC SECTION.
+public section.
 
-    METHODS constructor .
+  methods CONSTRUCTOR .
 
-    METHODS check
-        REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
+  methods CHECK
+    redefinition .
+  methods GET_MESSAGE_TEXT
+    redefinition .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -31,7 +31,7 @@ CLASS ZCL_AOC_CHECK_93 IMPLEMENTATION.
         AND cmptype = '1'
         AND version = '1'
         AND mtddecltyp = '1'.
-    IF sy-subrc EQ 0.
+    IF sy-subrc = 0.
 
       SELECT SINGLE cmpname
         FROM vseocompdf
@@ -40,7 +40,7 @@ CLASS ZCL_AOC_CHECK_93 IMPLEMENTATION.
           AND cmptype = '1'
           AND version = '1'
           AND mtddecltyp = '0'.
-      IF sy-subrc NE 0.
+      IF sy-subrc <> 0.
         inform( p_param_1 = object_name
                 p_kind    = mv_errty
                 p_test    = myname
