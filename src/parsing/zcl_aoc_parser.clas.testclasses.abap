@@ -1352,8 +1352,8 @@ CLASS ltcl_test_programs IMPLEMENTATION.
 
 * split the source so there is one statement per line in table
     SCAN ABAP-SOURCE lt_source
-         TOKENS          INTO lt_tokens
-         STATEMENTS      INTO lt_statements
+         TOKENS INTO lt_tokens
+         STATEMENTS INTO lt_statements
          WITH ANALYSIS.
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.

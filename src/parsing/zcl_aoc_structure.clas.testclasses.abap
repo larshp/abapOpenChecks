@@ -38,9 +38,9 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD parse.
     SCAN ABAP-SOURCE mt_code
-         TOKENS          INTO mt_tokens
-         STATEMENTS      INTO mt_statements
-         STRUCTURES      INTO mt_structures
+         TOKENS INTO mt_tokens
+         STATEMENTS INTO mt_statements
+         STRUCTURES INTO mt_structures
          WITH ANALYSIS
          WITH COMMENTS.
   ENDMETHOD.                    "parse

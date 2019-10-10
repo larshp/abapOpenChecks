@@ -204,10 +204,10 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
   METHOD if_ci_test~query_attributes.
     zzaoc_top.
 
-    zzaoc_fill_att mt_pattern_info    'Info regex'(001)          ''.
+    zzaoc_fill_att mt_pattern_info 'Info regex'(001)          ''.
     zzaoc_fill_att mt_pattern_warning 'Warning regex'(002)       ''.
-    zzaoc_fill_att mt_pattern_error   'Error regex'(003)         ''.
-    zzaoc_fill_att mv_multiline       'Multiline comments'(004)  'C'.
+    zzaoc_fill_att mt_pattern_error 'Error regex'(003)         ''.
+    zzaoc_fill_att mv_multiline 'Multiline comments'(004)  'C'.
 
     zzaoc_popup.
 
