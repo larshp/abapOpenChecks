@@ -116,13 +116,13 @@ CLASS ZCL_AOC_UNIT_TEST IMPLEMENTATION.
 
 
     SCAN ABAP-SOURCE it_code
-         TOKENS          INTO lt_tokens
-         STATEMENTS      INTO lt_statements
-         LEVELS          INTO lt_levels
-         STRUCTURES      INTO lt_structures
+         TOKENS INTO lt_tokens
+         STATEMENTS INTO lt_statements
+         LEVELS INTO lt_levels
+         STRUCTURES INTO lt_structures
          WITH ANALYSIS
          WITH COMMENTS
-         WITH PRAGMAS    abap_true.
+         WITH PRAGMAS abap_true.
     cl_abap_unit_assert=>assert_subrc( msg = 'Error while parsing'(001) ).
 
     CREATE OBJECT ro_scan
