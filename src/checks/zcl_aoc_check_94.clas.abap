@@ -93,11 +93,11 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_static_access.
     DATA ls_token TYPE stokesx.
-    DATA class_length TYPE i.
+    DATA lv_class_length TYPE i.
     LOOP AT io_scan->tokens INTO ls_token FROM mv_impl_start_position.
-      class_length = strlen( me->object_name ) + 2.
+      lv_class_length = strlen( me->object_name ) + 2.
       TRY.
-          IF ls_token-str+0(class_length) = me->object_name && '=>'.
+          IF ls_token-str+0(lv_class_length) = me->object_name && '=>'.
             inform( p_test = me->myname                 " Name der Klassse
                     p_code = '001' ).
           ENDIF.
