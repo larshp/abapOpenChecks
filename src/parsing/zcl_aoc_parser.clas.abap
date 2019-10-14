@@ -924,8 +924,8 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
 
 
     SCAN ABAP-SOURCE it_code
-         TOKENS          INTO lt_tokens
-         STATEMENTS      INTO lt_statements
+         TOKENS INTO lt_tokens
+         STATEMENTS INTO lt_statements
          WITH ANALYSIS.
     IF sy-subrc <> 0.
       rs_result-match = abap_false.
