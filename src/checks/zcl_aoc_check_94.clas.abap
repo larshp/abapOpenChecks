@@ -32,18 +32,23 @@ ENDCLASS.
 CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
 
 
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_AOC_CHECK_94->CHECK
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_SCAN                        TYPE REF TO ZCL_AOC_SCAN
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check.
 
-    DATA token_string_in_char TYPE char35.
-    DATA token TYPE stokesx.
+    DATA lv_token_string_in_char TYPE char35.
+    DATA ls_token TYPE stokesx.
 
     IF object_type <> 'CLAS'.
       RETURN.
     ENDIF.
 
-    LOOP AT io_scan->tokens INTO token.
-      token_string_in_char = token-str .
-      IF token_string_in_char+30(5) = 'CCIMP'.
+    LOOP AT io_scan->tokens INTO ls_token.
+      lv_token_string_in_char = ls_token-str .
+      IF lv_token_string_in_char+30(5) = 'CCIMP'.
         mv_impl_start_position = sy-tabix.
       ENDIF.
     ENDLOOP.
@@ -61,11 +66,16 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
   ENDMETHOD.
 
 
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_AOC_CHECK_94->CHECK_INSTANCE_ACCESS
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_SCAN                        TYPE REF TO ZCL_AOC_SCAN
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_instance_access.
-    DATA token TYPE stokesx.
-    LOOP AT io_scan->tokens INTO token FROM mv_impl_start_position.
+    DATA ls_token TYPE stokesx.
+    LOOP AT io_scan->tokens INTO ls_token FROM mv_impl_start_position.
       TRY.
-          IF token-str+0(4) = 'ME->'.
+          IF ls_token-str+0(4) = 'ME->'.
             inform( p_test = me->myname                 " Name der Klassse
                     p_code = '002' ).
           ENDIF.
@@ -76,12 +86,18 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
   ENDMETHOD.
 
 
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_AOC_CHECK_94->CHECK_STATIC_ACCESS
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IO_SCAN                        TYPE REF TO ZCL_AOC_SCAN
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_static_access.
-    DATA token TYPE stokesx.
-    LOOP AT io_scan->tokens INTO token FROM mv_impl_start_position.
-      DATA(class_length) = strlen( me->object_name ) + 2.
+    DATA ls_token TYPE stokesx.
+    DATA class_length TYPE i.
+    LOOP AT io_scan->tokens INTO ls_token FROM mv_impl_start_position.
+      class_length = strlen( me->object_name ) + 2.
       TRY.
-          IF token-str+0(class_length) = me->object_name && '=>'.
+          IF ls_token-str+0(class_length) = me->object_name && '=>'.
             inform( p_test = me->myname                 " Name der Klassse
                     p_code = '001' ).
           ENDIF.
@@ -92,6 +108,10 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
   ENDMETHOD.
 
 
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_AOC_CHECK_94->CONSTRUCTOR
+* +-------------------------------------------------------------------------------------------------+
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD constructor.
     super->constructor( ).
 
@@ -109,6 +129,11 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
   ENDMETHOD.
 
 
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_AOC_CHECK_94->GET_ATTRIBUTES
+* +-------------------------------------------------------------------------------------------------+
+* | [<-()] P_ATTRIBUTES                   TYPE        XSTRING
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD get_attributes.
     EXPORT
       mv_errty = mv_errty
@@ -118,6 +143,13 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
   ENDMETHOD.
 
 
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_AOC_CHECK_94->GET_MESSAGE_TEXT
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] P_TEST                         TYPE        CLIKE
+* | [--->] P_CODE                         TYPE        CLIKE
+* | [<---] P_TEXT                         TYPE        CLIKE
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD get_message_text.
     CLEAR p_text.
 
@@ -132,6 +164,11 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
   ENDMETHOD.
 
 
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_AOC_CHECK_94->IF_CI_TEST~QUERY_ATTRIBUTES
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] P_DISPLAY                      TYPE        FLAG (default =' ')
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD if_ci_test~query_attributes.
 
     zzaoc_top.
@@ -146,6 +183,11 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
   ENDMETHOD.
 
 
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_AOC_CHECK_94->PUT_ATTRIBUTES
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] P_ATTRIBUTES                   TYPE        XSTRING
+* +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD put_attributes.
     IMPORT
       mv_errty = mv_errty
