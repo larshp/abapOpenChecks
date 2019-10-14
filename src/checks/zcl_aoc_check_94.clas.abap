@@ -34,12 +34,15 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
 
   METHOD check.
 
+    DATA token_string_in_char TYPE char35.
+    DATA token TYPE stokesx.
+
     IF object_type <> 'CLAS'.
       RETURN.
     ENDIF.
 
-    LOOP AT io_scan->tokens INTO DATA(token).
-      DATA(token_string_in_char) = CONV char35( token-str ).
+    LOOP AT io_scan->tokens INTO token.
+      token_string_in_char = token-str .
       IF token_string_in_char+30(5) = 'CCIMP'.
         mv_impl_start_position = sy-tabix.
       ENDIF.
@@ -59,7 +62,8 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
 
 
   METHOD check_instance_access.
-    LOOP AT io_scan->tokens INTO DATA(token) FROM mv_impl_start_position.
+    DATA token TYPE stokesx.
+    LOOP AT io_scan->tokens INTO token FROM mv_impl_start_position.
       TRY.
           IF token-str+0(4) = 'ME->'.
             inform( p_test = me->myname                 " Name der Klassse
@@ -73,7 +77,8 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
 
 
   METHOD check_static_access.
-    LOOP AT io_scan->tokens INTO DATA(token) FROM mv_impl_start_position.
+    DATA token TYPE stokesx.
+    LOOP AT io_scan->tokens INTO token FROM mv_impl_start_position.
       DATA(class_length) = strlen( me->object_name ) + 2.
       TRY.
           IF token-str+0(class_length) = me->object_name && '=>'.
