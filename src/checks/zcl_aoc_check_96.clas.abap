@@ -1,17 +1,16 @@
-CLASS zcl_aoc_check_96 DEFINITION
-  PUBLIC
-  INHERITING FROM zcl_aoc_super_root
-  CREATE PUBLIC .
+class ZCL_AOC_CHECK_96 definition
+  public
+  inheriting from ZCL_AOC_SUPER_ROOT
+  create public .
 
-  PUBLIC SECTION.
+public section.
 
-    CLASS-METHODS class_constructor .
-    METHODS constructor .
+  methods CONSTRUCTOR .
 
-    METHODS get_message_text
-        REDEFINITION .
-    METHODS run
-        REDEFINITION .
+  methods GET_MESSAGE_TEXT
+    redefinition .
+  methods RUN
+    redefinition .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -19,10 +18,6 @@ ENDCLASS.
 
 
 CLASS ZCL_AOC_CHECK_96 IMPLEMENTATION.
-
-
-  METHOD class_constructor.
-  ENDMETHOD.
 
 
   METHOD constructor.
