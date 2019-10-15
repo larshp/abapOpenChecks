@@ -1,4 +1,4 @@
-CLASS zcl_aoc_check_94 DEFINITION
+CLASS zcl_aoc_check_95 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
   FINAL
@@ -29,7 +29,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_95 IMPLEMENTATION.
 
 
   METHOD check.
@@ -97,7 +97,7 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
     super->constructor( ).
 
     version = '001'.
-    position = '094'.
+    position = '095'.
 
     has_attributes = abap_true.
     attributes_ok = abap_true.
