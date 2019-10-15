@@ -54,11 +54,11 @@ CLASS ZCL_AOC_CHECK_95 IMPLEMENTATION.
     SELECT SINGLE edtx
       FROM reposrc
       INTO lv_edtx
-      WHERE progname = object_name
+      WHERE progname = program_name
         AND r3state = 'A'.
     IF sy-subrc = 0 AND
        lv_edtx = abap_true.
-      inform( p_param_1 = object_name
+      inform( p_param_1 = program_name
           p_kind    = mv_errty
           p_test    = myname
           p_code    = '001' ).
