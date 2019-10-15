@@ -1,15 +1,16 @@
-CLASS zcl_aoc_check_95 DEFINITION
+CLASS zcl_aoc_check_96 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super_root
   CREATE PUBLIC .
 
   PUBLIC SECTION.
 
+    CLASS-METHODS class_constructor .
     METHODS constructor .
 
-    METHODS run
-        REDEFINITION .
     METHODS get_message_text
+        REDEFINITION .
+    METHODS run
         REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
@@ -17,7 +18,11 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_95 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_96 IMPLEMENTATION.
+
+
+  METHOD class_constructor.
+  ENDMETHOD.
 
 
   METHOD constructor.
