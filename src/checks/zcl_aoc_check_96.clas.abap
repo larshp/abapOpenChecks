@@ -11,14 +11,14 @@ CLASS zcl_aoc_check_96 DEFINITION
         REDEFINITION .
     METHODS run
         REDEFINITION .
-  PROTECTED SECTION.
+
   PRIVATE SECTION.
 
     METHODS is_edt_lock
       IMPORTING
-        !p_program_name TYPE programm
+        !iv_program_name TYPE programm
       RETURNING
-        VALUE(rv_bool)  TYPE abap_bool .
+        VALUE(rv_bool)   TYPE abap_bool .
 ENDCLASS.
 
 
@@ -60,7 +60,7 @@ CLASS ZCL_AOC_CHECK_96 IMPLEMENTATION.
     SELECT SINGLE edtx
      FROM reposrc
      INTO lv_edtx
-     WHERE progname = p_program_name
+     WHERE progname = iv_program_name
        AND r3state = 'A'.
     rv_bool = boolc( lv_edtx <> abap_false ).
   ENDMETHOD.
@@ -97,12 +97,10 @@ CLASS ZCL_AOC_CHECK_96 IMPLEMENTATION.
         ENDIF.
 
       ENDLOOP.
-    ELSE.
-      IF is_edt_lock( program_name ) = abap_true.
-        inform( p_kind    = mv_errty
-                p_test    = myname
-                p_code    = '001' ).
-      ENDIF.
+    ELSEIF is_edt_lock( program_name ) = abap_true.
+      inform( p_kind    = mv_errty
+              p_test    = myname
+              p_code    = '001' ).
     ENDIF.
 
   ENDMETHOD.
