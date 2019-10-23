@@ -10,16 +10,15 @@ CLASS zcl_aoc_check_04 DEFINITION
         REDEFINITION.
     METHODS get_attributes
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
     METHODS if_ci_test~query_attributes
         REDEFINITION.
     METHODS put_attributes
         REDEFINITION.
-  PROTECTED SECTION.
 
+  PROTECTED SECTION.
     DATA mv_skipc TYPE flag.
     DATA mv_maxlength TYPE maxflength.
+
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -83,8 +82,12 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_maxlength = 90.
+    mv_maxlength = 120.
     mv_skipc     = abap_true.
+
+    insert_scimessage(
+      iv_code = '001'
+      iv_text = 'Reduce line length'(m01) ).
 
   ENDMETHOD.
 
@@ -98,22 +101,6 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Reduce line length'.                      "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.
