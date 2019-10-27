@@ -10,14 +10,12 @@ CLASS zcl_aoc_check_06 DEFINITION
         REDEFINITION.
     METHODS get_attributes
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
     METHODS if_ci_test~query_attributes
         REDEFINITION.
     METHODS put_attributes
         REDEFINITION.
-  PROTECTED SECTION.
 
+  PROTECTED SECTION.
     DATA mv_skipc TYPE flag.
     DATA mv_one_finding TYPE flag.
     DATA mv_hikey TYPE flag.
@@ -25,8 +23,8 @@ CLASS zcl_aoc_check_06 DEFINITION
     DATA mv_upper TYPE flag.
     DATA mv_lokey TYPE flag.
     DATA mv_flow TYPE flag.
-  PRIVATE SECTION.
 
+  PRIVATE SECTION.
     METHODS build_option
       RETURNING
         VALUE(rv_option) TYPE string .
@@ -50,8 +48,7 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
 
     DATA: ls_rseumod TYPE rseumod.
 
-
-* check workbench settings
+    " check workbench settings
     CALL FUNCTION 'RS_WORKBENCH_CUSTOMIZING'
       EXPORTING
         choice          = 'WB'
@@ -127,7 +124,7 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
 
     lv_option = build_option( ).
     IF lv_option <> 'HIKEY'.
-* todo, so far it only works partly for keywords upper case
+      " todo, so far it only works partly for keywords upper case
       RETURN.
     ENDIF.
 
@@ -139,8 +136,7 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-* the pretty_print method does not work for screen flow logic
-
+    " the pretty_print method does not work for screen flow logic
     LOOP AT lt_d020s ASSIGNING <ls_d020s>.
       ls_dynp_id-prog = <ls_d020s>-prog.
       ls_dynp_id-dnum = <ls_d020s>-dnum.
@@ -191,15 +187,15 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
           AND is_class_definition( <ls_level>-name ) = abap_true.
         CONTINUE. " current loop
       ELSEIF <ls_level>-name(8) = '/1BCWDY/'.
-* todo, web dynpro
+        " todo, web dynpro
         RETURN.
       ELSEIF <ls_level>-name(4) = 'SAPL'.
-* exclude functionpool
+        " exclude functionpool
         CONTINUE.
       ENDIF.
 
-* make sure the source code is not empty, as it will cause the pretty
-* printer to show an error message
+      " make sure the source code is not empty, as it will cause the pretty
+      " printer to show an error message
       READ TABLE io_scan->statements WITH KEY level = lv_level TRANSPORTING NO FIELDS.
       IF sy-subrc <> 0.
         CONTINUE.
@@ -250,6 +246,16 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
 
     enable_rfc( ).
 
+    insert_scimessage(
+      iv_code  = '001'
+      iv_text  = 'Use pretty printer'(m01) ).
+    insert_scimessage(
+      iv_code  = '002'
+      iv_text  = 'Pretty printer settings do not match'(m02) ).
+    insert_scimessage(
+      iv_code  = '003'
+      iv_text  = 'Use pretty printer, screen &1'(m03) ).
+
   ENDMETHOD.
 
 
@@ -267,26 +273,6 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Use pretty printer'.                      "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Pretty printer settings does not match'.  "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Use pretty printer, screen &1'.           "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.
@@ -312,7 +298,6 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
   METHOD pretty_print.
 
     DATA: lv_option TYPE c LENGTH 5.
-
 
     lv_option = build_option( ).
 
