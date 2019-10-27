@@ -29,9 +29,9 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
       lv_idx = sy-tabix + 1.
       READ TABLE io_scan->tokens ASSIGNING <ls_token_next> INDEX lv_idx.
 
-      IF sy-subrc = 0 AND
-         <ls_token_next>-str CA '*' AND
-         <ls_token_next>-str NA '%'.
+      IF sy-subrc = 0
+          AND <ls_token_next>-str CA '*'
+          AND <ls_token_next>-str NA '%'.
         inform( p_sub_obj_name = object_name
                 p_line         = <ls_token_next>-row
                 p_kind         = mv_errty
@@ -44,9 +44,9 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
     LOOP AT io_scan->tokens ASSIGNING <ls_token> WHERE str = 'CP' OR str = 'NP'.
       lv_idx = sy-tabix + 1.
       READ TABLE io_scan->tokens ASSIGNING <ls_token_next> INDEX lv_idx.
-      IF sy-subrc = 0 AND
-         <ls_token_next>-str CA '%' AND
-         <ls_token_next>-str NA '*'.
+      IF sy-subrc = 0
+          AND <ls_token_next>-str CA '%'
+          AND <ls_token_next>-str NA '*'.
         inform( p_sub_obj_name = object_name
                 p_line         = <ls_token_next>-row
                 p_kind         = mv_errty

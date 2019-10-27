@@ -42,7 +42,7 @@ CLASS ZCL_AOC_CHECK_95 IMPLEMENTATION.
     ENDIF.
 
     LOOP AT io_scan->tokens INTO ls_token.
-      lv_token_string_in_char = ls_token-str .
+      lv_token_string_in_char = ls_token-str.
       IF lv_token_string_in_char+30(5) = 'CCIMP'.
         mv_impl_start_position = sy-tabix.
       ENDIF.

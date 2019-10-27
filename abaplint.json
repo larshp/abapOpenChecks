@@ -31,6 +31,25 @@
     "globalMacros": ["_code", "_test", "zzaoc_top", "zzaoc_fill_att", "zzaoc_fill_att_rb", "zzaoc_popup"]
   },
   "rules": {
+    "abapdoc": false,
+    "allowed_object_types": false,
+    "ambiguous_statement": true,
+    "begin_end_names": true,
+    "check_ddic": true,
+    "check_include": true,
+    "check_transformation_exists": true,
+    "empty_structure": true,
+    "form_no_dash": true,
+    "form_tables_obsolete": true,
+    "implement_methods": true,
+    "in_statement_indentation": true,
+    "local_testclass_location": true,
+    "main_file_contents": true,
+    "release_idoc": true,
+    "rfc_error_handling": false,
+    "space_before_dot": true,
+    "type_form_parameters": true,
+    "use_new": true,
     "7bit_ascii": {
       "enabled": true,
       "exclude": []
@@ -49,7 +68,7 @@
       "enabled": true,
       "exclude": []
     },
-    "check_variables": {
+    "check_syntax": {
       "enabled": false,
       "exclude": ["zcl_aoc_check_69"]
     },
@@ -185,6 +204,7 @@
     "method_length": {
       "enabled": true,
       "exclude": [],
+      "errorWhenEmpty": false,
       "statements": 100
     },
     "method_parameter_names": {
