@@ -63,13 +63,12 @@ CLASS ZCL_AOC_CHECK_97 IMPLEMENTATION.
         subroutine_pool      = 2
         load_problems        = 3
         OTHERS               = 4.
-    IF sy-subrc = 0 AND
-       lt_selpars[] IS NOT INITIAL.
+    IF sy-subrc = 0 AND lt_selpars[] IS NOT INITIAL.
       SELECT SINGLE masterlang
         FROM tadir
         INTO lv_masterlang
         WHERE obj_name = program_name
-          AND object = object_type.
+        AND object = object_type.
 
       READ TEXTPOOL program_name LANGUAGE lv_masterlang INTO lt_texts.
 
@@ -77,8 +76,7 @@ CLASS ZCL_AOC_CHECK_97 IMPLEMENTATION.
                          WHERE dbfield <> ''.
         READ TABLE lt_texts ASSIGNING <ls_text>
                             WITH KEY key = <ls_selpar>-name.
-        IF sy-subrc = 0 AND
-           <ls_text>-entry(1) <> 'D'.
+        IF sy-subrc = 0 AND <ls_text>-entry(1) <> 'D'.
           inform( p_kind    = mv_errty
                   p_test    = myname
                   p_code    = '001'

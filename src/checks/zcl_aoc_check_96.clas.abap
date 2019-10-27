@@ -31,7 +31,7 @@ CLASS ZCL_AOC_CHECK_96 IMPLEMENTATION.
     super->constructor( ).
 
     version        = '001'.
-    position       = '095'.
+    position       = '096'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
@@ -58,10 +58,10 @@ CLASS ZCL_AOC_CHECK_96 IMPLEMENTATION.
   METHOD is_edt_lock.
     DATA lv_edtx  TYPE reposrc-edtx.
     SELECT SINGLE edtx
-     FROM reposrc
-     INTO lv_edtx
-     WHERE progname = iv_program_name
-       AND r3state = 'A'.
+      FROM reposrc
+      INTO lv_edtx
+      WHERE progname = iv_program_name
+      AND r3state = 'A'.
     rv_bool = boolc( lv_edtx <> abap_false ).
   ENDMETHOD.
 
