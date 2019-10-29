@@ -71,7 +71,7 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
 
     insert_scimessage(
         iv_code = '002'
-        iv_text = 'Use of CP/NP with wrong wildcard'(m01) ).
+        iv_text = 'Use of CP/NP with wrong wildcard'(m02) ).
 
   ENDMETHOD.
 ENDCLASS.

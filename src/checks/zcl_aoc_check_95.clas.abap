@@ -115,7 +115,7 @@ CLASS ZCL_AOC_CHECK_95 IMPLEMENTATION.
 
     insert_scimessage(
         iv_code = '002'
-        iv_text = 'Do not access instance methods / attributes with "me->"'(m01) ).
+        iv_text = 'Do not access instance methods / attributes with "me->"'(m02) ).
 
   ENDMETHOD.
 
