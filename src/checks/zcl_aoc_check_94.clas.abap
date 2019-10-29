@@ -9,10 +9,6 @@ CLASS zcl_aoc_check_94 DEFINITION
 
     METHODS check
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
-  PROTECTED SECTION.
-  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -69,21 +65,13 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-  ENDMETHOD.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Use of LIKE with wrong wildcard'(m01) ).
 
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Use of CP/NP with wrong wildcard'(m01) ).
 
-  METHOD get_message_text.
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Use of LIKE with wrong wildcard'.         "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Use of CP/NP with wrong wildcard'.        "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
   ENDMETHOD.
 ENDCLASS.
