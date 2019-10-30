@@ -31,6 +31,9 @@
     "globalMacros": ["_code", "_test", "zzaoc_top", "zzaoc_fill_att", "zzaoc_fill_att_rb", "zzaoc_popup"]
   },
   "rules": {
+    "chain_mainly_declarations": true,
+    "check_text_elements": true,
+    "type_begin_single_include": true,    
     "abapdoc": false,
     "allowed_object_types": false,
     "ambiguous_statement": true,
