@@ -13,6 +13,26 @@
     <RSTAT>P</RSTAT>
     <WITH_UNIT_TESTS>X</WITH_UNIT_TESTS>
    </VSEOCLASS>
+   <TPOOL>
+    <item>
+     <ID>I</ID>
+     <KEY>M01</KEY>
+     <ENTRY>Fixed point arithmetic can be safely activated</ENTRY>
+     <LENGTH>92</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>M02</KEY>
+     <ENTRY>Statement blocks activation of fixed point arithmetic: &amp;1</ENTRY>
+     <LENGTH>114</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>M03</KEY>
+     <ENTRY>Because of the use of DEFINE, it can not be determined if fixed point arithmetic can be activated</ENTRY>
+     <LENGTH>132</LENGTH>
+    </item>
+   </TPOOL>
    <LINES>
     <TLINE>
      <TDFORMAT>*</TDFORMAT>

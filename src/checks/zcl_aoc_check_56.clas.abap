@@ -11,11 +11,9 @@ CLASS zcl_aoc_check_56 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
+    METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
-    METHODS if_ci_test~query_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
@@ -295,6 +293,18 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     mv_referenced = abap_true.
     mv_supplied   = abap_true.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Parameter &1 not supplied anywhere'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Parameter &1 not supplied anywhere, method &2'(m02) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Parameter &1 not referenced in method'(m03) ).
+
   ENDMETHOD.
 
 
@@ -339,26 +349,6 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       mv_referenced = mv_referenced
       mv_supplied = mv_supplied
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Parameter &1 not supplied anywhere'.      "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Parameter &1 not supplied anywhere, method &2'. "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Parameter &1 not referenced in method'.   "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 

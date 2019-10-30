@@ -1,37 +1,34 @@
 CLASS zcl_aoc_check_17 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
-    METHODS constructor.
+
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
-    METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
-
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
   PROTECTED SECTION.
-    DATA mv_types TYPE i.
-    DATA mv_define TYPE i.
-    DATA mv_constants TYPE i.
-    DATA mv_data TYPE i.
-    DATA mv_fs TYPE i.
-    DATA mv_statics TYPE i.
 
-    TYPE-POOLS abap.
+    DATA mv_types TYPE i .
+    DATA mv_define TYPE i .
+    DATA mv_constants TYPE i .
+    DATA mv_data TYPE i .
+    DATA mv_fs TYPE i .
+    DATA mv_statics TYPE i .
+
     METHODS check_mode
       IMPORTING
         !iv_type       TYPE i
       RETURNING
-        VALUE(rv_exit) TYPE abap_bool.
-
+        VALUE(rv_exit) TYPE abap_bool .
   PRIVATE SECTION.
 
     DATA ms_statement TYPE sstmnt .
@@ -161,6 +158,10 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
     mv_data      = 2.
     mv_fs        = 3.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Reorder definitions to top of routine'(m01) ).
+
   ENDMETHOD.
 
 
@@ -177,22 +178,6 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Reorder definitions to top of routine'.   "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.

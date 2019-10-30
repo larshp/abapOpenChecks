@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_43 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -189,6 +187,10 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Parameter name &1 can be omitted'(m01) ).
+
   ENDMETHOD.
 
 
@@ -232,22 +234,6 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
 
       INSERT ls_call INTO TABLE rt_calls.
     ENDLOOP.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Parameter name &1 can be omitted'.        "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
