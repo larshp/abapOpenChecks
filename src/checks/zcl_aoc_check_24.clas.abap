@@ -1,7 +1,7 @@
 CLASS zcl_aoc_check_24 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
@@ -13,24 +13,22 @@ CLASS zcl_aoc_check_24 DEFINITION
         proc_name2 TYPE sci_proc_name,
         code2      TYPE string,
         line2      TYPE sci_proc_line,
-      END OF ty_list.
+      END OF ty_list .
     TYPES:
-      ty_list_tt TYPE STANDARD TABLE OF ty_list WITH DEFAULT KEY.
+      ty_list_tt TYPE STANDARD TABLE OF ty_list WITH DEFAULT KEY .
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_result_node
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
     TYPES:
@@ -277,6 +275,10 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
 
     mv_statements = 10.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Identical code blocks, dbl click for details'(m01) ).
+
   ENDMETHOD.
 
 
@@ -285,22 +287,6 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
     EXPORT mv_errty = mv_errty mv_statements = mv_statements TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Identical code blocks, dbl click for details'. "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD get_result_node.
