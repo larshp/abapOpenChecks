@@ -236,7 +236,7 @@
       "depth": 6
     },
     "no_public_attributes": {
-      "enabled": true,
+      "enabled": false,
       "exclude": ["zcl_aoc_scan\\.clas\\.abap", "zcl_aoc_parser_node\\.clas\\.abap"]
     },
     "object_naming": {
