@@ -1,22 +1,20 @@
 CLASS zcl_aoc_check_31 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
-    METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -142,6 +140,10 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
 
     mv_default_error = abap_true.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = '&1'(m01) ).
+
   ENDMETHOD.
 
 
@@ -158,13 +160,6 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    p_text = '&1'.                                          "#EC NOTEXT
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.
