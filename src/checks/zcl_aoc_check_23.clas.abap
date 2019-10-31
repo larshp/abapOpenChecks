@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_23 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -125,25 +123,17 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
 
     enable_rfc( ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Use chained statements mainly for declarations'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Space before colon'(m02) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Missing space after colon'(m03) ).
+
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Use chained statements mainly for declarations'. "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Space before colon'.                      "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Missing space after colon'.               "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 ENDCLASS.
