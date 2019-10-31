@@ -1,18 +1,15 @@
 CLASS zcl_aoc_check_49 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
-
   PRIVATE SECTION.
 
     TYPES:
@@ -202,57 +199,81 @@ CLASS ZCL_AOC_CHECK_49 IMPLEMENTATION.
 
     enable_rfc( ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Double space after IF'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Double space after SHIFT'(m02) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Double space after WHEN'(m03) ).
+
+    insert_scimessage(
+        iv_code = '004'
+        iv_text = 'Double space after READ TABLE'(m04) ).
+
+    insert_scimessage(
+        iv_code = '005'
+        iv_text = 'Double space after MODIFY'(m05) ).
+
+    insert_scimessage(
+        iv_code = '006'
+        iv_text = 'Double space after DELETE'(m06) ).
+
+    insert_scimessage(
+        iv_code = '007'
+        iv_text = 'Double space after COLLECT'(m07) ).
+
+    insert_scimessage(
+        iv_code = '008'
+        iv_text = 'Double space after CHECK'(m08) ).
+
+    insert_scimessage(
+        iv_code = '009'
+        iv_text = 'Double space after SORT'(m09) ).
+
+    insert_scimessage(
+        iv_code = '010'
+        iv_text = 'Double space after REPORT'(m10) ).
+
+    insert_scimessage(
+        iv_code = '011'
+        iv_text = 'Double space after ELSEIF'(m11) ).
+
+    insert_scimessage(
+        iv_code = '012'
+        iv_text = 'Double space after DATA'(m12) ).
+
+    insert_scimessage(
+        iv_code = '013'
+        iv_text = 'Double space after SET TITLEBAR'(m13) ).
+
+    insert_scimessage(
+        iv_code = '014'
+        iv_text = 'Double space after MOVE-CORRESPONDING'(m14) ).
+
+    insert_scimessage(
+        iv_code = '015'
+        iv_text = 'Double space after APPEND'(m15) ).
+
+    insert_scimessage(
+        iv_code = '016'
+        iv_text = 'Double space in method call'(m16) ).
+
+    insert_scimessage(
+        iv_code = '017'
+        iv_text = 'Double space after METHOD'(m17) ).
+
+    insert_scimessage(
+        iv_code = '018'
+        iv_text = 'Double space after start parenthesis'(m18) ).
+
+    insert_scimessage(
+        iv_code = '019'
+        iv_text = 'Double space before end parenthesis'(m19) ).
+
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Double space after IF'.                   "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Double space after SHIFT'.                "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Double space after WHEN'.                 "#EC NOTEXT
-      WHEN '004'.
-        p_text = 'Double space after READ TABLE'.           "#EC NOTEXT
-      WHEN '005'.
-        p_text = 'Double space after MODIFY'.               "#EC NOTEXT
-      WHEN '006'.
-        p_text = 'Double space after DELETE'.               "#EC NOTEXT
-      WHEN '007'.
-        p_text = 'Double space after COLLECT'.              "#EC NOTEXT
-      WHEN '008'.
-        p_text = 'Double space after CHECK'.                "#EC NOTEXT
-      WHEN '009'.
-        p_text = 'Double space after SORT'.                 "#EC NOTEXT
-      WHEN '010'.
-        p_text = 'Double space after REPORT'.               "#EC NOTEXT
-      WHEN '011'.
-        p_text = 'Double space after ELSEIF'.               "#EC NOTEXT
-      WHEN '012'.
-        p_text = 'Double space after DATA'.                 "#EC NOTEXT
-      WHEN '013'.
-        p_text = 'Double space after SET TITLEBAR'.         "#EC NOTEXT
-      WHEN '014'.
-        p_text = 'Double space after MOVE-CORRESPONDING'.   "#EC NOTEXT
-      WHEN '015'.
-        p_text = 'Double space after APPEND'.               "#EC NOTEXT
-      WHEN '016'.
-        p_text = 'Double space in method call'.             "#EC NOTEXT
-      WHEN '017'.
-        p_text = 'Double space after METHOD'.               "#EC NOTEXT
-      WHEN '018'.
-        p_text = 'Double space after start parenthesis'.    "#EC NOTEXT
-      WHEN '019'.
-        p_text = 'Double space before end parenthesis'.     "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 ENDCLASS.
