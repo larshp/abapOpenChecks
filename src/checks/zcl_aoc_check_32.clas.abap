@@ -40,7 +40,6 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
                    <ls_token>     LIKE LINE OF io_scan->tokens.
 
-
     IF mt_devclass IS INITIAL.
       RETURN.
     ENDIF.
