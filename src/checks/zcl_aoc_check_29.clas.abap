@@ -44,7 +44,6 @@ CLASS ZCL_AOC_CHECK_29 IMPLEMENTATION.
     LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       lv_level = sy-tabix.
 
-
       LOOP AT io_scan->statements ASSIGNING <ls_statement>
           WHERE type <> io_scan->gc_statement-comment
           AND type <> io_scan->gc_statement-comment_in_stmnt
