@@ -54,7 +54,6 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result,
                    <ls_line>   LIKE LINE OF <ls_result>-lines.
 
-
     ls_flags = set_flags( ).
     CALL FUNCTION 'EXTENDED_PROGRAM_CHECK'
       EXPORTING
