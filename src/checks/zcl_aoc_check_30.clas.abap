@@ -41,7 +41,6 @@ CLASS ZCL_AOC_CHECK_30 IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
                    <ls_token>     LIKE LINE OF io_scan->tokens.
 
-
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE type = io_scan->gc_statement-standard
         OR type = io_scan->gc_statement-compute_direct
