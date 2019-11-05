@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_36 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super_root
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
-    METHODS get_message_text
-        REDEFINITION.
     METHODS run
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -33,21 +31,9 @@ CLASS ZCL_AOC_CHECK_36 IMPLEMENTATION.
 
     add_obj_type( 'CLAS' ).
 
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Exception text not in use, &1'.           "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Exception text not in use, &1'(m01) ).
 
   ENDMETHOD.
 
