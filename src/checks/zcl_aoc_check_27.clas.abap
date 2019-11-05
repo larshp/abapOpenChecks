@@ -9,8 +9,6 @@ CLASS zcl_aoc_check_27 DEFINITION
 
     METHODS check
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
   PROTECTED SECTION.
 
     TYPES:
@@ -47,7 +45,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_check_27 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
 
   METHOD analyze.
@@ -181,27 +179,19 @@ CLASS zcl_aoc_check_27 IMPLEMENTATION.
 
     enable_rfc( ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Last statement is RETURN'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Last statement is CLEAR or FREE'(m02) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Last statement is CHECK or EXIT'(m03) ).
+
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Last statement is RETURN'.                "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Last statement is CLEAR or FREE'.         "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Last statement is CHECK or EXIT'.         "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD is_local.
