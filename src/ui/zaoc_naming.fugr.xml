@@ -31,13 +31,11 @@
       <RSFDO>
        <PARAMETER>IV_READ_ONLY</PARAMETER>
        <KIND>P</KIND>
-       <INDEX> 001</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CS_DATA</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Naming</STEXT>
-       <INDEX> 002</INDEX>
       </RSFDO>
      </DOCUMENTATION>
     </item>
