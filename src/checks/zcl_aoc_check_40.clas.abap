@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_40 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -172,21 +170,9 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
     ls_message-pcom = '"#EC CI_SUBRC'.
     INSERT ls_message INTO TABLE scimessages.
 
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Check SY-SUBRC'.                          "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Check SY-SUBRC'(m01) ).
 
   ENDMETHOD.
 ENDCLASS.
