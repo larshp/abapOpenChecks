@@ -1,37 +1,35 @@
 CLASS zcl_aoc_check_39 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super_root
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS run
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
-    DATA ms_settings TYPE sci_s_naming_conventions_setup.
+    DATA ms_settings TYPE sci_s_naming_conventions_setup .
 
     METHODS check_name
       IMPORTING
         !iv_name    TYPE tdsfvname
         !iv_prefix  TYPE sci_e_type_prefix
-        !it_regular TYPE sci_t_regular_expressions.
+        !it_regular TYPE sci_t_regular_expressions .
     METHODS determine_prefix
       IMPORTING
         !is_ssfgdata     TYPE ssfgdata
       RETURNING
-        VALUE(rv_prefix) TYPE sci_e_type_prefix.
-    METHODS set_defaults.
+        VALUE(rv_prefix) TYPE sci_e_type_prefix .
+    METHODS set_defaults .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -79,6 +77,10 @@ CLASS ZCL_AOC_CHECK_39 IMPLEMENTATION.
     add_obj_type( 'SSFO' ).
 
     set_defaults( ).
+
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Wrong naming, &1'(m01) ).
 
   ENDMETHOD.
 
@@ -135,22 +137,6 @@ CLASS ZCL_AOC_CHECK_39 IMPLEMENTATION.
       mv_errty = mv_errty
       ms_settings = ms_settings
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Wrong naming, &1'.                        "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
