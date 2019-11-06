@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_37 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -102,27 +100,19 @@ CLASS ZCL_AOC_CHECK_37 IMPLEMENTATION.
 
     enable_rfc( ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Define message texts in SE91'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Remove ''->get_text( )'''(m02) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Use of generic SE91 message'(m03) ).
+
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Define message texts in SE91'.            "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Remove ''->get_text( )'''.                "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Use of generic SE91 message'.             "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD report.
