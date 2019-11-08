@@ -7,8 +7,6 @@ CLASS zcl_aoc_check_61 DEFINITION
 
     METHODS constructor .
 
-    METHODS get_message_text
-        REDEFINITION .
     METHODS run
         REDEFINITION .
   PROTECTED SECTION.
@@ -167,6 +165,10 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
     add_obj_type( 'TTYP' ).
     add_obj_type( 'VIEW' ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Uses &1 &2, which is outside of the encapsulation(&3)'(m01) ).
+
   ENDMETHOD.
 
 
@@ -221,22 +223,6 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
         RETURN.
       ENDIF.
     ENDLOOP.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Uses &1 &2, which is outside of the encapsulation(&3)'. "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
