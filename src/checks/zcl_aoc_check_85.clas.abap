@@ -9,8 +9,6 @@ CLASS zcl_aoc_check_85 DEFINITION
 
     METHODS check
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -200,25 +198,19 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Fixed point arithmetic can be safely activated'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Statement blocks activation of fixed point arithmetic: &1'(m02) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Because of the use of DEFINE, it can not be determined if fixed point arithmetic can be activated'(m03) ).
+
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Fixed point arithmetic can be safely activated'.
-      WHEN '002'.
-        p_text = 'Statement blocks activation of fixed point arithmetic: &1'.
-      WHEN '003'.
-        p_text = 'Because of the use of DEFINE, it can not be determined if fixed point arithmetic can be activated'.
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD get_statement.
