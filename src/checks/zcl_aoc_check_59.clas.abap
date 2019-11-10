@@ -11,11 +11,9 @@ CLASS zcl_aoc_check_59 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
+    METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
-    METHODS if_ci_test~query_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
@@ -168,6 +166,18 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
 
     mv_parser_errors = abap_true.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'abapOpenChecks boolean parser error'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Superfluous parentheses'(m02) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Too few parentheses'(m03) ).
+
   ENDMETHOD.
 
 
@@ -177,26 +187,6 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
       mv_errty = mv_errty
       mv_parser_errors = mv_parser_errors
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'abapOpenChecks boolean parser error'.     "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Superfluous parentheses'.                 "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Too few parentheses'.                     "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
