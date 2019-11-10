@@ -11,17 +11,15 @@ CLASS zcl_aoc_check_57 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
-    DATA mv_into TYPE sap_bool.
-    DATA mv_unreachable TYPE sap_bool.
-    DATA mv_raising TYPE sap_bool.
+    DATA mv_into TYPE sap_bool .
+    DATA mv_unreachable TYPE sap_bool .
+    DATA mv_raising TYPE sap_bool .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -111,6 +109,14 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
     mv_raising = abap_true.
     mv_unreachable = abap_true.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'MESSAGE in global class'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'WRITE in global class'(m02) ).
+
   ENDMETHOD.
 
 
@@ -122,24 +128,6 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
       mv_raising = mv_raising
       mv_unreachable = mv_unreachable
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'MESSAGE in global class'.                 "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'WRITE in global class'.                   "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
