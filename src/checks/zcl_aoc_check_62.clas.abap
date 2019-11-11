@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_62 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
     METHODS check_continue
@@ -194,25 +192,17 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
 
     enable_rfc( ).
 
-  ENDMETHOD.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Use DELETE WHERE instead'(m01) ).
 
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'CONTINUE as last statement in loop'(m02) ).
 
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Use DELETE WHERE instead'.                "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'CONTINUE as last statement in loop'.      "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Checking for lines before looping'.       "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Checking for lines before looping'(m03) ).
 
   ENDMETHOD.
 ENDCLASS.
