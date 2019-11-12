@@ -11,8 +11,6 @@ CLASS zcl_aoc_check_66 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
@@ -129,6 +127,14 @@ CLASS ZCL_AOC_CHECK_66 IMPLEMENTATION.
     mv_exists = abap_true.
     mv_simplification = abap_true.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Statement can be simiplified, MESSAGE tn(id)'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Message does not exist'(m02) ).
+
   ENDMETHOD.
 
 
@@ -139,24 +145,6 @@ CLASS ZCL_AOC_CHECK_66 IMPLEMENTATION.
       mv_exists = mv_exists
       mv_simplification = mv_simplification
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Statement can be simiplified, MESSAGE tn(id)'. "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Message does not exist'.                  "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 

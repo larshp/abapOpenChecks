@@ -11,11 +11,9 @@ CLASS zcl_aoc_check_55 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
+    METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
-    METHODS if_ci_test~query_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
@@ -126,6 +124,10 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
 
     mv_skipc = abap_true.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Statements can be chained'(m01) ).
+
   ENDMETHOD.
 
 
@@ -135,22 +137,6 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
       mv_errty = mv_errty
       mv_skipc = mv_skipc
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Statements can be chained'.               "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
