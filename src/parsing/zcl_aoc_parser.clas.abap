@@ -205,6 +205,13 @@ CLASS zcl_aoc_parser DEFINITION
         VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
   PRIVATE SECTION.
 
+    TYPES: BEGIN OF ty_cache,
+             rulename TYPE string,
+             node     TYPE REF TO if_ixml_node,
+           END OF ty_cache.
+
+    CLASS-DATA gt_cache  TYPE SORTED TABLE OF ty_cache WITH UNIQUE KEY rulename.
+    CLASS-DATA gt_syntax TYPE ty_syntax_tt.
     CLASS-DATA gt_tokens TYPE string_table.
     CLASS-DATA gv_end_rule TYPE string.
     CLASS-DATA gv_debug TYPE abap_bool.
@@ -1315,34 +1322,26 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
 
   METHOD xml_get.
 
-    TYPES: BEGIN OF ty_cache,
-             rulename TYPE string,
-             node     TYPE REF TO if_ixml_node,
-           END OF ty_cache.
-
-    STATICS: st_syntax TYPE ty_syntax_tt,
-             st_cache  TYPE SORTED TABLE OF ty_cache WITH UNIQUE KEY rulename.
-
     DATA: lv_rulename TYPE ssyntaxstructure-rulename,
-          ls_cache    LIKE LINE OF st_cache.
+          ls_cache    LIKE LINE OF gt_cache.
 
-    FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF st_syntax.
+    FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF gt_syntax.
 
 
-    READ TABLE st_cache INTO ls_cache WITH KEY rulename = iv_rulename.
+    READ TABLE gt_cache INTO ls_cache WITH KEY rulename = iv_rulename.
     IF sy-subrc = 0.
       ri_rule = ls_cache-node.
       RETURN.
     ENDIF.
 
-    IF lines( st_syntax ) = 0.
+    IF lines( gt_syntax ) = 0.
       SELECT * FROM ssyntaxstructure
-        INTO TABLE st_syntax.             "#EC CI_NOWHERE "#EC CI_SUBRC
-      SORT st_syntax BY rulename ASCENDING.
+        INTO TABLE gt_syntax.             "#EC CI_NOWHERE "#EC CI_SUBRC
+      SORT gt_syntax BY rulename ASCENDING.
     ENDIF.
 
     lv_rulename = iv_rulename. " type conversion
-    READ TABLE st_syntax ASSIGNING <ls_syntax>
+    READ TABLE gt_syntax ASSIGNING <ls_syntax>
       WITH KEY rulename = lv_rulename BINARY SEARCH.
     ASSERT sy-subrc = 0.
 
@@ -1354,7 +1353,7 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
     CLEAR ls_cache.
     ls_cache-rulename = iv_rulename.
     ls_cache-node     = ri_rule.
-    INSERT ls_cache INTO TABLE st_cache.
+    INSERT ls_cache INTO TABLE gt_cache.
 
   ENDMETHOD.
 

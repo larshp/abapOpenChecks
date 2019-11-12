@@ -6,14 +6,16 @@ CLASS zcl_aoc_check_95 DEFINITION
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
-    METHODS if_ci_test~query_attributes REDEFINITION .
-    METHODS get_attributes REDEFINITION.
-    METHODS put_attributes REDEFINITION.
-    METHODS check REDEFINITION.
-    METHODS get_message_text REDEFINITION .
-
+    METHODS check
+        REDEFINITION .
+    METHODS get_attributes
+        REDEFINITION .
+    METHODS if_ci_test~query_attributes
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -107,6 +109,14 @@ CLASS ZCL_AOC_CHECK_95 IMPLEMENTATION.
 
     enable_rfc( ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Do not access static elements with "<clasname>=>"'(001) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Do not access instance methods / attributes with "me->"'(002) ).
+
   ENDMETHOD.
 
 
@@ -116,20 +126,6 @@ CLASS ZCL_AOC_CHECK_95 IMPLEMENTATION.
       mv_class_in_front_okay = mv_class_in_front_not_okay
       mv_object_in_front_okay = mv_object_in_front_not_okay
       TO DATA BUFFER p_attributes.
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Do not access static elements with "<clasname>=>"'(001).
-      WHEN '002'.
-        p_text = 'Do not access instance methods / attributes with "me->"'(002).
-      WHEN OTHERS.
-        CLEAR p_text.
-    ENDCASE.
   ENDMETHOD.
 
 
