@@ -7,15 +7,13 @@ CLASS zcl_aoc_check_75 DEFINITION
 
     METHODS constructor .
 
-    METHODS get_message_text
+    METHODS get_attributes
         REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
         REDEFINITION .
     METHODS run
-        REDEFINITION .
-    METHODS get_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
@@ -54,6 +52,10 @@ CLASS ZCL_AOC_CHECK_75 IMPLEMENTATION.
     add_obj_type( 'SSFO' ).
     add_obj_type( 'FORM' ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Wrong master language: &1'(m01) ).
+
   ENDMETHOD.
 
 
@@ -63,22 +65,6 @@ CLASS ZCL_AOC_CHECK_75 IMPLEMENTATION.
       mv_errty = mv_errty
       mv_language = mv_language
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Wrong master language: &1'.               "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
