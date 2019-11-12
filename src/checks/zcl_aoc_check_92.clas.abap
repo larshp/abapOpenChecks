@@ -56,7 +56,7 @@ CLASS ZCL_AOC_CHECK_92 IMPLEMENTATION.
 
     insert_scimessage(
         iv_code = '001'
-        iv_text =  'No unit tests'(m01) ).                  "#EC NOTEX
+        iv_text = 'No unit tests'(m01) ).                  "#EC NOTEX
 
   ENDMETHOD.
 ENDCLASS.
