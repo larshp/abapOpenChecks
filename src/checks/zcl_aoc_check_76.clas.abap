@@ -8,17 +8,14 @@ CLASS zcl_aoc_check_76 DEFINITION
     METHODS constructor .
 
     METHODS check
-         REDEFINITION .
+        REDEFINITION .
     METHODS get_attributes
-         REDEFINITION .
-    METHODS get_message_text
-         REDEFINITION .
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS put_attributes
-         REDEFINITION .
+        REDEFINITION .
   PROTECTED SECTION.
-
   PRIVATE SECTION.
 
     METHODS get_tokens_for_statement
@@ -163,6 +160,10 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
 
     enable_rfc( ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'INNER JOIN on text table'(m01) ).
+
   ENDMETHOD.
 
 
@@ -171,22 +172,6 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
     EXPORT
       mv_errty = mv_errty
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'INNER JOIN on text table'.                "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
