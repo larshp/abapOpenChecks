@@ -11,15 +11,13 @@ CLASS zcl_aoc_check_71 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
-    DATA mv_unreachable TYPE sap_bool.
+    DATA mv_unreachable TYPE sap_bool .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -89,6 +87,10 @@ CLASS ZCL_AOC_CHECK_71 IMPLEMENTATION.
 
     mv_unreachable = abap_true.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'MESSAGE using standard variables from SY structure'(m01) ).
+
   ENDMETHOD.
 
 
@@ -98,22 +100,6 @@ CLASS ZCL_AOC_CHECK_71 IMPLEMENTATION.
       mv_errty = mv_errty
       mv_unreachable = mv_unreachable
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'MESSAGE using standard variables from SY structure'. "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 

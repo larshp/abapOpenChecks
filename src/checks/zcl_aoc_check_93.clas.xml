@@ -12,6 +12,14 @@
     <UNICODE>X</UNICODE>
     <RSTAT>P</RSTAT>
    </VSEOCLASS>
+   <TPOOL>
+    <item>
+     <ID>I</ID>
+     <KEY>M01</KEY>
+     <ENTRY>Class &amp;1 has only statics methods</ENTRY>
+     <LENGTH>66</LENGTH>
+    </item>
+   </TPOOL>
   </asx:values>
  </asx:abap>
 </abapGit>
