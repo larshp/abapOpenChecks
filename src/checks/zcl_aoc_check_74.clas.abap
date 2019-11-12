@@ -11,8 +11,6 @@ CLASS zcl_aoc_check_74 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
@@ -107,6 +105,10 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
 
     mv_depth = 4.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Deep nesting, depth = &1'(m01) ).
+
   ENDMETHOD.
 
 
@@ -116,22 +118,6 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
       mv_errty = mv_errty
       mv_depth = mv_depth
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Deep nesting, depth = &1'.                "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 

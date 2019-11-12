@@ -7,8 +7,6 @@ CLASS zcl_aoc_check_87 DEFINITION
 
     METHODS constructor .
 
-    METHODS get_message_text
-        REDEFINITION .
     METHODS run
         REDEFINITION .
   PROTECTED SECTION.
@@ -82,6 +80,10 @@ CLASS ZCL_AOC_CHECK_87 IMPLEMENTATION.
     add_obj_type( 'PROG' ).
     add_obj_type( 'FUGR' ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Overlaps, errros, screen &1'(m01) ).
+
   ENDMETHOD.
 
 
@@ -132,22 +134,6 @@ CLASS ZCL_AOC_CHECK_87 IMPLEMENTATION.
     IF sy-subrc <> 0.
       CLEAR rv_progname.
     ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Overlaps, errros, screen &1'.             "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
