@@ -7,8 +7,6 @@ CLASS zcl_aoc_check_73 DEFINITION
 
     METHODS constructor .
 
-    METHODS get_message_text
-        REDEFINITION .
     METHODS run
         REDEFINITION .
   PROTECTED SECTION.
@@ -33,21 +31,9 @@ CLASS ZCL_AOC_CHECK_73 IMPLEMENTATION.
 
     add_obj_type( 'TRAN' ).
 
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Inconsistent'.                            "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Inconsistent'(m01) ).
 
   ENDMETHOD.
 
