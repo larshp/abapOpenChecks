@@ -11,8 +11,6 @@ CLASS zcl_aoc_check_69 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
@@ -909,6 +907,22 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ls_message-pcom = '"#EC CI_NAMING'.
     INSERT ls_message INTO TABLE scimessages.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Bad naming, expected &1, got &2'(m01) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Error qualifying tokens'(m02) ).
+
+    insert_scimessage(
+        iv_code = '005'
+        iv_text = 'Syntax error'(m03) ).
+
+    insert_scimessage(
+        iv_code = '006'
+        iv_text = 'Error reading FM parameters'(m04) ).
+
   ENDMETHOD.
 
 
@@ -1083,30 +1097,6 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       mv_errty = mv_errty
       ms_naming = ms_naming
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Bad naming, expected &1, got &2'.         "#EC NOTEXT
-      WHEN '002' OR '004'.
-        p_text = 'Unable to resolve &1'.                    "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Error qualifying tokens'.                 "#EC NOTEXT
-      WHEN '005'.
-        p_text = 'Syntax error'.                            "#EC NOTEXT
-      WHEN '006'.
-        p_text = 'Error reading FM parameters'.             "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
