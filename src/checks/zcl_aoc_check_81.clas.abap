@@ -9,8 +9,6 @@ CLASS zcl_aoc_check_81 DEFINITION
 
     METHODS check
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -97,23 +95,13 @@ CLASS ZCL_AOC_CHECK_81 IMPLEMENTATION.
 
     enable_rfc( ).
 
-  ENDMETHOD.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Missing space after '''(m01) ).
 
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Missing space after '''.                  "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Missing space before '''.                 "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Missing space before '''(m02) ).
 
   ENDMETHOD.
 ENDCLASS.
