@@ -7,11 +7,9 @@ CLASS zcl_aoc_check_96 DEFINITION
 
     METHODS constructor .
 
-    METHODS get_message_text
-        REDEFINITION .
     METHODS run
         REDEFINITION .
-
+  PROTECTED SECTION.
   PRIVATE SECTION.
 
     METHODS is_edt_lock
@@ -40,18 +38,10 @@ CLASS ZCL_AOC_CHECK_96 IMPLEMENTATION.
     add_obj_type( 'FUGR' ).
     add_obj_type( 'CLAS' ).
 
-  ENDMETHOD.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = '''Editor Lock'' is set.'(m01) ).            "#EC NOTEX
 
-
-  METHOD get_message_text.
-    CASE p_code.
-      WHEN '001'.
-        p_text = '''Editor Lock'' is set.'.                 "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
   ENDMETHOD.
 
 
