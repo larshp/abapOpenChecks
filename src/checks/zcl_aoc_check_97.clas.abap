@@ -9,8 +9,8 @@ CLASS zcl_aoc_check_97 DEFINITION
 
     METHODS run
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -31,19 +31,10 @@ CLASS ZCL_AOC_CHECK_97 IMPLEMENTATION.
     add_obj_type( 'PROG' ).
     add_obj_type( 'FUGR' ).
 
-  ENDMETHOD.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Text of Field &1 doesn''t refer to the dictionary.'(m01) ).
 
-
-  METHOD get_message_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Text of Field &1 doesn''t refer to the dictionary.'. "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
   ENDMETHOD.
 
 

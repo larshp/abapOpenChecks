@@ -7,12 +7,10 @@ CLASS zcl_aoc_check_86 DEFINITION
 
     METHODS constructor .
 
-    METHODS get_message_text
-         REDEFINITION .
-    METHODS run
-         REDEFINITION .
     METHODS consolidate_for_display
-         REDEFINITION .
+        REDEFINITION .
+    METHODS run
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -67,23 +65,13 @@ CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
     add_obj_type( 'SHLP' ).
     add_obj_type( 'WAPA' ).
 
-  ENDMETHOD.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Uses &1 &2, see note &3'(m01) ).
 
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Uses &1 &2, see note &3'.                 "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Load database via report ZAOC_UPLOAD_SIDB'. "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Load database via report ZAOC_UPLOAD_SIDB'(m02) ).
 
   ENDMETHOD.
 
