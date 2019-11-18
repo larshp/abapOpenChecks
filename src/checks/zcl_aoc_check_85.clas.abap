@@ -208,7 +208,7 @@ CLASS ZCL_AOC_CHECK_85 IMPLEMENTATION.
 
     insert_scimessage(
         iv_code = '003'
-        iv_text = 'Because of the use of DEFINE, it can not be determined if fixed point arithmetic can be activated'(m03) ).
+        iv_text = TEXT-m03 ).
 
   ENDMETHOD.
 
