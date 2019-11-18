@@ -295,15 +295,15 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
 
     insert_scimessage(
         iv_code = '001'
-        iv_text =   'Parameter &1 not supplied anywhere'(m01) ). "#EC NOTEX
+        iv_text = 'Parameter &1 not supplied anywhere'(m01) ). "#EC NOTEX
 
     insert_scimessage(
         iv_code = '002'
-        iv_text =   'Parameter &1 not supplied anywhere, method &2'(m02) ). "#EC NOTEX
+        iv_text = 'Parameter &1 not supplied anywhere, method &2'(m02) ). "#EC NOTEX
 
     insert_scimessage(
         iv_code = '003'
-        iv_text =   'Parameter &1 not referenced in method'(m03) ). "#EC NOTEX
+        iv_text = 'Parameter &1 not referenced in method'(m03) ). "#EC NOTEX
 
   ENDMETHOD.
 
