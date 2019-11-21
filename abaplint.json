@@ -31,9 +31,13 @@
     "globalMacros": ["_code", "_test", "zzaoc_top", "zzaoc_fill_att", "zzaoc_fill_att_rb", "zzaoc_popup"]
   },
   "rules": {
+    "check_abstract": true,
+    "check_no_handler_pragma": true,
+    "newline_between_methods": false,
+    "types_naming": false,
     "chain_mainly_declarations": true,
     "check_text_elements": true,
-    "type_begin_single_include": true,    
+    "type_begin_single_include": true,
     "abapdoc": false,
     "allowed_object_types": false,
     "ambiguous_statement": true,
@@ -164,9 +168,10 @@
       "enabled": true,
       "exclude": []
     },
-    "keywords_upper": {
+    "keyword_case": {
       "enabled": true,
       "exclude": [],
+      "style": "upper",
       "ignoreExceptions": true,
       "ignoreLowerClassImplmentationStatement": true,
       "ignoreGlobalClassDefinition": false,
@@ -208,7 +213,8 @@
       "enabled": true,
       "exclude": [],
       "errorWhenEmpty": false,
-      "statements": 100
+      "statements": 100,
+      "ignoreTestClasses": false
     },
     "method_parameter_names": {
       "enabled": true,
@@ -237,6 +243,7 @@
     },
     "no_public_attributes": {
       "enabled": false,
+      "allowReadOnly": false,
       "exclude": ["zcl_aoc_scan\\.clas\\.abap", "zcl_aoc_parser_node\\.clas\\.abap"]
     },
     "object_naming": {
@@ -267,7 +274,8 @@
       "multiply": true,
       "move": true,
       "divide": true,
-      "requested": true
+      "requested": true,
+      "occurs": true
     },
     "parser_error": {
       "enabled": true,
