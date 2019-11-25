@@ -34,9 +34,10 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test001_01.
+    DATA lv_code TYPE string.
 
-    APPEND |SELECT * INTO TABLE @DATA(lt_data) FROM e070 INN| &&
-      |ER JOIN e07t ON e070~trkorr = e07t~trkorr WHERE e07t~langu = @sy-langu.| TO mt_code.
+    lv_code = |SELECT * INTO TABLE @DATA(lt_data) FROM e070 INNER JOIN e07t ON e070~trkorr = e07t~trkorr WHERE e07t~langu = @sy-langu.|.
+    APPEND lv_code TO mt_code.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
@@ -46,8 +47,10 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test001_02.
+    DATA lv_code TYPE string.
 
-    APPEND |SELECT * INTO TABLE @DATA(lt_data) FROM e070 INNER JOIN e071 ON e070~trkorr = e071~trkorr.| TO mt_code.
+    lv_code = |SELECT * INTO TABLE @DATA(lt_data) FROM e070 INNER JOIN e071 ON e070~trkorr = e071~trkorr.|.
+    APPEND lv_code TO mt_code.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
@@ -57,9 +60,10 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test001_03.
+    DATA lv_code TYPE string.
 
-    APPEND |SELECT * INTO TABLE @DATA(lt_data) FROM e070 AS ko| &&
-      |rr INNER JOIN e071 ON e070~trkorr = e071~trkorr.| TO mt_code.
+    lv_code = |SELECT * INTO TABLE @DATA(lt_data) FROM e070 AS korr INNER JOIN e071 ON e070~trkorr = e071~trkorr.|.
+    APPEND lv_code TO mt_code.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
@@ -69,9 +73,10 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test001_04.
+    DATA lv_code TYPE string.
 
-    APPEND |SELECT * INTO TABLE @DATA(lt_data) FROM e07t AS te| &&
-      |xt INNER JOIN e070 ON e07t~trkorr = e070~trkorr.| TO mt_code.
+    lv_code = |SELECT * INTO TABLE @DATA(lt_data) FROM e07t AS text INNER JOIN e070 ON e07t~trkorr = e070~trkorr.|.
+    APPEND lv_code TO mt_code.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
