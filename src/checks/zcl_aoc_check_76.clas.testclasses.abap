@@ -35,7 +35,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD test001_01.
     DATA lv_code TYPE string.
-    
+
     lv_code = |SELECT * INTO TABLE @DATA(lt_data) FROM e070 INNER| &&
               | JOIN e07t ON e070~trkorr = e07t~trkorr WHERE e07t~langu = @sy-langu.|.
     APPEND lv_code TO mt_code.
