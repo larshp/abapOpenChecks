@@ -95,12 +95,10 @@ CLASS ZCL_AOC_CHECK_98 IMPLEMENTATION.
 
 
   METHOD inform_about_catch.
-    DATA lv_lines TYPE i.
     DATA ls_structure LIKE LINE OF it_structures.
     DATA ls_statement LIKE LINE OF it_statements.
 
-    DESCRIBE TABLE it_structures LINES lv_lines.
-    IF lv_lines < 2.
+    IF lines( it_structures ) < 2.
       RETURN.
     ENDIF.
 
