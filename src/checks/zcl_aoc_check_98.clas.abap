@@ -62,8 +62,7 @@ CLASS ZCL_AOC_CHECK_98 IMPLEMENTATION.
     DATA lt_structures LIKE ct_structures.
     DATA ls_statement LIKE LINE OF it_statements.
     LOOP AT ct_structures INTO ls_structure.
-      READ TABLE it_statements INTO ls_statement
-      INDEX ls_structure-stmnt_from.
+      READ TABLE it_statements INTO ls_statement INDEX ls_structure-stmnt_from.
       IF ls_statement-terminator = '.'.
         APPEND ls_structure TO lt_structures.
       ENDIF.
@@ -105,12 +104,9 @@ CLASS ZCL_AOC_CHECK_98 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    READ TABLE it_structures INTO ls_structure
-    INDEX 1.
-    READ TABLE it_complete_structures INTO ls_structure
-    INDEX ls_structure-back.
-    READ TABLE it_statements INTO ls_statement
-    INDEX ls_structure-stmnt_from.
+    READ TABLE it_structures INTO ls_structure INDEX 1.
+    READ TABLE it_complete_structures INTO ls_structure INDEX ls_structure-back.
+    READ TABLE it_statements INTO ls_statement INDEX ls_structure-stmnt_from.
 
     inform( p_sub_obj_name = program_name
             p_line         = ls_statement-trow
