@@ -64,8 +64,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'TRY.'.
     _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND,'.
-    _code 'ZCX_ABAPGIT_2FA_ERROR,'.
+    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
+    _code 'ZCX_ABAPGIT_2FA_ERROR '.
     _code 'CX_ROOT.'.
     _code 'ENDTRY.'.
 
@@ -79,7 +79,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'TRY.'.
     _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND,'.
+    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
     _code 'ZCX_ABAPGIT_2FA_ERROR.'.
     _code 'CHECK 1 = 2.'.
     _code 'CATCH CX_ROOT.'.
@@ -95,7 +95,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " more then one try-catch
     _code 'TRY.'.
     _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND,'.
+    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
     _code 'ZCX_ABAPGIT_2FA_ERROR.'.
     _code 'CHECK 1 = 2.'.
     _code 'CATCH CX_ROOT.'.
@@ -103,7 +103,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'TRY.'.
     _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND,'.
+    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
     _code 'ZCX_ABAPGIT_2FA_ERROR.'.
     _code 'CHECK 1 = 2.'.
     _code 'CATCH CX_ROOT.'.
@@ -152,7 +152,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     _code 'TRY.'.
     _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND,'.
+    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
     _code 'ZCX_ABAPGIT_2FA_ERROR.'.
     _code 'CATCH CX_ROOT.'.
     _code 'ENDTRY.'.
@@ -168,7 +168,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " more then one try-catch
     _code 'TRY.'.
     _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND,'.
+    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
     _code 'ZCX_ABAPGIT_2FA_ERROR.'.
     _code 'CATCH CX_ROOT.'.
     _code 'ENDTRY.'.
