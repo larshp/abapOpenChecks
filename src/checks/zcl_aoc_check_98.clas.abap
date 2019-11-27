@@ -15,7 +15,7 @@ CLASS zcl_aoc_check_98 DEFINITION
     TYPES: BEGIN OF ty_struc_index_s,
              index TYPE i.
              INCLUDE TYPE sstruc.
-           TYPES: END OF ty_struc_index_s,
+    TYPES: END OF ty_struc_index_s,
            ty_struc_index_tt TYPE TABLE OF ty_struc_index_s WITH NON-UNIQUE DEFAULT KEY.
 
     METHODS inform_about_catch IMPORTING it_structures          TYPE ty_structures_tt
