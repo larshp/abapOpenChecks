@@ -97,7 +97,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_super IMPLEMENTATION.
+CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
 
   METHOD check.
@@ -441,9 +441,9 @@ CLASS zcl_aoc_super IMPLEMENTATION.
     ENDIF.
 
     IF object_type = 'FUGR'.
-      IF p_sub_obj_name CP 'LY*UXX' OR p_sub_obj_name CP 'LZ*UXX' OR
-          p_sub_obj_name IN zcl_aoc_util_reg_atc_namespace=>get_r_fugr_uxx_from_namespaces(
-            zcl_aoc_util_reg_atc_namespace=>get_namespaces( ) ).
+      IF p_sub_obj_name CP 'LY*UXX'
+          OR p_sub_obj_name CP 'LZ*UXX'
+          OR zcl_aoc_util_reg_atc_namespace=>is_registered_fugr_uxx( p_sub_obj_name ) = abap_true.
         RETURN.
       ENDIF.
       SELECT SINGLE area FROM tvdir INTO lv_area
@@ -515,6 +515,21 @@ CLASS zcl_aoc_super IMPLEMENTATION.
         p_param_4      = p_param_4
         p_inclspec     = p_inclspec ).
 * parameters p_detail and p_checksum_1 does not exist in 730
+
+  ENDMETHOD.
+
+
+  METHOD insert_scimessage.
+
+* Insert entry into table scimessages. This table is used to determine the message text for a finding.
+    DATA ls_scimessage LIKE LINE OF scimessages.
+
+    ls_scimessage-test = myname.
+    ls_scimessage-code = iv_code.
+    ls_scimessage-kind = mv_errty.
+    ls_scimessage-text = iv_text.
+
+    INSERT ls_scimessage INTO TABLE scimessages.
 
   ENDMETHOD.
 
@@ -611,21 +626,6 @@ CLASS zcl_aoc_super IMPLEMENTATION.
     IF sy-subrc = 0.
       <lv_uses_checksum> = abap_true.
     ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD insert_scimessage.
-
-* Insert entry into table scimessages. This table is used to determine the message text for a finding.
-    DATA ls_scimessage LIKE LINE OF scimessages.
-
-    ls_scimessage-test = myname.
-    ls_scimessage-code = iv_code.
-    ls_scimessage-kind = mv_errty.
-    ls_scimessage-text = iv_text.
-
-    INSERT ls_scimessage INTO TABLE scimessages.
 
   ENDMETHOD.
 ENDCLASS.
