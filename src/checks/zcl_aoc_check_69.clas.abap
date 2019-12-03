@@ -904,16 +904,21 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ls_message-test = myname.
     ls_message-code = '001'.
     ls_message-kind = c_error.
+    ls_message-text = 'Bad naming, expected &1, got &2'(m01).
     ls_message-pcom = '"#EC CI_NAMING'.
     INSERT ls_message INTO TABLE scimessages.
 
     insert_scimessage(
-        iv_code = '001'
-        iv_text = 'Bad naming, expected &1, got &2'(m01) ).
+        iv_code = '002'
+        iv_text = 'Unable to resolve &1'(m05) ).
 
     insert_scimessage(
         iv_code = '003'
         iv_text = 'Error qualifying tokens'(m02) ).
+
+    insert_scimessage(
+        iv_code = '004'
+        iv_text = 'Unable to resolve &1'(m05) ).
 
     insert_scimessage(
         iv_code = '005'
