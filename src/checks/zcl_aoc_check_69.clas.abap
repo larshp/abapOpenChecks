@@ -8,13 +8,13 @@ CLASS zcl_aoc_check_69 DEFINITION
     METHODS constructor .
 
     METHODS check
-        REDEFINITION .
+         REDEFINITION .
     METHODS get_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
+         REDEFINITION .
   PROTECTED SECTION.
 
     METHODS is_parallel_method
