@@ -125,12 +125,6 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    ls_message-test = myname.
-    ls_message-code = '001'.
-    ls_message-kind = c_error.
-    ls_message-pcom = '"#EC CI_DEFAULT_KEY'.
-    INSERT ls_message INTO TABLE scimessages.
-
     enable_rfc( ).
 
     insert_scimessage(
