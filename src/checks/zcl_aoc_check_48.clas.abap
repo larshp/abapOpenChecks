@@ -135,7 +135,8 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
     insert_scimessage(
         iv_code = '001'
-        iv_text = 'DEFAULT KEY, add table key or EMPTY KEY'(m01) ).
+        iv_text = 'DEFAULT KEY, add table key or EMPTY KEY'(m01)
+        iv_pcom = '"#EC CI_DEFAULT_KEY' ).
 
     insert_scimessage(
         iv_code = '002'
