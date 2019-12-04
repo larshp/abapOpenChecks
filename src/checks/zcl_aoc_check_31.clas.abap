@@ -8,13 +8,15 @@ CLASS zcl_aoc_check_31 DEFINITION
     METHODS constructor .
 
     METHODS check
-        REDEFINITION .
+         REDEFINITION .
     METHODS get_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
+         REDEFINITION .
+    METHODS get_message_text
+         REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -131,17 +133,13 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '003'.
-    position       = '031'.
+    version  = '003'.
+    position = '031'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
     mv_default_error = abap_true.
-
-    insert_scimessage(
-        iv_code = '001'
-        iv_text = '&1'(m01) ).
 
   ENDMETHOD.
 
@@ -157,6 +155,13 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
       mv_default_standard = mv_default_standard
       mv_default_atc = mv_default_atc
       TO DATA BUFFER p_attributes.
+
+  ENDMETHOD.
+
+
+  METHOD get_message_text.
+
+    p_text = '&1'.                                          "#EC NOTEXT
 
   ENDMETHOD.
 
