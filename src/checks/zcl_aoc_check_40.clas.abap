@@ -164,15 +164,10 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    ls_message-test = myname.
-    ls_message-code = '001'.
-    ls_message-kind = c_error.
-    ls_message-pcom = '"#EC CI_SUBRC'.
-    INSERT ls_message INTO TABLE scimessages.
-
     insert_scimessage(
         iv_code = '001'
-        iv_text = 'Check SY-SUBRC'(m01) ).
+        iv_text = 'Check SY-SUBRC'(m01)
+        iv_pcom = '"#EC CI_SUBRC' ).
 
   ENDMETHOD.
 ENDCLASS.

@@ -64,8 +64,9 @@ CLASS zcl_aoc_super DEFINITION
     METHODS set_uses_checksum .
     METHODS insert_scimessage
       IMPORTING
-        iv_code TYPE scimessage-code
-        iv_text TYPE ty_scimessage_text.
+        !iv_code TYPE scimessage-code
+        !iv_text TYPE ty_scimessage_text
+        !iv_pcom TYPE scimessage-pcom OPTIONAL .
 
     METHODS inform
         REDEFINITION .
@@ -528,6 +529,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ls_scimessage-code = iv_code.
     ls_scimessage-kind = mv_errty.
     ls_scimessage-text = iv_text.
+    ls_scimessage-pcom = iv_pcom.
 
     INSERT ls_scimessage INTO TABLE scimessages.
 

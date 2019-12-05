@@ -32,7 +32,8 @@ CLASS zcl_aoc_super_root DEFINITION
     METHODS insert_scimessage
       IMPORTING
         !iv_code TYPE scimessage-code
-        !iv_text TYPE ty_scimessage_text .
+        !iv_text TYPE ty_scimessage_text
+        !iv_pcom TYPE scimessage-pcom OPTIONAL .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -169,6 +170,7 @@ CLASS ZCL_AOC_SUPER_ROOT IMPLEMENTATION.
     ls_scimessage-code = iv_code.
     ls_scimessage-kind = mv_errty.
     ls_scimessage-text = iv_text.
+    ls_scimessage-pcom = iv_pcom.
 
     INSERT ls_scimessage INTO TABLE scimessages.
 
