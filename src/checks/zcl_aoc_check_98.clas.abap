@@ -41,7 +41,6 @@ CLASS ZCL_AOC_CHECK_98 IMPLEMENTATION.
     DATA ls_struc_index TYPE ty_struc_index_s.
     DATA lt_struc_index TYPE ty_struc_index_tt.
     DATA lt_deletion_table TYPE ty_struc_index_tt.
-    FIELD-SYMBOLS: <fs_test> TYPE ty_struc_index_s.
 
     lt_struc_index = get_structure_index( it_structures = io_scan->structures ).
 
