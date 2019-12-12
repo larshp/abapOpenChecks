@@ -24,7 +24,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
-      test001_04 FOR TESTING.
+      test001_04 FOR TESTING,
+      test001_05 FOR TESTING,
+      test001_06 FOR TESTING.
 
 ENDCLASS.
 
@@ -184,6 +186,36 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
+  ENDMETHOD.
+
+  METHOD test001_05.
+    _code 'DATA gv_i TYPE i.'.
+
+    _code 'IF gv_i IS INITIAL.'.
+    _code `WRITE: 'no catch and not empty'.`.
+    _code 'ELSE.'.
+    _code `WRITE: 'no catch and not empty, too'.`.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test001_06.
+
+    _code 'DATA error_text TYPE string.'.
+
+    _code 'CASE error_type.'.
+    _code `WHEN c_error-bom_not_exists.`.
+    _code 'WHEN c_error-material_not_exists.'.
+    _code `ENDCASE.`.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( act = ms_result-code ).
+
   ENDMETHOD.
 
 ENDCLASS.

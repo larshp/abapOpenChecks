@@ -15,7 +15,7 @@ CLASS zcl_aoc_check_98 DEFINITION
     TYPES: BEGIN OF ty_struc_index_s,
              index TYPE i.
              INCLUDE TYPE sstruc.
-    TYPES: END OF ty_struc_index_s,
+           TYPES: END OF ty_struc_index_s,
            ty_struc_index_tt TYPE TABLE OF ty_struc_index_s WITH NON-UNIQUE DEFAULT KEY.
 
     METHODS inform_about_catch IMPORTING it_structures          TYPE ty_structures_tt
@@ -40,11 +40,25 @@ CLASS ZCL_AOC_CHECK_98 IMPLEMENTATION.
     DATA ls_statement LIKE LINE OF io_scan->statements.
     DATA ls_struc_index TYPE ty_struc_index_s.
     DATA lt_struc_index TYPE ty_struc_index_tt.
+    DATA lt_deletion_table TYPE ty_struc_index_tt.
+    FIELD-SYMBOLS: <fs_test> TYPE ty_struc_index_s.
 
     lt_struc_index = get_structure_index( it_structures = io_scan->structures ).
 
+    " Delete all non-catch structures
     DELETE lt_struc_index WHERE type <> 'C'.
+    LOOP AT lt_struc_index INTO ls_struc_index.
+      IF ls_struc_index-stmnt_type <> '+'.
+        APPEND ls_struc_index TO lt_deletion_table.
+      ENDIF.
+    ENDLOOP.
+    CLEAR ls_struc_index.
+    LOOP AT lt_deletion_table INTO ls_struc_index.
+      DELETE lt_struc_index WHERE stmnt_type = ls_struc_index-stmnt_type.
+    ENDLOOP.
+    CLEAR ls_struc_index.
 
+    " Get empty catches
     LOOP AT lt_struc_index INTO ls_struc_index.
       " is there logic for this structure?
       READ TABLE io_scan->structures WITH KEY back = ls_struc_index-index TRANSPORTING NO FIELDS.
@@ -56,6 +70,7 @@ CLASS ZCL_AOC_CHECK_98 IMPLEMENTATION.
       ENDIF.
     ENDLOOP.
 
+    " Inform about empty catches
     CLEAR ls_structure.
     LOOP AT lt_empty_catches INTO ls_structure.
       IF lv_last_back IS NOT INITIAL AND lv_last_back <> ls_structure-back.
