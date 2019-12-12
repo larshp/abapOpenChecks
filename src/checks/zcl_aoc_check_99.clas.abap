@@ -76,6 +76,8 @@ CLASS zcl_aoc_check_99 IMPLEMENTATION.
           lv_no_of_whens = lv_no_of_whens + 1.
         ENDIF.
 
+        lv_is_in_when_clause = abap_false.
+
         IF lv_no_of_whens < mv_min_branches.
           lv_include_name = io_scan->get_include( ls_statement-level ).
 
