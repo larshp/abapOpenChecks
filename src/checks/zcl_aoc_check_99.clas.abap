@@ -27,7 +27,7 @@ CLASS zcl_aoc_check_99 DEFINITION
         col_to    TYPE token_col,
       END OF ty_stmnt.
     TYPES:
-      ty_stmnt_tt TYPE STANDARD TABLE OF ty_stmnt WITH EMPTY KEY.
+      ty_stmnt_tt TYPE STANDARD TABLE OF ty_stmnt WITH DEFAULT KEY.
 
     DATA mt_statements TYPE ty_stmnt_tt.
 
@@ -55,9 +55,10 @@ CLASS zcl_aoc_check_99 IMPLEMENTATION.
           lv_no_of_whens                 TYPE i,
           lv_start_row_of_case_statement TYPE token_row,
           lv_is_in_when_clause           TYPE abap_bool VALUE abap_false,
-          lv_code_rows_in_when_clause    TYPE i.
+          lv_code_rows_in_when_clause    TYPE i,
+          ls_statement                   LIKE LINE OF mt_statements.
 
-    LOOP AT mt_statements INTO DATA(ls_statement).
+    LOOP AT mt_statements INTO ls_statement.
       IF ls_statement-statement CP 'CASE*'.
         lv_no_of_whens = 0.
         lv_code_rows_in_when_clause = 0.
@@ -100,9 +101,12 @@ CLASS zcl_aoc_check_99 IMPLEMENTATION.
 
     DATA ls_statement LIKE LINE OF mt_statements.
 
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
+                   <ls_token>     LIKE LINE OF it_tokens.
+
     CLEAR mt_statements.
 
-    LOOP AT it_statements ASSIGNING FIELD-SYMBOL(<ls_statement>)
+    LOOP AT it_statements ASSIGNING <ls_statement>
         FROM is_structure-stmnt_from TO is_structure-stmnt_to
         WHERE type <> zcl_aoc_scan=>gc_statement-comment
         AND type <> zcl_aoc_scan=>gc_statement-comment_in_stmnt
@@ -110,7 +114,7 @@ CLASS zcl_aoc_check_99 IMPLEMENTATION.
         AND trow <> 0. " skip macro calls
 
       CLEAR ls_statement.
-      LOOP AT it_tokens ASSIGNING FIELD-SYMBOL(<ls_token>)
+      LOOP AT it_tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to.
         IF ls_statement-statement IS INITIAL.
           ls_statement-statement = <ls_token>-str.
@@ -138,7 +142,9 @@ CLASS zcl_aoc_check_99 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    LOOP AT io_scan->structures ASSIGNING FIELD-SYMBOL(<ls_structure>)
+    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF io_scan->structures.
+
+    LOOP AT io_scan->structures ASSIGNING <ls_structure>
         WHERE stmnt_type = zcl_aoc_scan=>gc_structure_statement-module
         OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-function
         OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-form

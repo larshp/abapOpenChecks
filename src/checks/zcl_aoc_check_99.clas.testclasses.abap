@@ -27,7 +27,7 @@ CLASS ltcl_test IMPLEMENTATION.
   END-OF-DEFINITION.
 
   METHOD setup.
-    mo_check = NEW zcl_aoc_check_99( ).
+    CREATE OBJECT mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.
 
