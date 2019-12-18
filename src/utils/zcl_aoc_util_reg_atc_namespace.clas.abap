@@ -6,18 +6,39 @@ CLASS zcl_aoc_util_reg_atc_namespace DEFINITION
   PUBLIC SECTION.
     INTERFACE if_satc_namespace_access LOAD .
 
+    TYPES: BEGIN OF ty_ns_object,
+             namespace TYPE string,
+             object    TYPE string,
+           END OF ty_ns_object.
+
     CLASS-METHODS is_registered_fugr_uxx
       IMPORTING
         !iv_sub_obj_name TYPE sobj_name
       RETURNING
         VALUE(rv_bool)   TYPE abap_bool .
+
+    CLASS-METHODS is_in_namespace
+      IMPORTING
+        !iv_pgmid           TYPE pgmid
+        !iv_object          TYPE trobjtype
+        !iv_obj_name        TYPE csequence
+      RETURNING
+        VALUE(rv_bool)   TYPE abap_bool.
+
+    CLASS-METHODS split_ns_object
+      IMPORTING
+        !iv_pgmid           TYPE pgmid
+        !iv_object          TYPE trobjtype
+        !iv_obj_name        TYPE csequence
+      RETURNING
+        VALUE(rs_ns_object) TYPE ty_ns_object.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 
 
-
-CLASS ZCL_AOC_UTIL_REG_ATC_NAMESPACE IMPLEMENTATION.
+CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
 
 
   METHOD is_registered_fugr_uxx.
@@ -39,4 +60,66 @@ CLASS ZCL_AOC_UTIL_REG_ATC_NAMESPACE IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
+
+
+  METHOD is_in_namespace.
+
+    DATA: lv_obj_name  TYPE sobj_name,
+          lv_namespace TYPE namespace.
+
+    lv_obj_name = iv_obj_name.
+
+    CALL FUNCTION 'TRINT_GET_NAMESPACE'
+      EXPORTING
+        iv_pgmid            = iv_pgmid
+        iv_object           = iv_object
+        iv_obj_name         = lv_obj_name
+      IMPORTING
+        ev_namespace        = lv_namespace
+      EXCEPTIONS
+        invalid_prefix      = 1
+        invalid_object_type = 2
+        OTHERS              = 3.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+    IF lv_namespace IS INITIAL.
+      RETURN.
+    ENDIF.
+
+    rv_bool = abap_true.
+
+  ENDMETHOD.
+
+
+  METHOD split_ns_object.
+
+    DATA: lv_obj_name  TYPE sobj_name,
+          lv_namespace TYPE namespace.
+
+    lv_obj_name = iv_obj_name.
+
+    CALL FUNCTION 'TRINT_GET_NAMESPACE'
+      EXPORTING
+        iv_pgmid            = iv_pgmid
+        iv_object           = iv_object
+        iv_obj_name         = lv_obj_name
+      IMPORTING
+        ev_namespace        = lv_namespace
+      EXCEPTIONS
+        invalid_prefix      = 1
+        invalid_object_type = 2
+        OTHERS              = 3.
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+    DATA(lv_len_ns) = strlen( lv_namespace ).
+
+    rs_ns_object-namespace = lv_namespace.
+    rs_ns_object-object    = iv_obj_name+lv_len_ns.
+
+  ENDMETHOD.
+
 ENDCLASS.

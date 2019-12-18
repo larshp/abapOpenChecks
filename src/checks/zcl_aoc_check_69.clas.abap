@@ -8,13 +8,13 @@ CLASS zcl_aoc_check_69 DEFINITION
     METHODS constructor .
 
     METHODS check
-         REDEFINITION .
+        REDEFINITION .
     METHODS get_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS put_attributes
-         REDEFINITION .
+        REDEFINITION .
   PROTECTED SECTION.
 
     METHODS is_parallel_method
@@ -113,7 +113,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
+CLASS zcl_aoc_check_69 IMPLEMENTATION.
 
 
   METHOD analyze_statements.
@@ -171,7 +171,21 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
           mo_stack->pop( ).
         WHEN 'ENDFUNCTION'.
           IF object_type = 'FUGR'.
-            mo_stack->set( '\PR:SAPL' && object_name ).
+            IF zcl_aoc_util_reg_atc_namespace=>is_in_namespace( iv_pgmid    = 'R3TR'
+                                                                iv_object   = 'FUGR'
+                                                                iv_obj_name = object_name ).
+
+              DATA(ls_object_ns) = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
+                                                                                    iv_object   = 'FUGR'
+                                                                                    iv_obj_name = object_name ).
+
+              mo_stack->set( '\PR:'
+                          && ls_object_ns-namespace
+                          && 'SAPL'
+                          && ls_object_ns-object ).
+            ELSE.
+              mo_stack->set( '\PR:SAPL' && object_name ).
+            ENDIF.
           ELSE.
             mo_stack->set( '\PR:' && object_name ).
           ENDIF.
@@ -583,7 +597,22 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
              iv_regex    = lv_regex
              iv_relative = 2 ).
 
-    mo_stack->push( '\PR:' && 'SAPL' && lv_name ).
+
+    IF zcl_aoc_util_reg_atc_namespace=>is_in_namespace( iv_pgmid    = 'R3TR'
+                                                        iv_object   = 'FUGR'
+                                                        iv_obj_name = lv_name ).
+
+      DATA(ls_object_ns) = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
+                                                                            iv_object   = 'FUGR'
+                                                                            iv_obj_name = lv_name ).
+
+      mo_stack->push( '\PR:'
+                  && ls_object_ns-namespace
+                  && 'SAPL'
+                  && ls_object_ns-object ).
+    ELSE.
+      mo_stack->push( '\PR:' && 'SAPL' && lv_name ).
+    ENDIF.
 
   ENDMETHOD.
 
