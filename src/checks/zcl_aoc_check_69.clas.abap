@@ -118,8 +118,9 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 
   METHOD analyze_statements.
 
-    DATA: lv_define  TYPE abap_bool,
-          lv_keyword TYPE string.
+    DATA: lv_define    TYPE abap_bool,
+          lv_keyword   TYPE string,
+          ls_object_ns TYPE zcl_aoc_util_reg_atc_namespace=>ty_ns_object.
 
 
     LOOP AT it_statements INTO statement_wa.
@@ -175,9 +176,9 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
                                                                 iv_object   = 'FUGR'
                                                                 iv_obj_name = object_name ).
 
-              DATA(ls_object_ns) = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
-                                                                                    iv_object   = 'FUGR'
-                                                                                    iv_obj_name = object_name ).
+              ls_object_ns = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
+                                                                              iv_object   = 'FUGR'
+                                                                              iv_obj_name = object_name ).
 
               mo_stack->set( '\PR:'
                           && ls_object_ns-namespace
@@ -585,7 +586,8 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
   METHOD check_function_pool.
 
     DATA: lv_name  TYPE string,
-          lv_regex TYPE string.
+          lv_regex TYPE string,
+          ls_object_ns TYPE zcl_aoc_util_reg_atc_namespace=>ty_ns_object.
 
 
     lv_name = get_token_rel( 2 ).
@@ -602,9 +604,9 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
                                                         iv_object   = 'FUGR'
                                                         iv_obj_name = lv_name ).
 
-      DATA(ls_object_ns) = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
-                                                                            iv_object   = 'FUGR'
-                                                                            iv_obj_name = lv_name ).
+      ls_object_ns = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
+                                                                      iv_object   = 'FUGR'
+                                                                      iv_obj_name = lv_name ).
 
       mo_stack->push( '\PR:'
                   && ls_object_ns-namespace

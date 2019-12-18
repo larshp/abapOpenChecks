@@ -96,7 +96,8 @@ CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
   METHOD split_ns_object.
 
     DATA: lv_obj_name  TYPE sobj_name,
-          lv_namespace TYPE namespace.
+          lv_namespace TYPE namespace,
+          lv_len_ns    TYPE i.
 
     lv_obj_name = iv_obj_name.
 
@@ -115,7 +116,7 @@ CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    DATA(lv_len_ns) = strlen( lv_namespace ).
+    lv_len_ns = strlen( lv_namespace ).
 
     rs_ns_object-namespace = lv_namespace.
     rs_ns_object-object    = iv_obj_name+lv_len_ns.
