@@ -174,7 +174,7 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
           IF object_type = 'FUGR'.
             IF zcl_aoc_util_reg_atc_namespace=>is_in_namespace( iv_pgmid    = 'R3TR'
                                                                 iv_object   = 'FUGR'
-                                                                iv_obj_name = object_name ).
+                                                                iv_obj_name = object_name ) = abap_true.
 
               ls_object_ns = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
                                                                               iv_object   = 'FUGR'
@@ -602,7 +602,7 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 
     IF zcl_aoc_util_reg_atc_namespace=>is_in_namespace( iv_pgmid    = 'R3TR'
                                                         iv_object   = 'FUGR'
-                                                        iv_obj_name = lv_name ).
+                                                        iv_obj_name = lv_name ) = abap_true.
 
       ls_object_ns = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
                                                                       iv_object   = 'FUGR'
