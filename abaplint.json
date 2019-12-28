@@ -125,7 +125,7 @@
       "exclude": []
     },
     "double_space": {
-      "enabled": true,
+      "enabled": false,
       "exclude": [],
       "keywords": true,
       "startParen": true,
