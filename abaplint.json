@@ -31,6 +31,15 @@
     "globalMacros": ["_code", "_test", "zzaoc_top", "zzaoc_fill_att", "zzaoc_fill_att_rb", "zzaoc_popup"]
   },
   "rules": {
+    "allowed_object_naming": true,
+    "check_comments": false,
+    "fully_type_constants": true,
+    "keep_single_parameter_on_one_line": false,
+    "prefer_returning_to_exporting": true,
+    "selection_screen_naming": false,
+    "sicf_consistency": true,
+    "sql_escape_host_variables": false,
+    "xml_consistency": true,
     "check_abstract": true,
     "check_no_handler_pragma": true,
     "newline_between_methods": false,
@@ -69,7 +78,8 @@
       "execSQL": true,
       "kernelCall": true,
       "communication": true,
-      "statics": false
+      "statics": false,
+      "systemCall": true
     },
     "breakpoint": {
       "enabled": true,
@@ -119,6 +129,7 @@
       "exclude": [],
       "keywords": true,
       "startParen": true,
+      "afterColon": true,
       "endParen": true
     },
     "empty_line_in_statement": {
@@ -191,6 +202,7 @@
     "local_class_naming": {
       "enabled": true,
       "exclude": [],
+      "exception": "^LCX_.*$",
       "local": "^LCL_.*$",
       "test": "^LTCL_.*$"
     },
@@ -262,6 +274,7 @@
       "enqu": "^Z",
       "auth": "^Z",
       "pinf": "^Z",
+      "xslt": "^Z",
       "idoc": "^Z"
     },
     "obsolete_statement": {
