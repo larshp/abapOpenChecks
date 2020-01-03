@@ -17,7 +17,7 @@
     <item>
      <ID>I</ID>
      <KEY>M01</KEY>
-     <ENTRY>CLEAR as first of variable, &amp;1</ENTRY>
+     <ENTRY>CLEAR as first usage of variable, &amp;1</ENTRY>
      <LENGTH>60</LENGTH>
     </item>
    </TPOOL>
