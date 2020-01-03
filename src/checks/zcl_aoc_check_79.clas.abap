@@ -161,7 +161,7 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
 
     insert_scimessage(
         iv_code = '001'
-        iv_text = 'CLEAR as first of variable, &1'(m01) ).
+        iv_text = 'CLEAR as first usage of variable, &1'(m01) ).
 
   ENDMETHOD.
 
