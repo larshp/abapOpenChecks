@@ -37,11 +37,16 @@ CLASS zcl_aoc_check_06 DEFINITION
         !it_code         TYPE string_table
       RETURNING
         VALUE(rt_pretty) TYPE string_table .
+    METHODS skip_object
+      IMPORTING
+        !iv_name       TYPE csequence
+      RETURNING
+        VALUE(rv_skip) TYPE abap_bool.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
+CLASS zcl_aoc_check_06 IMPLEMENTATION.
 
 
   METHOD build_option.
@@ -192,6 +197,9 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
       ELSEIF <ls_level>-name(4) = 'SAPL'.
         " exclude functionpool
         CONTINUE.
+      ELSEIF skip_object( <ls_level>-name ) = abap_true.
+        " Generated include
+        CONTINUE.
       ENDIF.
 
       " make sure the source code is not empty, as it will cause the pretty
@@ -311,6 +319,26 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
       EXCEPTIONS
         syntax_errors = 1
         OTHERS        = 2.                       "#EC FB_RC "#EC CI_SUBRC
+
+  ENDMETHOD.
+
+
+  METHOD skip_object.
+
+    DATA: ls_trdir TYPE trdir.
+
+    IF object_type = 'FUGR'.
+
+      SELECT SINGLE *
+        INTO ls_trdir
+        FROM trdir
+        WHERE name = iv_name.
+
+      rv_skip = boolc( ls_trdir-edtx = abap_true AND ls_trdir-unam = 'SAP*' ).
+
+    ELSE.
+      rv_skip = abap_false.
+    ENDIF.
 
   ENDMETHOD.
 
