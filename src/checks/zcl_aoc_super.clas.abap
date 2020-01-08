@@ -61,6 +61,11 @@ CLASS zcl_aoc_super DEFINITION
         !iv_include    TYPE level_name
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
+    METHODS is_generated
+      IMPORTING
+        !iv_name       TYPE csequence OPTIONAL
+      RETURNING
+        VALUE(rv_generated) TYPE abap_bool .
     METHODS set_uses_checksum .
     METHODS insert_scimessage
       IMPORTING
@@ -567,6 +572,55 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD is_generated.
+
+    DATA: ls_tadir     TYPE tadir,
+          ls_object_ns TYPE zcl_aoc_util_reg_atc_namespace=>ty_ns_object,
+          lv_name      TYPE string.
+
+    SELECT SINGLE *
+      INTO ls_tadir
+      FROM tadir
+      WHERE pgmid    = 'R3TR'
+        AND object   = object_type
+        AND obj_name = object_name.
+
+    IF ls_tadir-genflag = abap_true.
+      rv_generated = abap_true.
+    ELSE.
+      rv_generated = abap_false.
+
+*      CASE object_type.
+*        WHEN 'FUGR'.
+*
+*          IF zcl_aoc_util_reg_atc_namespace=>is_in_namespace(
+*               iv_pgmid    = 'R3TR'
+*               iv_object   = object_type
+*               iv_obj_name = object_name ).
+*
+*            ls_object_ns = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
+*                                                                            iv_object   = object_type
+*                                                                            iv_obj_name = object_name ).
+*
+*            lv_name = |{ ls_object_ns-namespace }L{ ls_object_ns-object }UXX|.
+*
+*          ELSE.
+*            lv_name = |L{ object_name }UXX|.
+*          ENDIF.
+*
+*          IF iv_name <> lv_name.
+*            rv_generated = abap_false.
+*          ELSE.
+*            rv_generated = abap_true.
+*          ENDIF.
+*
+*      ENDCASE.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+
   METHOD put_attributes.
 
     IMPORT
@@ -589,6 +643,10 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       RETURN.
     ENDIF.
     IF ref_scan IS INITIAL AND get( ) <> abap_true.
+      RETURN.
+    ENDIF.
+
+    IF is_generated( ) = abap_true.
       RETURN.
     ENDIF.
 
