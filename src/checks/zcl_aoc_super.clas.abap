@@ -589,33 +589,6 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       rv_generated = abap_true.
     ELSE.
       rv_generated = abap_false.
-
-*      CASE object_type.
-*        WHEN 'FUGR'.
-*
-*          IF zcl_aoc_util_reg_atc_namespace=>is_in_namespace(
-*               iv_pgmid    = 'R3TR'
-*               iv_object   = object_type
-*               iv_obj_name = object_name ).
-*
-*            ls_object_ns = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
-*                                                                            iv_object   = object_type
-*                                                                            iv_obj_name = object_name ).
-*
-*            lv_name = |{ ls_object_ns-namespace }L{ ls_object_ns-object }UXX|.
-*
-*          ELSE.
-*            lv_name = |L{ object_name }UXX|.
-*          ENDIF.
-*
-*          IF iv_name <> lv_name.
-*            rv_generated = abap_false.
-*          ELSE.
-*            rv_generated = abap_true.
-*          ENDIF.
-*
-*      ENDCASE.
-
     ENDIF.
 
   ENDMETHOD.
