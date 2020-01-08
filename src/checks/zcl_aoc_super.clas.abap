@@ -574,22 +574,13 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
   METHOD is_generated.
 
-    DATA: ls_tadir     TYPE tadir,
-          ls_object_ns TYPE zcl_aoc_util_reg_atc_namespace=>ty_ns_object,
-          lv_name      TYPE string.
-
-    SELECT SINGLE *
-      INTO ls_tadir
+    SELECT COUNT(*)
       FROM tadir
       WHERE pgmid    = 'R3TR'
         AND object   = object_type
-        AND obj_name = object_name.
-
-    IF ls_tadir-genflag = abap_true.
-      rv_generated = abap_true.
-    ELSE.
-      rv_generated = abap_false.
-    ENDIF.
+        AND obj_name = object_name
+        AND genflag  = abap_true.
+    rv_generated = boolc( sy-subrc = 0 ).
 
   ENDMETHOD.
 
