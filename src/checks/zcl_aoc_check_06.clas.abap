@@ -325,17 +325,13 @@ CLASS zcl_aoc_check_06 IMPLEMENTATION.
 
   METHOD skip_object.
 
-    DATA: ls_trdir TYPE trdir.
-
     IF object_type = 'FUGR'.
-
-      SELECT SINGLE *
-        INTO ls_trdir
+      SELECT COUNT(*)
         FROM trdir
-        WHERE name = iv_name.
-
-      rv_skip = boolc( ls_trdir-edtx = abap_true AND ls_trdir-unam = 'SAP*' ).
-
+        WHERE name = iv_name
+          AND edtx = abap_true
+          AND unam = 'SAP*'.
+      rv_skip = boolc( sy-subrc = 0 ).
     ELSE.
       rv_skip = abap_false.
     ENDIF.
