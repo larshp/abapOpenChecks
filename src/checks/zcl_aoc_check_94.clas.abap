@@ -67,6 +67,8 @@ CLASS ZCL_AOC_CHECK_94 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
+    enable_rfc( ).
+
     insert_scimessage(
         iv_code = '001'
         iv_text = 'Use of LIKE with wrong wildcard'(m01) ).
