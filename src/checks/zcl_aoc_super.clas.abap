@@ -61,6 +61,11 @@ CLASS zcl_aoc_super DEFINITION
         !iv_include    TYPE level_name
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
+    METHODS is_generated
+      IMPORTING
+        !iv_name       TYPE csequence OPTIONAL
+      RETURNING
+        VALUE(rv_generated) TYPE abap_bool .
     METHODS set_uses_checksum .
     METHODS insert_scimessage
       IMPORTING
@@ -567,6 +572,19 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD is_generated.
+
+    SELECT COUNT(*)
+      FROM tadir
+      WHERE pgmid    = 'R3TR'
+        AND object   = object_type
+        AND obj_name = object_name
+        AND genflag  = abap_true.
+    rv_generated = boolc( sy-subrc = 0 ).
+
+  ENDMETHOD.
+
+
   METHOD put_attributes.
 
     IMPORT
@@ -589,6 +607,10 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       RETURN.
     ENDIF.
     IF ref_scan IS INITIAL AND get( ) <> abap_true.
+      RETURN.
+    ENDIF.
+
+    IF is_generated( ) = abap_true.
       RETURN.
     ENDIF.
 
