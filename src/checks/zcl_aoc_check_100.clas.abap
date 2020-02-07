@@ -50,64 +50,64 @@ CLASS zcl_aoc_check_100 DEFINITION
 
     METHODS check_abap_constants
       IMPORTING
-        !i_statement        TYPE string
+        !iv_statement        TYPE string
       RETURNING
-        VALUE(r_error_code) TYPE sci_errc .
+        VALUE(rv_error_code) TYPE sci_errc .
     METHODS check_builtin_functions
       IMPORTING
-        !i_statement        TYPE string
+        !iv_statement        TYPE string
       RETURNING
-        VALUE(r_error_code) TYPE sci_errc .
+        VALUE(rv_error_code) TYPE sci_errc .
     METHODS check_opensql
       IMPORTING
-        !i_statement        TYPE string
+        !iv_statement        TYPE string
       RETURNING
-        VALUE(r_error_code) TYPE sci_errc .
+        VALUE(rv_error_code) TYPE sci_errc .
     METHODS check_string_templates
       IMPORTING
-        !i_statement        TYPE string
+        !iv_statement        TYPE string
       RETURNING
-        VALUE(r_error_code) TYPE sci_errc .
+        VALUE(rv_error_code) TYPE sci_errc .
     METHODS check_table_expressions
       IMPORTING
-        !i_statement        TYPE string
+        !iv_statement        TYPE string
       RETURNING
-        VALUE(r_error_code) TYPE sci_errc .
+        VALUE(rv_error_code) TYPE sci_errc .
     METHODS check_iteration_expressions
       IMPORTING
-        !i_statement        TYPE string
+        !iv_statement        TYPE string
       RETURNING
-        VALUE(r_error_code) TYPE sci_errc .
+        VALUE(rv_error_code) TYPE sci_errc .
     METHODS check_assignment_operators
       IMPORTING
-        !i_statement        TYPE string
+        !iv_statement        TYPE string
       RETURNING
-        VALUE(r_error_code) TYPE sci_errc .
+        VALUE(rv_error_code) TYPE sci_errc .
     METHODS check_constructor_operators
       IMPORTING
-        !i_statement        TYPE string
+        !iv_statement        TYPE string
       RETURNING
-        VALUE(r_error_code) TYPE sci_errc .
+        VALUE(rv_error_code) TYPE sci_errc .
     METHODS check_pragmas
       IMPORTING
-        !i_statement        TYPE sstmnt
+        !is_statement        TYPE sstmnt
       RETURNING
-        VALUE(r_error_code) TYPE sci_errc .
+        VALUE(rv_error_code) TYPE sci_errc .
     METHODS check_chained_statements
       IMPORTING
-        !i_statement        TYPE string
+        !iv_statement        TYPE string
       RETURNING
-        VALUE(r_error_code) TYPE sci_errc .
+        VALUE(rv_error_code) TYPE sci_errc .
     METHODS check_inline_declarations
       IMPORTING
-        !i_statement        TYPE string
+        !iv_statement        TYPE string
       RETURNING
-        VALUE(r_error_code) TYPE sci_errc .
+        VALUE(rv_error_code) TYPE sci_errc .
 ENDCLASS.
 
 
 
-CLASS zcl_aoc_check_100 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_100 IMPLEMENTATION.
 
 
 * <SIGNATURE>---------------------------------------------------------------------------------------+
@@ -227,15 +227,15 @@ CLASS zcl_aoc_check_100 IMPLEMENTATION.
 * <SIGNATURE>---------------------------------------------------------------------------------------+
 * | Instance Private Method ZCL_AOC_CHECK_100->CHECK_ABAP_CONSTANTS
 * +-------------------------------------------------------------------------------------------------+
-* | [--->] STATEMENT                      TYPE        STRING
-* | [<-()] ERROR_CODE                     TYPE        SCI_ERRC
+* | [--->] I_STATEMENT                    TYPE        STRING
+* | [<-()] R_ERROR_CODE                   TYPE        SCI_ERRC
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_abap_constants.
-    IF i_statement CP '* abap_bool*'
-        OR i_statement CP '* abap_true*'
-        OR i_statement CP '* abap_false*'
-        OR i_statement CP '* abap_undefined*'.
-      r_error_code = ci_error_code-abap_constants.
+    IF iv_statement CP '* abap_bool*'
+        OR iv_statement CP '* abap_true*'
+        OR iv_statement CP '* abap_false*'
+        OR iv_statement CP '* abap_undefined*'.
+      rv_error_code = ci_error_code-abap_constants.
     ENDIF.
   ENDMETHOD.
 
@@ -243,13 +243,13 @@ CLASS zcl_aoc_check_100 IMPLEMENTATION.
 * <SIGNATURE>---------------------------------------------------------------------------------------+
 * | Instance Private Method ZCL_AOC_CHECK_100->CHECK_ASSIGNMENT_OPERATORS
 * +-------------------------------------------------------------------------------------------------+
-* | [--->] STATEMENT                      TYPE        STRING
-* | [<-()] ERROR_CODE                     TYPE        SCI_ERRC
+* | [--->] I_STATEMENT                    TYPE        STRING
+* | [<-()] R_ERROR_CODE                   TYPE        SCI_ERRC
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_assignment_operators.
-    FIND FIRST OCCURRENCE OF REGEX '\b\s+(\+|-|\*|\/|&&)=\s+\b' IN i_statement IGNORING CASE ##NO_TEXT.
+    FIND FIRST OCCURRENCE OF REGEX '\b\s+(\+|-|\*|\/|&&)=\s+\b' IN iv_statement IGNORING CASE ##NO_TEXT.
     IF sy-subrc = 0.
-      r_error_code = ci_error_code-assignment_operators.
+      rv_error_code = ci_error_code-assignment_operators.
     ENDIF.
   ENDMETHOD.
 
@@ -257,13 +257,13 @@ CLASS zcl_aoc_check_100 IMPLEMENTATION.
 * <SIGNATURE>---------------------------------------------------------------------------------------+
 * | Instance Private Method ZCL_AOC_CHECK_100->CHECK_BUILTIN_FUNCTIONS
 * +-------------------------------------------------------------------------------------------------+
-* | [--->] STATEMENT                      TYPE        STRING
-* | [<-()] ERROR_CODE                     TYPE        SCI_ERRC
+* | [--->] I_STATEMENT                    TYPE        STRING
+* | [<-()] R_ERROR_CODE                   TYPE        SCI_ERRC
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_builtin_functions.
-    IF i_statement CP '* line_index( * )*'
-        OR i_statement CP '* line_exists( * )*'.
-      r_error_code = ci_error_code-builtin_functions.
+    IF iv_statement CP '* line_index( * )*'
+        OR iv_statement CP '* line_exists( * )*'.
+      rv_error_code = ci_error_code-builtin_functions.
     ENDIF.
   ENDMETHOD.
 
@@ -271,13 +271,13 @@ CLASS zcl_aoc_check_100 IMPLEMENTATION.
 * <SIGNATURE>---------------------------------------------------------------------------------------+
 * | Instance Private Method ZCL_AOC_CHECK_100->CHECK_CHAINED_STATEMENTS
 * +-------------------------------------------------------------------------------------------------+
-* | [--->] STATEMENT                      TYPE        STRING
-* | [<-()] ERROR_CODE                     TYPE        SCI_ERRC
+* | [--->] I_STATEMENT                    TYPE        STRING
+* | [<-()] R_ERROR_CODE                   TYPE        SCI_ERRC
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_chained_statements.
-    FIND FIRST OCCURRENCE OF REGEX '(=|-)>\w+\(.+\)(=|-)>\w+\(.+\)' IN i_statement ##NO_TEXT.
+    FIND FIRST OCCURRENCE OF REGEX '(=|-)>\w+\(.+\)(=|-)>\w+\(.+\)' IN iv_statement ##NO_TEXT.
     IF sy-subrc = 0.
-      r_error_code = ci_error_code-chained_statements.
+      rv_error_code = ci_error_code-chained_statements.
     ENDIF.
   ENDMETHOD.
 
@@ -285,22 +285,22 @@ CLASS zcl_aoc_check_100 IMPLEMENTATION.
 * <SIGNATURE>---------------------------------------------------------------------------------------+
 * | Instance Private Method ZCL_AOC_CHECK_100->CHECK_CONSTRUCTOR_OPERATORS
 * +-------------------------------------------------------------------------------------------------+
-* | [--->] STATEMENT                      TYPE        STRING
-* | [<-()] ERROR_CODE                     TYPE        SCI_ERRC
+* | [--->] I_STATEMENT                    TYPE        STRING
+* | [<-()] R_ERROR_CODE                   TYPE        SCI_ERRC
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_constructor_operators.
-    IF i_statement CP '* NEW *( * )*'
-        OR i_statement CP '* VALUE *( * )*'
-        OR i_statement CP '* CONV *( * )*'
-        OR i_statement CP '* CAST *( * )*'
-        OR i_statement CP '* REF *( * )*'
-        OR i_statement CP '* CORRESPONDING *( * )*'
-        OR i_statement CP '* EXACT *( * )*'
-        OR i_statement CP '* REDUCE *( * )*'
-        OR i_statement CP '* FILTER *( * )*'
-        OR i_statement CP '* COND *( * )*'
-        OR i_statement CP '* SWITCH *( * )*'.
-      r_error_code = ci_error_code-constructor_operators.
+    IF iv_statement CP '* NEW *( * )*'
+        OR iv_statement CP '* VALUE *( * )*'
+        OR iv_statement CP '* CONV *( * )*'
+        OR iv_statement CP '* CAST *( * )*'
+        OR iv_statement CP '* REF *( * )*'
+        OR iv_statement CP '* CORRESPONDING *( * )*'
+        OR iv_statement CP '* EXACT *( * )*'
+        OR iv_statement CP '* REDUCE *( * )*'
+        OR iv_statement CP '* FILTER *( * )*'
+        OR iv_statement CP '* COND *( * )*'
+        OR iv_statement CP '* SWITCH *( * )*'.
+      rv_error_code = ci_error_code-constructor_operators.
     ENDIF.
   ENDMETHOD.
 
@@ -308,18 +308,18 @@ CLASS zcl_aoc_check_100 IMPLEMENTATION.
 * <SIGNATURE>---------------------------------------------------------------------------------------+
 * | Instance Private Method ZCL_AOC_CHECK_100->CHECK_INLINE_DECLARATIONS
 * +-------------------------------------------------------------------------------------------------+
-* | [--->] STATEMENT                      TYPE        STRING
-* | [<-()] ERROR_CODE                     TYPE        SCI_ERRC
+* | [--->] I_STATEMENT                    TYPE        STRING
+* | [<-()] R_ERROR_CODE                   TYPE        SCI_ERRC
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_inline_declarations.
-    FIND FIRST OCCURRENCE OF REGEX '\bDATA\(.+\)' IN i_statement IGNORING CASE ##NO_TEXT.
+    FIND FIRST OCCURRENCE OF REGEX '\bDATA\(.+\)' IN iv_statement IGNORING CASE ##NO_TEXT.
     IF sy-subrc = 0.
-      r_error_code = ci_error_code-inline_declarations.
+      rv_error_code = ci_error_code-inline_declarations.
     ENDIF.
 
-    FIND FIRST OCCURRENCE OF REGEX '\bFIELD-SYMBOL\(.+\)' IN i_statement IGNORING CASE ##NO_TEXT.
+    FIND FIRST OCCURRENCE OF REGEX '\bFIELD-SYMBOL\(.+\)' IN iv_statement IGNORING CASE ##NO_TEXT.
     IF sy-subrc = 0.
-      r_error_code = ci_error_code-inline_declarations.
+      rv_error_code = ci_error_code-inline_declarations.
     ENDIF.
   ENDMETHOD.
 
@@ -327,13 +327,13 @@ CLASS zcl_aoc_check_100 IMPLEMENTATION.
 * <SIGNATURE>---------------------------------------------------------------------------------------+
 * | Instance Private Method ZCL_AOC_CHECK_100->CHECK_ITERATION_EXPRESSIONS
 * +-------------------------------------------------------------------------------------------------+
-* | [--->] STATEMENT                      TYPE        STRING
-* | [<-()] ERROR_CODE                     TYPE        SCI_ERRC
+* | [--->] I_STATEMENT                    TYPE        STRING
+* | [<-()] R_ERROR_CODE                   TYPE        SCI_ERRC
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_iteration_expressions.
-    IF i_statement CP '* (*FOR * )*'
-        OR i_statement CP 'LOOP AT * GROUP BY *'.
-      r_error_code = ci_error_code-iteration_expressions.
+    IF iv_statement CP '* (*FOR * )*'
+        OR iv_statement CP 'LOOP AT * GROUP BY *'.
+      rv_error_code = ci_error_code-iteration_expressions.
     ENDIF.
   ENDMETHOD.
 
@@ -341,8 +341,8 @@ CLASS zcl_aoc_check_100 IMPLEMENTATION.
 * <SIGNATURE>---------------------------------------------------------------------------------------+
 * | Instance Private Method ZCL_AOC_CHECK_100->CHECK_OPENSQL
 * +-------------------------------------------------------------------------------------------------+
-* | [--->] STATEMENT                      TYPE        STRING
-* | [<-()] ERROR_CODE                     TYPE        SCI_ERRC
+* | [--->] I_STATEMENT                    TYPE        STRING
+* | [<-()] R_ERROR_CODE                   TYPE        SCI_ERRC
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_opensql.
     RETURN.
@@ -352,13 +352,13 @@ CLASS zcl_aoc_check_100 IMPLEMENTATION.
 * <SIGNATURE>---------------------------------------------------------------------------------------+
 * | Instance Private Method ZCL_AOC_CHECK_100->CHECK_PRAGMAS
 * +-------------------------------------------------------------------------------------------------+
-* | [--->] STATEMENT                      TYPE        SSTMNT
-* | [<-()] ERROR_CODE                     TYPE        SCI_ERRC
+* | [--->] I_STATEMENT                    TYPE        SSTMNT
+* | [<-()] R_ERROR_CODE                   TYPE        SCI_ERRC
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_pragmas.
-    IF i_statement-type = 'G' AND
-        ( i_statement-terminator = '.' OR i_statement-terminator = ',' OR i_statement-terminator = ':' ).
-      r_error_code = ci_error_code-pragmas.
+    IF is_statement-type = 'G' AND
+        ( is_statement-terminator = '.' OR is_statement-terminator = ',' OR is_statement-terminator = ':' ).
+      rv_error_code = ci_error_code-pragmas.
     ENDIF.
   ENDMETHOD.
 
@@ -366,13 +366,13 @@ CLASS zcl_aoc_check_100 IMPLEMENTATION.
 * <SIGNATURE>---------------------------------------------------------------------------------------+
 * | Instance Private Method ZCL_AOC_CHECK_100->CHECK_STRING_TEMPLATES
 * +-------------------------------------------------------------------------------------------------+
-* | [--->] STATEMENT                      TYPE        STRING
-* | [<-()] ERROR_CODE                     TYPE        SCI_ERRC
+* | [--->] I_STATEMENT                    TYPE        STRING
+* | [<-()] R_ERROR_CODE                   TYPE        SCI_ERRC
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_string_templates.
-    IF i_statement CP '*|*|*'
-        OR i_statement CP '* && *'.
-      r_error_code = ci_error_code-string_templates.
+    IF iv_statement CP '*|*|*'
+        OR iv_statement CP '* && *'.
+      rv_error_code = ci_error_code-string_templates.
     ENDIF.
   ENDMETHOD.
 
@@ -380,12 +380,12 @@ CLASS zcl_aoc_check_100 IMPLEMENTATION.
 * <SIGNATURE>---------------------------------------------------------------------------------------+
 * | Instance Private Method ZCL_AOC_CHECK_100->CHECK_TABLE_EXPRESSIONS
 * +-------------------------------------------------------------------------------------------------+
-* | [--->] STATEMENT                      TYPE        STRING
-* | [<-()] ERROR_CODE                     TYPE        SCI_ERRC
+* | [--->] I_STATEMENT                    TYPE        STRING
+* | [<-()] R_ERROR_CODE                   TYPE        SCI_ERRC
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD check_table_expressions.
-    IF i_statement CP '*[ * ]*'.
-      r_error_code = ci_error_code-table_expressions.
+    IF iv_statement CP '*[ * ]*'.
+      rv_error_code = ci_error_code-table_expressions.
     ENDIF.
   ENDMETHOD.
 
