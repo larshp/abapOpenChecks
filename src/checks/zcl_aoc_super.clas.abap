@@ -527,7 +527,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
   METHOD insert_scimessage.
 
-* Insert entry into table scimessages. This table is used to determine the message text for a finding.
+* Insert entry into table scimessages, this table is used to determine the message text for a finding.
     DATA ls_scimessage LIKE LINE OF scimessages.
 
     ls_scimessage-test = myname.
