@@ -10,8 +10,6 @@ CLASS zcl_aoc_check_65 DEFINITION
     METHODS run
         REDEFINITION .
   PROTECTED SECTION.
-
-    DATA ms_settings TYPE sci_s_naming_conventions_setup .
   PRIVATE SECTION.
 ENDCLASS.
 
