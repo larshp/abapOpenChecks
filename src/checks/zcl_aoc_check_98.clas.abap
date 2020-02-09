@@ -37,7 +37,6 @@ CLASS ZCL_AOC_CHECK_98 IMPLEMENTATION.
     DATA lv_last_back TYPE i.
     DATA ls_structure LIKE LINE OF lt_structures.
     DATA lt_empty_catches TYPE ty_structures_tt.
-    DATA ls_statement LIKE LINE OF io_scan->statements.
     DATA ls_struc_index TYPE ty_struc_index_s.
     DATA lt_struc_index TYPE ty_struc_index_tt.
 
