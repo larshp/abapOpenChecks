@@ -10,8 +10,6 @@ CLASS zcl_aoc_check_05 DEFINITION
         REDEFINITION.
 
   PROTECTED SECTION.
-    CLASS-DATA go_conv TYPE REF TO cl_abap_conv_out_ce.
-
   PRIVATE SECTION.
 ENDCLASS.
 

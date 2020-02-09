@@ -35,7 +35,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_check_89 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
 
   METHOD check.
@@ -45,7 +45,6 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 * MIT License
 
     DATA lv_actual_length TYPE i.
-    DATA lv_text TYPE string.
     FIELD-SYMBOLS <ls_level> TYPE slevel.
 
     lv_actual_length = get_lines_of_documentation(
@@ -158,10 +157,7 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
   METHOD get_lines_of_documentation.
 
-    DATA lv_objname TYPE lxeobjname.
-    DATA lv_objtype TYPE lxeobjtype.
     DATA lo_conv TYPE REF TO cl_abap_conv_in_ce.
-    DATA lv_len TYPE i.
     DATA lv_str TYPE string.
     DATA lv_count_lines TYPE i.
     DATA lv_count_chapters_u1 TYPE i.
@@ -169,8 +165,6 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     DATA lv_count_empty TYPE i.
     DATA lv_content TYPE xstring.
 
-    lv_objname = iv_obj_name.
-    lv_objtype = iv_obj_type(2).
 
     lv_content = get_content(
         iv_obj_type = iv_obj_type
@@ -184,8 +178,6 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
         lo_conv = cl_abap_conv_in_ce=>create(
                      input = lv_content ).
-
-        lv_len = xstrlen( lv_content ).
 
         lo_conv->read(
           IMPORTING

@@ -113,7 +113,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_check_69 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
 
   METHOD analyze_statements.
@@ -918,9 +918,6 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 
 
   METHOD constructor.
-
-    DATA: ls_message LIKE LINE OF scimessages.
-
 
     super->constructor( ).
 

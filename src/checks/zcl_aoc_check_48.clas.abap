@@ -115,8 +115,6 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
   METHOD constructor.
 
-    DATA: ls_message LIKE LINE OF scimessages.
-
     super->constructor( ).
 
     version  = '002'.
