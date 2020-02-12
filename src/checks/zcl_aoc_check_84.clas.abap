@@ -5,14 +5,6 @@ CLASS zcl_aoc_check_84 DEFINITION
 
   PUBLIC SECTION.
 
-    TYPES: BEGIN OF ty_classes,
-             sign   TYPE sign,
-             option TYPE option,
-             low    TYPE seoclsname,
-             high   TYPE seoclsname,
-           END OF ty_classes,
-           tt_classes TYPE STANDARD TABLE OF ty_classes.
-
     METHODS constructor .
 
     METHODS run
@@ -28,7 +20,7 @@ CLASS zcl_aoc_check_84 DEFINITION
         REDEFINITION .
 
   PROTECTED SECTION.
-    DATA mt_classes TYPE tt_classes.
+    DATA mt_classes TYPE RANGE OF seoclsname.
 
   PRIVATE SECTION.
 ENDCLASS.
