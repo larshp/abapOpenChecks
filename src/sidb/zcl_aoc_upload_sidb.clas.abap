@@ -104,7 +104,9 @@ CLASS ZCL_AOC_UPLOAD_SIDB IMPLEMENTATION.
     LOOP AT it_files INTO ls_file.
 
       IF ls_file-name = 'header_data.xml'.
-
+* do nothing
+      ELSEIF ls_file-name = 'SIGNATURE.SMF'.
+* do nothing
       ELSEIF ls_file-name CP 'simplification/piecelist_0*'.
         parse_piecelist( ls_file-data ).
       ELSEIF ls_file-name CP 'simplification/plist_head_0*'.
@@ -128,6 +130,7 @@ CLASS ZCL_AOC_UPLOAD_SIDB IMPLEMENTATION.
       ELSEIF ls_file-name CP 'releases/rel_stack_0*'.
 * do nothing
       ELSE.
+* Fail - unknown file -> may even be unexpected ZIP
         ASSERT 0 = 1.
       ENDIF.
 
