@@ -11,15 +11,13 @@ CLASS zcl_aoc_check_71 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
-    DATA mv_unreachable TYPE sap_bool.
+    DATA mv_unreachable TYPE sap_bool .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -34,16 +32,14 @@ CLASS ZCL_AOC_CHECK_71 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_index      TYPE i,
           lv_code       TYPE sci_errc,
           ls_prev       LIKE LINE OF lt_statements.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
 
-    lt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       lv_index = sy-tabix - 1.
@@ -67,8 +63,7 @@ CLASS ZCL_AOC_CHECK_71 IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = <ls_statement>-include
+      inform( p_sub_obj_name = <ls_statement>-include
               p_line         = <ls_statement>-start-row
               p_kind         = mv_errty
               p_test         = myname
@@ -82,8 +77,6 @@ CLASS ZCL_AOC_CHECK_71 IMPLEMENTATION.
 
     super->constructor( ).
 
-    description = 'MESSAGE using sytem variables SY-MSGTY, SY-MSGNO, etc'. "#EC NOTEXT
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '071'.
 
@@ -92,10 +85,13 @@ CLASS ZCL_AOC_CHECK_71 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty   = c_error.
     mv_unreachable = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'MESSAGE using standard variables from SY structure'(m01) ).
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -104,22 +100,6 @@ CLASS ZCL_AOC_CHECK_71 IMPLEMENTATION.
       mv_errty = mv_errty
       mv_unreachable = mv_unreachable
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'MESSAGE using standard variables from SY structure'. "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 

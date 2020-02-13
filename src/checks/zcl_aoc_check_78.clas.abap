@@ -9,8 +9,6 @@ CLASS zcl_aoc_check_78 DEFINITION
 
     METHODS check
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -28,27 +26,27 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
 
     DATA: lv_level   LIKE sy-tabix,
           lv_next    TYPE sy-tabix,
-          ls_next    LIKE LINE OF it_statements,
+          ls_next    LIKE LINE OF io_scan->statements,
           lv_subrc   TYPE abap_bool,
-          ls_token   LIKE LINE OF it_tokens,
+          ls_token   LIKE LINE OF io_scan->tokens,
           lv_comment TYPE string.
 
-    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                   <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_statement> LIKE LINE OF it_statements.
+    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF io_scan->levels,
+                   <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_statement> LIKE LINE OF io_scan->statements.
 
 
 
-    LOOP AT it_levels ASSIGNING <ls_level>.
+    LOOP AT io_scan->levels ASSIGNING <ls_level>.
       lv_level = sy-tabix.
 
-      LOOP AT it_statements ASSIGNING <ls_statement>
+      LOOP AT io_scan->statements ASSIGNING <ls_statement>
           WHERE level = lv_level
-          AND type = scan_stmnt_type-comment.
+          AND type = io_scan->gc_statement-comment.
         lv_next = sy-tabix + 1.
 
         CLEAR lv_comment.
-        LOOP AT it_tokens FROM <ls_statement>-from TO <ls_statement>-to ASSIGNING <ls_token>.
+        LOOP AT io_scan->tokens FROM <ls_statement>-from TO <ls_statement>-to ASSIGNING <ls_token>.
           CONCATENATE lv_comment <ls_token>-str INTO lv_comment.
         ENDLOOP.
 
@@ -56,26 +54,25 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
           CONTINUE.
         ENDIF.
 
-        READ TABLE it_statements INDEX lv_next INTO ls_next.
+        READ TABLE io_scan->statements INDEX lv_next INTO ls_next.
         IF sy-subrc <> 0
             OR ls_next-level <> lv_level
-            OR ls_next-type = scan_stmnt_type-comment.
+            OR ls_next-type = io_scan->gc_statement-comment.
           CONTINUE.
         ENDIF.
 
-        READ TABLE it_tokens INDEX ls_next-from INTO ls_token. "#EC CI_SUBRC
+        READ TABLE io_scan->tokens INDEX ls_next-from INTO ls_token. "#EC CI_SUBRC
         IF ls_token-str = 'ASSERT'.
           CONTINUE.
         ENDIF.
 
         lv_subrc = abap_false.
-        LOOP AT it_tokens FROM ls_next-from TO ls_next-to TRANSPORTING NO FIELDS WHERE str = 'SY-SUBRC'.
+        LOOP AT io_scan->tokens FROM ls_next-from TO ls_next-to TRANSPORTING NO FIELDS WHERE str = 'SY-SUBRC'.
           lv_subrc = abap_true.
         ENDLOOP.
 
         IF lv_subrc = abap_true.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = get_include( p_level = <ls_statement>-level )
+          inform( p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
                   p_line         = <ls_token>-row
                   p_column       = <ls_token>-col
                   p_kind         = mv_errty
@@ -94,7 +91,6 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
 
     super->constructor( ).
 
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '078'.
 
@@ -103,23 +99,9 @@ CLASS ZCL_AOC_CHECK_78 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = '"#EC CI_SUBRC can be removed'.            "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = '"#EC CI_SUBRC can be removed'(m01) ).
 
   ENDMETHOD.
 ENDCLASS.

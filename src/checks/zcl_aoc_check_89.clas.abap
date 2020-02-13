@@ -45,7 +45,6 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 * MIT License
 
     DATA lv_actual_length TYPE i.
-    DATA lv_text TYPE string.
     FIELD-SYMBOLS <ls_level> TYPE slevel.
 
     lv_actual_length = get_lines_of_documentation(
@@ -54,13 +53,12 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
     IF lv_actual_length < mv_minlength.
 
-      READ TABLE it_levels
+      READ TABLE io_scan->levels
         WITH KEY level = 0
         ASSIGNING <ls_level>.
 
       IF sy-subrc = 0.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_level>-name
+        inform( p_sub_obj_name = <ls_level>-name
                 p_kind         = mv_errty
                 p_test         = myname
                 p_code         = '001'
@@ -74,7 +72,6 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
   METHOD constructor.
 
-    DATA ls_scimessage TYPE scimessage.
     super->constructor( ).
 
     version        = '001'.
@@ -85,19 +82,13 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Minimum lines of documentation not reached: &1'(m01) ).
+
     mv_minlength = 10.
 
-    ls_scimessage-test = myname.
-    ls_scimessage-code = '001'.
-    ls_scimessage-kind = c_error.
-    ls_scimessage-text = 'Minimum lines of documentation not reached: &1'(m01).
-    ls_scimessage-pcom = ''.
-    ls_scimessage-pcom_alt = ''.
-
-    INSERT ls_scimessage INTO TABLE scimessages.
-
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -166,10 +157,7 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
   METHOD get_lines_of_documentation.
 
-    DATA lv_objname TYPE lxeobjname.
-    DATA lv_objtype TYPE lxeobjtype.
     DATA lo_conv TYPE REF TO cl_abap_conv_in_ce.
-    DATA lv_len TYPE i.
     DATA lv_str TYPE string.
     DATA lv_count_lines TYPE i.
     DATA lv_count_chapters_u1 TYPE i.
@@ -177,8 +165,6 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
     DATA lv_count_empty TYPE i.
     DATA lv_content TYPE xstring.
 
-    lv_objname = iv_obj_name.
-    lv_objtype = iv_obj_type(2).
 
     lv_content = get_content(
         iv_obj_type = iv_obj_type
@@ -192,8 +178,6 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
         lo_conv = cl_abap_conv_in_ce=>create(
                      input = lv_content ).
-
-        lv_len = xstrlen( lv_content ).
 
         lo_conv->read(
           IMPORTING

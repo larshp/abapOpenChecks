@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_35 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super_root
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
-    METHODS get_message_text
-        REDEFINITION.
     METHODS run
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -90,29 +88,15 @@ CLASS ZCL_AOC_CHECK_35 IMPLEMENTATION.
     version        = '001'.
     position       = '035'.
 
-    has_documentation = c_true.
+    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
     add_obj_type( 'MSAG' ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Message not in use, &1'.                  "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Message not in use, &1'(m01) ).
 
   ENDMETHOD.
 

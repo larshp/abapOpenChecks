@@ -11,11 +11,9 @@ CLASS zcl_aoc_check_14 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
+    METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
-    METHODS if_ci_test~query_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
@@ -47,11 +45,11 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
           lv_informed  TYPE abap_bool,
           lv_line      TYPE token_row.
 
-    FIELD-SYMBOLS: <ls_level> LIKE LINE OF it_levels,
+    FIELD-SYMBOLS: <ls_level> LIKE LINE OF io_scan->levels,
                    <lv_code>  LIKE LINE OF lt_code.
 
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       lt_code = get_source( <ls_level> ).
 
       LOOP AT lt_code ASSIGNING <lv_code>.
@@ -97,10 +95,13 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty           = c_error.
     mv_one_per_include = abap_false.
 
     enable_rfc( ).
+
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Commented code'(m01) ).
 
   ENDMETHOD.
 
@@ -113,22 +114,6 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Commented code'.                          "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.
@@ -187,8 +172,7 @@ CLASS ZCL_AOC_CHECK_14 IMPLEMENTATION.
     ENDLOOP.
 
     IF zcl_aoc_parser=>run( it_commented )-match = abap_true.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = is_level-name
+      inform( p_sub_obj_name = is_level-name
               p_line         = iv_line
               p_kind         = mv_errty
               p_test         = myname

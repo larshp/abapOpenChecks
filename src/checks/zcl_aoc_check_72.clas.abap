@@ -7,8 +7,6 @@ CLASS zcl_aoc_check_72 DEFINITION
 
     METHODS constructor .
 
-    METHODS get_message_text
-        REDEFINITION .
     METHODS run
         REDEFINITION .
   PROTECTED SECTION.
@@ -27,31 +25,17 @@ CLASS ZCL_AOC_CHECK_72 IMPLEMENTATION.
     version  = '001'.
     position = '072'.
 
-    has_documentation = c_true.
+    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
-
-    mv_errty = c_error.
 
     add_obj_type( 'TABL' ).
 
     enable_rfc( ).
 
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Enhancement category missing'.            "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Enhancement category missing'(m01) ).
 
   ENDMETHOD.
 
@@ -84,7 +68,7 @@ CLASS ZCL_AOC_CHECK_72 IMPLEMENTATION.
       EXCEPTIONS
         access_failure = 1
         OTHERS         = 2.
-    IF sy-subrc <> 0.
+    IF sy-subrc <> 0 OR ls_dd02v IS INITIAL.
       RETURN.
     ENDIF.
 

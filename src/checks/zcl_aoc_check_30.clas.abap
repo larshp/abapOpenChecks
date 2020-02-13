@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_30 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -40,18 +38,17 @@ CLASS ZCL_AOC_CHECK_30 IMPLEMENTATION.
           ls_stack   LIKE LINE OF lt_stack,
           lv_include TYPE sobj_name.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
+        WHERE type = io_scan->gc_statement-standard
+        OR type = io_scan->gc_statement-compute_direct
+        OR type = io_scan->gc_statement-method_direct.
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
-        WHERE type = scan_stmnt_type-standard
-        OR type = scan_stmnt_type-compute_direct
-        OR type = scan_stmnt_type-method_direct.
-
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
-          WHERE type = scan_token_type-identifier.
+          WHERE type = io_scan->gc_token-identifier.
 
         lv_i = strlen( <ls_token>-str ) - 1.
         IF <ls_token>-str+lv_i(1) = '('.
@@ -64,9 +61,8 @@ CLASS ZCL_AOC_CHECK_30 IMPLEMENTATION.
               AND ls_stack-receiv = abap_false
               AND ls_stack-exceptions = abap_false
               AND ls_stack-changing = abap_false.
-            lv_include = get_include( p_level = <ls_statement>-level ).
-            inform( p_sub_obj_type = c_type_include
-                    p_sub_obj_name = lv_include
+            lv_include = io_scan->get_include( <ls_statement>-level ).
+            inform( p_sub_obj_name = lv_include
                     p_line         = ls_stack-row
                     p_kind         = mv_errty
                     p_test         = myname
@@ -111,23 +107,9 @@ CLASS ZCL_AOC_CHECK_30 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'EXPORTING can be omitted'(m01) ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'EXPORTING can be omitted'.                "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
+  ENDMETHOD.
 ENDCLASS.

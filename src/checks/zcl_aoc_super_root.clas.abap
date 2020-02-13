@@ -19,6 +19,9 @@ CLASS zcl_aoc_super_root DEFINITION
         REDEFINITION .
   PROTECTED SECTION.
 
+    TYPES:
+      ty_scimessage_text TYPE c LENGTH 255 .
+
     DATA mv_errty TYPE sci_errty .
 
     METHODS enable_rfc .
@@ -26,6 +29,11 @@ CLASS zcl_aoc_super_root DEFINITION
     CLASS-METHODS get_destination
       RETURNING
         VALUE(rv_result) TYPE rfcdest .
+    METHODS insert_scimessage
+      IMPORTING
+        !iv_code TYPE scimessage-code
+        !iv_text TYPE ty_scimessage_text
+        !iv_pcom TYPE scimessage-pcom OPTIONAL .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -47,6 +55,8 @@ CLASS ZCL_AOC_SUPER_ROOT IMPLEMENTATION.
     ENDIF.
 
     category = 'ZCL_AOC_CATEGORY'.
+    mv_errty = 'E'.
+
   ENDMETHOD.
 
 
@@ -148,6 +158,21 @@ CLASS ZCL_AOC_SUPER_ROOT IMPLEMENTATION.
     zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
 
     zzaoc_popup.
+
+  ENDMETHOD.
+
+
+  METHOD insert_scimessage.
+* Insert entry into table scimessages, this table is used to determine the message text for a finding.
+    DATA ls_scimessage LIKE LINE OF scimessages.
+
+    ls_scimessage-test = myname.
+    ls_scimessage-code = iv_code.
+    ls_scimessage-kind = mv_errty.
+    ls_scimessage-text = iv_text.
+    ls_scimessage-pcom = iv_pcom.
+
+    INSERT ls_scimessage INTO TABLE scimessages.
 
   ENDMETHOD.
 

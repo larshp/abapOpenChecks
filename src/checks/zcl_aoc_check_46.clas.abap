@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_46 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -80,8 +78,7 @@ CLASS ZCL_AOC_CHECK_46 IMPLEMENTATION.
 
       READ TABLE lt_result WITH KEY full_name = lv_name TRANSPORTING NO FIELDS.
       IF sy-subrc = 0.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line         = lv_line
                 p_kind         = mv_errty
                 p_test         = myname
@@ -103,25 +100,13 @@ CLASS ZCL_AOC_CHECK_46 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Shadowing variable &1'(m01) ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Shadowing variable &1'.                   "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Parameter shadowing variable &1'.         "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Parameter shadowing variable &1'(m02) ).
 
   ENDMETHOD.
 

@@ -8,8 +8,6 @@ CLASS zcl_aoc_check_21 DEFINITION
 
     METHODS check
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
   PROTECTED SECTION.
 
     METHODS build_statement
@@ -28,7 +26,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
+CLASS zcl_aoc_check_21 IMPLEMENTATION.
 
 
   METHOD build_statement.
@@ -58,30 +56,30 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
     DATA: lt_parameters TYPE string_table,
           lv_parameter  LIKE LINE OF lt_parameters,
           lv_statement  TYPE string,
-          ls_form_stmnt LIKE LINE OF it_statements,
+          ls_form_stmnt LIKE LINE OF io_scan->statements,
           lv_form       TYPE abap_bool.
 
-    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures,
-                   <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_statement> LIKE LINE OF it_statements.
+    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF io_scan->structures,
+                   <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    LOOP AT it_structures ASSIGNING <ls_structure>
-        WHERE type = scan_struc_type-routine
-        AND stmnt_type = scan_struc_stmnt_type-form.
+    LOOP AT io_scan->structures ASSIGNING <ls_structure>
+        WHERE type = io_scan->gc_structure-routine
+        AND stmnt_type = zcl_aoc_scan=>gc_structure_statement-form.
 
       lv_form = abap_true.
 
-      LOOP AT it_statements ASSIGNING <ls_statement>
+      LOOP AT io_scan->statements ASSIGNING <ls_statement>
           FROM <ls_structure>-stmnt_from
           TO <ls_structure>-stmnt_to
-          WHERE type <> scan_stmnt_type-empty
-          AND type <> scan_stmnt_type-comment
-          AND type <> scan_stmnt_type-comment_in_stmnt.
+          WHERE type <> io_scan->gc_statement-empty
+          AND type <> io_scan->gc_statement-comment
+          AND type <> io_scan->gc_statement-comment_in_stmnt.
 
         lv_statement = build_statement(
             is_statement = <ls_statement>
-            it_tokens    = it_tokens ).
+            it_tokens    = io_scan->tokens ).
 
         IF lv_form = abap_true.
           ls_form_stmnt = <ls_statement>.
@@ -99,11 +97,10 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
       ENDLOOP.
 
       LOOP AT lt_parameters INTO lv_parameter.
-        READ TABLE it_tokens INDEX ls_form_stmnt-from ASSIGNING <ls_token>.
+        READ TABLE io_scan->tokens INDEX ls_form_stmnt-from ASSIGNING <ls_token>.
         ASSERT sy-subrc = 0.
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = get_include( p_level = ls_form_stmnt-level )
+        inform( p_sub_obj_name = io_scan->get_include( ls_form_stmnt-level )
                 p_position     = <ls_structure>-stmnt_from
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
@@ -129,9 +126,11 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty       = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Unused FORM parameter &1'(m01) ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD find_parameters.
@@ -154,20 +153,4 @@ CLASS ZCL_AOC_CHECK_21 IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Unused FORM parameter &1'.                "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 ENDCLASS.

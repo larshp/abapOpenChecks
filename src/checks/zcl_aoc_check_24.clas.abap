@@ -1,7 +1,7 @@
 CLASS zcl_aoc_check_24 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
@@ -13,24 +13,22 @@ CLASS zcl_aoc_check_24 DEFINITION
         proc_name2 TYPE sci_proc_name,
         code2      TYPE string,
         line2      TYPE sci_proc_line,
-      END OF ty_list.
+      END OF ty_list .
     TYPES:
-      ty_list_tt TYPE STANDARD TABLE OF ty_list WITH DEFAULT KEY.
+      ty_list_tt TYPE STANDARD TABLE OF ty_list WITH DEFAULT KEY .
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_result_node
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
     TYPES:
@@ -38,41 +36,43 @@ CLASS zcl_aoc_check_24 DEFINITION
         statement TYPE string,
         level     TYPE i,
         row       TYPE token_row,
-      END OF ty_code.
+      END OF ty_code .
     TYPES:
-      ty_code_tt TYPE STANDARD TABLE OF ty_code WITH NON-UNIQUE DEFAULT KEY.
+      ty_code_tt TYPE STANDARD TABLE OF ty_code WITH NON-UNIQUE DEFAULT KEY .
     TYPES:
       BEGIN OF ty_block,
         statements     TYPE string,
         statement_list TYPE STANDARD TABLE OF string WITH DEFAULT KEY,
         level          TYPE i,
         row            TYPE token_row,
-      END OF ty_block.
+      END OF ty_block .
     TYPES:
-      ty_block_tt TYPE STANDARD TABLE OF ty_block WITH NON-UNIQUE DEFAULT KEY.
+      ty_block_tt TYPE STANDARD TABLE OF ty_block WITH NON-UNIQUE DEFAULT KEY .
 
-    DATA mv_statements TYPE i.
+    DATA mv_statements TYPE i .
 
     METHODS pack
       IMPORTING
         !it_list         TYPE ty_list_tt
       RETURNING
-        VALUE(rv_string) TYPE string.
+        VALUE(rv_string) TYPE string .
     METHODS analyze
+      IMPORTING
+        !io_scan   TYPE REF TO zcl_aoc_scan
       CHANGING
-        !ct_blocks TYPE ty_block_tt.
+        !ct_blocks TYPE ty_block_tt .
     METHODS build_blocks
       IMPORTING
         !it_code         TYPE ty_code_tt
       RETURNING
-        VALUE(rt_blocks) TYPE ty_block_tt.
+        VALUE(rt_blocks) TYPE ty_block_tt .
     METHODS build_code
       IMPORTING
         !it_tokens     TYPE stokesx_tab
         !it_statements TYPE sstmnt_tab
         !it_levels     TYPE slevel_tab
       RETURNING
-        VALUE(rt_code) TYPE ty_code_tt.
+        VALUE(rt_code) TYPE ty_code_tt .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -106,8 +106,8 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
       ENDIF.
 
       IF <ls_block>-statements = ls_prev-statements.
-        lv_include1 = get_include( p_level = ls_prev-level ).
-        lv_include2 = get_include( p_level = <ls_block>-level ).
+        lv_include1 = io_scan->get_include( ls_prev-level ).
+        lv_include2 = io_scan->get_include( <ls_block>-level ).
 
         ls_list-proc_name1 = lv_include1.
         ls_list-line1      = ls_prev-row.
@@ -126,8 +126,7 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
           <ls_list>-line2 = <ls_list>-line2 + lv_add.
         ENDLOOP.
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include1
+        inform( p_sub_obj_name = lv_include1
                 p_line         = ls_prev-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -204,7 +203,7 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
 
 
     LOOP AT it_levels ASSIGNING <ls_level>
-        WHERE type <> scan_level_type-macro_define.
+        WHERE type <> zcl_aoc_scan=>gc_level-macro_define.
       lv_level = sy-tabix.
 
       LOOP AT it_statements ASSIGNING <ls_statement> WHERE level = lv_level.
@@ -213,7 +212,7 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
         LOOP AT it_tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from
             TO <ls_statement>-to
-            WHERE type <> scan_token_type-comment.
+            WHERE type <> zcl_aoc_scan=>gc_token-comment.
           IF lv_statement IS INITIAL.
             lv_statement = <ls_token>-str.
           ELSE.
@@ -249,13 +248,15 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
 
 
     lt_code = build_code(
-        it_tokens     = it_tokens
-        it_statements = it_statements
-        it_levels     = it_levels ).
+        it_tokens     = io_scan->tokens
+        it_statements = io_scan->statements
+        it_levels     = io_scan->levels ).
 
     lt_blocks = build_blocks( lt_code ).
 
-    analyze( CHANGING ct_blocks = lt_blocks ).
+    analyze(
+      EXPORTING io_scan = io_scan
+      CHANGING ct_blocks = lt_blocks ).
 
   ENDMETHOD.
 
@@ -272,10 +273,13 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_statements = 10.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Identical code blocks, dbl click for details'(m01) ).
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -283,22 +287,6 @@ CLASS ZCL_AOC_CHECK_24 IMPLEMENTATION.
     EXPORT mv_errty = mv_errty mv_statements = mv_statements TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Identical code blocks, dbl click for details'. "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD get_result_node.

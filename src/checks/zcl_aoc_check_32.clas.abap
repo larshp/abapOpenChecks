@@ -1,22 +1,20 @@
 CLASS zcl_aoc_check_32 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
-    METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -39,22 +37,21 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
           lv_devclass  TYPE tadir-devclass,
           lv_include   TYPE sobj_name.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
-
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
     IF mt_devclass IS INITIAL.
       RETURN.
     ENDIF.
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
-        WHERE type = scan_stmnt_type-standard
-        OR type = scan_stmnt_type-method_direct.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
+        WHERE type = io_scan->gc_statement-standard
+        OR type = io_scan->gc_statement-method_direct.
 
       CLEAR lv_statement.
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
-          WHERE type = scan_token_type-identifier.
+          WHERE type = io_scan->gc_token-identifier.
         IF lv_statement IS INITIAL.
           lv_statement = <ls_token>-str.
         ELSE.
@@ -74,7 +71,7 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
           ENDIF.
         ENDIF.
 
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
 
         IF mv_ignore_ltcl = abap_true
             AND object_type = 'CLAS'
@@ -83,8 +80,7 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
           CONTINUE.
         ENDIF.
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -113,10 +109,13 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_ignore_ltcl = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Database access'(m01) ).
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -128,22 +127,6 @@ CLASS ZCL_AOC_CHECK_32 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Database access'.                         "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.

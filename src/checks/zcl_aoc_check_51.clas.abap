@@ -1,22 +1,22 @@
-CLASS zcl_aoc_check_51 DEFINITION PUBLIC INHERITING FROM zcl_aoc_super CREATE PUBLIC.
+CLASS zcl_aoc_check_51 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-         REDEFINITION.
-    METHODS get_message_text
-         REDEFINITION.
-
+        REDEFINITION .
   PROTECTED SECTION.
 
-    CLASS-DATA gv_run TYPE abap_bool.
-    CLASS-DATA gv_supported TYPE abap_bool.
+    CLASS-DATA gv_run TYPE abap_bool .
+    CLASS-DATA gv_supported TYPE abap_bool .
 
     METHODS supported
       RETURNING
-        VALUE(rv_supported) TYPE abap_bool.
+        VALUE(rv_supported) TYPE abap_bool .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -31,7 +31,7 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_code       TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
@@ -41,9 +41,7 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    lt_statements = build_statements(
-        it_tokens     = it_tokens
-        it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
@@ -66,8 +64,7 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_statement>-include
+        inform( p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -88,25 +85,11 @@ CLASS ZCL_AOC_CHECK_51 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
     enable_rfc( ).
 
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Escape host variables'.                   "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Escape host variables'(m01) ).
 
   ENDMETHOD.
 

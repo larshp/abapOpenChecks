@@ -1,35 +1,33 @@
 CLASS zcl_aoc_check_62 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
     METHODS check_continue
       IMPORTING
-        !is_statement  TYPE ty_statement
-        !is_next       TYPE ty_statement
-        !is_next_next  TYPE ty_statement
+        !is_statement  TYPE zcl_aoc_scan=>ty_statement
+        !is_next       TYPE zcl_aoc_scan=>ty_statement
+        !is_next_next  TYPE zcl_aoc_scan=>ty_statement
       RETURNING
         VALUE(rv_code) TYPE sci_errc .
     METHODS check_delete
       IMPORTING
-        !is_statement  TYPE ty_statement
-        !is_next       TYPE ty_statement
+        !is_statement  TYPE zcl_aoc_scan=>ty_statement
+        !is_next       TYPE zcl_aoc_scan=>ty_statement
       RETURNING
         VALUE(rv_code) TYPE sci_errc .
     METHODS check_lines
       IMPORTING
-        !is_statement  TYPE ty_statement
-        !is_next       TYPE ty_statement
+        !is_statement  TYPE zcl_aoc_scan=>ty_statement
+        !is_next       TYPE zcl_aoc_scan=>ty_statement
       RETURNING
         VALUE(rv_code) TYPE sci_errc .
   PRIVATE SECTION.
@@ -46,7 +44,7 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_index      TYPE i,
           lv_code       TYPE sci_errc.
 
@@ -55,9 +53,7 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
                    <ls_next_next> LIKE LINE OF lt_statements.
 
 
-    lt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       lv_index = sy-tabix + 1.
@@ -90,8 +86,7 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_statement>-include
+        inform( p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -197,27 +192,17 @@ CLASS ZCL_AOC_CHECK_62 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty   = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Use DELETE WHERE instead'(m01) ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'CONTINUE as last statement in loop'(m02) ).
 
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Use DELETE WHERE instead'.                "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'CONTINUE as last statement in loop'.      "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Checking for lines before looping'.       "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Checking for lines before looping'(m03) ).
 
   ENDMETHOD.
 ENDCLASS.

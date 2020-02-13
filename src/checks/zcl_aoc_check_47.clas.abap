@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_47 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -31,25 +29,25 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
           lv_fourth    TYPE string,
           lv_statement TYPE string.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-empty
-        AND type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-macro_definition
-        AND type <> scan_stmnt_type-pragma.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
+        WHERE type <> io_scan->gc_statement-empty
+        AND type <> io_scan->gc_statement-comment
+        AND type <> io_scan->gc_statement-comment_in_stmnt
+        AND type <> io_scan->gc_statement-macro_definition
+        AND type <> io_scan->gc_statement-pragma.
 
       CLEAR lv_statement.
       CLEAR lv_fourth.
       lv_count = 0.
 
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
-          WHERE type = scan_token_type-identifier
-          OR type = scan_token_type-literal.
+          WHERE type = io_scan->gc_token-identifier
+          OR type = io_scan->gc_token-literal.
         lv_count = lv_count + 1.
 
         IF lv_count = 4.
@@ -70,9 +68,8 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
         CONTINUE. " to next statement
       ENDIF.
 
-      lv_include = get_include( p_level = <ls_statement>-level ).
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      lv_include = io_scan->get_include( <ls_statement>-level ).
+      inform( p_sub_obj_name = lv_include
               p_line         = <ls_token>-row
               p_kind         = mv_errty
               p_test         = myname
@@ -95,23 +92,9 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Add RFC call error handling'.             "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Add RFC call error handling'(m01) ).
 
   ENDMETHOD.
 ENDCLASS.

@@ -8,18 +8,18 @@ CLASS zcl_aoc_check_01 DEFINITION
 
     METHODS check
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
-  PROTECTED SECTION.
 
+  PROTECTED SECTION.
     METHODS contains_else
       IMPORTING
         !io_structure  TYPE REF TO zcl_aoc_structure
       RETURNING
-        VALUE(rv_bool) TYPE abap_bool .
+        VALUE(rv_bool) TYPE abap_bool.
     METHODS run_check
       IMPORTING
-        !io_structure TYPE REF TO zcl_aoc_structure .
+        !io_structure TYPE REF TO zcl_aoc_structure
+        !io_scan      TYPE REF TO zcl_aoc_scan.
+
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -38,11 +38,13 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
 
     lo_structure = zcl_aoc_structure=>build(
-      it_tokens     = it_tokens
-      it_statements = it_statements
-      it_structures = it_structures ).
+      it_tokens     = io_scan->tokens
+      it_statements = io_scan->statements
+      it_structures = io_scan->structures ).
 
-    run_check( lo_structure ).
+    run_check(
+      io_structure = lo_structure
+      io_scan      = io_scan ).
 
   ENDMETHOD.
 
@@ -59,40 +61,25 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'IF in IF, can easily be reduced'(m01) ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD contains_else.
 
     DATA: lo_structure TYPE REF TO zcl_aoc_structure.
 
-
     LOOP AT io_structure->get_structure( ) INTO lo_structure.
-      IF lo_structure->get_type( ) = scan_struc_stmnt_type-else.
+      IF lo_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-else.
         rv_bool = abap_true.
         RETURN.
       ENDIF.
     ENDLOOP.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'IF in IF, can easily be reduced'.         "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD run_check.
@@ -104,16 +91,17 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
           lv_other     TYPE i.
 
 
-    IF io_structure->get_type( ) = scan_struc_stmnt_type-if
-        OR io_structure->get_type( ) = scan_struc_stmnt_type-else.
+    IF io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if
+        OR io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-else.
 
-      IF io_structure->get_type( ) = scan_struc_stmnt_type-if.
+      IF io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if.
         READ TABLE io_structure->get_structure( ) INDEX 1 INTO lo_then.
         ASSERT sy-subrc = 0.
 
         LOOP AT io_structure->get_structure( ) INTO lo_structure.
           CASE lo_structure->get_type( ).
-            WHEN scan_struc_stmnt_type-elseif OR scan_struc_stmnt_type-else.
+            WHEN zcl_aoc_scan=>gc_structure_statement-elseif
+                OR zcl_aoc_scan=>gc_structure_statement-else.
               lv_if = lv_if + 2.
           ENDCASE.
         ENDLOOP.
@@ -123,9 +111,9 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
       LOOP AT lo_then->get_structure( ) INTO lo_structure.
         CASE lo_structure->get_type( ).
-          WHEN scan_struc_stmnt_type-if.
+          WHEN zcl_aoc_scan=>gc_structure_statement-if.
             IF contains_else( lo_structure ) = abap_true
-                AND io_structure->get_type( ) = scan_struc_stmnt_type-if.
+                AND io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if.
               lv_if = lv_if + 1.
             ENDIF.
             lv_if = lv_if + 1.
@@ -136,16 +124,16 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
     ENDIF.
 
     IF lv_if = 1 AND lv_other = 0.
-      lv_include = get_include( p_level = io_structure->get_statement( )-level ).
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      lv_include = io_scan->get_include( io_structure->get_statement( )-level ).
+      inform( p_sub_obj_name = lv_include
               p_line = io_structure->get_statement( )-row
               p_kind = mv_errty
               p_test = myname
               p_code = '001' ).
     ELSE.
       LOOP AT io_structure->get_structure( ) INTO lo_structure.
-        run_check( lo_structure ).
+        run_check( io_structure = lo_structure
+                   io_scan      = io_scan ).
       ENDLOOP.
     ENDIF.
 

@@ -11,8 +11,6 @@ CLASS zcl_aoc_check_74 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
@@ -34,23 +32,21 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_max        TYPE i,
           ls_max        LIKE LINE OF lt_statements,
           lv_level      TYPE i,
           lv_char10     TYPE c LENGTH 10,
           lv_depth      TYPE i.
 
-    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
+    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF io_scan->levels,
                    <ls_statement> LIKE LINE OF lt_statements.
 
 * todo, test how this works with macros
 
-    lt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
-    LOOP AT it_levels ASSIGNING <ls_level>.
+    LOOP AT io_scan->levels ASSIGNING <ls_level>.
       lv_level = sy-tabix.
       lv_depth = 0.
       lv_max = 0.
@@ -80,8 +76,7 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
 
       IF lv_max >= mv_depth.
         lv_char10 = lv_max.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = ls_max-include
+        inform( p_sub_obj_name = ls_max-include
                 p_line         = ls_max-start-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -100,7 +95,6 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
 
     super->constructor( ).
 
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '074'.
 
@@ -109,10 +103,13 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_depth = 4.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Deep nesting, depth = &1'(m01) ).
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -121,22 +118,6 @@ CLASS ZCL_AOC_CHECK_74 IMPLEMENTATION.
       mv_errty = mv_errty
       mv_depth = mv_depth
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Deep nesting, depth = &1'.                "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 

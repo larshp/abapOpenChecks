@@ -1,27 +1,22 @@
 CLASS zcl_aoc_check_48 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
     METHODS check_table_body_access
       IMPORTING
-        !it_tokens     TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab
-        !it_levels     TYPE slevel_tab .
+        !io_scan TYPE REF TO zcl_aoc_scan .
     METHODS check_table_key
       IMPORTING
-        !it_tokens     TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab .
+        !io_scan TYPE REF TO zcl_aoc_scan .
     METHODS support_empty_key
       RETURNING
         VALUE(rv_supported) TYPE abap_bool .
@@ -42,14 +37,9 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    check_table_key(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+    check_table_key( io_scan ).
 
-    check_table_body_access(
-      it_tokens     = it_tokens
-      it_statements = it_statements
-      it_levels     = it_levels ).
+    check_table_body_access( io_scan ).
 
   ENDMETHOD.
 
@@ -58,25 +48,24 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
     DATA: lv_level LIKE sy-tabix.
 
-    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_statement> LIKE LINE OF it_statements,
-                   <ls_level>     LIKE LINE OF it_levels.
+    FIELD-SYMBOLS: <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_level>     LIKE LINE OF io_scan->levels.
 
 
     IF object_type <> 'CLAS'.
       RETURN.
     ENDIF.
 
-    LOOP AT it_levels ASSIGNING <ls_level>.
+    LOOP AT io_scan->levels ASSIGNING <ls_level>.
       lv_level = sy-tabix.
-      LOOP AT it_statements ASSIGNING <ls_statement> WHERE level = lv_level.
-        LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to
-            WHERE type <> scan_token_type-literal
-            AND type <> scan_token_type-comment.
+      LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE level = lv_level.
+        LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to
+            WHERE type <> io_scan->gc_token-literal
+            AND type <> io_scan->gc_token-comment.
 
           IF <ls_token>-str CP '*+[]*'.
-            inform( p_sub_obj_type = c_type_include
-                    p_sub_obj_name = get_include( p_level = lv_level )
+            inform( p_sub_obj_name = io_scan->get_include( lv_level )
                     p_line         = <ls_token>-row
                     p_kind         = mv_errty
                     p_test         = myname
@@ -92,15 +81,13 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
   METHOD check_table_key.
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_code       TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
 
 
-    lt_statements = build_statements(
-        it_tokens     = it_tokens
-        it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
@@ -113,8 +100,7 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_statement>-include
+        inform( p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
                 p_kind         = mv_errty
                 p_position     = <ls_statement>-index
@@ -129,8 +115,6 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
   METHOD constructor.
 
-    DATA: ls_message LIKE LINE OF scimessages.
-
     super->constructor( ).
 
     version  = '002'.
@@ -139,33 +123,16 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
-    ls_message-test = myname.
-    ls_message-code = '001'.
-    ls_message-kind = c_error.
-    ls_message-pcom = '"#EC CI_DEFAULT_KEY'.
-    INSERT ls_message INTO TABLE scimessages.
-
     enable_rfc( ).
 
-  ENDMETHOD.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'DEFAULT KEY, add table key or EMPTY KEY'(m01)
+        iv_pcom = '"#EC CI_DEFAULT_KEY' ).
 
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'DEFAULT KEY, add table key or EMPTY KEY'. "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Access table body is obsolete, no headers'. "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Access table body is obsolete, no headers'(m02) ).
 
   ENDMETHOD.
 

@@ -1,22 +1,20 @@
 CLASS zcl_aoc_check_34 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
     DATA mv_lines TYPE i .
@@ -27,7 +25,8 @@ CLASS zcl_aoc_check_34 DEFINITION
         !is_statement     TYPE sstmnt
         !is_token         TYPE stokesx
         !iv_start         TYPE i
-        !iv_comment_lines TYPE i .
+        !iv_comment_lines TYPE i
+        !io_scan          TYPE REF TO zcl_aoc_scan .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -45,15 +44,15 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
     DATA: lv_start         TYPE i,
           lv_comment_lines TYPE i.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
-        WHERE type = scan_stmnt_type-standard OR
-              type = scan_stmnt_type-comment.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
+        WHERE type = io_scan->gc_statement-standard OR
+              type = io_scan->gc_statement-comment.
 
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       ASSERT sy-subrc = 0.
 
       CASE <ls_token>-str.
@@ -62,7 +61,8 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
             is_statement     = <ls_statement>
             is_token         = <ls_token>
             iv_start         = lv_start
-            iv_comment_lines = lv_comment_lines ).
+            iv_comment_lines = lv_comment_lines
+            io_scan          = io_scan ).
           lv_comment_lines = 0.
           lv_start = <ls_token>-row.
         WHEN 'ENDCASE'.
@@ -70,11 +70,12 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
             is_statement     = <ls_statement>
             is_token         = <ls_token>
             iv_start         = lv_start
-            iv_comment_lines = lv_comment_lines ).
+            iv_comment_lines = lv_comment_lines
+            io_scan          = io_scan ).
           lv_comment_lines = 0.
           lv_start = 0.
         WHEN OTHERS.
-          IF <ls_statement>-type = scan_stmnt_type-comment.
+          IF <ls_statement>-type = io_scan->gc_statement-comment.
             lv_comment_lines = lv_comment_lines + <ls_statement>-to - <ls_statement>-from.
           ENDIF.
       ENDCASE.
@@ -96,10 +97,13 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_lines = 20.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Large WHEN construct'(m01) ).
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -111,22 +115,6 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Large WHEN construct'.                    "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.
@@ -163,9 +151,8 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
         OR ( mv_incl_comments = abap_false
         AND iv_start + mv_lines < is_token-row - iv_comment_lines ) ).
 
-      lv_include = get_include( p_level = is_statement-level ).
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      lv_include = io_scan->get_include( is_statement-level ).
+      inform( p_sub_obj_name = lv_include
               p_line         = iv_start
               p_kind         = mv_errty
               p_test         = myname

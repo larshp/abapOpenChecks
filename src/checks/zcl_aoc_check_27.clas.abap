@@ -9,8 +9,6 @@ CLASS zcl_aoc_check_27 DEFINITION
 
     METHODS check
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
   PROTECTED SECTION.
 
     TYPES:
@@ -22,18 +20,19 @@ CLASS zcl_aoc_check_27 DEFINITION
         col       TYPE token_col,
         col_to    TYPE token_col,
       END OF ty_stmnt .
+    TYPES:
+      ty_stmnt_tt TYPE STANDARD TABLE OF ty_stmnt WITH DEFAULT KEY .
 
-    TYPES: ty_stmnt_tt TYPE STANDARD TABLE OF ty_stmnt WITH DEFAULT KEY.
-
-    DATA:
-      mt_statements TYPE ty_stmnt_tt.
+    DATA mt_statements TYPE ty_stmnt_tt .
 
     METHODS is_local
       IMPORTING
         !it_statements TYPE ty_stmnt_tt
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
-    METHODS analyze .
+    METHODS analyze
+      IMPORTING
+        !io_scan TYPE REF TO zcl_aoc_scan .
     METHODS build
       IMPORTING
         !is_structure  TYPE sstruc
@@ -83,10 +82,9 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
-        lv_include = get_include( p_level = ls_statement-level ).
+        lv_include = io_scan->get_include( ls_statement-level ).
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line         = ls_statement-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -111,9 +109,9 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
     LOOP AT it_statements ASSIGNING <ls_statement>
         FROM is_structure-stmnt_from TO is_structure-stmnt_to
-        WHERE type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-macro_call
+        WHERE type <> zcl_aoc_scan=>gc_statement-comment
+        AND type <> zcl_aoc_scan=>gc_statement-comment_in_stmnt
+        AND type <> zcl_aoc_scan=>gc_statement-macro_call
         AND trow <> 0. " skip macro calls
 
       CLEAR ls_statement.
@@ -149,20 +147,20 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures.
+    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF io_scan->structures.
 
 
-    LOOP AT it_structures ASSIGNING <ls_structure>
-        WHERE stmnt_type = scan_struc_stmnt_type-module
-        OR stmnt_type = scan_struc_stmnt_type-function
-        OR stmnt_type = scan_struc_stmnt_type-form
-        OR stmnt_type = scan_struc_stmnt_type-method.
+    LOOP AT io_scan->structures ASSIGNING <ls_structure>
+        WHERE stmnt_type = zcl_aoc_scan=>gc_structure_statement-module
+        OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-function
+        OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-form
+        OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-method.
 
       build( is_structure  = <ls_structure>
-             it_statements = it_statements
-             it_tokens     = it_tokens ).
+             it_statements = io_scan->statements
+             it_tokens     = io_scan->tokens ).
 
-      analyze( ).
+      analyze( io_scan ).
 
     ENDLOOP.
 
@@ -181,29 +179,19 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Last statement is RETURN'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Last statement is CLEAR or FREE'(m02) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Last statement is CHECK or EXIT'(m03) ).
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Last statement is RETURN'.                "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Last statement is CLEAR or FREE'.         "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Last statement is CHECK or EXIT'.         "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD is_local.
@@ -218,7 +206,12 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
     READ TABLE it_statements INDEX lv_index INTO ls_statement.
     ASSERT sy-subrc = 0.
-    SPLIT ls_statement-statement AT space INTO lv_trash lv_var.
+    IF ls_statement-statement CP |DATA(*) *|.
+      SPLIT ls_statement-statement AT '(' INTO lv_trash lv_var.
+      SPLIT lv_var AT ')' INTO lv_var lv_trash.
+    ELSE.
+      SPLIT ls_statement-statement AT space INTO lv_trash lv_var.
+    ENDIF.
 
     WHILE lv_index > 0.
 
@@ -231,7 +224,8 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
       ENDIF.
 
       IF ls_statement-statement CP |DATA { lv_var } *|
-          OR ls_statement-statement = |DATA { lv_var }|.
+          OR ls_statement-statement = |DATA { lv_var }|
+          OR ls_statement-statement CP |DATA({ lv_var }) *|.
         rv_bool = abap_true.
         RETURN.
       ENDIF.

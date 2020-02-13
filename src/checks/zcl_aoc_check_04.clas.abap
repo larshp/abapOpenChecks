@@ -10,16 +10,15 @@ CLASS zcl_aoc_check_04 DEFINITION
         REDEFINITION.
     METHODS get_attributes
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
     METHODS if_ci_test~query_attributes
         REDEFINITION.
     METHODS put_attributes
         REDEFINITION.
-  PROTECTED SECTION.
 
+  PROTECTED SECTION.
     DATA mv_skipc TYPE flag.
     DATA mv_maxlength TYPE maxflength.
+
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -37,12 +36,12 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
     DATA: lv_len   LIKE mv_maxlength,
           lv_level TYPE stmnt_levl.
 
-    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                   <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF io_scan->levels,
+                   <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       lv_level = sy-tabix.
 
       IF mv_skipc = abap_true
@@ -50,15 +49,14 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
         CONTINUE. " current loop
       ENDIF.
 
-      LOOP AT it_statements ASSIGNING <ls_statement>
+      LOOP AT io_scan->statements ASSIGNING <ls_statement>
           WHERE level = lv_level.
-        LOOP AT it_tokens ASSIGNING <ls_token>
+        LOOP AT io_scan->tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from TO <ls_statement>-to.
 
           lv_len = <ls_token>-col + <ls_token>-len1.
           IF lv_len > mv_maxlength.
-            inform( p_sub_obj_type = c_type_include
-                    p_sub_obj_name = <ls_level>-name
+            inform( p_sub_obj_name = <ls_level>-name
                     p_line         = <ls_token>-row
                     p_kind         = mv_errty
                     p_test         = myname
@@ -84,11 +82,14 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty     = c_error.
-    mv_maxlength = 90.
+    mv_maxlength = 120.
     mv_skipc     = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+      iv_code = '001'
+      iv_text = 'Reduce line length'(m01) ).
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -100,22 +101,6 @@ CLASS ZCL_AOC_CHECK_04 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Reduce line length'.                      "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.

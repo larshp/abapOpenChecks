@@ -9,8 +9,6 @@ CLASS zcl_aoc_check_79 DEFINITION
 
     METHODS check
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -24,7 +22,7 @@ CLASS zcl_aoc_check_79 DEFINITION
       ty_methods_tt TYPE STANDARD TABLE OF ty_method WITH DEFAULT KEY .
 
     DATA mt_compiler TYPE scr_refs .
-    DATA mt_statements TYPE ty_statements .
+    DATA mt_statements TYPE zcl_aoc_scan=>ty_statements .
 
     METHODS check_local
       IMPORTING
@@ -40,8 +38,7 @@ CLASS zcl_aoc_check_79 DEFINITION
         VALUE(rt_writes) TYPE scr_refs .
     METHODS initialize
       IMPORTING
-        !it_tokens     TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab .
+        !io_scan TYPE REF TO zcl_aoc_scan .
     METHODS find_locals
       IMPORTING
         !is_method       TYPE ty_method
@@ -77,11 +74,9 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    initialize(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+    initialize( io_scan ).
 
-    lt_methods = find_methods( it_levels ).
+    lt_methods = find_methods( io_scan->levels ).
 
     LOOP AT lt_methods INTO ls_method.
       lt_locals = find_locals( ls_method ).
@@ -91,8 +86,7 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
           is_method = ls_method
           is_local  = ls_local ).
         IF lv_error = abap_true.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = ls_method-include
+          inform( p_sub_obj_name = ls_method-include
                   p_line         = ls_local-line
                   p_kind         = mv_errty
                   p_test         = myname
@@ -159,14 +153,15 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
 
     super->constructor( ).
 
-    category    = 'ZCL_AOC_CATEGORY'.
     version     = '001'.
     position    = '079'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'CLEAR as first usage of variable, &1'(m01) ).
 
   ENDMETHOD.
 
@@ -228,31 +223,13 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'CLEAR as first of variable, &1'.          "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.
-
-
   METHOD initialize.
 
     mt_compiler = zcl_aoc_compiler=>get_instance(
       iv_object_type = object_type
       iv_object_name = object_name )->get_result( ).
 
-    mt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+    mt_statements = io_scan->build_statements( ).
 
   ENDMETHOD.
 ENDCLASS.

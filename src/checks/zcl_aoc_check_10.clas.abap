@@ -8,15 +8,13 @@ CLASS zcl_aoc_check_10 DEFINITION
 
     METHODS check
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_10 IMPLEMENTATION.
+CLASS zcl_aoc_check_10 IMPLEMENTATION.
 
 
   METHOD check.
@@ -28,20 +26,19 @@ CLASS ZCL_AOC_CHECK_10 IMPLEMENTATION.
     DATA: lv_position TYPE i,
           lv_include  TYPE program.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
 
       lv_position = sy-tabix.
 
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
           WHERE str CP '''@++@'''.
-        lv_include = get_include( p_level = <ls_statement>-level ).
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        lv_include = io_scan->get_include( <ls_statement>-level ).
+        inform( p_sub_obj_name = lv_include
                 p_position     = lv_position
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
@@ -67,23 +64,9 @@ CLASS ZCL_AOC_CHECK_10 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Use icon_ constants'(m01) ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Use icon_ constants'.                     "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
+  ENDMETHOD.
 ENDCLASS.

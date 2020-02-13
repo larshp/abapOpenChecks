@@ -8,8 +8,6 @@ CLASS zcl_aoc_check_53 DEFINITION PUBLIC INHERITING FROM zcl_aoc_super CREATE PU
         REDEFINITION.
     METHODS get_attributes
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
     METHODS put_attributes
         REDEFINITION.
     METHODS if_ci_test~query_attributes
@@ -34,7 +32,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
+CLASS zcl_aoc_check_53 IMPLEMENTATION.
 
 
   METHOD check.
@@ -43,7 +41,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lt_split      TYPE STANDARD TABLE OF string WITH DEFAULT KEY,
           lv_name       TYPE string,
           lv_code       TYPE sci_errc.
@@ -51,9 +49,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
 
 
-    lt_statements = build_statements(
-        it_tokens     = it_tokens
-        it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
@@ -126,8 +122,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
       ENDCASE.
 
       IF NOT lv_code IS INITIAL.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_statement>-include
+        inform( p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
                 p_position     = <ls_statement>-index
                 p_param_1      = lv_name
@@ -153,7 +148,45 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+        iv_code = '004'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+        iv_code = '005'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+        iv_code = '006'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+        iv_code = '007'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+        iv_code = '008'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+        iv_code = '009'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+        iv_code = '010'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+        iv_code = '011'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+        iv_code = '012'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
+    insert_scimessage(
+        iv_code = '013'
+        iv_text = 'Function &1 used, see documentation'(m01) ).
 
     mv_reuse_alv_grid_display    = abap_true.
     mv_so_new_document_att_send  = abap_true.
@@ -169,7 +202,7 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
     mv_base64                    = abap_true.
     mv_binary                    = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -190,15 +223,6 @@ CLASS ZCL_AOC_CHECK_53 IMPLEMENTATION.
       mv_base64                    = mv_base64
       mv_binary                    = mv_binary
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    p_text = 'Function &1 used, see documentation'.         "#EC NOTEXT
 
   ENDMETHOD.
 

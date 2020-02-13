@@ -5,16 +5,14 @@ CLASS zcl_aoc_check_54 DEFINITION PUBLIC INHERITING FROM zcl_aoc_super CREATE PU
     METHODS constructor .
 
     METHODS check
-      REDEFINITION .
-    METHODS get_message_text
-      REDEFINITION .
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_54 IMPLEMENTATION.
+CLASS zcl_aoc_check_54 IMPLEMENTATION.
 
 
   METHOD check.
@@ -23,15 +21,13 @@ CLASS ZCL_AOC_CHECK_54 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_code       TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
 
 
-    lt_statements = build_statements(
-        it_tokens     = it_tokens
-        it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
@@ -43,8 +39,7 @@ CLASS ZCL_AOC_CHECK_54 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_statement>-include
+        inform( p_sub_obj_name = <ls_statement>-include
                 p_position     = <ls_statement>-index
                 p_line         = <ls_statement>-start-row
                 p_kind         = mv_errty
@@ -69,23 +64,9 @@ CLASS ZCL_AOC_CHECK_54 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
-
-  ENDMETHOD.                    "CONSTRUCTOR
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Specify AUTHORITY-CHECK'.                 "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Specify AUTHORITY-CHECK'(m01) ).
 
   ENDMETHOD.
 ENDCLASS.

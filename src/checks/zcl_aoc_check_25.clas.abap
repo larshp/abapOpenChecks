@@ -1,49 +1,48 @@
 CLASS zcl_aoc_check_25 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
-    METHODS constructor.
+
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
+
     TYPES:
       BEGIN OF ty_field,
         name  TYPE string,
         level TYPE i,
         row   TYPE token_row,
-      END OF ty_field.
+      END OF ty_field .
     TYPES:
-      ty_fields_tt TYPE STANDARD TABLE OF ty_field WITH NON-UNIQUE DEFAULT KEY.
+      ty_fields_tt TYPE STANDARD TABLE OF ty_field WITH NON-UNIQUE DEFAULT KEY .
 
-    DATA mv_skip_radio TYPE sychar01.
+    DATA mv_skip_radio TYPE sychar01 .
 
     METHODS strip
       IMPORTING
         !iv_input        TYPE string
       RETURNING
-        VALUE(rv_output) TYPE string.
+        VALUE(rv_output) TYPE string .
     METHODS analyze
       IMPORTING
-        !it_tokens     TYPE stokesx_tab
-        !it_fields     TYPE ty_fields_tt
-        !it_statements TYPE sstmnt_tab.
+        !io_scan   TYPE REF TO zcl_aoc_scan
+        !it_fields TYPE ty_fields_tt .
     METHODS find_fields
       IMPORTING
         !it_tokens       TYPE stokesx_tab
         !it_statements   TYPE sstmnt_tab
       RETURNING
-        VALUE(rt_fields) TYPE ty_fields_tt.
+        VALUE(rt_fields) TYPE ty_fields_tt .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -60,19 +59,19 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
           lv_name    TYPE string,
           lt_fields  LIKE it_fields.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
                    <ls_field>     LIKE LINE OF it_fields,
-                   <ls_token>     LIKE LINE OF it_tokens.
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
     lt_fields = it_fields.
 
-    LOOP AT it_statements ASSIGNING <ls_statement>.
-      LOOP AT it_tokens ASSIGNING <ls_token>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from
           TO <ls_statement>-to
-          WHERE type <> scan_token_type-comment
-          AND type <> scan_token_type-literal.
+          WHERE type <> io_scan->gc_token-comment
+          AND type <> io_scan->gc_token-literal.
         lv_name = strip( <ls_token>-str ).
         DELETE lt_fields
           WHERE name = lv_name
@@ -83,10 +82,9 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
 
     LOOP AT lt_fields ASSIGNING <ls_field>.
 
-      lv_include = get_include( p_level = <ls_field>-level ).
+      lv_include = io_scan->get_include( <ls_field>-level ).
 
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      inform( p_sub_obj_name = lv_include
               p_line         = <ls_field>-row
               p_kind         = mv_errty
               p_test         = myname
@@ -106,12 +104,11 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
     DATA: lt_fields TYPE ty_fields_tt.
 
 
-    lt_fields = find_fields( it_tokens     = it_tokens
-                             it_statements = it_statements ).
+    lt_fields = find_fields( it_tokens     = io_scan->tokens
+                             it_statements = io_scan->statements ).
 
-    analyze( it_tokens     = it_tokens
-             it_fields     = lt_fields
-             it_statements = it_statements ).
+    analyze( io_scan   = io_scan
+             it_fields = lt_fields ).
 
   ENDMETHOD.
 
@@ -128,10 +125,13 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_skip_radio = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = '&1 not referenced statically'(m01) ).
+
+  ENDMETHOD.
 
 
   METHOD find_fields.
@@ -147,7 +147,8 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
                    <ls_token>     LIKE LINE OF it_tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
+    LOOP AT it_statements ASSIGNING <ls_statement>
+        WHERE type = zcl_aoc_scan=>gc_statement-standard.
 
       CLEAR lv_keyword.
       CLEAR lv_statement.
@@ -155,7 +156,7 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
       LOOP AT it_tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from
           TO <ls_statement>-to
-          WHERE type <> scan_token_type-comment.
+          WHERE type <> zcl_aoc_scan=>gc_token-comment.
 
         IF lv_keyword IS INITIAL.
           lv_keyword = <ls_token>-str.
@@ -216,22 +217,6 @@ CLASS ZCL_AOC_CHECK_25 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = '&1 not referenced statically'.            "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.

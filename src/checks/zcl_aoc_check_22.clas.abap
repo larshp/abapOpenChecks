@@ -1,29 +1,28 @@
 CLASS zcl_aoc_check_22 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
+
+    DATA mo_scan TYPE REF TO zcl_aoc_scan .
+
     METHODS analyze_condition
       IMPORTING
-        !io_structure TYPE REF TO zcl_aoc_structure.
-    CLASS zcl_aoc_structure DEFINITION LOAD.
-    TYPE-POOLS abap.
+        !io_structure TYPE REF TO zcl_aoc_structure .
     METHODS compare
       IMPORTING
         !it_structure  TYPE zcl_aoc_structure=>ty_structure_tt
         !iv_first_last TYPE abap_bool .
     METHODS loop
       IMPORTING
-        !io_structure TYPE REF TO zcl_aoc_structure.
+        !io_structure TYPE REF TO zcl_aoc_structure .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -40,9 +39,9 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
 * IFs must contain ELSE, CASE must contain OTHERS
     LOOP AT io_structure->get_structure( ) INTO lo_structure.
-      IF ( io_structure->get_type( ) = scan_struc_stmnt_type-if
+      IF ( io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if
           AND lo_structure->get_statement( )-statement = 'ELSE' )
-          OR ( io_structure->get_type( ) = scan_struc_stmnt_type-case
+          OR ( io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-case
           AND lo_structure->get_statement( )-statement = 'WHEN OTHERS' ).
         lv_found = abap_true.
         EXIT. " current loop.
@@ -67,9 +66,11 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    loop( zcl_aoc_structure=>build( it_tokens     = it_tokens
-                                    it_statements = it_statements
-                                    it_structures = it_structures ) ).
+    mo_scan = io_scan.
+
+    loop( zcl_aoc_structure=>build( it_tokens     = io_scan->tokens
+                                    it_statements = io_scan->statements
+                                    it_structures = io_scan->structures ) ).
 
   ENDMETHOD.
 
@@ -124,8 +125,7 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = get_include( p_level = lo_first->get_statement( )-level )
+    inform( p_sub_obj_name = mo_scan->get_include( lo_first->get_statement( )-level )
             p_line         = lo_first->get_statement( )-row
             p_kind         = mv_errty
             p_test         = myname
@@ -147,25 +147,11 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty       = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Conditions contain identical code, &1'(m01) ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Conditions contain identical code, &1'.   "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
+  ENDMETHOD.
 
 
   METHOD loop.
@@ -174,7 +160,8 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
 
     CASE io_structure->get_type( ).
-      WHEN scan_struc_stmnt_type-if OR scan_struc_stmnt_type-case.
+      WHEN zcl_aoc_scan=>gc_structure_statement-if
+          OR zcl_aoc_scan=>gc_structure_statement-case.
         analyze_condition( io_structure ).
     ENDCASE.
 

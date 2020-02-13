@@ -1,24 +1,22 @@
 CLASS zcl_aoc_check_37 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
     METHODS report
       IMPORTING
-        !is_statement TYPE sstmnt
-        !is_token     TYPE stokesx
-        !iv_code      TYPE sci_errc.
+        !iv_program TYPE program
+        !is_token   TYPE stokesx
+        !iv_code    TYPE sci_errc .
 ENDCLASS.
 
 
@@ -38,14 +36,14 @@ CLASS ZCL_AOC_CHECK_37 IMPLEMENTATION.
           lv_trash     TYPE string ##NEEDED,
           lv_statement TYPE string.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
 
       CLEAR lv_statement.
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to.
         IF lv_statement IS INITIAL.
           lv_statement = <ls_token>-str.
@@ -57,14 +55,14 @@ CLASS ZCL_AOC_CHECK_37 IMPLEMENTATION.
 
       IF lv_statement CP 'MESSAGE ''*'
           OR lv_statement CP 'MESSAGE text-+++ *'.
-        report( is_statement = <ls_statement>
-                is_token     = <ls_token>
-                iv_code      = '001' ).
+        report( iv_program = io_scan->get_include( <ls_statement>-level )
+                is_token   = <ls_token>
+                iv_code    = '001' ).
       ENDIF.
 
       IF lv_statement CP 'MESSAGE *->GET_TEXT( ) *'
           OR lv_statement CP 'MESSAGE *->IF_MESSAGE~GET_TEXT( ) *'.
-        report( is_statement = <ls_statement>
+        report( iv_program = io_scan->get_include( <ls_statement>-level )
                 is_token     = <ls_token>
                 iv_code      = '002' ).
       ENDIF.
@@ -79,9 +77,9 @@ CLASS ZCL_AOC_CHECK_37 IMPLEMENTATION.
           AND arbgb = lv_class
           AND msgnr = lv_number.
         IF sy-subrc = 0 AND lv_text CO '&12345678 '.
-          report( is_statement = <ls_statement>
-                  is_token     = <ls_token>
-                  iv_code      = '003' ).
+          report( iv_program = io_scan->get_include( <ls_statement>-level )
+                  is_token   = <ls_token>
+                  iv_code    = '003' ).
         ENDIF.
       ENDIF.
 
@@ -102,40 +100,24 @@ CLASS ZCL_AOC_CHECK_37 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Define message texts in SE91'(m01) ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Remove ''->get_text( )'''(m02) ).
 
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Use of generic SE91 message'(m03) ).
 
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Define message texts in SE91'.            "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Remove ''->get_text( )'''.                "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Use of generic SE91 message'.             "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
+  ENDMETHOD.
 
 
   METHOD report.
 
-    DATA: lv_include TYPE sobj_name.
-
-
-    lv_include = get_include( p_level = is_statement-level ).
-
-    inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = lv_include
+    inform( p_sub_obj_name = iv_program
             p_line         = is_token-row
             p_kind         = mv_errty
             p_test         = myname

@@ -1,25 +1,23 @@
 CLASS zcl_aoc_check_28 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
-    DATA mv_skipc TYPE flag.
+    DATA mv_skipc TYPE flag .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -39,12 +37,12 @@ CLASS ZCL_AOC_CHECK_28 IMPLEMENTATION.
           lv_code  LIKE LINE OF lt_code,
           lv_level TYPE stmnt_levl.
 
-    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                   <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF io_scan->levels,
+                   <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       lv_level = sy-tabix.
 
       IF is_class_pool( <ls_level>-name ) = abap_true.
@@ -54,13 +52,13 @@ CLASS ZCL_AOC_CHECK_28 IMPLEMENTATION.
         CONTINUE. " current loop
       ENDIF.
 
-      LOOP AT it_statements ASSIGNING <ls_statement>
-          WHERE type <> scan_stmnt_type-comment
-          AND type <> scan_stmnt_type-comment_in_stmnt
+      LOOP AT io_scan->statements ASSIGNING <ls_statement>
+          WHERE type <> io_scan->gc_statement-comment
+          AND type <> io_scan->gc_statement-comment_in_stmnt
           AND terminator <> ''
           AND level = lv_level.
 
-        READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-to.
+        READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-to.
         IF sy-subrc <> 0.
           CONTINUE.
         ENDIF.
@@ -75,8 +73,7 @@ CLASS ZCL_AOC_CHECK_28 IMPLEMENTATION.
             CONTINUE. " current loop
           ENDIF.
 
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = <ls_level>-name
+          inform( p_sub_obj_name = <ls_level>-name
                   p_line         = <ls_token>-row
                   p_kind         = mv_errty
                   p_test         = myname
@@ -101,8 +98,11 @@ CLASS ZCL_AOC_CHECK_28 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_skipc = abap_true.
+
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Space before . or ,'(m01) ).
 
   ENDMETHOD.
 
@@ -115,22 +115,6 @@ CLASS ZCL_AOC_CHECK_28 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Space before . or ,'.                     "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.

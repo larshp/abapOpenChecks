@@ -66,21 +66,21 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
       lt_tokens        TYPE stokesx_tab.
 
     FIELD-SYMBOLS:
-      <ls_level>   LIKE LINE OF it_levels,
+      <ls_level>   LIKE LINE OF io_scan->levels,
       <lv_pattern> LIKE LINE OF mt_pattern_info.
 
     IF mt_pattern_info IS INITIAL AND mt_pattern_warning IS INITIAL AND mt_pattern_error IS INITIAL.
       RETURN.
     ENDIF.
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       CLEAR:
         lt_comment_texts,
         lt_comments,
         lt_tokens.
 
-      lt_tokens = get_tokens( it_tokens     = it_tokens
-                              it_statements = it_statements
+      lt_tokens = get_tokens( it_tokens     = io_scan->tokens
+                              it_statements = io_scan->statements
                               iv_level      = sy-tabix ).
 
       lt_comments = get_comment_tokens( lt_tokens ).
@@ -145,7 +145,7 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
 
     INSERT ls_scimessage INTO TABLE scimessages.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -165,7 +165,7 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_token> LIKE LINE OF it_tokens.
 
     "only meaningful comments
-    LOOP AT it_tokens ASSIGNING <ls_token> WHERE type = scan_token_type-comment AND str CN '*"-&'.
+    LOOP AT it_tokens ASSIGNING <ls_token> WHERE type = zcl_aoc_scan=>gc_token-comment AND str CN '*"-&'.
       APPEND <ls_token> TO rt_comments.
     ENDLOOP.
 
@@ -204,10 +204,10 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
   METHOD if_ci_test~query_attributes.
     zzaoc_top.
 
-    zzaoc_fill_att mt_pattern_info    'Info regex'(001)          ''.
+    zzaoc_fill_att mt_pattern_info 'Info regex'(001)          ''.
     zzaoc_fill_att mt_pattern_warning 'Warning regex'(002)       ''.
-    zzaoc_fill_att mt_pattern_error   'Error regex'(003)         ''.
-    zzaoc_fill_att mv_multiline       'Multiline comments'(004)  'C'.
+    zzaoc_fill_att mt_pattern_error 'Error regex'(003)         ''.
+    zzaoc_fill_att mv_multiline 'Multiline comments'(004)  'C'.
 
     zzaoc_popup.
 
@@ -264,7 +264,6 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
           ENDIF.
 
           inform(
-            p_sub_obj_type = c_type_include
             p_sub_obj_name = is_level-name
             p_line         = <ls_comment>-row
             p_column       = <ls_comment>-col

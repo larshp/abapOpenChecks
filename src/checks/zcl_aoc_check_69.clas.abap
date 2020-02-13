@@ -11,8 +11,6 @@ CLASS zcl_aoc_check_69 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
@@ -104,6 +102,7 @@ CLASS zcl_aoc_check_69 DEFINITION
         VALUE(rv_skip) TYPE abap_bool .
   PRIVATE SECTION.
 
+    DATA mo_scan TYPE REF TO zcl_aoc_scan .
     DATA ms_naming TYPE zaoc_naming .
     DATA mo_compiler TYPE REF TO cl_abap_compiler .
     DATA mo_stack TYPE REF TO lcl_stack .
@@ -119,8 +118,9 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD analyze_statements.
 
-    DATA: lv_define  TYPE abap_bool,
-          lv_keyword TYPE string.
+    DATA: lv_define    TYPE abap_bool,
+          lv_keyword   TYPE string,
+          ls_object_ns TYPE zcl_aoc_util_reg_atc_namespace=>ty_ns_object.
 
 
     LOOP AT it_statements INTO statement_wa.
@@ -172,7 +172,21 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
           mo_stack->pop( ).
         WHEN 'ENDFUNCTION'.
           IF object_type = 'FUGR'.
-            mo_stack->set( '\PR:SAPL' && object_name ).
+            IF zcl_aoc_util_reg_atc_namespace=>is_in_namespace( iv_pgmid    = 'R3TR'
+                                                                iv_object   = 'FUGR'
+                                                                iv_obj_name = object_name ) = abap_true.
+
+              ls_object_ns = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
+                                                                              iv_object   = 'FUGR'
+                                                                              iv_obj_name = object_name ).
+
+              mo_stack->set( '\PR:'
+                          && ls_object_ns-namespace
+                          && 'SAPL'
+                          && ls_object_ns-object ).
+            ELSE.
+              mo_stack->set( '\PR:SAPL' && object_name ).
+            ENDIF.
           ELSE.
             mo_stack->set( '\PR:' && object_name ).
           ENDIF.
@@ -193,6 +207,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     DATA: lv_subrc LIKE sy-subrc,
           lv_subc  TYPE reposrc-subc.
 
+
+    mo_scan = io_scan.
 
     IF object_type = 'WDYN'.
       RETURN. " todo, WDYN
@@ -215,7 +231,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    analyze_statements( it_statements ).
+    analyze_statements( io_scan->statements ).
 
   ENDMETHOD.
 
@@ -570,7 +586,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
   METHOD check_function_pool.
 
     DATA: lv_name  TYPE string,
-          lv_regex TYPE string.
+          lv_regex TYPE string,
+          ls_object_ns TYPE zcl_aoc_util_reg_atc_namespace=>ty_ns_object.
 
 
     lv_name = get_token_rel( 2 ).
@@ -582,7 +599,22 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
              iv_regex    = lv_regex
              iv_relative = 2 ).
 
-    mo_stack->push( '\PR:' && 'SAPL' && lv_name ).
+
+    IF zcl_aoc_util_reg_atc_namespace=>is_in_namespace( iv_pgmid    = 'R3TR'
+                                                        iv_object   = 'FUGR'
+                                                        iv_obj_name = lv_name ) = abap_true.
+
+      ls_object_ns = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
+                                                                      iv_object   = 'FUGR'
+                                                                      iv_obj_name = lv_name ).
+
+      mo_stack->push( '\PR:'
+                  && ls_object_ns-namespace
+                  && 'SAPL'
+                  && ls_object_ns-object ).
+    ELSE.
+      mo_stack->push( '\PR:' && 'SAPL' && lv_name ).
+    ENDIF.
 
   ENDMETHOD.
 
@@ -813,9 +845,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     FIND REGEX lv_regex IN iv_name IGNORING CASE.
     IF sy-subrc <> 0.
-      lv_include = get_include( p_level = statement_wa-level ).
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      lv_include = mo_scan->get_include( statement_wa-level ).
+      inform( p_sub_obj_name = lv_include
               p_line         = get_line_rel( iv_relative )
               p_column       = get_column_rel( iv_relative )
               p_position     = mv_position
@@ -844,8 +875,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     ENDIF.
 
     IF ro_generic IS INITIAL.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = get_include( p_level = statement_wa-level )
+      inform( p_sub_obj_name = mo_scan->get_include( statement_wa-level )
               p_line         = get_line_rel( 2 )
               p_column       = get_column_rel( 2 )
               p_kind         = mv_errty
@@ -874,9 +904,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       CATCH cx_sy_move_cast_error ##NO_HANDLER.
     ENDTRY.
     IF ro_class IS INITIAL.
-      lv_include = get_include( p_level = statement_wa-level ).
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      lv_include = mo_scan->get_include( statement_wa-level ).
+      inform( p_sub_obj_name = lv_include
               p_line         = get_line_rel( 2 )
               p_column       = get_column_rel( 2 )
               p_kind         = mv_errty
@@ -890,9 +919,6 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD constructor.
 
-    DATA: ls_message LIKE LINE OF scimessages.
-
-
     super->constructor( ).
 
     version     = '002'.
@@ -901,15 +927,32 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
     set_defaults( ).
 
-    ls_message-test = myname.
-    ls_message-code = '001'.
-    ls_message-kind = c_error.
-    ls_message-pcom = '"#EC CI_NAMING'.
-    INSERT ls_message INTO TABLE scimessages.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Bad naming, expected &1, got &2'(m01)
+        iv_pcom = '"#EC CI_NAMING' ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Unable to resolve &1'(m05) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Error qualifying tokens'(m02) ).
+
+    insert_scimessage(
+        iv_code = '004'
+        iv_text = 'Unable to resolve &1'(m05) ).
+
+    insert_scimessage(
+        iv_code = '005'
+        iv_text = 'Syntax error'(m03) ).
+
+    insert_scimessage(
+        iv_code = '006'
+        iv_text = 'Error reading FM parameters'(m04) ).
 
   ENDMETHOD.
 
@@ -1089,30 +1132,6 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Bad naming, expected &1, got &2'.         "#EC NOTEXT
-      WHEN '002' OR '004'.
-        p_text = 'Unable to resolve &1'.                    "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Error qualifying tokens'.                 "#EC NOTEXT
-      WHEN '005'.
-        p_text = 'Syntax error'.                            "#EC NOTEXT
-      WHEN '006'.
-        p_text = 'Error reading FM parameters'.             "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.
-
-
   METHOD get_statement.
 
     DATA: ls_token LIKE LINE OF ref_scan->tokens.
@@ -1153,9 +1172,9 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     lv_name = object_name.
     IF cl_oo_classname_service=>get_ccdef_name( lv_name )
-          = get_include( p_level = statement_wa-level )
+          = mo_scan->get_include( statement_wa-level )
         OR cl_oo_classname_service=>get_ccimp_name( lv_name )
-          = get_include( p_level = statement_wa-level ).
+          = mo_scan->get_include( statement_wa-level ).
       RETURN.
     ENDIF.
 
@@ -1232,8 +1251,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         meaningless_statement = 4
         OTHERS                = 5.
     IF sy-subrc <> 0.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = get_include( p_level = statement_wa-level )
+      inform( p_sub_obj_name = mo_scan->get_include( statement_wa-level )
               p_line         = get_line_rel( 2 )
               p_column       = get_column_rel( 2 )
               p_kind         = mv_errty
@@ -1421,6 +1439,31 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       _append tables 'RECORD_TAB'.
       _append change 'SHLP'.
       _append change 'CALLCONTROL'.
+
+      rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                          is_check      = ls_check ).
+
+    ENDIF.
+
+* idoc port function module, txn WE21 -> ABAP-PI
+    IF ms_naming-set_port = abap_true
+        AND rv_skip = abap_false.
+
+      CLEAR ls_check.
+      _append import 'I_WAIT'.
+      _append tables 'I_EDIDC'.
+
+      rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                          is_check      = ls_check ).
+
+    ENDIF.
+
+* idoc master idoc distribution, TBDME-IDOCFBNAME
+    IF ms_naming-set_port = abap_true
+        AND rv_skip = abap_false.
+
+      CLEAR ls_check.
+      _append import 'MESSAGE_TYPE'.
 
       rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
                                           is_check      = ls_check ).

@@ -8,17 +8,14 @@ CLASS zcl_aoc_check_76 DEFINITION
     METHODS constructor .
 
     METHODS check
-         REDEFINITION .
+        REDEFINITION .
     METHODS get_attributes
-         REDEFINITION .
-    METHODS get_message_text
-         REDEFINITION .
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-         REDEFINITION .
+        REDEFINITION .
     METHODS put_attributes
-         REDEFINITION .
+        REDEFINITION .
   PROTECTED SECTION.
-
   PRIVATE SECTION.
 
     METHODS get_tokens_for_statement
@@ -59,14 +56,14 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
           ln_join_number         TYPE i,
           lf_read_prev_again     TYPE abap_bool.
 
-    FIELD-SYMBOLS: <ls_statement>       LIKE LINE OF it_statements,
+    FIELD-SYMBOLS: <ls_statement>       LIKE LINE OF io_scan->statements,
                    <ls_statement_token> LIKE LINE OF lt_statement_tokens,
-                   <ls_token>           LIKE LINE OF it_tokens.
+                   <ls_token>           LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
 
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       IF sy-subrc <> 0.
         CONTINUE.
       ENDIF.
@@ -77,7 +74,7 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
 
         lt_statement_tokens = get_tokens_for_statement(
           is_statement = <ls_statement>
-          it_tokens    = it_tokens ).
+          it_tokens    = io_scan->tokens ).
 
         READ TABLE lt_statement_tokens WITH KEY str = 'JOIN' TRANSPORTING NO FIELDS.
         CHECK sy-subrc = 0.
@@ -136,10 +133,9 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
 
         CHECK lf_relevant_join_found = abap_true.
 
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line         = ln_line
                 p_column       = ln_column
                 p_kind         = mv_errty
@@ -164,9 +160,11 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty   = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'INNER JOIN on text table'(m01) ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -174,22 +172,6 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
     EXPORT
       mv_errty = mv_errty
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'INNER JOIN on text table'.                "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 

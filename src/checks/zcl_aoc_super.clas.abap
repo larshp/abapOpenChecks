@@ -14,12 +14,10 @@ CLASS zcl_aoc_super DEFINITION
     METHODS constructor .
     METHODS check
       IMPORTING
-        !it_tokens     TYPE stokesx_tab
-        !it_statements TYPE sstmnt_tab
-        !it_levels     TYPE slevel_tab
-        !it_structures TYPE ty_structures_tt .
+        !io_scan TYPE REF TO zcl_aoc_scan .
     CLASS-METHODS get_destination
-      RETURNING VALUE(rv_result) TYPE rfcdest.
+      RETURNING
+        VALUE(rv_result) TYPE rfcdest .
     METHODS set_source
       IMPORTING
         !iv_name TYPE level_name
@@ -38,58 +36,21 @@ CLASS zcl_aoc_super DEFINITION
   PROTECTED SECTION.
 
     TYPES:
-      BEGIN OF ty_position,
-        row TYPE token_row,
-        col TYPE token_col,
-      END OF ty_position .
-    TYPES:
-      BEGIN OF ty_statement,
-        str        TYPE string,
-        start      TYPE ty_position,
-        end        TYPE ty_position,
-        include    TYPE programm,
-        level      TYPE stmnt_levl,
-        count      TYPE i,
-        terminator TYPE stmnt_term,
-        index      TYPE i,
-      END OF ty_statement .
-    TYPES:
-      ty_statements TYPE STANDARD TABLE OF ty_statement WITH DEFAULT KEY .
-    TYPES:
       BEGIN OF ty_destination_cache,
         srcid   TYPE sysuuid_x,
         rfcdest TYPE rfcdest,
       END OF ty_destination_cache .
+    TYPES ty_scimessage_text TYPE c LENGTH 255.
 
     DATA mv_errty TYPE sci_errty .
     CLASS-DATA gs_destination_cache TYPE ty_destination_cache .
 
     METHODS enable_rfc .
-    CLASS-METHODS statement_keyword
-      IMPORTING
-        !iv_number       TYPE stmnt_nr
-        !it_statements   TYPE sstmnt_tab
-        !it_tokens       TYPE stokesx_tab
-      RETURNING
-        VALUE(rv_result) TYPE string .
-    CLASS-METHODS statement_row
-      IMPORTING
-        !iv_number       TYPE stmnt_nr
-        !it_statements   TYPE sstmnt_tab
-        !it_tokens       TYPE stokesx_tab
-      RETURNING
-        VALUE(rv_result) TYPE token_row .
     METHODS get_source
       IMPORTING
         !is_level      TYPE slevel
       RETURNING
         VALUE(rt_code) TYPE string_table .
-    METHODS build_statements
-      IMPORTING
-        !it_tokens           TYPE stokesx_tab
-        !it_statements       TYPE sstmnt_tab
-      RETURNING
-        VALUE(rt_statements) TYPE ty_statements .
     METHODS is_class_pool
       IMPORTING
         !iv_include    TYPE level_name
@@ -100,10 +61,18 @@ CLASS zcl_aoc_super DEFINITION
         !iv_include    TYPE level_name
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
+    METHODS is_generated
+      IMPORTING
+        !iv_name       TYPE csequence OPTIONAL
+      RETURNING
+        VALUE(rv_generated) TYPE abap_bool .
     METHODS set_uses_checksum .
+    METHODS insert_scimessage
+      IMPORTING
+        !iv_code TYPE scimessage-code
+        !iv_text TYPE ty_scimessage_text
+        !iv_pcom TYPE scimessage-pcom OPTIONAL .
 
-    METHODS get_include
-        REDEFINITION .
     METHODS inform
         REDEFINITION .
   PRIVATE SECTION.
@@ -118,11 +87,6 @@ CLASS zcl_aoc_super DEFINITION
 
     DATA mt_source TYPE ty_source_tt .
 
-    CLASS-METHODS token_position
-      IMPORTING
-        !is_token          TYPE stokesx
-      RETURNING
-        VALUE(rs_position) TYPE ty_position .
     METHODS check_class
       IMPORTING
         !iv_sub_obj_name TYPE sobj_name
@@ -140,57 +104,6 @@ ENDCLASS.
 
 
 CLASS ZCL_AOC_SUPER IMPLEMENTATION.
-
-
-  METHOD build_statements.
-
-    DATA: lv_str   TYPE string,
-          ls_start TYPE ty_position,
-          ls_end   TYPE ty_position,
-          lv_index TYPE i,
-          lv_count TYPE i.
-
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_add>       LIKE LINE OF rt_statements.
-
-
-    LOOP AT it_statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-empty
-        AND type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-pragma.
-      lv_index = sy-tabix.
-
-      CLEAR lv_str.
-      lv_count = 0.
-
-      LOOP AT it_tokens ASSIGNING <ls_token>
-          FROM <ls_statement>-from TO <ls_statement>-to.
-        IF lv_str IS INITIAL.
-          lv_str = <ls_token>-str.
-          ls_start = token_position( <ls_token> ).
-        ELSE.
-          CONCATENATE lv_str <ls_token>-str INTO lv_str SEPARATED BY space.
-        ENDIF.
-        lv_count = lv_count + 1.
-        ls_end = token_position( <ls_token> ).
-      ENDLOOP.
-      IF sy-subrc = 0.
-        APPEND INITIAL LINE TO rt_statements ASSIGNING <ls_add>.
-        <ls_add>-str        = lv_str.
-        <ls_add>-include    = get_include( p_level = <ls_statement>-level ).
-        <ls_add>-level      = <ls_statement>-level.
-        <ls_add>-start      = ls_start.
-        <ls_add>-end        = ls_end.
-        <ls_add>-count      = lv_count.
-        <ls_add>-index      = lv_index.
-        <ls_add>-terminator = <ls_statement>-terminator.
-      ENDIF.
-
-    ENDLOOP.
-
-  ENDMETHOD.
 
 
   METHOD check.
@@ -338,6 +251,8 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ENDIF.
 
     category = 'ZCL_AOC_CATEGORY'.
+    mv_errty = 'E'.
+
   ENDMETHOD.
 
 
@@ -405,23 +320,6 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD get_include.
-
-    IF p_level = 0.
-* in case INCLUDE doesnt exist in the system
-      RETURN.
-    ENDIF.
-
-    IF ref_scan IS BOUND.
-* not bound during unit testing
-      p_result = super->get_include(
-          p_ref_scan = p_ref_scan
-          p_level    = p_level ).
-    ENDIF.
-
-  ENDMETHOD.
-
-
   METHOD get_source.
 
     DATA: ls_source      LIKE LINE OF mt_source,
@@ -431,8 +329,8 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_source> LIKE LINE OF mt_source.
 
 
-    IF is_level-type = scan_level_type-macro_define
-        OR is_level-type = scan_level_type-macro_trmac.
+    IF is_level-type = zcl_aoc_scan=>gc_level-macro_define
+        OR is_level-type = zcl_aoc_scan=>gc_level-macro_trmac.
       RETURN.
     ENDIF.
 
@@ -509,16 +407,22 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
   METHOD inform.
 
-    DATA: lv_cnam   TYPE reposrc-cnam,
-          lv_area   TYPE tvdir-area,
-          lv_skip   TYPE abap_bool,
-          lv_line   LIKE p_line,
-          lv_column LIKE p_column.
+    DATA: lv_cnam         TYPE reposrc-cnam,
+          lv_area         TYPE tvdir-area,
+          lv_skip         TYPE abap_bool,
+          lv_sub_obj_type LIKE p_sub_obj_type,
+          lv_line         LIKE p_line,
+          lv_column       LIKE p_column.
 
     FIELD-SYMBOLS: <ls_message> LIKE LINE OF scimessages.
 
 
-    IF p_sub_obj_type = 'PROG' AND p_sub_obj_name <> ''.
+    lv_sub_obj_type = p_sub_obj_type.
+    IF lv_sub_obj_type IS INITIAL AND NOT p_sub_obj_name IS INITIAL.
+      lv_sub_obj_type = 'PROG'.
+    ENDIF.
+
+    IF lv_sub_obj_type = 'PROG' AND p_sub_obj_name <> ''.
       IF p_sub_obj_name CP 'MP9+++BI' OR p_sub_obj_name CP 'MP9+++00'.
         RETURN. " custom HR infotype includes
       ENDIF.
@@ -536,14 +440,16 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ENDIF.
 
     IF object_type = 'SSFO'
-        AND p_sub_obj_type = 'PROG'
+        AND lv_sub_obj_type = 'PROG'
         AND ( p_sub_obj_name CP '/1BCDWB/LSF*'
         OR p_sub_obj_name CP '/1BCDWB/SAPL*' ).
       RETURN.
     ENDIF.
 
     IF object_type = 'FUGR'.
-      IF p_sub_obj_name CP 'LY*UXX' OR p_sub_obj_name CP 'LZ*UXX'.
+      IF p_sub_obj_name CP 'LY*UXX'
+          OR p_sub_obj_name CP 'LZ*UXX'
+          OR zcl_aoc_util_reg_atc_namespace=>is_registered_fugr_uxx( p_sub_obj_name ) = abap_true.
         RETURN.
       ENDIF.
       SELECT SINGLE area FROM tvdir INTO lv_area
@@ -558,7 +464,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    lv_skip = check_wdy( iv_sub_obj_type = p_sub_obj_type
+    lv_skip = check_wdy( iv_sub_obj_type = lv_sub_obj_type
                          iv_sub_obj_name = p_sub_obj_name
                          iv_line         = p_line ).
     IF lv_skip = abap_true.
@@ -599,7 +505,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ENDIF.
 
     super->inform(
-        p_sub_obj_type = p_sub_obj_type
+        p_sub_obj_type = lv_sub_obj_type
         p_sub_obj_name = p_sub_obj_name
         p_position     = p_position
         p_line         = lv_line
@@ -615,6 +521,22 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
         p_param_4      = p_param_4
         p_inclspec     = p_inclspec ).
 * parameters p_detail and p_checksum_1 does not exist in 730
+
+  ENDMETHOD.
+
+
+  METHOD insert_scimessage.
+
+* Insert entry into table scimessages, this table is used to determine the message text for a finding.
+    DATA ls_scimessage LIKE LINE OF scimessages.
+
+    ls_scimessage-test = myname.
+    ls_scimessage-code = iv_code.
+    ls_scimessage-kind = mv_errty.
+    ls_scimessage-text = iv_text.
+    ls_scimessage-pcom = iv_pcom.
+
+    INSERT ls_scimessage INTO TABLE scimessages.
 
   ENDMETHOD.
 
@@ -650,6 +572,19 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD is_generated.
+
+    SELECT COUNT(*)
+      FROM tadir
+      WHERE pgmid    = 'R3TR'
+        AND object   = object_type
+        AND obj_name = object_name
+        AND genflag  = abap_true.
+    rv_generated = boolc( sy-subrc = 0 ).
+
+  ENDMETHOD.
+
+
   METHOD put_attributes.
 
     IMPORT
@@ -675,16 +610,17 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+    IF is_generated( ) = abap_true.
+      RETURN.
+    ENDIF.
+
     IF ref_include IS BOUND.
 * ref_include is not set when running checks via RFC
       set_source( iv_name = ref_include->trdir-name
                   it_code = ref_include->lines ).
     ENDIF.
 
-    check( it_tokens     = ref_scan->tokens
-           it_statements = ref_scan->statements
-           it_levels     = ref_scan->levels
-           it_structures = ref_scan->structures ).
+    check( zcl_aoc_scan=>create_from_ref( ref_scan ) ).
 
   ENDMETHOD.
 
@@ -714,50 +650,6 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     IF sy-subrc = 0.
       <lv_uses_checksum> = abap_true.
     ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD statement_keyword.
-
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
-
-
-    READ TABLE it_statements ASSIGNING <ls_statement> INDEX iv_number.
-    ASSERT sy-subrc = 0.
-
-    IF <ls_statement>-from <= <ls_statement>-to.
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-      ASSERT sy-subrc = 0.
-
-      rv_result = <ls_token>-str.
-    ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD statement_row.
-
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
-
-
-    READ TABLE it_statements ASSIGNING <ls_statement> INDEX iv_number.
-    ASSERT sy-subrc = 0.
-
-    READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-    ASSERT sy-subrc = 0.
-
-    rv_result = <ls_token>-row.
-
-  ENDMETHOD.
-
-
-  METHOD token_position.
-
-    rs_position-col = is_token-col.
-    rs_position-row = is_token-row.
 
   ENDMETHOD.
 ENDCLASS.

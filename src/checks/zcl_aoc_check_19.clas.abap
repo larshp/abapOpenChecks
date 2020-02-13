@@ -1,26 +1,26 @@
 CLASS zcl_aoc_check_19 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
-    METHODS constructor.
+
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
-    METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
   PROTECTED SECTION.
-    DATA mv_obj TYPE sap_bool.
-    DATA mv_simple TYPE sap_bool.
 
-    METHODS init_range.
+    DATA mv_obj TYPE sap_bool .
+    DATA mv_simple TYPE sap_bool .
+
+    METHODS init_range .
   PRIVATE SECTION.
 
     DATA:
@@ -48,19 +48,19 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
           lv_source    TYPE string,
           lv_name      TYPE string.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
     init_range( ).
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
-        WHERE type <> scan_stmnt_type-comment
-        AND type <> scan_stmnt_type-comment_in_stmnt
-        AND type <> scan_stmnt_type-empty.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
+        WHERE type <> io_scan->gc_statement-comment
+        AND type <> io_scan->gc_statement-comment_in_stmnt
+        AND type <> io_scan->gc_statement-empty.
 
       CLEAR lv_statement.
-      LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
+      LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to.
         IF lv_statement IS INITIAL.
           lv_statement = <ls_token>-str.
         ELSE.
@@ -68,13 +68,13 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
         ENDIF.
       ENDLOOP.
 
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       IF sy-subrc <> 0.
         CONTINUE. " current loop
       ENDIF.
 
       IF <ls_token>-str = 'DATA' OR <ls_token>-str = 'FIELD-SYMBOLS'.
-        READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from + 1.
+        READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from + 1.
         ASSERT sy-subrc = 0.
         lv_name = <ls_token>-str.
 
@@ -128,8 +128,7 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
 
         READ TABLE lt_not WITH KEY name = lv_name TRANSPORTING NO FIELDS.
         IF sy-subrc = 0.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = get_include( p_level = <ls_statement>-level )
+          inform( p_sub_obj_name = io_scan->get_include( <ls_statement>-level )
                   p_line         = <ls_token>-row
                   p_kind         = mv_errty
                   p_test         = myname
@@ -154,11 +153,14 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty  = c_error.
     mv_obj    = abap_true.
     mv_simple = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Use LINE OF'(m01) ).
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -170,22 +172,6 @@ CLASS ZCL_AOC_CHECK_19 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Use LINE OF'.                             "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.

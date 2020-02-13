@@ -51,6 +51,15 @@ CLASS zcl_aoc_parser DEFINITION
         VALUE(rs_result)   TYPE zcl_aoc_parser=>ty_result .
   PROTECTED SECTION.
 
+    TYPES: ty_syntax_tt TYPE STANDARD TABLE OF ssyntaxstructure.
+
+    CONSTANTS: gc_dummy       TYPE zcl_aoc_parser_node=>ty_node_type VALUE 'D',
+               gc_start       TYPE zcl_aoc_parser_node=>ty_node_type VALUE 'S',
+               gc_end         TYPE zcl_aoc_parser_node=>ty_node_type VALUE 'E',
+               gc_role        TYPE zcl_aoc_parser_node=>ty_node_type VALUE 'R',
+               gc_terminal    TYPE zcl_aoc_parser_node=>ty_node_type VALUE 'T',
+               gc_nonterminal TYPE zcl_aoc_parser_node=>ty_node_type VALUE 'N'.
+
     CLASS-METHODS download
       IMPORTING
         !iv_filename TYPE string
@@ -65,62 +74,62 @@ CLASS zcl_aoc_parser DEFINITION
       IMPORTING
         !ii_rule     TYPE REF TO if_ixml_node
         !iv_rulename TYPE string
-        !io_before   TYPE REF TO lcl_node
-        !io_after    TYPE REF TO lcl_node.
+        !io_before   TYPE REF TO zcl_aoc_parser_node
+        !io_after    TYPE REF TO zcl_aoc_parser_node.
     CLASS-METHODS build_optionlist
       IMPORTING
         !ii_rule     TYPE REF TO if_ixml_node
         !iv_rulename TYPE string
-        !io_before   TYPE REF TO lcl_node
-        !io_after    TYPE REF TO lcl_node.
+        !io_before   TYPE REF TO zcl_aoc_parser_node
+        !io_after    TYPE REF TO zcl_aoc_parser_node.
     CLASS-METHODS build_option
       IMPORTING
         !ii_rule     TYPE REF TO if_ixml_node
         !iv_rulename TYPE string
-        !io_before   TYPE REF TO lcl_node
-        !io_after    TYPE REF TO lcl_node.
+        !io_before   TYPE REF TO zcl_aoc_parser_node
+        !io_after    TYPE REF TO zcl_aoc_parser_node.
     CLASS-METHODS build_nonterminal
       IMPORTING
         !ii_rule     TYPE REF TO if_ixml_node
         !iv_rulename TYPE string
-        !io_before   TYPE REF TO lcl_node
-        !io_after    TYPE REF TO lcl_node.
+        !io_before   TYPE REF TO zcl_aoc_parser_node
+        !io_after    TYPE REF TO zcl_aoc_parser_node.
     CLASS-METHODS build_iteration
       IMPORTING
         !ii_rule     TYPE REF TO if_ixml_node
         !iv_rulename TYPE string
-        !io_before   TYPE REF TO lcl_node
-        !io_after    TYPE REF TO lcl_node.
+        !io_before   TYPE REF TO zcl_aoc_parser_node
+        !io_after    TYPE REF TO zcl_aoc_parser_node.
     CLASS-METHODS build_alternative
       IMPORTING
         !ii_rule     TYPE REF TO if_ixml_node
         !iv_rulename TYPE string
-        !io_before   TYPE REF TO lcl_node
-        !io_after    TYPE REF TO lcl_node.
+        !io_before   TYPE REF TO zcl_aoc_parser_node
+        !io_after    TYPE REF TO zcl_aoc_parser_node.
     CLASS-METHODS build
       IMPORTING
         !ii_rule     TYPE REF TO if_ixml_node
         !iv_rulename TYPE string
-        !io_before   TYPE REF TO lcl_node
-        !io_after    TYPE REF TO lcl_node.
+        !io_before   TYPE REF TO zcl_aoc_parser_node
+        !io_after    TYPE REF TO zcl_aoc_parser_node.
     CLASS-METHODS graph_build
       IMPORTING
         !iv_rulename TYPE string
       EXPORTING
-        !eo_start    TYPE REF TO lcl_node
-        !eo_end      TYPE REF TO lcl_node.
+        !eo_start    TYPE REF TO zcl_aoc_parser_node
+        !eo_end      TYPE REF TO zcl_aoc_parser_node.
     CLASS-METHODS graph_download
       IMPORTING
         !iv_rulename TYPE string
-        !io_start    TYPE REF TO lcl_node.
+        !io_start    TYPE REF TO zcl_aoc_parser_node.
     CLASS-METHODS graph_to_text
       IMPORTING
-        !io_node       TYPE REF TO lcl_node
+        !io_node       TYPE REF TO zcl_aoc_parser_node
       RETURNING
         VALUE(rv_text) TYPE string .
     CLASS-METHODS walk
       IMPORTING
-        !io_node         TYPE REF TO lcl_node
+        !io_node         TYPE REF TO zcl_aoc_parser_node
         !iv_index        TYPE i
       RETURNING
         VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
@@ -133,47 +142,47 @@ CLASS zcl_aoc_parser DEFINITION
       IMPORTING
         !ii_rule     TYPE REF TO if_ixml_node
         !iv_rulename TYPE string
-        !io_before   TYPE REF TO lcl_node
-        !io_after    TYPE REF TO lcl_node.
+        !io_before   TYPE REF TO zcl_aoc_parser_node
+        !io_after    TYPE REF TO zcl_aoc_parser_node.
     CLASS-METHODS build_sequence
       IMPORTING
         !ii_rule     TYPE REF TO if_ixml_node
         !iv_rulename TYPE string
-        !io_before   TYPE REF TO lcl_node
-        !io_after    TYPE REF TO lcl_node.
+        !io_before   TYPE REF TO zcl_aoc_parser_node
+        !io_after    TYPE REF TO zcl_aoc_parser_node.
     CLASS-METHODS build_terminal
       IMPORTING
         !ii_rule     TYPE REF TO if_ixml_node
         !iv_rulename TYPE string
-        !io_before   TYPE REF TO lcl_node
-        !io_after    TYPE REF TO lcl_node.
+        !io_before   TYPE REF TO zcl_aoc_parser_node
+        !io_after    TYPE REF TO zcl_aoc_parser_node.
     CLASS-METHODS walk_terminal
       IMPORTING
-        !io_node         TYPE REF TO lcl_node
+        !io_node         TYPE REF TO zcl_aoc_parser_node
         !iv_index        TYPE i
       RETURNING
         VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
     CLASS-METHODS walk_role
       IMPORTING
-        !io_node         TYPE REF TO lcl_node
+        !io_node         TYPE REF TO zcl_aoc_parser_node
         !iv_index        TYPE i
       RETURNING
         VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
     CLASS-METHODS walk_nonterminal
       IMPORTING
-        !io_node         TYPE REF TO lcl_node
+        !io_node         TYPE REF TO zcl_aoc_parser_node
         !iv_index        TYPE i
       RETURNING
         VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
     CLASS-METHODS walk_node
       IMPORTING
-        !io_node         TYPE REF TO lcl_node
+        !io_node         TYPE REF TO zcl_aoc_parser_node
         !iv_index        TYPE i
       RETURNING
         VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
     CLASS-METHODS walk_end
       IMPORTING
-        !io_node         TYPE REF TO lcl_node
+        !io_node         TYPE REF TO zcl_aoc_parser_node
         !iv_index        TYPE i
       RETURNING
         VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
@@ -196,6 +205,13 @@ CLASS zcl_aoc_parser DEFINITION
         VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
   PRIVATE SECTION.
 
+    TYPES: BEGIN OF ty_cache,
+             rulename TYPE string,
+             node     TYPE REF TO if_ixml_node,
+           END OF ty_cache.
+
+    CLASS-DATA gt_cache  TYPE SORTED TABLE OF ty_cache WITH UNIQUE KEY rulename.
+    CLASS-DATA gt_syntax TYPE ty_syntax_tt.
     CLASS-DATA gt_tokens TYPE string_table.
     CLASS-DATA gv_end_rule TYPE string.
     CLASS-DATA gv_debug TYPE abap_bool.
@@ -284,7 +300,7 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
   METHOD build_alternative.
 
     DATA: li_children TYPE REF TO if_ixml_node_list,
-          lo_dummy    TYPE REF TO lcl_node,
+          lo_dummy    TYPE REF TO zcl_aoc_parser_node,
           li_child    TYPE REF TO if_ixml_node.
 
 
@@ -313,8 +329,8 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
   METHOD build_iteration.
 
     DATA: li_child  TYPE REF TO if_ixml_node,
-          lo_dummy1 TYPE REF TO lcl_node,
-          lo_dummy2 TYPE REF TO lcl_node.
+          lo_dummy1 TYPE REF TO zcl_aoc_parser_node,
+          lo_dummy2 TYPE REF TO zcl_aoc_parser_node.
 
 
     li_child = ii_rule->get_first_child( ).
@@ -346,7 +362,7 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
   METHOD build_nonterminal.
 
     DATA: lv_rulename TYPE string,
-          lo_node     TYPE REF TO lcl_node.
+          lo_node     TYPE REF TO zcl_aoc_parser_node.
 
 
     lv_rulename = ii_rule->get_value( ).
@@ -366,7 +382,7 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
   METHOD build_option.
 
     DATA: li_child TYPE REF TO if_ixml_node,
-          lo_dummy TYPE REF TO lcl_node.
+          lo_dummy TYPE REF TO zcl_aoc_parser_node.
 
 
     CREATE OBJECT lo_dummy
@@ -396,10 +412,10 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
           li_append     TYPE REF TO if_ixml_node_list,
           li_child      TYPE REF TO if_ixml_node,
           lv_last       TYPE abap_bool,
-          lo_before     TYPE REF TO lcl_node,
-          lo_after      TYPE REF TO lcl_node,
-          lo_seq_before TYPE REF TO lcl_node,
-          lo_seq_after  TYPE REF TO lcl_node,
+          lo_before     TYPE REF TO zcl_aoc_parser_node,
+          lo_after      TYPE REF TO zcl_aoc_parser_node,
+          lo_seq_before TYPE REF TO zcl_aoc_parser_node,
+          lo_seq_after  TYPE REF TO zcl_aoc_parser_node,
           lt_opt        TYPE TABLE OF REF TO if_ixml_node_list,
           li_opt        LIKE LINE OF lt_opt.
 
@@ -463,18 +479,18 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
   METHOD build_permutation.
 
     TYPES: BEGIN OF ty_pair,
-             before TYPE REF TO lcl_node,
-             after  TYPE REF TO lcl_node,
+             before TYPE REF TO zcl_aoc_parser_node,
+             after  TYPE REF TO zcl_aoc_parser_node,
            END OF ty_pair.
 
     DATA: li_append     TYPE REF TO if_ixml_node_list,
           li_child      TYPE REF TO if_ixml_node,
           lv_index      TYPE i,
-          lo_before     TYPE REF TO lcl_node,
+          lo_before     TYPE REF TO zcl_aoc_parser_node,
           lv_name       TYPE string,
-          lo_after      TYPE REF TO lcl_node,
-          lo_seq_before TYPE REF TO lcl_node,
-          lo_seq_after  TYPE REF TO lcl_node,
+          lo_after      TYPE REF TO zcl_aoc_parser_node,
+          lo_seq_before TYPE REF TO zcl_aoc_parser_node,
+          lo_seq_after  TYPE REF TO zcl_aoc_parser_node,
           lt_pair       TYPE TABLE OF ty_pair,
           lt_per        TYPE TABLE OF REF TO if_ixml_node_list,
           li_children   LIKE LINE OF lt_per.
@@ -566,7 +582,7 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
 
   METHOD build_role.
 
-    DATA: lo_node  TYPE REF TO lcl_node,
+    DATA: lo_node  TYPE REF TO zcl_aoc_parser_node,
           lv_value TYPE string.
 
 
@@ -587,8 +603,8 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
 
   METHOD build_sequence.
 
-    DATA: lo_before   TYPE REF TO lcl_node,
-          lo_after    TYPE REF TO lcl_node,
+    DATA: lo_before   TYPE REF TO zcl_aoc_parser_node,
+          lo_after    TYPE REF TO zcl_aoc_parser_node,
           li_children TYPE REF TO if_ixml_node_list,
           li_child    TYPE REF TO if_ixml_node.
 
@@ -625,7 +641,7 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
 
   METHOD build_terminal.
 
-    DATA: lo_node  TYPE REF TO lcl_node,
+    DATA: lo_node  TYPE REF TO zcl_aoc_parser_node,
           lv_value TYPE string.
 
 
@@ -759,7 +775,7 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
 
 * see http://www.graphviz.org/
 
-    DATA: lt_nodes TYPE TABLE OF REF TO lcl_node,
+    DATA: lt_nodes TYPE TABLE OF REF TO zcl_aoc_parser_node,
           lv_label TYPE string,
           lo_node  LIKE LINE OF lt_nodes,
           lv_node  TYPE string,
@@ -840,7 +856,7 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
 
   METHOD parse.
 
-    DATA: lo_start     TYPE REF TO lcl_node,
+    DATA: lo_start     TYPE REF TO zcl_aoc_parser_node,
           lt_rt        TYPE ty_tokens_tt,
           lv_statement TYPE i,
           lt_res_tok   LIKE rs_result-tokens,
@@ -915,8 +931,8 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
 
 
     SCAN ABAP-SOURCE it_code
-         TOKENS          INTO lt_tokens
-         STATEMENTS      INTO lt_statements
+         TOKENS INTO lt_tokens
+         STATEMENTS INTO lt_statements
          WITH ANALYSIS.
     IF sy-subrc <> 0.
       rs_result-match = abap_false.
@@ -989,8 +1005,8 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
   METHOD walk_nonterminal.
 
     DATA: lv_rulename TYPE string,
-          lo_start    TYPE REF TO lcl_node,
-          lo_end      TYPE REF TO lcl_node,
+          lo_start    TYPE REF TO zcl_aoc_parser_node,
+          lo_end      TYPE REF TO zcl_aoc_parser_node,
           lo_node     LIKE LINE OF io_node->mt_edges.
 
     FIELD-SYMBOLS: <ls_token> LIKE LINE OF rs_result-tokens.
@@ -1306,34 +1322,26 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
 
   METHOD xml_get.
 
-    TYPES: BEGIN OF ty_cache,
-             rulename TYPE string,
-             node     TYPE REF TO if_ixml_node,
-           END OF ty_cache.
-
-    STATICS: st_syntax TYPE ty_syntax_tt,
-             st_cache  TYPE SORTED TABLE OF ty_cache WITH UNIQUE KEY rulename.
-
     DATA: lv_rulename TYPE ssyntaxstructure-rulename,
-          ls_cache    LIKE LINE OF st_cache.
+          ls_cache    LIKE LINE OF gt_cache.
 
-    FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF st_syntax.
+    FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF gt_syntax.
 
 
-    READ TABLE st_cache INTO ls_cache WITH KEY rulename = iv_rulename.
+    READ TABLE gt_cache INTO ls_cache WITH KEY rulename = iv_rulename.
     IF sy-subrc = 0.
       ri_rule = ls_cache-node.
       RETURN.
     ENDIF.
 
-    IF lines( st_syntax ) = 0.
+    IF lines( gt_syntax ) = 0.
       SELECT * FROM ssyntaxstructure
-        INTO TABLE st_syntax.             "#EC CI_NOWHERE "#EC CI_SUBRC
-      SORT st_syntax BY rulename ASCENDING.
+        INTO TABLE gt_syntax.             "#EC CI_NOWHERE "#EC CI_SUBRC
+      SORT gt_syntax BY rulename ASCENDING.
     ENDIF.
 
     lv_rulename = iv_rulename. " type conversion
-    READ TABLE st_syntax ASSIGNING <ls_syntax>
+    READ TABLE gt_syntax ASSIGNING <ls_syntax>
       WITH KEY rulename = lv_rulename BINARY SEARCH.
     ASSERT sy-subrc = 0.
 
@@ -1345,7 +1353,7 @@ CLASS ZCL_AOC_PARSER IMPLEMENTATION.
     CLEAR ls_cache.
     ls_cache-rulename = iv_rulename.
     ls_cache-node     = ri_rule.
-    INSERT ls_cache INTO TABLE st_cache.
+    INSERT ls_cache INTO TABLE gt_cache.
 
   ENDMETHOD.
 

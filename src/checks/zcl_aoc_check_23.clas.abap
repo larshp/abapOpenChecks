@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_23 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -27,22 +25,22 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
 * MIT License
 
     DATA: lv_code       TYPE sci_errc,
-          lt_statements LIKE it_statements,
+          lt_statements LIKE io_scan->statements,
           lv_include    TYPE program.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
-                   <ls_token>     LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    lt_statements = it_statements.
+    lt_statements = io_scan->statements.
 
     LOOP AT lt_statements ASSIGNING <ls_statement>
         WHERE coloncol <> 0
-        AND type <> scan_stmnt_type-pragma.
+        AND type <> io_scan->gc_statement-pragma.
 
       CLEAR lv_code.
 
-      READ TABLE it_tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       IF sy-subrc <> 0.
         CONTINUE.
       ENDIF.
@@ -82,7 +80,7 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
       ENDIF.
 
       IF lv_code IS INITIAL.
-        LOOP AT it_tokens ASSIGNING <ls_token>
+        LOOP AT io_scan->tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from TO <ls_statement>-to
             WHERE row = <ls_statement>-colonrow.
           IF <ls_token>-col = <ls_statement>-coloncol + 1.
@@ -93,10 +91,9 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line = <ls_token>-row
                 p_kind = mv_errty
                 p_test = myname
@@ -126,27 +123,17 @@ CLASS ZCL_AOC_CHECK_23 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Use chained statements mainly for declarations'(m01) ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Space before colon'(m02) ).
 
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Missing space after colon'(m03) ).
 
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Use chained statements mainly for declarations'. "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Space before colon'.                      "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Missing space after colon'.               "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
+  ENDMETHOD.
 ENDCLASS.

@@ -9,8 +9,6 @@ CLASS zcl_aoc_check_77 DEFINITION
 
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
@@ -35,13 +33,15 @@ CLASS ZCL_AOC_CHECK_77 IMPLEMENTATION.
     version  = '002'.
     position = '077'.
 
-    has_documentation = c_true.
+    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
     add_obj_type( 'CLAS' ).
+
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Wrong instantiation level'(m01) ).
 
   ENDMETHOD.
 
@@ -52,22 +52,6 @@ CLASS ZCL_AOC_CHECK_77 IMPLEMENTATION.
       mv_errty = mv_errty
       mv_exposure = mv_exposure
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Wrong instantiation level'.               "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 

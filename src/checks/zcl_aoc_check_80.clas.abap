@@ -9,8 +9,6 @@ CLASS zcl_aoc_check_80 DEFINITION
 
     METHODS check
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -34,13 +32,13 @@ CLASS ZCL_AOC_CHECK_80 IMPLEMENTATION.
           lv_report TYPE abap_bool,
           lv_line   TYPE token_row.
 
-    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF it_levels,
-                   <ls_token>     LIKE LINE OF it_tokens,
-                   <ls_statement> LIKE LINE OF it_statements,
+    FIELD-SYMBOLS: <ls_level>     LIKE LINE OF io_scan->levels,
+                   <ls_token>     LIKE LINE OF io_scan->tokens,
+                   <ls_statement> LIKE LINE OF io_scan->statements,
                    <lv_code>      LIKE LINE OF lt_code.
 
 
-    LOOP AT it_levels ASSIGNING <ls_level>.
+    LOOP AT io_scan->levels ASSIGNING <ls_level>.
       lv_level = sy-tabix.
       lt_code = get_source( <ls_level> ).
 
@@ -55,8 +53,8 @@ CLASS ZCL_AOC_CHECK_80 IMPLEMENTATION.
         ENDIF.
 
         lv_report = abap_true.
-        LOOP AT it_statements ASSIGNING <ls_statement> WHERE level = lv_level.
-          LOOP AT it_tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to
+        LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE level = lv_level.
+          LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM <ls_statement>-from TO <ls_statement>-to
               WHERE row = lv_line AND type CA 'SC'
               AND col <= lv_offset.
             IF <ls_token>-col + <ls_token>-len1 >= lv_offset + lv_length.
@@ -67,8 +65,7 @@ CLASS ZCL_AOC_CHECK_80 IMPLEMENTATION.
         ENDLOOP.
 
         IF lv_report = abap_true.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = <ls_level>-name
+          inform( p_sub_obj_name = <ls_level>-name
                   p_line         = lv_line
                   p_kind         = mv_errty
                   p_test         = myname
@@ -91,25 +88,11 @@ CLASS ZCL_AOC_CHECK_80 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
-
     enable_rfc( ).
 
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Space before colon'.                      "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Space before colon'(m01) ).
 
   ENDMETHOD.
 ENDCLASS.

@@ -11,6 +11,7 @@
     <item>/README.md</item>
     <item>/package.json</item>
     <item>/abaplint.json</item>
+    <item>/.gitignore</item>
    </IGNORE>
   </DATA>
  </asx:values>

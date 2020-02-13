@@ -11,11 +11,9 @@ CLASS zcl_aoc_check_55 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
+    METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
-    METHODS if_ci_test~query_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
@@ -23,7 +21,7 @@ CLASS zcl_aoc_check_55 DEFINITION
 
     METHODS word
       IMPORTING
-        !is_statement  TYPE ty_statement
+        !is_statement  TYPE zcl_aoc_scan=>ty_statement
       RETURNING
         VALUE(rv_word) TYPE string .
   PRIVATE SECTION.
@@ -40,19 +38,17 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
           lv_current    TYPE string,
           lv_previous   TYPE string,
           lv_last       TYPE string.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements,
-                   <ls_stmt>      LIKE LINE OF it_statements,
+                   <ls_stmt>      LIKE LINE OF io_scan->statements,
                    <ls_previous>  LIKE LINE OF lt_statements.
 
 
-    lt_statements = build_statements(
-      it_tokens     = it_tokens
-      it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       IF sy-tabix = 1.
@@ -92,14 +88,13 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
           CONTINUE.
         ENDIF.
 
-        READ TABLE it_statements INDEX <ls_statement>-index - 1
+        READ TABLE io_scan->statements INDEX <ls_statement>-index - 1
           ASSIGNING <ls_stmt>.                            "#EC CI_SUBRC
-        IF <ls_stmt>-type = scan_stmnt_type-comment.
+        IF <ls_stmt>-type = io_scan->gc_statement-comment.
           CONTINUE.
         ENDIF.
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = <ls_statement>-include
+        inform( p_sub_obj_name = <ls_statement>-include
                 p_line         = <ls_statement>-start-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -127,10 +122,13 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
     mv_skipc = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Statements can be chained'(m01) ).
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -139,22 +137,6 @@ CLASS ZCL_AOC_CHECK_55 IMPLEMENTATION.
       mv_errty = mv_errty
       mv_skipc = mv_skipc
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Statements can be chained'.               "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 

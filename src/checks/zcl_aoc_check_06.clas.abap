@@ -10,14 +10,12 @@ CLASS zcl_aoc_check_06 DEFINITION
         REDEFINITION.
     METHODS get_attributes
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
     METHODS if_ci_test~query_attributes
         REDEFINITION.
     METHODS put_attributes
         REDEFINITION.
-  PROTECTED SECTION.
 
+  PROTECTED SECTION.
     DATA mv_skipc TYPE flag.
     DATA mv_one_finding TYPE flag.
     DATA mv_hikey TYPE flag.
@@ -25,33 +23,37 @@ CLASS zcl_aoc_check_06 DEFINITION
     DATA mv_upper TYPE flag.
     DATA mv_lokey TYPE flag.
     DATA mv_flow TYPE flag.
+
   PRIVATE SECTION.
     METHODS build_option
       RETURNING
-        VALUE(rv_option) TYPE string.
+        VALUE(rv_option) TYPE string .
     METHODS check_flow .
     METHODS check_source
       IMPORTING
-        !it_levels     TYPE slevel_tab
-        !it_statements TYPE sstmnt_tab.
+        !io_scan TYPE REF TO zcl_aoc_scan .
     METHODS pretty_print
       IMPORTING
         !it_code         TYPE string_table
       RETURNING
-        VALUE(rt_pretty) TYPE string_table.
+        VALUE(rt_pretty) TYPE string_table .
+    METHODS skip_object
+      IMPORTING
+        !iv_name       TYPE csequence
+      RETURNING
+        VALUE(rv_skip) TYPE abap_bool.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
+CLASS zcl_aoc_check_06 IMPLEMENTATION.
 
 
   METHOD build_option.
 
     DATA: ls_rseumod TYPE rseumod.
 
-
-* check workbench settings
+    " check workbench settings
     CALL FUNCTION 'RS_WORKBENCH_CUSTOMIZING'
       EXPORTING
         choice          = 'WB'
@@ -94,8 +96,7 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    check_source( it_levels     = it_levels
-                  it_statements = it_statements ).
+    check_source( io_scan ).
 
     IF mv_flow = abap_true.
       check_flow( ).
@@ -128,7 +129,7 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
 
     lv_option = build_option( ).
     IF lv_option <> 'HIKEY'.
-* todo, so far it only works partly for keywords upper case
+      " todo, so far it only works partly for keywords upper case
       RETURN.
     ENDIF.
 
@@ -140,8 +141,7 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-* the pretty_print method does not work for screen flow logic
-
+    " the pretty_print method does not work for screen flow logic
     LOOP AT lt_d020s ASSIGNING <ls_d020s>.
       ls_dynp_id-prog = <ls_d020s>-prog.
       ls_dynp_id-dnum = <ls_d020s>-dnum.
@@ -177,13 +177,13 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
           lv_level  TYPE i,
           lv_row    TYPE i.
 
-    FIELD-SYMBOLS: <ls_level>  LIKE LINE OF it_levels,
+    FIELD-SYMBOLS: <ls_level>  LIKE LINE OF io_scan->levels,
                    <lv_code>   LIKE LINE OF lt_code,
                    <lv_pretty> LIKE LINE OF lt_pretty.
 
 
 
-    LOOP AT it_levels ASSIGNING <ls_level> WHERE type = scan_level_type-program.
+    LOOP AT io_scan->levels ASSIGNING <ls_level> WHERE type = io_scan->gc_level-program.
       lv_level = sy-tabix.
 
       IF is_class_pool( <ls_level>-name ) = abap_true.
@@ -192,16 +192,19 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
           AND is_class_definition( <ls_level>-name ) = abap_true.
         CONTINUE. " current loop
       ELSEIF <ls_level>-name(8) = '/1BCWDY/'.
-* todo, web dynpro
+        " todo, web dynpro
         RETURN.
       ELSEIF <ls_level>-name(4) = 'SAPL'.
-* exclude functionpool
+        " exclude functionpool
+        CONTINUE.
+      ELSEIF skip_object( <ls_level>-name ) = abap_true.
+        " Generated include
         CONTINUE.
       ENDIF.
 
-* make sure the source code is not empty, as it will cause the pretty
-* printer to show an error message
-      READ TABLE it_statements WITH KEY level = lv_level TRANSPORTING NO FIELDS.
+      " make sure the source code is not empty, as it will cause the pretty
+      " printer to show an error message
+      READ TABLE io_scan->statements WITH KEY level = lv_level TRANSPORTING NO FIELDS.
       IF sy-subrc <> 0.
         CONTINUE.
       ENDIF.
@@ -215,8 +218,7 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
         ASSERT sy-subrc = 0.
 
         IF <lv_code> <> <lv_pretty>.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = <ls_level>-name
+          inform( p_sub_obj_name = <ls_level>-name
                   p_line         = lv_row
                   p_kind         = mv_errty
                   p_test         = myname
@@ -242,7 +244,6 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty       = c_error.
     mv_hikey       = abap_true.
     mv_lokey       = abap_false.
     mv_lower       = abap_false.
@@ -252,6 +253,16 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
     mv_skipc       = abap_true.
 
     enable_rfc( ).
+
+    insert_scimessage(
+      iv_code  = '001'
+      iv_text  = 'Use pretty printer'(m01) ).
+    insert_scimessage(
+      iv_code  = '002'
+      iv_text  = 'Pretty printer settings do not match'(m02) ).
+    insert_scimessage(
+      iv_code  = '003'
+      iv_text  = 'Use pretty printer, screen &1'(m03) ).
 
   ENDMETHOD.
 
@@ -270,26 +281,6 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Use pretty printer'.                      "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Pretty printer settings does not match'.  "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Use pretty printer, screen &1'.           "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.
@@ -316,7 +307,6 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
 
     DATA: lv_option TYPE c LENGTH 5.
 
-
     lv_option = build_option( ).
 
     rt_pretty = it_code.
@@ -329,6 +319,22 @@ CLASS ZCL_AOC_CHECK_06 IMPLEMENTATION.
       EXCEPTIONS
         syntax_errors = 1
         OTHERS        = 2.                       "#EC FB_RC "#EC CI_SUBRC
+
+  ENDMETHOD.
+
+
+  METHOD skip_object.
+
+    IF object_type = 'FUGR'.
+      SELECT COUNT(*)
+        FROM trdir
+        WHERE name = iv_name
+          AND edtx = abap_true
+          AND unam = 'SAP*'.
+      rv_skip = boolc( sy-subrc = 0 ).
+    ELSE.
+      rv_skip = abap_false.
+    ENDIF.
 
   ENDMETHOD.
 

@@ -11,8 +11,6 @@ CLASS zcl_aoc_check_11 DEFINITION
         REDEFINITION.
     METHODS get_attributes
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
     METHODS if_ci_test~query_attributes
         REDEFINITION.
     METHODS put_attributes
@@ -25,7 +23,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
+CLASS zcl_aoc_check_11 IMPLEMENTATION.
 
 
   METHOD check.
@@ -41,15 +39,15 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
           lv_prev_inform_row   TYPE token_row,
           lv_prev_inform_level TYPE stmnt_levl.
 
-    FIELD-SYMBOLS: <ls_statement>  LIKE LINE OF it_statements,
-                   <ls_token_to>   LIKE LINE OF it_tokens,
-                   <ls_level>      LIKE LINE OF it_levels,
-                   <ls_token_from> LIKE LINE OF it_tokens.
+    FIELD-SYMBOLS: <ls_statement>  LIKE LINE OF io_scan->statements,
+                   <ls_token_to>   LIKE LINE OF io_scan->tokens,
+                   <ls_level>      LIKE LINE OF io_scan->levels,
+                   <ls_token_from> LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE terminator = '.'
-        AND type <> scan_stmnt_type-pragma.
+        AND type <> io_scan->gc_statement-pragma.
 
       lv_position = sy-tabix.
 
@@ -57,28 +55,27 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      READ TABLE it_tokens ASSIGNING <ls_token_to> INDEX <ls_statement>-to.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token_to> INDEX <ls_statement>-to.
       CHECK sy-subrc = 0.
 
-      READ TABLE it_tokens ASSIGNING <ls_token_from> INDEX <ls_statement>-from.
+      READ TABLE io_scan->tokens ASSIGNING <ls_token_from> INDEX <ls_statement>-from.
       CHECK sy-subrc = 0.
 
       IF <ls_statement>-level = lv_prev_level AND <ls_token_from>-row = lv_prev_row.
-        READ TABLE it_levels ASSIGNING <ls_level> INDEX <ls_statement>-level.
-        IF sy-subrc = 0 AND ( <ls_level>-type = scan_level_type-macro_define
-            OR <ls_level>-type = scan_level_type-macro_trmac ).
+        READ TABLE io_scan->levels ASSIGNING <ls_level> INDEX <ls_statement>-level.
+        IF sy-subrc = 0 AND ( <ls_level>-type = io_scan->gc_level-macro_define
+            OR <ls_level>-type = io_scan->gc_level-macro_trmac ).
           CONTINUE.
         ENDIF.
 
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
         IF mv_skipc = abap_true
             AND is_class_definition( lv_include ) = abap_true.
           CONTINUE. " current loop
         ENDIF.
         IF lv_prev_inform_row <> <ls_token_from>-row
             OR lv_prev_inform_level <> <ls_statement>-level.
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = lv_include
+          inform( p_sub_obj_name = lv_include
                   p_position     = lv_position
                   p_line         = <ls_token_from>-row
                   p_kind         = mv_errty
@@ -110,10 +107,13 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Max one statement per line'(m01) ).
+
     mv_skipc = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -124,22 +124,6 @@ CLASS ZCL_AOC_CHECK_11 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Max one statement per line'.              "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.

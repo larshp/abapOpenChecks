@@ -7,8 +7,6 @@ CLASS zcl_aoc_check_83 DEFINITION
 
     METHODS constructor .
 
-    METHODS get_message_text
-        REDEFINITION .
     METHODS run
         REDEFINITION .
   PROTECTED SECTION.
@@ -27,31 +25,17 @@ CLASS ZCL_AOC_CHECK_83 IMPLEMENTATION.
     version  = '001'.
     position = '083'.
 
-    has_documentation = c_true.
+    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
-
-    mv_errty = c_error.
 
     add_obj_type( 'DOMA' ).
     add_obj_type( 'DTEL' ).
     add_obj_type( 'TABL' ).
 
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Unreferenced DDIC object'.                "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Unreferenced DDIC object'(m01) ).
 
   ENDMETHOD.
 
@@ -83,7 +67,7 @@ CLASS ZCL_AOC_CHECK_83 IMPLEMENTATION.
         ENDIF.
       WHEN 'TABL'.
         SELECT SINGLE * FROM dd02l INTO ls_dd02l WHERE tabname = object_name. "#EC CI_NOORDER
-        IF sy-subrc = 0 AND ls_dd02l-tabclass = 'APPEND'.
+        IF ( sy-subrc = 0 AND ls_dd02l-tabclass = 'APPEND' ) OR sy-subrc <> 0.
           RETURN.
         ENDIF.
         SELECT SINGLE * FROM dd40l INTO ls_dd40l WHERE rowtype = object_name.

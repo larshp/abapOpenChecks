@@ -1,22 +1,20 @@
 CLASS zcl_aoc_check_26 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
-    METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
   PROTECTED SECTION.
 
     DATA mt_tables TYPE scit_tabl .
@@ -48,21 +46,21 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
           lv_include   TYPE program,
           lv_statement TYPE string.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements,
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
                    <ls_rt>        LIKE LINE OF ls_result-tokens,
-                   <ls_token>     LIKE LINE OF it_tokens.
+                   <ls_token>     LIKE LINE OF io_scan->tokens.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement> WHERE type = scan_stmnt_type-standard.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE type = io_scan->gc_statement-standard.
 
       CLEAR lv_keyword1.
       CLEAR lv_keyword2.
       CLEAR lv_statement.
 
-      LOOP AT it_tokens ASSIGNING <ls_token>
+      LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from
           TO <ls_statement>-to
-          WHERE type <> scan_token_type-comment.
+          WHERE type <> io_scan->gc_token-comment.
 
         IF lv_keyword1 IS INITIAL.
           lv_keyword1 = <ls_token>-str.
@@ -109,10 +107,9 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
       lv_as4user = find_user( <ls_rt>-code ).
       IF ( lv_as4user = 'SAP' OR lv_as4user = 'DDIC' )
           AND <ls_rt>-code IN mt_tables.
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -135,10 +132,13 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
     CLEAR mt_tables.
 
     enable_rfc( ).
+
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'No direct changes to standard tables, &1'(m01) ).
 
   ENDMETHOD.
 
@@ -168,7 +168,9 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    rv_as4user = ls_dd02v-as4user.
+    IF ls_dd02v-tabclass = 'TRANSP'.
+      rv_as4user = ls_dd02v-as4user.
+    ENDIF.
 
   ENDMETHOD.
 
@@ -181,22 +183,6 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'No direct changes to standard tables, &1'. "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.

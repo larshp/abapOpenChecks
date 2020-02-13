@@ -11,11 +11,9 @@ CLASS zcl_aoc_check_56 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
+    METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
-    METHODS if_ci_test~query_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
@@ -159,7 +157,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     LOOP AT lt_compiler INTO ls_compiler
         WHERE ( tag = cl_abap_compiler=>tag_data OR tag = cl_abap_compiler=>tag_method OR
                 tag = cl_abap_compiler=>tag_message_id OR tag = cl_abap_compiler=>tag_message_number OR
-                tag = cl_abap_compiler=>tag_message_type  )
+                tag = cl_abap_compiler=>tag_message_type )
         AND ( statement->source_info->name = lv_include
         OR statement->source_info->kind = lc_macro ).
       lv_name = get_name( ls_compiler-full_name ).
@@ -292,11 +290,22 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty      = c_error.
     mv_referenced = abap_true.
     mv_supplied   = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Parameter &1 not supplied anywhere'(m01) ). "#EC NOTEX
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Parameter &1 not supplied anywhere, method &2'(m02) ). "#EC NOTEX
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Parameter &1 not referenced in method'(m03) ). "#EC NOTEX
+
+  ENDMETHOD.
 
 
   METHOD find_where_used.
@@ -340,26 +349,6 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       mv_referenced = mv_referenced
       mv_supplied = mv_supplied
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Parameter &1 not supplied anywhere'.      "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Parameter &1 not supplied anywhere, method &2'. "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Parameter &1 not referenced in method'.   "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
@@ -414,8 +403,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
           ls_mtdkey-clsname = is_method-clsname.
           ls_mtdkey-cpdname = is_method-cmpname.
           lv_include = cl_oo_classname_service=>get_method_include( ls_mtdkey ).
-          inform( p_sub_obj_type = c_type_include
-                  p_sub_obj_name = lv_include
+          inform( p_sub_obj_name = lv_include
                   p_param_1      = <ls_parameter>-sconame
                   p_kind         = mv_errty
                   p_test         = myname
@@ -471,8 +459,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
         OTHERS = 0 ).
 
     IF lv_include IS NOT INITIAL.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      inform( p_sub_obj_name = lv_include
               p_param_1      = is_parameter-sconame
               p_kind         = mv_errty
               p_test         = myname

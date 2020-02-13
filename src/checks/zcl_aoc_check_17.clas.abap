@@ -1,41 +1,40 @@
 CLASS zcl_aoc_check_17 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
-    METHODS constructor.
+
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
-    METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
-
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
   PROTECTED SECTION.
-    DATA mv_types TYPE i.
-    DATA mv_define TYPE i.
-    DATA mv_constants TYPE i.
-    DATA mv_data TYPE i.
-    DATA mv_fs TYPE i.
-    DATA mv_statics TYPE i.
 
-    TYPE-POOLS abap.
+    DATA mv_types TYPE i .
+    DATA mv_define TYPE i .
+    DATA mv_constants TYPE i .
+    DATA mv_data TYPE i .
+    DATA mv_fs TYPE i .
+    DATA mv_statics TYPE i .
+
     METHODS check_mode
       IMPORTING
         !iv_type       TYPE i
       RETURNING
-        VALUE(rv_exit) TYPE abap_bool.
-
+        VALUE(rv_exit) TYPE abap_bool .
   PRIVATE SECTION.
-    DATA ms_statement TYPE sstmnt.
-    DATA ms_token TYPE stokesx.
-    DATA mv_mode TYPE i.
+
+    DATA ms_statement TYPE sstmnt .
+    DATA ms_token TYPE stokesx .
+    DATA mv_mode TYPE i .
+    DATA mo_scan TYPE REF TO zcl_aoc_scan .
 ENDCLASS.
 
 
@@ -53,25 +52,27 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
           lv_define TYPE abap_bool,
           lv_others TYPE i.
 
-    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF it_structures.
+    FIELD-SYMBOLS: <ls_structure> LIKE LINE OF io_scan->structures.
 
 
     lv_others = mv_constants + mv_data + mv_fs + mv_statics + mv_types + mv_define.
 
-    LOOP AT it_structures ASSIGNING <ls_structure>
-        WHERE type = scan_struc_type-routine.
+    mo_scan = io_scan.
+
+    LOOP AT io_scan->structures ASSIGNING <ls_structure>
+        WHERE type = io_scan->gc_structure-routine.
 
       mv_mode = 0.
 
-      LOOP AT it_statements INTO ms_statement
+      LOOP AT io_scan->statements INTO ms_statement
           FROM <ls_structure>-stmnt_from + 1
           TO <ls_structure>-stmnt_to - 1
-          WHERE type <> scan_stmnt_type-macro_call.
+          WHERE type <> io_scan->gc_statement-macro_call.
 
-        READ TABLE it_tokens INTO ms_token INDEX ms_statement-from.
+        READ TABLE io_scan->tokens INTO ms_token INDEX ms_statement-from.
         IF sy-subrc <> 0
-            OR ms_token-type = scan_token_type-comment
-            OR ms_token-type = scan_token_type-pragma.
+            OR ms_token-type = io_scan->gc_token-comment
+            OR ms_token-type = io_scan->gc_token-pragma.
           CONTINUE. " current loop
         ENDIF.
 
@@ -124,10 +125,9 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
     IF mv_mode > iv_type.
       rv_exit = abap_true.
 
-      lv_include = get_include( p_level = ms_statement-level ).
+      lv_include = mo_scan->get_include( ms_statement-level ).
 
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = lv_include
+      inform( p_sub_obj_name = lv_include
               p_line = ms_token-row
               p_kind = mv_errty
               p_test = myname
@@ -158,9 +158,11 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
     mv_data      = 2.
     mv_fs        = 3.
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Reorder definitions to top of routine'(m01) ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -176,22 +178,6 @@ CLASS ZCL_AOC_CHECK_17 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Reorder definitions to top of routine'.   "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.

@@ -9,8 +9,6 @@ CLASS zcl_aoc_check_02 DEFINITION
 
     METHODS check
         REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
     METHODS if_ci_test~query_attributes
         REDEFINITION.
     METHODS put_attributes
@@ -26,7 +24,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
+CLASS zcl_aoc_check_02 IMPLEMENTATION.
 
 
   METHOD check.
@@ -41,16 +39,13 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
           lv_error   TYPE sci_errc,
           lv_index   LIKE sy-tabix.
 
-    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF it_statements.
+    FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    LOOP AT it_statements ASSIGNING <ls_statement>.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
       lv_index = sy-tabix.
 
-      lv_keyword = statement_keyword(
-          iv_number     = lv_index
-          it_statements = it_statements
-          it_tokens     = it_tokens ).
+      lv_keyword = io_scan->statement_keyword( lv_index ).
 
       IF lv_keyword = 'EXIT' AND mv_exit = abap_true.
         lv_error = '001'.
@@ -60,25 +55,21 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
         CONTINUE. " current loop
       ENDIF.
 
-      LOOP AT it_structures TRANSPORTING NO FIELDS
-          WHERE ( stmnt_type = scan_struc_stmnt_type-loop
-          OR stmnt_type = scan_struc_stmnt_type-while
-          OR stmnt_type = scan_struc_stmnt_type-do
-          OR stmnt_type = scan_struc_stmnt_type-select )
+      LOOP AT io_scan->structures TRANSPORTING NO FIELDS
+          WHERE ( stmnt_type = zcl_aoc_scan=>gc_structure_statement-loop
+          OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-while
+          OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-do
+          OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-select )
           AND stmnt_from <= lv_index
           AND stmnt_to >= lv_index.
         EXIT. " current loop
       ENDLOOP.
       IF sy-subrc <> 0.
-        lv_line = statement_row(
-          iv_number     = lv_index
-          it_statements = it_statements
-          it_tokens     = it_tokens ).
+        lv_line = io_scan->statement_row( lv_index ).
 
-        lv_include = get_include( p_level = <ls_statement>-level ).
+        lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        inform( p_sub_obj_type = c_type_include
-                p_sub_obj_name = lv_include
+        inform( p_sub_obj_name = lv_include
                 p_position     = lv_index
                 p_line         = lv_line
                 p_kind         = mv_errty
@@ -95,8 +86,8 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '001'.
-    position       = '002'.
+    version  = '001'.
+    position = '002'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
@@ -104,11 +95,17 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
     enable_rfc( ).
     set_uses_checksum( ).
 
-    mv_errty = c_error.
     mv_check = abap_true.
     mv_exit  = abap_true.
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'EXIT outside loop, use RETURN instead'(m01) ).
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'CHECK outside of loop'(m02) ).
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -120,24 +117,6 @@ CLASS ZCL_AOC_CHECK_02 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'EXIT outside loop, use RETURN instead'.   "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'CHECK outside of loop'.                   "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.

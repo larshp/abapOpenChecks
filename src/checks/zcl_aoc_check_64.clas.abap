@@ -7,15 +7,13 @@ CLASS zcl_aoc_check_64 DEFINITION
 
     METHODS constructor .
 
-    METHODS get_message_text
+    METHODS get_attributes
         REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
         REDEFINITION .
     METHODS run
-        REDEFINITION .
-    METHODS get_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
@@ -45,17 +43,20 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
     version        = '001'.
     position       = '064'.
 
-    has_documentation = c_true.
+    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty    = c_error.
     mv_duration = if_aunit_attribute_enums=>c_duration-medium.
     mv_risk     = if_aunit_attribute_enums=>c_risk_level-harmless.
 
     add_obj_type( 'CLAS' ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Unit test not covering class'(m01) ).
+
+  ENDMETHOD.
 
 
   METHOD get_attributes.
@@ -65,22 +66,6 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
       mv_duration = mv_duration
       mv_risk = mv_risk
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Unit test not covering class'.            "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
@@ -240,7 +225,7 @@ CLASS ZCL_AOC_CHECK_64 IMPLEMENTATION.
 
     IF mv_covered = abap_false.
       lv_clsname = object_name.
-      inform( p_sub_obj_type = c_type_include
+      inform( p_sub_obj_type = 'PROG'
               p_sub_obj_name = cl_oo_classname_service=>get_ccau_name( lv_clsname )
               p_line         = 1
               p_kind         = mv_errty

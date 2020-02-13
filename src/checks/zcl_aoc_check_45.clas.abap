@@ -1,27 +1,25 @@
 CLASS zcl_aoc_check_45 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
-    METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
   PROTECTED SECTION.
 
     METHODS check_loop
       IMPORTING
-        !it_statements TYPE ty_statements
+        !it_statements TYPE zcl_aoc_scan=>ty_statements
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
     METHODS support_740sp02
@@ -54,16 +52,14 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lt_statements TYPE ty_statements,
-          lt_procedure  TYPE ty_statements,
+    DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
+          lt_procedure  TYPE zcl_aoc_scan=>ty_statements,
           lv_code       TYPE sci_errc.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF lt_statements.
 
 
-    lt_statements = build_statements(
-        it_tokens     = it_tokens
-        it_statements = it_statements ).
+    lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
       CLEAR lv_code.
@@ -134,12 +130,11 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
       ENDIF.
 
       IF NOT lv_code IS INITIAL.
-        inform( p_sub_obj_type = c_type_include
-            p_sub_obj_name = <ls_statement>-include
-            p_line         = <ls_statement>-start-row
-            p_kind         = mv_errty
-            p_test         = myname
-            p_code         = lv_code ).
+        inform( p_sub_obj_name = <ls_statement>-include
+                p_line         = <ls_statement>-start-row
+                p_kind         = mv_errty
+                p_test         = myname
+                p_code         = lv_code ).
       ENDIF.
     ENDLOOP.
 
@@ -209,8 +204,6 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    mv_errty = c_error.
-
     mv_lines           = abap_true.
     mv_new             = abap_true.
     mv_inline_decl     = abap_true.
@@ -222,6 +215,54 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     mv_ref             = abap_true.
     mv_corresponding   = abap_true.
     mv_line_exists     = abap_true.
+
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Use lines( ) expression'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Use NEW abc( ) expression'(m02) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Declare variable inline'(m03) ).
+
+    insert_scimessage(
+        iv_code = '004'
+        iv_text = 'Use condense( )'(m04) ).
+
+    insert_scimessage(
+        iv_code = '005'
+        iv_text = 'Use concat_lines_of( )'(m05) ).
+
+    insert_scimessage(
+        iv_code = '006'
+        iv_text = 'Use shift_left( ) or shift_right( )'(m06) ).
+
+    insert_scimessage(
+        iv_code = '007'
+        iv_text = 'Use to_upper( ) or to_lower( )'(m07) ).
+
+    insert_scimessage(
+        iv_code = '008'
+        iv_text = 'Use translate( )'(m08) ).
+
+    insert_scimessage(
+        iv_code = '009'
+        iv_text = 'Use string templates'(m09) ).
+
+    insert_scimessage(
+        iv_code = '010'
+        iv_text = 'Use REF expression'(m10) ).
+
+    insert_scimessage(
+        iv_code = '011'
+        iv_text = 'Use corresponding #( )'(m11) ).
+
+    insert_scimessage(
+        iv_code = '012'
+        iv_text = 'Use line_exists( )'(m12) ).
 
   ENDMETHOD.
 
@@ -247,44 +288,6 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Use lines( ) expression'.                 "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Use NEW abc( ) expression'.               "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Declare variable inline'.                 "#EC NOTEXT
-      WHEN '004'.
-        p_text = 'Use condense( )'.                         "#EC NOTEXT
-      WHEN '005'.
-        p_text = 'Use concat_lines_of( )'.                  "#EC NOTEXT
-      WHEN '006'.
-        p_text = 'Use shift_left( ) or shift_right( )'.     "#EC NOTEXT
-      WHEN '007'.
-        p_text = 'Use to_upper( ) or to_lower( )'.          "#EC NOTEXT
-      WHEN '008'.
-        p_text = 'Use translate( )'.                        "#EC NOTEXT
-      WHEN '009'.
-        p_text = 'Use string templates'.                    "#EC NOTEXT
-      WHEN '010'.
-        p_text = 'Use REF expression'.                      "#EC NOTEXT
-      WHEN '011'.
-        p_text = 'Use corresponding #( )'.                  "#EC NOTEXT
-      WHEN '012'.
-        p_text = 'Use line_exists( )'.                      "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.
-
-
   METHOD if_ci_test~query_attributes.
 
     zzaoc_top.
@@ -294,7 +297,7 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     zzaoc_fill_att mv_new 'NEW #( )' ''.                    "#EC NOTEXT
     zzaoc_fill_att mv_inline_decl 'Inline declarations' ''. "#EC NOTEXT
     zzaoc_fill_att mv_condense 'condense( )' ''.            "#EC NOTEXT
-    zzaoc_fill_att mv_concat_lines 'concate_lines_of( )' ''. "#EC NOTEXT
+    zzaoc_fill_att mv_concat_lines 'concat_lines_of( )' ''. "#EC NOTEXT
     zzaoc_fill_att mv_shift 'shift_left( ) or shift_right( )' ''. "#EC NOTEXT
     zzaoc_fill_att mv_translate_to 'to_upper( ) or to_lower( )' ''. "#EC NOTEXT
     zzaoc_fill_att mv_translate_using 'translate( )' ''.    "#EC NOTEXT

@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_43 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -73,19 +71,19 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
           lv_foobar TYPE string,                            "#EC NEEDED
           lv_str    TYPE string.
 
-    FIELD-SYMBOLS: <ls_top>       LIKE LINE OF it_tokens,
-                   <ls_token>     LIKE LINE OF it_tokens,
+    FIELD-SYMBOLS: <ls_top>       LIKE LINE OF io_scan->tokens,
+                   <ls_token>     LIKE LINE OF io_scan->tokens,
                    <ls_call>      LIKE LINE OF lt_calls,
-                   <ls_statement> LIKE LINE OF it_statements.
+                   <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    lt_calls = get_calls( it_levels ).
+    lt_calls = get_calls( io_scan->levels ).
     IF lt_calls IS INITIAL.
       RETURN.
     ENDIF.
 
-    LOOP AT it_statements ASSIGNING <ls_statement>.
-      LOOP AT it_tokens ASSIGNING <ls_top> FROM <ls_statement>-from TO <ls_statement>-to.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
+      LOOP AT io_scan->tokens ASSIGNING <ls_top> FROM <ls_statement>-from TO <ls_statement>-to.
         lv_index = sy-tabix.
 
         LOOP AT lt_calls ASSIGNING <ls_call>
@@ -94,7 +92,7 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
             AND start_column = <ls_top>-col.
 
           CLEAR lv_str.
-          LOOP AT it_tokens ASSIGNING <ls_token> FROM lv_index TO <ls_statement>-to.
+          LOOP AT io_scan->tokens ASSIGNING <ls_token> FROM lv_index TO <ls_statement>-to.
             IF <ls_token>-row > <ls_call>-end_line
                 OR ( <ls_token>-row = <ls_call>-end_line
                 AND <ls_token>-col + strlen( <ls_token>-str ) >= <ls_call>-end_column ).
@@ -168,8 +166,7 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
     READ TABLE lt_parameters WITH KEY sconame = lv_parameter
       TRANSPORTING NO FIELDS.
     IF sy-subrc = 0.
-      inform( p_sub_obj_type = c_type_include
-              p_sub_obj_name = is_call-program
+      inform( p_sub_obj_name = is_call-program
               p_line         = is_call-start_line
               p_kind         = mv_errty
               p_test         = myname
@@ -190,9 +187,11 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    mv_errty = c_error.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Parameter name &1 can be omitted'(m01) ).
 
-  ENDMETHOD.                    "CONSTRUCTOR
+  ENDMETHOD.
 
 
   METHOD get_calls.
@@ -235,22 +234,6 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
 
       INSERT ls_call INTO TABLE rt_calls.
     ENDLOOP.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Parameter name &1 can be omitted'.        "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 
