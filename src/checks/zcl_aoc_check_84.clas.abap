@@ -20,7 +20,7 @@ CLASS zcl_aoc_check_84 DEFINITION
         REDEFINITION .
 
   PROTECTED SECTION.
-    DATA mt_classes TYPE RANGE OF seoclsname.
+    DATA mt_classes TYPE zaoc_seoclsname_range_tt.
 
   PRIVATE SECTION.
 ENDCLASS.
