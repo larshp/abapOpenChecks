@@ -63,7 +63,7 @@ CLASS zcl_aoc_super DEFINITION
         VALUE(rv_bool) TYPE abap_bool .
     METHODS is_generated
       IMPORTING
-        !iv_name       TYPE csequence OPTIONAL
+        !iv_name            TYPE csequence OPTIONAL
       RETURNING
         VALUE(rv_generated) TYPE abap_bool .
     METHODS set_uses_checksum .
@@ -103,7 +103,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_SUPER IMPLEMENTATION.
+CLASS zcl_aoc_super IMPLEMENTATION.
 
 
   METHOD check.
@@ -368,13 +368,18 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
   METHOD if_ci_test~display_documentation.
 
-    DATA: lv_url TYPE string VALUE 'http://docs.abapopenchecks.org/checks/' ##NO_TEXT,
-          lv_len TYPE i.
+    DATA: lv_url    TYPE string VALUE 'http://docs.abapopenchecks.org/checks/' ##NO_TEXT,
+          lt_string TYPE STANDARD TABLE OF string,
+          lv_num    TYPE string,
+          lv_lines  TYPE i.
 
+    SPLIT myname AT '_' INTO TABLE lt_string.
 
-    lv_len = strlen( myname ) - 2.
+    lv_lines = lines( lt_string ).
 
-    CONCATENATE lv_url myname+lv_len(2) INTO lv_url.
+    READ TABLE lt_string INTO lv_num INDEX lv_lines.
+
+    CONCATENATE lv_url lv_num INTO lv_url.
 
     cl_gui_frontend_services=>execute(
       EXPORTING
