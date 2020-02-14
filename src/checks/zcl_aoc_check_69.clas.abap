@@ -11,8 +11,6 @@ CLASS zcl_aoc_check_69 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
     METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
@@ -120,8 +118,9 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD analyze_statements.
 
-    DATA: lv_define  TYPE abap_bool,
-          lv_keyword TYPE string.
+    DATA: lv_define    TYPE abap_bool,
+          lv_keyword   TYPE string,
+          ls_object_ns TYPE zcl_aoc_util_reg_atc_namespace=>ty_ns_object.
 
 
     LOOP AT it_statements INTO statement_wa.
@@ -173,7 +172,21 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
           mo_stack->pop( ).
         WHEN 'ENDFUNCTION'.
           IF object_type = 'FUGR'.
-            mo_stack->set( '\PR:SAPL' && object_name ).
+            IF zcl_aoc_util_reg_atc_namespace=>is_in_namespace( iv_pgmid    = 'R3TR'
+                                                                iv_object   = 'FUGR'
+                                                                iv_obj_name = object_name ) = abap_true.
+
+              ls_object_ns = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
+                                                                              iv_object   = 'FUGR'
+                                                                              iv_obj_name = object_name ).
+
+              mo_stack->set( '\PR:'
+                          && ls_object_ns-namespace
+                          && 'SAPL'
+                          && ls_object_ns-object ).
+            ELSE.
+              mo_stack->set( '\PR:SAPL' && object_name ).
+            ENDIF.
           ELSE.
             mo_stack->set( '\PR:' && object_name ).
           ENDIF.
@@ -573,7 +586,8 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
   METHOD check_function_pool.
 
     DATA: lv_name  TYPE string,
-          lv_regex TYPE string.
+          lv_regex TYPE string,
+          ls_object_ns TYPE zcl_aoc_util_reg_atc_namespace=>ty_ns_object.
 
 
     lv_name = get_token_rel( 2 ).
@@ -585,7 +599,22 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
              iv_regex    = lv_regex
              iv_relative = 2 ).
 
-    mo_stack->push( '\PR:' && 'SAPL' && lv_name ).
+
+    IF zcl_aoc_util_reg_atc_namespace=>is_in_namespace( iv_pgmid    = 'R3TR'
+                                                        iv_object   = 'FUGR'
+                                                        iv_obj_name = lv_name ) = abap_true.
+
+      ls_object_ns = zcl_aoc_util_reg_atc_namespace=>split_ns_object( iv_pgmid    = 'R3TR'
+                                                                      iv_object   = 'FUGR'
+                                                                      iv_obj_name = lv_name ).
+
+      mo_stack->push( '\PR:'
+                  && ls_object_ns-namespace
+                  && 'SAPL'
+                  && ls_object_ns-object ).
+    ELSE.
+      mo_stack->push( '\PR:' && 'SAPL' && lv_name ).
+    ENDIF.
 
   ENDMETHOD.
 
@@ -890,9 +919,6 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
   METHOD constructor.
 
-    DATA: ls_message LIKE LINE OF scimessages.
-
-
     super->constructor( ).
 
     version     = '002'.
@@ -903,11 +929,30 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
     set_defaults( ).
 
-    ls_message-test = myname.
-    ls_message-code = '001'.
-    ls_message-kind = c_error.
-    ls_message-pcom = '"#EC CI_NAMING'.
-    INSERT ls_message INTO TABLE scimessages.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Bad naming, expected &1, got &2'(m01)
+        iv_pcom = '"#EC CI_NAMING' ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Unable to resolve &1'(m05) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Error qualifying tokens'(m02) ).
+
+    insert_scimessage(
+        iv_code = '004'
+        iv_text = 'Unable to resolve &1'(m05) ).
+
+    insert_scimessage(
+        iv_code = '005'
+        iv_text = 'Syntax error'(m03) ).
+
+    insert_scimessage(
+        iv_code = '006'
+        iv_text = 'Error reading FM parameters'(m04) ).
 
   ENDMETHOD.
 
@@ -1083,30 +1128,6 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       mv_errty = mv_errty
       ms_naming = ms_naming
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Bad naming, expected &1, got &2'.         "#EC NOTEXT
-      WHEN '002' OR '004'.
-        p_text = 'Unable to resolve &1'.                    "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Error qualifying tokens'.                 "#EC NOTEXT
-      WHEN '005'.
-        p_text = 'Syntax error'.                            "#EC NOTEXT
-      WHEN '006'.
-        p_text = 'Error reading FM parameters'.             "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 

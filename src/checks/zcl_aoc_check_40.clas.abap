@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_40 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -153,9 +151,6 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
 
   METHOD constructor.
 
-    DATA: ls_message LIKE LINE OF scimessages.
-
-
     super->constructor( ).
 
     version        = '001'.
@@ -166,27 +161,10 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
 
     enable_rfc( ).
 
-    ls_message-test = myname.
-    ls_message-code = '001'.
-    ls_message-kind = c_error.
-    ls_message-pcom = '"#EC CI_SUBRC'.
-    INSERT ls_message INTO TABLE scimessages.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Check SY-SUBRC'.                          "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Check SY-SUBRC'(m01)
+        iv_pcom = '"#EC CI_SUBRC' ).
 
   ENDMETHOD.
 ENDCLASS.

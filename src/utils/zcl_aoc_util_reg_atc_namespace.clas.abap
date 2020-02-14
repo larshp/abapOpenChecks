@@ -25,7 +25,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_UTIL_REG_ATC_NAMESPACE IMPLEMENTATION.
+CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
 
   METHOD get_namespaces.
 

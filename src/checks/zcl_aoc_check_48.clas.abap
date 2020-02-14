@@ -1,16 +1,14 @@
 CLASS zcl_aoc_check_48 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
+        REDEFINITION .
   PROTECTED SECTION.
 
     METHODS check_table_body_access
@@ -117,8 +115,6 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
 
   METHOD constructor.
 
-    DATA: ls_message LIKE LINE OF scimessages.
-
     super->constructor( ).
 
     version  = '002'.
@@ -127,31 +123,16 @@ CLASS ZCL_AOC_CHECK_48 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
-    ls_message-test = myname.
-    ls_message-code = '001'.
-    ls_message-kind = c_error.
-    ls_message-pcom = '"#EC CI_DEFAULT_KEY'.
-    INSERT ls_message INTO TABLE scimessages.
-
     enable_rfc( ).
 
-  ENDMETHOD.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'DEFAULT KEY, add table key or EMPTY KEY'(m01)
+        iv_pcom = '"#EC CI_DEFAULT_KEY' ).
 
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'DEFAULT KEY, add table key or EMPTY KEY'. "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Access table body is obsolete, no headers'. "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Access table body is obsolete, no headers'(m02) ).
 
   ENDMETHOD.
 

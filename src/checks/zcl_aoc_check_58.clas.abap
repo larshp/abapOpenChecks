@@ -11,11 +11,9 @@ CLASS zcl_aoc_check_58 DEFINITION
         REDEFINITION .
     METHODS get_attributes
         REDEFINITION .
-    METHODS get_message_text
+    METHODS if_ci_test~query_attributes
         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
-    METHODS if_ci_test~query_attributes
         REDEFINITION .
   PROTECTED SECTION.
 
@@ -264,6 +262,34 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
 
     mv_skip_ccau = abap_true.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Method not referenced statically'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Constant &1 not referenced statically'(m02) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Method is only referenced locally. Should be changed to private or protected.'(m03) ).
+
+    insert_scimessage(
+        iv_code = '004'
+        iv_text = 'Method &1 only implemented, not referenced statically'(m04) ).
+
+    insert_scimessage(
+        iv_code = '005'
+        iv_text = '&1 not referenced statically'(m05) ).
+
+    insert_scimessage(
+        iv_code = '006'
+        iv_text = 'Type &1 not referenced statically'(m06) ).
+
+    insert_scimessage(
+        iv_code = '007'
+        iv_text = 'Alias not referenced statically'(m07) ).
+
   ENDMETHOD.
 
 
@@ -341,34 +367,6 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       mv_skip_ccau = mv_skip_ccau
       mt_methods = mt_methods
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Method not referenced statically'.        "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Constant &1 not referenced statically'.   "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Method is only referenced locally. Should be changed to private or protected.'. "#EC NOTEXT
-      WHEN '004'.
-        p_text = 'Method &1 only implemented, not referenced statically'. "#EC NOTEXT
-      WHEN '005'.
-        p_text = '&1 not referenced statically'.            "#EC NOTEXT
-      WHEN '006'.
-        p_text = 'Type &1 not referenced statically'.       "#EC NOTEXT
-      WHEN '007'.
-        p_text = 'Alias not referenced statically'.         "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 

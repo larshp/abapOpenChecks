@@ -13,6 +13,14 @@
     <RSTAT>P</RSTAT>
     <WITH_UNIT_TESTS>X</WITH_UNIT_TESTS>
    </VSEOCLASS>
+   <TPOOL>
+    <item>
+     <ID>I</ID>
+     <KEY>M01</KEY>
+     <ENTRY>CLEAR as first usage of variable, &amp;1</ENTRY>
+     <LENGTH>60</LENGTH>
+    </item>
+   </TPOOL>
    <LINES>
     <TLINE>
      <TDFORMAT>*</TDFORMAT>

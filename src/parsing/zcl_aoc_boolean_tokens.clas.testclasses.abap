@@ -20,11 +20,11 @@ CLASS lcl_parse IMPLEMENTATION.
     APPEND iv_string TO lt_code.
 
     SCAN ABAP-SOURCE lt_code
-         TOKENS        INTO lt_tokens
-         STATEMENTS    INTO lt_statements
+         TOKENS INTO lt_tokens
+         STATEMENTS INTO lt_statements
          WITH ANALYSIS
          WITH COMMENTS
-         WITH PRAGMAS  abap_true.
+         WITH PRAGMAS abap_true.
     cl_abap_unit_assert=>assert_subrc( ).
 
     CREATE OBJECT ro_tokens EXPORTING it_tokens = lt_tokens.

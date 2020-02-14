@@ -9,8 +9,6 @@ CLASS zcl_aoc_check_79 DEFINITION
 
     METHODS check
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -161,6 +159,10 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'CLEAR as first usage of variable, &1'(m01) ).
+
   ENDMETHOD.
 
 
@@ -217,22 +219,6 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
     DELETE rt_writes WHERE full_name <> is_local-full_name.
 
     DELETE rt_writes WHERE mode2 <> '6' AND mode2 <> '9' AND mode2 <> 'D'.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'CLEAR as first of variable, &1'.          "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
 
   ENDMETHOD.
 

@@ -9,8 +9,6 @@ CLASS zcl_aoc_check_27 DEFINITION
 
     METHODS check
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
   PROTECTED SECTION.
 
     TYPES:
@@ -181,27 +179,19 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
     enable_rfc( ).
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Last statement is RETURN'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Last statement is CLEAR or FREE'(m02) ).
+
+    insert_scimessage(
+        iv_code = '003'
+        iv_text = 'Last statement is CHECK or EXIT'(m03) ).
+
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Last statement is RETURN'.                "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Last statement is CLEAR or FREE'.         "#EC NOTEXT
-      WHEN '003'.
-        p_text = 'Last statement is CHECK or EXIT'.         "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD is_local.
@@ -216,7 +206,12 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
 
     READ TABLE it_statements INDEX lv_index INTO ls_statement.
     ASSERT sy-subrc = 0.
-    SPLIT ls_statement-statement AT space INTO lv_trash lv_var.
+    IF ls_statement-statement CP |DATA(*) *|.
+      SPLIT ls_statement-statement AT '(' INTO lv_trash lv_var.
+      SPLIT lv_var AT ')' INTO lv_var lv_trash.
+    ELSE.
+      SPLIT ls_statement-statement AT space INTO lv_trash lv_var.
+    ENDIF.
 
     WHILE lv_index > 0.
 
@@ -229,7 +224,8 @@ CLASS ZCL_AOC_CHECK_27 IMPLEMENTATION.
       ENDIF.
 
       IF ls_statement-statement CP |DATA { lv_var } *|
-          OR ls_statement-statement = |DATA { lv_var }|.
+          OR ls_statement-statement = |DATA { lv_var }|
+          OR ls_statement-statement CP |DATA({ lv_var }) *|.
         rv_bool = abap_true.
         RETURN.
       ENDIF.

@@ -7,17 +7,27 @@ CLASS zcl_aoc_check_84 DEFINITION
 
     METHODS constructor .
 
-    METHODS get_message_text
-        REDEFINITION .
     METHODS run
         REDEFINITION .
+
+    METHODS get_attributes
+        REDEFINITION .
+
+    METHODS put_attributes
+        REDEFINITION .
+
+    METHODS if_ci_test~query_attributes
+        REDEFINITION .
+
   PROTECTED SECTION.
+    DATA mt_classes TYPE RANGE OF seoclsname.
+
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_84 IMPLEMENTATION.
+CLASS zcl_aoc_check_84 IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -34,21 +44,9 @@ CLASS ZCL_AOC_CHECK_84 IMPLEMENTATION.
     add_obj_type( 'INTF' ).
     add_obj_type( 'CLAS' ).
 
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'No public attributes, &1'.                "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'No public attributes, &1'(m01) ).
 
   ENDMETHOD.
 
@@ -67,6 +65,9 @@ CLASS ZCL_AOC_CHECK_84 IMPLEMENTATION.
           ls_attr     LIKE LINE OF lt_attr,
           lv_category TYPE seoclassdf-category.
 
+    IF mt_classes IS NOT INITIAL AND object_name IN mt_classes.
+      RETURN.
+    ENDIF.
 
     SELECT cmpname FROM vseocompdf INTO CORRESPONDING FIELDS OF TABLE lt_attr
       WHERE clsname = object_name
@@ -94,4 +95,35 @@ CLASS ZCL_AOC_CHECK_84 IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
+
+
+  METHOD get_attributes.
+
+    EXPORT mv_errty   = mv_errty
+           mt_classes = mt_classes TO DATA BUFFER p_attributes.
+
+  ENDMETHOD.
+
+
+  METHOD put_attributes.
+
+    IMPORT mv_errty   = mv_errty
+           mt_classes = mt_classes FROM DATA BUFFER p_attributes. "#EC CI_USE_WANTED
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
+
+
+  METHOD if_ci_test~query_attributes.
+
+    zzaoc_top.
+
+    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
+    zzaoc_fill_att mt_classes 'Skip Classes' 'S'.           "#EC NOTEXT
+
+    zzaoc_popup.
+
+  ENDMETHOD.
+
+
 ENDCLASS.

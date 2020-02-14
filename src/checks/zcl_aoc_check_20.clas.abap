@@ -1,24 +1,24 @@
 CLASS zcl_aoc_check_20 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
-    METHODS constructor.
+
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+        REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
-    METHODS put_attributes
-        REDEFINITION.
+        REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+        REDEFINITION .
+    METHODS put_attributes
+        REDEFINITION .
   PROTECTED SECTION.
-    DATA mv_nest_offset TYPE int4.
-    DATA mv_offset TYPE int4.
+
+    DATA mv_nest_offset TYPE int4 .
+    DATA mv_offset TYPE int4 .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -111,6 +111,14 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
     mv_offset      = 2.
     mv_nest_offset = 4.
 
+    insert_scimessage(
+        iv_code = '001'
+        iv_text = 'Bad indentation'(m01) ).
+
+    insert_scimessage(
+        iv_code = '002'
+        iv_text = 'Begin statement at tab position'(m02) ).
+
   ENDMETHOD.
 
 
@@ -123,24 +131,6 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
       TO DATA BUFFER p_attributes.
 
   ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    CLEAR p_text.
-
-    CASE p_code.
-      WHEN '001'.
-        p_text = 'Bad indentation'.                         "#EC NOTEXT
-      WHEN '002'.
-        p_text = 'Begin statement at tab position'.         "#EC NOTEXT
-      WHEN OTHERS.
-        super->get_message_text( EXPORTING p_test = p_test
-                                           p_code = p_code
-                                 IMPORTING p_text = p_text ).
-    ENDCASE.
-
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
 
 
   METHOD if_ci_test~query_attributes.

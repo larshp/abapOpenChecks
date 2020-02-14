@@ -1,22 +1,22 @@
 CLASS zcl_aoc_check_31 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+  CREATE PUBLIC .
 
   PUBLIC SECTION.
 
-    METHODS constructor.
+    METHODS constructor .
 
     METHODS check
-        REDEFINITION.
+         REDEFINITION .
     METHODS get_attributes
-        REDEFINITION.
-    METHODS get_message_text
-        REDEFINITION.
-    METHODS put_attributes
-        REDEFINITION.
+         REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION.
+         REDEFINITION .
+    METHODS put_attributes
+         REDEFINITION .
+    METHODS get_message_text
+         REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -55,7 +55,6 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
 
     FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result,
                    <ls_line>   LIKE LINE OF <ls_result>-lines.
-
 
     ls_flags = set_flags( ).
     CALL FUNCTION 'EXTENDED_PROGRAM_CHECK'
@@ -134,8 +133,8 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version        = '003'.
-    position       = '031'.
+    version  = '003'.
+    position = '031'.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
@@ -164,7 +163,7 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
 
     p_text = '&1'.                                          "#EC NOTEXT
 
-  ENDMETHOD.                    "GET_MESSAGE_TEXT
+  ENDMETHOD.
 
 
   METHOD if_ci_test~query_attributes.

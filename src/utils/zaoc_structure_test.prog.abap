@@ -75,12 +75,12 @@ CLASS lcl_gui IMPLEMENTATION.
     SPLIT lv_text AT cl_abap_char_utilities=>cr_lf INTO TABLE lt_code.
 
     SCAN ABAP-SOURCE lt_code
-         TOKENS          INTO lt_tokens
-         STATEMENTS      INTO lt_statements
-         STRUCTURES      INTO lt_structures
+         TOKENS INTO lt_tokens
+         STATEMENTS INTO lt_statements
+         STRUCTURES INTO lt_structures
          WITH ANALYSIS
          WITH COMMENTS
-         WITH PRAGMAS    abap_true.
+         WITH PRAGMAS abap_true.
     ASSERT sy-subrc = 0.
 
     lo_structure = zcl_aoc_structure=>build(

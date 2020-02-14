@@ -61,11 +61,17 @@ CLASS zcl_aoc_super DEFINITION
         !iv_include    TYPE level_name
       RETURNING
         VALUE(rv_bool) TYPE abap_bool .
+    METHODS is_generated
+      IMPORTING
+        !iv_name       TYPE csequence OPTIONAL
+      RETURNING
+        VALUE(rv_generated) TYPE abap_bool .
     METHODS set_uses_checksum .
     METHODS insert_scimessage
       IMPORTING
-        iv_code TYPE scimessage-code
-        iv_text TYPE ty_scimessage_text.
+        !iv_code TYPE scimessage-code
+        !iv_text TYPE ty_scimessage_text
+        !iv_pcom TYPE scimessage-pcom OPTIONAL .
 
     METHODS inform
         REDEFINITION .
@@ -519,6 +525,22 @@ CLASS zcl_aoc_super IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD insert_scimessage.
+
+* Insert entry into table scimessages, this table is used to determine the message text for a finding.
+    DATA ls_scimessage LIKE LINE OF scimessages.
+
+    ls_scimessage-test = myname.
+    ls_scimessage-code = iv_code.
+    ls_scimessage-kind = mv_errty.
+    ls_scimessage-text = iv_text.
+    ls_scimessage-pcom = iv_pcom.
+
+    INSERT ls_scimessage INTO TABLE scimessages.
+
+  ENDMETHOD.
+
+
   METHOD is_class_definition.
 
     IF strlen( iv_include ) = 32
@@ -550,6 +572,19 @@ CLASS zcl_aoc_super IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD is_generated.
+
+    SELECT COUNT(*)
+      FROM tadir
+      WHERE pgmid    = 'R3TR'
+        AND object   = object_type
+        AND obj_name = object_name
+        AND genflag  = abap_true.
+    rv_generated = boolc( sy-subrc = 0 ).
+
+  ENDMETHOD.
+
+
   METHOD put_attributes.
 
     IMPORT
@@ -572,6 +607,10 @@ CLASS zcl_aoc_super IMPLEMENTATION.
       RETURN.
     ENDIF.
     IF ref_scan IS INITIAL AND get( ) <> abap_true.
+      RETURN.
+    ENDIF.
+
+    IF is_generated( ) = abap_true.
       RETURN.
     ENDIF.
 
@@ -611,21 +650,6 @@ CLASS zcl_aoc_super IMPLEMENTATION.
     IF sy-subrc = 0.
       <lv_uses_checksum> = abap_true.
     ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD insert_scimessage.
-
-* Insert entry into table scimessages. This table is used to determine the message text for a finding.
-    DATA ls_scimessage LIKE LINE OF scimessages.
-
-    ls_scimessage-test = myname.
-    ls_scimessage-code = iv_code.
-    ls_scimessage-kind = mv_errty.
-    ls_scimessage-text = iv_text.
-
-    INSERT ls_scimessage INTO TABLE scimessages.
 
   ENDMETHOD.
 ENDCLASS.
