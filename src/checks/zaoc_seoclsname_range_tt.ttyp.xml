@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_TTYP" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <DD40V>
+    <TYPENAME>ZAOC_SEOCLSNAME_RANGE_TT</TYPENAME>
+    <DDLANGUAGE>E</DDLANGUAGE>
+    <ROWTYPE>ZAOC_SEOCLSNAME_RANGE</ROWTYPE>
+    <ROWKIND>S</ROWKIND>
+    <DATATYPE>STRU</DATATYPE>
+    <ACCESSMODE>T</ACCESSMODE>
+    <KEYDEF>D</KEYDEF>
+    <KEYKIND>N</KEYKIND>
+    <DDTEXT>SEOCLSNAME Range</DDTEXT>
+    <TTYPKIND>R</TTYPKIND>
+    <RANGE_CTYP>SEOCLSNAME</RANGE_CTYP>
+    <CTDATATYPE>CHAR</CTDATATYPE>
+    <CTLENG>000030</CTLENG>
+   </DD40V>
+  </asx:values>
+ </asx:abap>
+</abapGit>
