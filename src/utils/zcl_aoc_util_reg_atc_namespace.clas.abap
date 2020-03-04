@@ -84,7 +84,7 @@ CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    IF lv_namespace IS INITIAL OR lv_namespace = '/0CUST/'.
+    IF lv_namespace IS INITIAL OR lv_namespace = '/0CUST/' OR lv_namespace = '/0SAP/'.
       RETURN.
     ENDIF.
 
@@ -112,7 +112,7 @@ CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
         invalid_prefix      = 1
         invalid_object_type = 2
         OTHERS              = 3.
-    IF sy-subrc <> 0 OR lv_namespace = '/0CUST/'.
+    IF sy-subrc <> 0 OR lv_namespace = '/0CUST/' OR lv_namespace = '/0SAP/'.
       RETURN.
     ENDIF.
 
