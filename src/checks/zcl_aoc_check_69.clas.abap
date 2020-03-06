@@ -381,7 +381,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    REPLACE FIRST OCCURRENCE OF '[:type:]'
+    REPLACE ALL OCCURRENCES OF '[:type:]'
       IN lv_regex
       WITH determine_type_prefix( lo_generic ).
 
@@ -455,7 +455,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       lv_regex = ms_naming-proc_pgfisy.
     ENDIF.
 
-    REPLACE FIRST OCCURRENCE OF '[:type:]'
+    REPLACE ALL OCCURRENCES OF '[:type:]'
       IN lv_regex
       WITH determine_type_prefix( lo_generic ).
 
@@ -483,7 +483,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      REPLACE FIRST OCCURRENCE OF '[:type:]'
+      REPLACE ALL OCCURRENCES OF '[:type:]'
         IN lv_regex
         WITH determine_type_prefix( lo_generic ).
 
@@ -974,7 +974,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       lv_regex = iv_scope.
     ENDIF.
 
-    REPLACE FIRST OCCURRENCE OF '[:type:]'
+    REPLACE ALL OCCURRENCES OF '[:type:]'
       IN lv_regex
       WITH determine_type_prefix( lo_generic ).
 
@@ -1111,7 +1111,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       lv_regex = ms_naming-proc_pgfisy.
     ENDIF.
 
-    REPLACE FIRST OCCURRENCE OF '[:type:]'
+    REPLACE ALL OCCURRENCES OF '[:type:]'
       IN lv_regex
       WITH determine_type_prefix( lo_generic ).
 
