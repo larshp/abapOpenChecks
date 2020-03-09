@@ -65,26 +65,40 @@ CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
         ENDIF.
       ENDLOOP.
 
-    ENDIF.
+      IF lv_namespace IS INITIAL OR lv_namespace = '/0CUST/' OR lv_namespace = '/0SAP/'.
+        RETURN.
+      ENDIF.
 
-    rt_reg_namespaces = gt_reg_namespaces.
+      rt_reg_namespaces = gt_reg_namespaces.
 
-  ENDMETHOD.
+    ENDMETHOD.
 
-  METHOD get_r_fugr_uxx_from_namespaces.
+    METHOD get_r_fugr_uxx_from_namespaces.
 
-    DATA: ls_r_includes LIKE LINE OF rt_r_includes.
+      DATA: ls_r_includes LIKE LINE OF rt_r_includes.
 
-    FIELD-SYMBOLS: <ls_reg_namespace> LIKE LINE OF it_reg_namespaces.
+      FIELD-SYMBOLS: <ls_reg_namespace> LIKE LINE OF it_reg_namespaces.
 
 
-    LOOP AT it_reg_namespaces ASSIGNING <ls_reg_namespace>.
-      CLEAR: ls_r_includes.
-      ls_r_includes-sign   = 'I'.
-      ls_r_includes-option = 'CP'.
-      ls_r_includes-low    = |{ <ls_reg_namespace>-namespace }L*UXX|.
-      APPEND ls_r_includes TO rt_r_includes.
-    ENDLOOP.
+      CALL FUNCTION 'TRINT_GET_NAMESPACE'
+      EXPORTING
+        iv_pgmid            = iv_pgmid
+        iv_object           = iv_object
+        iv_obj_name         = lv_obj_name
+      IMPORTING
+        ev_namespace        = lv_namespace
+      EXCEPTIONS
+        invalid_prefix      = 1
+        invalid_object_type = 2
+        OTHERS              = 3.
+      IF sy-subrc <> 0 OR lv_namespace = '/0CUST/' OR lv_namespace = '/0SAP/'.
+        RETURN.
+      ENDIF.
 
-  ENDMETHOD.
+      lv_len_ns = strlen( lv_namespace ).
+
+      rs_ns_object-namespace = lv_namespace.
+      rs_ns_object-object    = iv_obj_name+lv_len_ns.
+
+    ENDMETHOD.
 ENDCLASS.

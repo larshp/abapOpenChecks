@@ -144,7 +144,8 @@
     "method_length": {
       "errorWhenEmpty": false,
       "statements": 100,
-      "ignoreTestClasses": false
+      "ignoreTestClasses": false,
+      "exclude": ["zcl_aoc_check_69"]
     },
     "method_parameter_names": {
       "ignoreExceptions": true,

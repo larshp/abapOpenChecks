@@ -113,7 +113,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
+CLASS zcl_aoc_check_69 IMPLEMENTATION.
 
 
   METHOD analyze_statements.
@@ -381,7 +381,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    REPLACE FIRST OCCURRENCE OF '[:type:]'
+    REPLACE ALL OCCURRENCES OF '[:type:]'
       IN lv_regex
       WITH determine_type_prefix( lo_generic ).
 
@@ -455,7 +455,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       lv_regex = ms_naming-proc_pgfisy.
     ENDIF.
 
-    REPLACE FIRST OCCURRENCE OF '[:type:]'
+    REPLACE ALL OCCURRENCES OF '[:type:]'
       IN lv_regex
       WITH determine_type_prefix( lo_generic ).
 
@@ -483,7 +483,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      REPLACE FIRST OCCURRENCE OF '[:type:]'
+      REPLACE ALL OCCURRENCES OF '[:type:]'
         IN lv_regex
         WITH determine_type_prefix( lo_generic ).
 
@@ -974,7 +974,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       lv_regex = iv_scope.
     ENDIF.
 
-    REPLACE FIRST OCCURRENCE OF '[:type:]'
+    REPLACE ALL OCCURRENCES OF '[:type:]'
       IN lv_regex
       WITH determine_type_prefix( lo_generic ).
 
@@ -1111,7 +1111,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
       lv_regex = ms_naming-proc_pgfisy.
     ENDIF.
 
-    REPLACE FIRST OCCURRENCE OF '[:type:]'
+    REPLACE ALL OCCURRENCES OF '[:type:]'
       IN lv_regex
       WITH determine_type_prefix( lo_generic ).
 
@@ -1410,6 +1410,7 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
 
       rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
                                           is_check      = ls_check ).
+
       IF rv_skip = abap_false.
         CLEAR ls_check.
         _append import 'I_REQUNR'.
@@ -1424,6 +1425,118 @@ CLASS ZCL_AOC_CHECK_69 IMPLEMENTATION.
         _append tables 'I_T_SELECT'.
         _append tables 'I_T_FIELDS'.
         _append tables 'E_T_DATA'.
+
+        rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                            is_check      = ls_check ).
+      ENDIF.
+
+      IF rv_skip = abap_false.
+        CLEAR ls_check.
+        _append import 'I_REQUNR'.
+        _append import 'I_ISOURCE'.
+        _append import 'I_MAXSIZE'.
+        _append import 'I_INITFLAG'.
+        _append import 'I_UPDMODE'.
+        _append import 'I_DATAPAKID'.
+        _append import 'I_PRIVATE_MODE'.
+        _append import 'I_CALLMODE'.
+        _append import 'I_REMOTE_CALL'.
+        _append tables 'I_T_SELECT'.
+        _append tables 'I_T_FIELDS'.
+        _append tables 'E_T_DATA'.
+        _append tables 'E_T_SOURCE_STRUCTURE_NAME'.
+
+        rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                            is_check      = ls_check ).
+      ENDIF.
+
+      IF rv_skip = abap_false.
+        CLEAR ls_check.
+        _append import 'I_REQUNR'.
+        _append import 'I_DSOURCE'.
+        _append import 'I_MAXSIZE'.
+        _append import 'I_INITFLAG'.
+        _append import 'I_READ_ONLY'.
+        _append import 'I_REMOTE_CALL'.
+        _append import 'I_PRIVATE_MODE'.
+        _append tables 'I_T_SELECT'.
+        _append tables 'I_T_FIELDS'.
+        _append tables 'E_T_DATA'.
+
+        rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                            is_check      = ls_check ).
+      ENDIF.
+
+      IF rv_skip = abap_false.
+        CLEAR ls_check.
+        _append import 'I_REQUNR'.
+        _append import 'I_ISOURCE'.
+        _append import 'I_MAXSIZE'.
+        _append import 'I_INITFLAG'.
+        _append import 'I_UPDMODE'.
+        _append import 'I_DATAPAKID'.
+        _append import 'I_PRIVATE_MODE'.
+        _append import 'I_CALLMODE'.
+        _append import 'I_REMOTE_CALL'.
+        _append tables 'I_T_SELECT'.
+        _append tables 'I_T_FIELDS'.
+        _append tables 'E_T_DATA'.
+        _append tables 'E_T_SELECT'.
+
+        rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                            is_check      = ls_check ).
+      ENDIF.
+
+      IF rv_skip = abap_false.
+        CLEAR ls_check.
+        _append import 'I_REQUNR'.
+        _append import 'I_CHABASNM'.
+        _append import 'I_MAXSIZE'.
+        _append import 'I_INITFLAG'.
+        _append import 'I_UPDMODE'.
+        _append import 'I_DATAPAKID'.
+        _append import 'I_S_TIMEINT'.
+        _append import 'I_REMOTE_CALL'.
+        _append tables 'I_T_SELECT'.
+        _append tables 'I_T_FIELDS'.
+        _append tables 'E_T_SOURCE_STRUCTURE_NAME'.
+
+        rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                            is_check      = ls_check ).
+      ENDIF.
+
+      IF rv_skip = abap_false.
+        CLEAR ls_check.
+        _append import 'I_REQUNR'.
+        _append import 'I_RLOGSYS'.
+        _append import 'I_UPDMODE'.
+        _append import 'I_ISOURCE'.
+        _append import 'I_S_PARAMS'.
+        _append import 'I_INITFLAG'.
+        _append import 'I_DATAPAKID'.
+        _append import 'I_READ_ONLY'.
+        _append import 'I_REMOTE_CALL'.
+        _append tables 'I_T_SELECT'.
+        _append tables 'I_T_FIELDS'.
+        _append tables 'E_T_DATA'.
+
+        rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                            is_check      = ls_check ).
+      ENDIF.
+
+      IF rv_skip = abap_false.
+        CLEAR ls_check.
+        _append import 'I_REQUNR'.
+        _append import 'I_CHABASNM'.
+        _append import 'I_MAXSIZE'.
+        _append import 'I_INITFLAG'.
+        _append import 'I_UPDMODE'.
+        _append import 'I_DATAPAKID'.
+        _append import 'I_S_TIMEINT'.
+        _append import 'I_REMOTE_CALL'.
+        _append tables 'I_T_LANGU'.
+        _append tables 'I_T_SELECT'.
+        _append tables 'E_T_TEXTS'.
 
         rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
                                             is_check      = ls_check ).
