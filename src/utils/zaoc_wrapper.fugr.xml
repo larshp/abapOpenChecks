@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_FUGR" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <AREAT>abapOpenChecks - Wrapper</AREAT>
+   <INCLUDES>
+    <SOBJ_NAME>LZAOC_WRAPPERTOP</SOBJ_NAME>
+    <SOBJ_NAME>SAPLZAOC_WRAPPER</SOBJ_NAME>
+   </INCLUDES>
+   <FUNCTIONS>
+    <item>
+     <FUNCNAME>ZAOC_OBJ_DOKU_GET_XSTRING_RFC</FUNCNAME>
+     <REMOTE_CALL>R</REMOTE_CALL>
+     <SHORT_TEXT>abapOpenChecks - RFC-Wrapper LXE_OBJ_DOKU_GET_XSTRING</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>LANG</PARAMETER>
+       <TYP>SPRAS</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>OBJTYPE</PARAMETER>
+       <TYP>LXEOBJTYPE</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>OBJNAME</PARAMETER>
+       <TYP>LXEOBJNAME</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>VERSION</PARAMETER>
+       <DEFAULT>&apos;&apos;</DEFAULT>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>NUMC4</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>SH_EMPTY</PARAMETER>
+       <DEFAULT>&apos;&apos;</DEFAULT>
+       <OPTIONAL>X</OPTIONAL>
+       <TYP>CHAR1</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>HEADER</PARAMETER>
+       <TYP>THEAD</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>CONTENT</PARAMETER>
+       <TYP>XSTRING</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>PSTATUS</PARAMETER>
+       <TYP>LXESTATPRC</TYP>
+      </RSEXP>
+      <RSEXP>
+       <PARAMETER>K_SINK</PARAMETER>
+       <TYP>LXEUNITLIN</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>LANG</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Language Key</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>OBJTYPE</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Type of Translation Object</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>OBJNAME</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Name of Translation Object</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>VERSION</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Count parameters</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>SH_EMPTY</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Single-Character Indicator</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>HEADER</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>SAPscript: Text Header</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>CONTENT</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>PSTATUS</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Process Status</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>K_SINK</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>Translation Unit for Short Text (Line)</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+   </FUNCTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>
