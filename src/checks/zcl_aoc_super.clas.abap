@@ -432,6 +432,7 @@ CLASS zcl_aoc_super IMPLEMENTATION.
           lv_line         LIKE p_line,
           lv_column       LIKE p_column,
           lv_checksum_1   TYPE int4.
+    FIELD-SYMBOLS: <lv_checksum_1_input> TYPE int4.
 
     FIELD-SYMBOLS: <ls_message> LIKE LINE OF scimessages.
 
@@ -525,8 +526,10 @@ CLASS zcl_aoc_super IMPLEMENTATION.
 
     set_uses_checksum( is_checksum_enabled( ) ).
 
-    IF p_checksum_1 IS NOT INITIAL.
-      lv_checksum_1 = p_checksum_1.
+    ASSIGN ('P_CHECKSUM_1') TO <lv_checksum_1_input>.
+
+    IF sy-subrc = 0 AND <lv_checksum_1_input> IS NOT INITIAL.
+      lv_checksum_1 = <lv_checksum_1_input>.
     ELSE.
       lv_checksum_1 = get_checksum( p_position ).
     ENDIF.
