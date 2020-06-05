@@ -93,7 +93,7 @@ CLASS zcl_aoc_check_02 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
-    set_uses_checksum( ).
+    enable_checksum( ).
 
     mv_check = abap_true.
     mv_exit  = abap_true.
