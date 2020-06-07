@@ -103,7 +103,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_super IMPLEMENTATION.
+CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
 
   METHOD check.
@@ -524,8 +524,9 @@ CLASS zcl_aoc_super IMPLEMENTATION.
         p_param_2      = p_param_2
         p_param_3      = p_param_3
         p_param_4      = p_param_4
-        p_inclspec     = p_inclspec ).
-* parameters p_detail and p_checksum_1 does not exist in 730
+        p_inclspec     = p_inclspec
+        p_detail       = p_detail
+        p_checksum_1   = p_checksum_1 ).
 
   ENDMETHOD.
 
