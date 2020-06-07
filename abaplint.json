@@ -69,7 +69,7 @@
     "rfc_error_handling": false,
     "space_before_dot": true,
     "type_form_parameters": true,
-    "use_new": true,
+    "use_new": false,
     "7bit_ascii": true,
     "avoid_use": {
       "define": false,
