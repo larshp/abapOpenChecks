@@ -23,7 +23,7 @@ For running Continuous Integration outside the ABAP platform see https://abaplin
 - unit testable without creating new objects in customer system
 - only english supported
 
-Version requirement: 702 or higher
+Version requirement: v740sp02 or higher
 
 ## [Documentation](http://docs.abapopenchecks.org)
 
