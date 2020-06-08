@@ -403,7 +403,7 @@ CLASS ZCL_AOC_CHECK_100 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
-    set_uses_checksum( ).
+    enable_checksum( ).
 
     insert_scimessage( iv_code = ci_error_code-inline_declarations iv_text = 'Inline Declarations detected'(m01) ).
     insert_scimessage( iv_code = ci_error_code-constructor_operators iv_text = 'Constructor Operators detected'(m02) ).
