@@ -173,7 +173,7 @@ CLASS zcl_aoc_check_03 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
-    set_uses_checksum( ).
+    enable_checksum( ).
 
     insert_scimessage(
         iv_code = '001'
