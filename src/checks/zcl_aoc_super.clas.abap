@@ -570,14 +570,18 @@ CLASS zcl_aoc_super IMPLEMENTATION.
       set_uses_checksum( abap_false ).
     ELSE.
 
-      CALL METHOD ('GET_STMT_CHECKSUM')
-        EXPORTING
-          p_position = iv_position
-          p_version  = 2
-        CHANGING
-          p_checksum = ls_checksum
-        EXCEPTIONS
-          error      = 0.
+      TRY.
+          CALL METHOD ('GET_STMT_CHECKSUM')
+            EXPORTING
+              p_position = iv_position
+              p_version  = 2
+            CHANGING
+              p_checksum = ls_checksum
+            EXCEPTIONS
+              error      = 0.
+        CATCH cx_sy_dyn_call_illegal_method.
+          RETURN.
+      ENDTRY.
 
       rv_checksum = ls_checksum-i1.
 
