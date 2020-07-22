@@ -116,7 +116,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_super IMPLEMENTATION.
+CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
 
   METHOD check.
@@ -269,6 +269,11 @@ CLASS zcl_aoc_super IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD enable_checksum.
+    mv_uses_checksum = abap_true.
+  ENDMETHOD.
+
+
   METHOD enable_rfc.
 * RFC enable the check, new feature for central ATC on 7.51
 
@@ -286,6 +291,54 @@ CLASS zcl_aoc_super IMPLEMENTATION.
   METHOD get_attributes.
 
     EXPORT mv_errty = mv_errty TO DATA BUFFER p_attributes.
+
+  ENDMETHOD.
+
+
+  METHOD get_checksum.
+
+    DATA: ls_statement TYPE sstmnt,
+          ls_checksum  TYPE sci_crc64.
+
+    IF is_checksum_enabled( ) = abap_false.
+      RETURN.
+    ENDIF.
+
+    READ TABLE ref_scan->statements INDEX iv_position  INTO ls_statement.
+
+    IF sy-subrc <> 0 OR ls_statement-type = 'P' OR ls_statement-type = 'S' OR ls_statement-type = 'G'.
+      set_uses_checksum( abap_false ).
+    ELSE.
+
+      TRY.
+          CALL METHOD ('GET_STMT_CHECKSUM')
+            EXPORTING
+              p_position = iv_position
+              p_version  = 2
+            CHANGING
+              p_checksum = ls_checksum
+            EXCEPTIONS
+              error      = 0.
+        CATCH cx_sy_dyn_call_param_not_found.
+          TRY.
+* parameter "p_version" does not exist in 751
+              CALL METHOD ('GET_STMT_CHECKSUM')
+                EXPORTING
+                  p_position = iv_position
+                CHANGING
+                  p_checksum = ls_checksum
+                EXCEPTIONS
+                  error      = 0.
+            CATCH cx_sy_dyn_call_illegal_method.
+              RETURN.
+          ENDTRY.
+        CATCH cx_sy_dyn_call_illegal_method.
+          RETURN.
+      ENDTRY.
+
+      rv_checksum = ls_checksum-i1.
+
+    ENDIF.
 
   ENDMETHOD.
 
@@ -555,37 +608,6 @@ CLASS zcl_aoc_super IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD get_checksum.
-
-    DATA: ls_statement TYPE sstmnt,
-          ls_checksum  TYPE sci_crc64.
-
-    IF is_checksum_enabled( ) = abap_false.
-      RETURN.
-    ENDIF.
-
-    READ TABLE ref_scan->statements INDEX iv_position  INTO ls_statement.
-
-    IF sy-subrc <> 0 OR ls_statement-type = 'P' OR ls_statement-type = 'S' OR ls_statement-type = 'G'.
-      set_uses_checksum( abap_false ).
-    ELSE.
-
-      CALL METHOD ('GET_STMT_CHECKSUM')
-        EXPORTING
-          p_position = iv_position
-          p_version  = 2
-        CHANGING
-          p_checksum = ls_checksum
-        EXCEPTIONS
-          error      = 0.
-
-      rv_checksum = ls_checksum-i1.
-
-    ENDIF.
-
-  ENDMETHOD.
-
-
   METHOD insert_scimessage.
 
 * Insert entry into table scimessages, this table is used to determine the message text for a finding.
@@ -599,6 +621,11 @@ CLASS zcl_aoc_super IMPLEMENTATION.
 
     INSERT ls_scimessage INTO TABLE scimessages.
 
+  ENDMETHOD.
+
+
+  METHOD is_checksum_enabled.
+    rv_enabled = mv_uses_checksum.
   ENDMETHOD.
 
 
@@ -698,16 +725,6 @@ CLASS zcl_aoc_super IMPLEMENTATION.
 
     INSERT ls_source INTO TABLE mt_source.
 
-  ENDMETHOD.
-
-
-  METHOD enable_checksum.
-    mv_uses_checksum = abap_true.
-  ENDMETHOD.
-
-
-  METHOD is_checksum_enabled.
-    rv_enabled = mv_uses_checksum.
   ENDMETHOD.
 
 
