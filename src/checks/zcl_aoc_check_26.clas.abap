@@ -44,7 +44,8 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
           lv_as4user   TYPE dd02l-as4user,
           ls_result    TYPE zcl_aoc_parser=>ty_result,
           lv_include   TYPE program,
-          lv_statement TYPE string.
+          lv_statement TYPE string,
+          lv_index     TYPE sy-tabix.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
                    <ls_rt>        LIKE LINE OF ls_result-tokens,
@@ -52,6 +53,7 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement> WHERE type = io_scan->gc_statement-standard.
+      lv_index = sy-tabix.
 
       CLEAR lv_keyword1.
       CLEAR lv_keyword2.
@@ -110,6 +112,7 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
         lv_include = io_scan->get_include( <ls_statement>-level ).
 
         inform( p_sub_obj_name = lv_include
+                p_position     = lv_index
                 p_line         = <ls_token>-row
                 p_kind         = mv_errty
                 p_test         = myname
@@ -138,7 +141,8 @@ CLASS ZCL_AOC_CHECK_26 IMPLEMENTATION.
 
     insert_scimessage(
         iv_code = '001'
-        iv_text = 'No direct changes to standard tables, &1'(m01) ).
+        iv_text = 'No direct changes to standard tables, &1'(m01)
+        iv_pcom = '"#EC AOC_STD_TABLE' ).
 
   ENDMETHOD.
 
