@@ -29,7 +29,7 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
     FIELD-SYMBOLS <ls_statement> LIKE LINE OF io_scan->statements.
     FIELD-SYMBOLS <ls_token>     LIKE LINE OF io_scan->tokens.
 
-    DATA l_condition_start_token_index TYPE i.
+    DATA lv_condition_start_token_index TYPE i.
 
     LOOP AT io_scan->structures ASSIGNING <ls_structure>
         WHERE stmnt_type = zcl_aoc_scan=>gc_structure_statement-if
@@ -49,15 +49,15 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
 
           IF <ls_token>-str = 'IF' OR <ls_token>-str = 'ELSEIF'
               OR <ls_token>-str = 'AND' OR <ls_token>-str = 'OR' OR <ls_token>-str = '('.
-            l_condition_start_token_index = sy-tabix.
+            lv_condition_start_token_index = sy-tabix.
             CONTINUE.
-          ELSEIF l_condition_start_token_index IS INITIAL.
+          ELSEIF lv_condition_start_token_index IS INITIAL.
             CONTINUE.
           ENDIF.
 
-          IF sy-tabix = l_condition_start_token_index + 1.
+          IF sy-tabix = lv_condition_start_token_index + 1.
             IF <ls_token>-str <> 'NOT'.
-              CLEAR l_condition_start_token_index.
+              CLEAR lv_condition_start_token_index.
             ENDIF.
             CONTINUE.
           ENDIF.
