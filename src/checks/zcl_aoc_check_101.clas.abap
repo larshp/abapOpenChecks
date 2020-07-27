@@ -1,17 +1,17 @@
-class ZCL_AOC_CHECK_101 definition
-  public
-  inheriting from ZCL_AOC_SUPER
-  create public .
+CLASS zcl_aoc_check_101 DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_aoc_super
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods CONSTRUCTOR .
+    METHODS constructor .
 
-  methods CHECK
-    redefinition .
-  protected section.
+    METHODS check
+         REDEFINITION .
+  PROTECTED SECTION.
 
-private section.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -75,7 +75,7 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
   ENDMETHOD.
 
 
-  method constructor.
+  METHOD constructor.
 
     super->constructor( ).
 
@@ -91,5 +91,5 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
         iv_code = '001'
         iv_text = 'Prefer IS NOT to NOT IS'(m01) ).
 
-  endmethod.
+  ENDMETHOD.
 ENDCLASS.
