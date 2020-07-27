@@ -3,52 +3,52 @@
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-class ltcl_test definition for testing
-  duration short
-  risk level harmless
-  final.
+CLASS ltcl_test DEFINITION FOR TESTING
+  DURATION SHORT
+  RISK LEVEL HARMLESS
+  FINAL.
 
-  private section.
+  PRIVATE SECTION.
 * ================
 
-    data: mt_code   type string_table,
-          ms_result type scirest_ad,
-          mo_check  type ref to zcl_aoc_check_101.
+    DATA: mt_code   TYPE string_table,
+          ms_result TYPE scirest_ad,
+          mo_check  TYPE REF TO zcl_aoc_check_101.
 
-    methods:
+    METHODS:
       setup,
-      export_import for testing,
-      test001_01 for testing,
-      test001_02 for testing,
-      test001_03 for testing raising cx_static_check,
+      export_import FOR TESTING,
+      test001_01 FOR TESTING,
+      test001_02 FOR TESTING,
+      test001_03 FOR TESTING RAISING cx_static_check,
       test001_04 FOR TESTING RAISING cx_static_check,
       test001_05 FOR TESTING RAISING cx_static_check,
       test001_06 FOR TESTING RAISING cx_static_check.
 
-endclass.       "lcl_Test
+ENDCLASS.       "lcl_Test
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_Test IMPLEMENTATION
 *----------------------------------------------------------------------*
 *
 *----------------------------------------------------------------------*
-class ltcl_test implementation.
+CLASS ltcl_test IMPLEMENTATION.
 * ==============================
 
-  define _code.
+  DEFINE _code.
     APPEND &1 TO mt_code.
-  end-of-definition.
+  END-OF-DEFINITION.
 
-  method setup.
-    create object mo_check.
+  METHOD setup.
+    CREATE OBJECT mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
-  endmethod.                                               "setup
+  ENDMETHOD.                                               "setup
 
-  method export_import.
+  METHOD export_import.
     zcl_aoc_unit_test=>export_import( mo_check ).
-  endmethod.
+  ENDMETHOD.
 
-  method test001_01.
+  METHOD test001_01.
 * ===========
 
     _code 'IF foo IS NOT INITIAL.'.
@@ -59,9 +59,9 @@ class ltcl_test implementation.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  endmethod.                                               "test1
+  ENDMETHOD.                                               "test1
 
-  method test001_02.
+  METHOD test001_02.
 * ===========
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
@@ -74,9 +74,9 @@ class ltcl_test implementation.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
-  endmethod.                                               "test2
+  ENDMETHOD.                                               "test2
 
-  method test001_03.
+  METHOD test001_03.
 * ===========
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
@@ -89,12 +89,12 @@ class ltcl_test implementation.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
-  endmethod.                                               "test2
+  ENDMETHOD.                                               "test2
 
-  method test001_04.
+  METHOD test001_04.
 * ===========
 
-    _code 'IF NOT ( foo IS INITIAL ).'.   "Not handled by check
+    _code 'IF NOT ( foo IS INITIAL ).'.                    "Not handled by check
     _code '  foo = foo + 1.'.
     _code 'ENDIF.'.
 
@@ -102,13 +102,13 @@ class ltcl_test implementation.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method test001_05.
+  METHOD test001_05.
 * ===========
 
-    _code 'IF ( NOT foo IS INITIAL ).'.   "Not handled by check
+    _code 'IF ( NOT foo IS INITIAL ).'.                    "Not handled by check
     _code '  foo = foo + 1.'.
     _code 'ENDIF.'.
 
@@ -116,18 +116,18 @@ class ltcl_test implementation.
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
-  endmethod.
+  ENDMETHOD.
 
 
-  method test001_06.
+  METHOD test001_06.
 * ===========
 
-    _code 'IF lines( foo ) > 1.'.   "Not handled by check
+    _code 'IF lines( foo ) > 1.'.                          "Not handled by check
     _code '  bar = bar + 1.'.
     _code 'ENDIF.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
-  endmethod.
-endclass.       "lcl_Test
+  ENDMETHOD.
+ENDCLASS.       "lcl_Test

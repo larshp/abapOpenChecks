@@ -29,14 +29,14 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
     FIELD-SYMBOLS <ls_statement> LIKE LINE OF io_scan->statements.
     FIELD-SYMBOLS <ls_token>     LIKE LINE OF io_scan->tokens.
 
-    DATA condition_start_token_index TYPE i.
+    DATA l_condition_start_token_index TYPE i.
 
     LOOP AT io_scan->structures ASSIGNING <ls_structure>
         WHERE stmnt_type = zcl_aoc_scan=>gc_structure_statement-if
         OR stmnt_type = zcl_aoc_scan=>gc_structure_statement-elseif.
 
       LOOP AT io_scan->statements ASSIGNING <ls_statement>
-         FROM <ls_structure>-stmnt_from TO <ls_structure>-stmnt_to
+          FROM <ls_structure>-stmnt_from TO <ls_structure>-stmnt_to
           WHERE type <> io_scan->gc_statement-empty
           AND type <> io_scan->gc_statement-comment
           AND type <> io_scan->gc_statement-comment_in_stmnt
@@ -49,15 +49,15 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
 
           IF <ls_token>-str = 'IF' OR <ls_token>-str = 'ELSEIF'
               OR <ls_token>-str = 'AND' OR <ls_token>-str = 'OR' OR <ls_token>-str = '('.
-            condition_start_token_index = sy-tabix.
+            l_condition_start_token_index = sy-tabix.
             CONTINUE.
-          ELSEIF condition_start_token_index IS INITIAL.
+          ELSEIF l_condition_start_token_index IS INITIAL.
             CONTINUE.
           ENDIF.
 
-          IF sy-tabix = condition_start_token_index + 1.
+          IF sy-tabix = l_condition_start_token_index + 1.
             IF <ls_token>-str <> 'NOT'.
-              CLEAR condition_start_token_index.
+              CLEAR l_condition_start_token_index.
             ENDIF.
             CONTINUE.
           ENDIF.
