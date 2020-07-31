@@ -24,7 +24,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
-      test001_04 FOR TESTING.
+      test001_04 FOR TESTING,
+      test002_01 FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
 
@@ -46,12 +47,12 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test000_01.
 
     _code 'TRY.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH ZCX_ABAPGIT_2FA_ERROR.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_ROOT.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_SY_ITAB_LINE_NOT_FOUND.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH ZCX_ABAPGIT_2FA_ERROR.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_ROOT.'.
     _code 'ENDTRY.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -63,10 +64,10 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test000_02.
 
     _code 'TRY.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
-    _code 'ZCX_ABAPGIT_2FA_ERROR '.
-    _code 'CX_ROOT.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
+    _code '      ZCX_ABAPGIT_2FA_ERROR '.
+    _code '      CX_ROOT.'.
     _code 'ENDTRY.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -78,11 +79,11 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test000_03.
 
     _code 'TRY.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
-    _code 'ZCX_ABAPGIT_2FA_ERROR.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_ROOT.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
+    _code '    ZCX_ABAPGIT_2FA_ERROR.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_ROOT.'.
     _code 'ENDTRY.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -94,19 +95,19 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test000_04.
     " more then one try-catch
     _code 'TRY.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
-    _code 'ZCX_ABAPGIT_2FA_ERROR.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_ROOT.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
+    _code '      ZCX_ABAPGIT_2FA_ERROR.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_ROOT.'.
     _code 'ENDTRY.'.
 
     _code 'TRY.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
-    _code 'ZCX_ABAPGIT_2FA_ERROR.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_ROOT.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
+    _code '      ZCX_ABAPGIT_2FA_ERROR.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_ROOT.'.
     _code 'ENDTRY.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -118,10 +119,10 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_01.
 
     _code 'TRY.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND.'.
-    _code 'CATCH ZCX_ABAPGIT_2FA_ERROR.'.
-    _code 'CATCH CX_ROOT.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_SY_ITAB_LINE_NOT_FOUND.'.
+    _code '  CATCH ZCX_ABAPGIT_2FA_ERROR.'.
+    _code '  CATCH CX_ROOT.'.
     _code 'ENDTRY.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -134,11 +135,11 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_02.
 
     _code 'TRY.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH ZCX_ABAPGIT_2FA_ERROR.'.
-    _code 'CATCH CX_ROOT.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_SY_ITAB_LINE_NOT_FOUND.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH ZCX_ABAPGIT_2FA_ERROR.'.
+    _code '  CATCH CX_ROOT.'.
     _code 'ENDTRY.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -151,10 +152,10 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_03.
 
     _code 'TRY.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
-    _code 'ZCX_ABAPGIT_2FA_ERROR.'.
-    _code 'CATCH CX_ROOT.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
+    _code '    ZCX_ABAPGIT_2FA_ERROR.'.
+    _code '  CATCH CX_ROOT.'.
     _code 'ENDTRY.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -167,17 +168,17 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_04.
     " more then one try-catch
     _code 'TRY.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
-    _code 'ZCX_ABAPGIT_2FA_ERROR.'.
-    _code 'CATCH CX_ROOT.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_SY_ITAB_LINE_NOT_FOUND '.
+    _code '    ZCX_ABAPGIT_2FA_ERROR.'.
+    _code '  CATCH CX_ROOT.'.
     _code 'ENDTRY.'.
 
     _code 'TRY.'.
-    _code 'CHECK 1 = 2.'.
-    _code 'CATCH CX_SY_ITAB_LINE_NOT_FOUND.'.
-    _code 'CATCH ZCX_ABAPGIT_2FA_ERROR.'.
-    _code 'CATCH CX_ROOT.'.
+    _code '    CHECK 1 = 2.'.
+    _code '  CATCH CX_SY_ITAB_LINE_NOT_FOUND.'.
+    _code '  CATCH ZCX_ABAPGIT_2FA_ERROR.'.
+    _code '  CATCH CX_ROOT.'.
     _code 'ENDTRY.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -186,4 +187,18 @@ CLASS ltcl_test IMPLEMENTATION.
                                         act = ms_result-code ).
   ENDMETHOD.
 
+
+  METHOD test002_01.
+    " no try/catch
+    _code 'IF sy-datum = ''200720''.'.
+    _code '  WRITE 1.'.
+    _code 'ELSE.'.
+    _code '  WRITE 2.'.
+    _code 'ENDIF'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
 ENDCLASS.
