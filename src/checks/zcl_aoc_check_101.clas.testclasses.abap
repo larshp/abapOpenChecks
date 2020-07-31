@@ -70,7 +70,7 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
-    _code 'IF NOT foo IS INITIAL'.
+    _code 'IF NOT foo IS INITIAL.'.
     _code '  foo = foo + 1.'.
     _code 'ENDIF.'.
 
@@ -85,7 +85,7 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
-    _code 'IF foo IS NOT INITIAL AND NOT bar IS INITIAL'.
+    _code 'IF foo IS NOT INITIAL AND NOT bar IS INITIAL.'.
     _code '  foo = foo + 1.'.
     _code 'ENDIF.'.
 
@@ -113,7 +113,7 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_05.
 * ===========
 
-    _code 'IF ( NOT foo IS INITIAL ).'.                    "Not handled by check
+    _code 'IF ( NOT foo IS INITIAL ).'.
     _code '  foo = foo + 1.'.
     _code 'ENDIF.'.
 
@@ -177,7 +177,7 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test002_04.
 * ===========
 
-    _code 'IF matches( val = <ls_token>-str regex = `^\w*\[$` )'.
+    _code 'IF matches( val = <ls_token>-str regex = `^\w*\[$` ).'.
     _code '  WRITE 1.'.
     _code 'ENDIF.'.
 
@@ -189,9 +189,12 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test002_05.
 * ===========
 
-    _code 'IF not matches( val = <ls_token>-str regex = `^\w*\[$` )'.
-    _code '  WRITE 1.'.
-    _code 'ENDIF.'.
+    _code 'if not line_exists( foo['.
+    _code '    var1 = 1'.
+    _code '    var2 = 2 ] ).'.
+    _code '  select * from mara into table lt_mara'.
+    _code '    where matnr = ls_matnr.'.
+    _code ' endif.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 

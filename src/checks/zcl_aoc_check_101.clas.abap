@@ -53,7 +53,8 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
           AND type <> io_scan->gc_statement-macro_definition
           AND type <> io_scan->gc_statement-pragma.
 
-        CLEAR: lv_has_relational_operator, lv_is_in_table_expression, lv_is_in_function.
+        CLEAR: lv_condition_start_token_index, lv_has_relational_operator,
+               lv_is_in_table_expression, lv_is_in_function.
 
         LOOP AT io_scan->tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from TO <ls_statement>-to.
@@ -73,20 +74,6 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
             CONTINUE.
           ENDIF.
 
-
-          IF lv_is_in_table_expression = abap_true.
-            IF matches( val = <ls_token>-str regex = mc_table_expr_close_regex ).
-              CLEAR lv_is_in_table_expression.
-              CONTINUE.
-            ELSE.
-              CONTINUE.
-            ENDIF.
-          ELSEIF matches( val = <ls_token>-str regex = mc_table_expr_open_regex ).
-            lv_is_in_table_expression = abap_true.
-            CONTINUE.
-          ENDIF.
-
-
           IF lv_is_in_function = abap_true.
             IF <ls_token>-str = mc_function_close_string.
               CLEAR lv_is_in_function.
@@ -99,6 +86,18 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
             CONTINUE.
           ENDIF.
 
+
+          IF lv_is_in_table_expression = abap_true.
+            IF matches( val = <ls_token>-str regex = mc_table_expr_close_regex ).
+              CLEAR lv_is_in_table_expression.
+              CONTINUE.
+            ELSE.
+              CONTINUE.
+            ENDIF.
+          ELSEIF matches( val = <ls_token>-str regex = mc_table_expr_open_regex ).
+            lv_is_in_table_expression = abap_true.
+            CONTINUE.
+          ENDIF.
 
           IF <ls_token>-str IN mt_relation_operator_range.
             lv_has_relational_operator = abap_true.
@@ -133,8 +132,7 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
         iv_code = '001'
         iv_text = 'Prefer IS NOT to NOT IS'(m01) ).
 
-*    data relational_operator_range_line like line of mt_relation_operator_range.
-
+    "https://help.sap.com/doc/abapdocu_750_index_htm/7.50/en-US/abenlogexp_comp.htm
     APPEND VALUE #( sign = 'I' option = 'EQ' low = '=' ) TO mt_relation_operator_range.
     APPEND VALUE #( sign = 'I' option = 'EQ' low = 'EQ' ) TO mt_relation_operator_range.
     APPEND VALUE #( sign = 'I' option = 'EQ' low = '<>' ) TO mt_relation_operator_range.
@@ -166,6 +164,9 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
     APPEND VALUE #( sign = 'I' option = 'EQ' low = 'M' ) TO mt_relation_operator_range.
     APPEND VALUE #( sign = 'I' option = 'EQ' low = 'BETWEEN' ) TO mt_relation_operator_range.
     APPEND VALUE #( sign = 'I' option = 'EQ' low = 'IN' ) TO mt_relation_operator_range.
+
+    "IS for all the Predicate expressions : https://help.sap.com/doc/abapdocu_750_index_htm/7.50/en-US/abenpredicate_expressions.htm
+    APPEND VALUE #( sign = 'I' option = 'EQ' low = 'IS' ) TO mt_relation_operator_range.
 
   ENDMETHOD.
 ENDCLASS.
