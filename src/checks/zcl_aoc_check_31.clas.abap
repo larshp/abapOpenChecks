@@ -20,13 +20,15 @@ CLASS zcl_aoc_check_31 DEFINITION
   PROTECTED SECTION.
   PRIVATE SECTION.
 
-    DATA mt_error TYPE zaoc_slin_desc_key_range_tt .
-    DATA mt_warn TYPE zaoc_slin_desc_key_range_tt .
-    DATA mt_info TYPE zaoc_slin_desc_key_range_tt .
-    DATA mt_ignore TYPE zaoc_slin_desc_key_range_tt .
-    DATA mv_default_error TYPE flag .
+    CONSTANTS gc_english TYPE slin_desc_t-language VALUE 'E'.
+
+    DATA mt_error            TYPE zaoc_slin_desc_key_range_tt .
+    DATA mt_warn             TYPE zaoc_slin_desc_key_range_tt .
+    DATA mt_info             TYPE zaoc_slin_desc_key_range_tt .
+    DATA mt_ignore           TYPE zaoc_slin_desc_key_range_tt .
+    DATA mv_default_error    TYPE flag .
     DATA mv_default_standard TYPE flag .
-    DATA mv_default_atc TYPE flag .
+    DATA mv_default_atc      TYPE flag .
 
     METHODS set_flags
       RETURNING
@@ -75,6 +77,9 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
           CONCATENATE lv_text cl_abap_char_utilities=>newline lv_tmp INTO lv_text.
         ENDIF.
       ENDLOOP.
+
+      lv_tmp = |(SLIN code key: { lv_code })|.
+      CONCATENATE lv_text cl_abap_char_utilities=>newline lv_tmp INTO lv_text.
 
       IF lines( mt_error ) > 0 AND <ls_result>-code IN mt_error.
         lv_errty = c_error.
@@ -131,6 +136,11 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
 
   METHOD constructor.
 
+    DATA lt_slin_desc_t     TYPE STANDARD TABLE OF slin_desc_t WITH EMPTY KEY.
+    DATA ls_slin_desc_t     TYPE slin_desc_t.
+    DATA lv_code            TYPE sci_errc.
+    DATA lv_scimessage_text TYPE ty_scimessage_text.
+
     super->constructor( ).
 
     version  = '003'.
@@ -140,6 +150,21 @@ CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     mv_default_error = abap_true.
+
+    SELECT * FROM slin_desc_t INTO TABLE lt_slin_desc_t
+      WHERE language = sy-langu.
+    IF sy-subrc <> 0.
+      SELECT * FROM slin_desc_t INTO TABLE lt_slin_desc_t
+        WHERE language = gc_english.
+    ENDIF.
+
+    LOOP AT lt_slin_desc_t INTO ls_slin_desc_t.
+      lv_code            = ls_slin_desc_t-code_nr.
+      lv_scimessage_text = ls_slin_desc_t-description.
+      insert_scimessage(
+        iv_code = lv_code
+        iv_text = lv_scimessage_text ).
+    ENDLOOP.
 
   ENDMETHOD.
 
