@@ -81,20 +81,20 @@ CLASS zcl_aoc_check_101 IMPLEMENTATION.
             ELSE.
               CONTINUE.
             ENDIF.
-          ELSEIF matches( val = <ls_token>-str regex = mc_function_open_regex ).
+          ELSEIF boolc( matches( val = <ls_token>-str regex = mc_function_open_regex ) ) = abap_true.
             lv_is_in_function = abap_true.
             CONTINUE.
           ENDIF.
 
 
           IF lv_is_in_table_expression = abap_true.
-            IF matches( val = <ls_token>-str regex = mc_table_expr_close_regex ).
+            IF boolc( matches( val = <ls_token>-str regex = mc_table_expr_close_regex ) ) = abap_true.
               CLEAR lv_is_in_table_expression.
               CONTINUE.
             ELSE.
               CONTINUE.
             ENDIF.
-          ELSEIF matches( val = <ls_token>-str regex = mc_table_expr_open_regex ).
+          ELSEIF boolc( matches( val = <ls_token>-str regex = mc_table_expr_open_regex ) ) = abap_true.
             lv_is_in_table_expression = abap_true.
             CONTINUE.
           ENDIF.
