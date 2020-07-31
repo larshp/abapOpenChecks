@@ -133,8 +133,6 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
         iv_code = '001'
         iv_text = 'Prefer IS NOT to NOT IS'(m01) ).
 
-*    data relational_operator_range_line like line of mt_relation_operator_range.
-
     APPEND VALUE #( sign = 'I' option = 'EQ' low = '=' ) TO mt_relation_operator_range.
     APPEND VALUE #( sign = 'I' option = 'EQ' low = 'EQ' ) TO mt_relation_operator_range.
     APPEND VALUE #( sign = 'I' option = 'EQ' low = '<>' ) TO mt_relation_operator_range.
