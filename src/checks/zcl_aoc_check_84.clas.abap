@@ -35,8 +35,8 @@ CLASS zcl_aoc_check_84 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version  = '001'.
-    position = '085'.
+    version  = '002'.
+    position = '084'.
 
     has_documentation = abap_true.
     has_attributes = abap_true.
