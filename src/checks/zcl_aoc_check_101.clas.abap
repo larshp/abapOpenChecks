@@ -23,7 +23,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
+CLASS zcl_aoc_check_101 IMPLEMENTATION.
 
 
   METHOD check.
@@ -132,7 +132,6 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
         iv_code = '001'
         iv_text = 'Prefer IS NOT to NOT IS'(m01) ).
 
-
     "https://help.sap.com/doc/abapdocu_750_index_htm/7.50/en-US/abenlogexp_comp.htm
     APPEND VALUE #( sign = 'I' option = 'EQ' low = '=' ) TO mt_relation_operator_range.
     APPEND VALUE #( sign = 'I' option = 'EQ' low = 'EQ' ) TO mt_relation_operator_range.
@@ -166,7 +165,8 @@ CLASS ZCL_AOC_CHECK_101 IMPLEMENTATION.
     APPEND VALUE #( sign = 'I' option = 'EQ' low = 'BETWEEN' ) TO mt_relation_operator_range.
     APPEND VALUE #( sign = 'I' option = 'EQ' low = 'IN' ) TO mt_relation_operator_range.
 
-    "IS for all the Predicate expressions : https://help.sap.com/doc/abapdocu_750_index_htm/7.50/en-US/abenpredicate_expressions.htm
+    "IS for all the Predicate expressions :
+    "https://help.sap.com/doc/abapdocu_750_index_htm/7.50/en-US/abenpredicate_expressions.htm
     APPEND VALUE #( sign = 'I' option = 'EQ' low = 'IS' ) TO mt_relation_operator_range.
 
   ENDMETHOD.
