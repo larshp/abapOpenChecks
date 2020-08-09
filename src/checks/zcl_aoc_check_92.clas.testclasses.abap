@@ -6,9 +6,8 @@ CLASS ltcl_test DEFINITION
 
   PRIVATE SECTION.
 
-    DATA mt_code TYPE string_table.
     DATA mo_check TYPE REF TO zcl_aoc_check_92.
-    DATA mv_text   TYPE string.
+    DATA mv_text  TYPE string.
 
     METHODS: setup,
       message_handler FOR EVENT message OF zcl_aoc_check_92 IMPORTING p_param_1,
