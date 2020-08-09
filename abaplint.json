@@ -89,6 +89,7 @@
       "ignoreLocal": false,
       "statics": "^G._.*$",
       "constants": ".",
+      "ignoreInterfaces": false,
       "instance": "^M._.*$"
     },
     "cloud_types": true,
@@ -122,6 +123,8 @@
     "keyword_case": {
       "style": "upper",
       "ignoreExceptions": true,
+      "ignoreGlobalClassBoundaries": false,
+      "ignoreKeywords": [],
       "ignoreLowerClassImplmentationStatement": true,
       "ignoreGlobalClassDefinition": false,
       "ignoreGlobalInterface": false,
@@ -181,6 +184,7 @@
       "tran": "^Z",
       "enqu": "^Z",
       "auth": "^Z",
+      "shlp": "^Z",
       "pinf": "^Z",
       "xslt": "^Z",
       "ssfo": "^Z",
@@ -194,6 +198,7 @@
       "subtract": true,
       "multiply": true,
       "move": true,
+      "withHeaderLine": true,
       "setExtended": true,
       "divide": true,
       "requested": true,
