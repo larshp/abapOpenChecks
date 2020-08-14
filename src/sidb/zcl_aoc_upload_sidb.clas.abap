@@ -94,7 +94,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_UPLOAD_SIDB IMPLEMENTATION.
+CLASS zcl_aoc_upload_sidb IMPLEMENTATION.
 
 
   METHOD parse.
@@ -105,30 +105,39 @@ CLASS ZCL_AOC_UPLOAD_SIDB IMPLEMENTATION.
 
       IF ls_file-name = 'header_data.xml'.
 * do nothing
+        CONTINUE.
       ELSEIF ls_file-name = 'SIGNATURE.SMF'.
 * do nothing
+        CONTINUE.
       ELSEIF ls_file-name CP 'simplification/piecelist_0*'.
         parse_piecelist( ls_file-data ).
       ELSEIF ls_file-name CP 'simplification/plist_head_0*'.
 * do nothing
+        CONTINUE.
       ELSEIF ls_file-name CP 'simplification/plist_param_0*'.
 * do nothing
+        CONTINUE.
       ELSEIF ls_file-name CP 'simplification/plst_subobj_0*'.
 * do nothing
+        CONTINUE.
       ELSEIF ls_file-name CP 'simplification/sitem_0*'.
         parse_sitem( ls_file-data ).
       ELSEIF ls_file-name CP 'simplification/sitem_areas_0*'.
 * do nothing
+        CONTINUE.
       ELSEIF ls_file-name CP 'simplification/sitem_enpoi_0*'.
 * do nothing
+        CONTINUE.
       ELSEIF ls_file-name CP 'simplification/sitem_packs_0*'.
 * do nothing
+        CONTINUE.
       ELSEIF ls_file-name CP 'simplification/sitem_plist_0*'.
         parse_sitem_plist( ls_file-data ).
       ELSEIF ls_file-name CP 'simplification/sitem_stats_0*'.
         parse_sitem_stats( ls_file-data ).
       ELSEIF ls_file-name CP 'releases/rel_stack_0*'.
 * do nothing
+        CONTINUE.
       ELSE.
 * Fail - unknown file -> may even be unexpected ZIP
         ASSERT 0 = 1.
