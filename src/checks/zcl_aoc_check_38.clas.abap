@@ -25,6 +25,8 @@ CLASS ZCL_AOC_CHECK_38 IMPLEMENTATION.
 * MIT License
 
     DATA: lv_include   TYPE sobj_name.
+    DATA up_to_n_rows TYPE abap_bool.
+    DATA statement TYPE string.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
                    <ls_token>     LIKE LINE OF io_scan->tokens.
@@ -32,19 +34,43 @@ CLASS ZCL_AOC_CHECK_38 IMPLEMENTATION.
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>.
 
+      IF <ls_statement>-type = io_scan->gc_statement-standard OR 
+         <ls_statement>-type = io_scan->gc_statement-method_direct.
+
+        LOOP AT io_scan->tokens ASSIGNING <ls_token>
+            FROM <ls_statement>-from TO <ls_statement>-to.
+          IF statement IS INITIAL.
+            statement = <ls_token>-str.
+          ELSE.
+            statement = |{ statement } { <ls_token>-str }|.
+          ENDIF.
+        ENDLOOP.
+
+        IF statement CP '*UP TO * ROWS*'.
+          up_to_n_rows = abap_true.
+        ENDIF.
+        CLEAR statement.
+      ENDIF.
+
       READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       IF sy-subrc <> 0.
         CONTINUE.
       ENDIF.
 
       IF <ls_token>-str = 'ENDSELECT'.
-        lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        inform( p_sub_obj_name = lv_include
-                p_line         = <ls_token>-row
-                p_kind         = mv_errty
-                p_test         = myname
-                p_code         = '001' ).
+        IF up_to_n_rows = abap_false.
+
+          lv_include = io_scan->get_include( <ls_statement>-level ).
+
+          inform( p_sub_obj_name = lv_include
+                  p_line         = <ls_token>-row
+                  p_kind         = mv_errty
+                  p_test         = myname
+                  p_code         = '001' ).
+        ENDIF.
+
+        CLEAR up_to_n_rows.
       ENDIF.
 
     ENDLOOP.
