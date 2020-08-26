@@ -34,7 +34,7 @@ CLASS ZCL_AOC_CHECK_38 IMPLEMENTATION.
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>.
 
-      IF <ls_statement>-type = io_scan->gc_statement-standard 
+      IF <ls_statement>-type = io_scan->gc_statement-standard
           OR <ls_statement>-type = io_scan->gc_statement-method_direct.
 
         LOOP AT io_scan->tokens ASSIGNING <ls_token>
