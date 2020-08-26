@@ -39,7 +39,7 @@ CLASS ZCL_AOC_CHECK_38 IMPLEMENTATION.
 
         LOOP AT io_scan->tokens ASSIGNING <ls_token>
             FROM <ls_statement>-from TO <ls_statement>-to.
-          IF statement IS INITIAL.
+          IF lv_statement IS INITIAL.
             lv_statement = <ls_token>-str.
           ELSE.
             lv_statement = |{ lv_statement } { <ls_token>-str }|.
