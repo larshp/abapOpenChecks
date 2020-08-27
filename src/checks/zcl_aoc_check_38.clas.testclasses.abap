@@ -95,5 +95,5 @@ CLASS ltcl_test IMPLEMENTATION.
                                         act = ms_result-code ).
 
   ENDMETHOD.
-  
+
 ENDCLASS.       "lcl_Test
