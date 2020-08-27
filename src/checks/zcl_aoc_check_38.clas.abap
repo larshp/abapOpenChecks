@@ -24,7 +24,7 @@ CLASS ZCL_AOC_CHECK_38 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_include         TYPE sobj_name.
+    DATA: lv_include         TYPE sobj_name,
           lv_statement_count TYPE i,
           lv_up_to_n_rows    TYPE abap_bool.
 
