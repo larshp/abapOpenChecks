@@ -24,9 +24,9 @@ CLASS ZCL_AOC_CHECK_38 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_include   TYPE sobj_name.
-    DATA lv_up_to_n_rows TYPE abap_bool.
-    DATA lv_statement TYPE string.
+    DATA: lv_include         TYPE sobj_name.
+          lv_statement_count TYPE i,
+          lv_up_to_n_rows    TYPE abap_bool.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
                    <ls_token>     LIKE LINE OF io_scan->tokens.
@@ -38,18 +38,16 @@ CLASS ZCL_AOC_CHECK_38 IMPLEMENTATION.
           OR <ls_statement>-type = io_scan->gc_statement-method_direct.
 
         LOOP AT io_scan->tokens ASSIGNING <ls_token>
-            FROM <ls_statement>-from TO <ls_statement>-to.
-          IF lv_statement IS INITIAL.
-            lv_statement = <ls_token>-str.
-          ELSE.
-            lv_statement = |{ lv_statement } { <ls_token>-str }|.
-          ENDIF.
+            FROM <ls_statement>-from TO <ls_statement>-to
+            WHERE str = 'UP' OR str = 'TO' OR str = 'ROWS'.
+          lv_statement_count = lv_statement_count + 1.
         ENDLOOP.
 
-        IF lv_statement CP '*UP TO * ROWS*'.
+        IF lv_statement_count = 3.
           lv_up_to_n_rows = abap_true.
         ENDIF.
-        CLEAR lv_statement.
+        CLEAR lv_statement_count.
+
       ENDIF.
 
       READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
