@@ -1,5 +1,3 @@
-[![abaplint](https://app.abaplint.org/badges/larshp/abapOpenChecks)](https://app.abaplint.org/project/larshp/abapOpenChecks)
-
 abapOpenChecks
 ==============
 
