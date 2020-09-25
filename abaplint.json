@@ -30,6 +30,9 @@
     "globalMacros": ["_code", "_test", "zzaoc_top", "zzaoc_fill_att", "zzaoc_fill_att_rb", "zzaoc_popup"]
   },
   "rules": {
+    "identical_contents": true,
+    "many_parenthesis": true,
+    "prefer_xsdbool": true,
     "begin_single_include": true,
     "check_subrc": false,
     "cyclomatic_complexity": {
@@ -94,6 +97,7 @@
       "defaultKey": false,
       "execSQL": true,
       "kernelCall": true,
+      "describeLines": true,
       "communication": true,
       "statics": false,
       "break": true,
@@ -215,7 +219,9 @@
       "fieldSymbolStructure": true,
       "subtract": true,
       "multiply": true,
+      "typePools": false,
       "move": true,
+      "load": false,
       "withHeaderLine": true,
       "setExtended": true,
       "divide": true,
