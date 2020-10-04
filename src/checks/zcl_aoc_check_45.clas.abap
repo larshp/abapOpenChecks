@@ -100,7 +100,8 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
         lv_code = '004'.
       ELSEIF mv_concat_lines = abap_true
           AND <ls_statement>-str CP 'CONCATENATE LINES OF *'
-          AND NOT <ls_statement>-str CP '* IN BYTE MODE*'.
+          AND NOT <ls_statement>-str CP '* IN BYTE MODE*'
+          AND NOT <ls_statement>-str CP '* RESPECTING BLANKS*'.
         lv_code = '005'.
       ELSEIF mv_shift = abap_true
           AND <ls_statement>-str CP 'SHIFT *'.

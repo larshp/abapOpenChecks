@@ -39,6 +39,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test004_02 FOR TESTING,
       test005_01 FOR TESTING,
       test005_02 FOR TESTING,
+      test005_03 FOR TESTING,
       test010_01 FOR TESTING,
       test011_01 FOR TESTING RAISING cx_static_check.
 
@@ -305,6 +306,16 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test005_02.
 
     _code 'CONCATENATE LINES OF lt_data INTO lv_xstr IN BYTE MODE.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test005_03.
+
+    _code 'CONCATENATE LINES OF lt_data INTO lv_xstr RESPECTING BLANKS.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
