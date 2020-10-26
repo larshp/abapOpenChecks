@@ -172,6 +172,7 @@ CLASS lcl_build IMPLEMENTATION.
           TO <ls_statement>-to.
         IF <ls_token>-type = zcl_aoc_scan=>gc_token-comment OR <ls_token>-type = zcl_aoc_scan=>gc_token-pragma.
 * nothing, but make sure to add to mt_sstr
+          CONTINUE.
         ELSEIF lv_string IS INITIAL.
           lv_string = <ls_token>-str.
         ELSE.
