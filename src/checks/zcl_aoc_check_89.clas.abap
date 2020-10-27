@@ -35,7 +35,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
+CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
 
   METHOD check.
@@ -117,7 +117,7 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
     ENDIF.
 
     "function module already exists in 7.02 -> should work on every satellite system
-    CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'
+    CALL FUNCTION 'ZAOC_OBJ_DOKU_GET_XSTRING_RFC'
       DESTINATION lv_destination
       EXPORTING
         lang    = sy-langu
@@ -129,7 +129,7 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
     "not found in logon language try with English and German
     IF rv_result IS INITIAL
         AND sy-langu <> 'E'.
-      CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'
+      CALL FUNCTION 'ZAOC_OBJ_DOKU_GET_XSTRING_RFC'
         DESTINATION lv_destination
         EXPORTING
           lang    = 'E'
@@ -141,7 +141,7 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
     IF rv_result IS INITIAL
         AND sy-langu <> 'D'.
-      CALL FUNCTION 'LXE_OBJ_DOKU_GET_XSTRING_RFC'
+      CALL FUNCTION 'ZAOC_OBJ_DOKU_GET_XSTRING_RFC'
         DESTINATION lv_destination
         EXPORTING
           lang    = 'D'
