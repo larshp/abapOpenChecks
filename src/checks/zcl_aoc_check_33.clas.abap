@@ -15,7 +15,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_33 IMPLEMENTATION.
+CLASS zcl_aoc_check_33 IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -49,7 +49,8 @@ CLASS ZCL_AOC_CHECK_33 IMPLEMENTATION.
     DATA: lv_tabname     TYPE dd02l-tabname,
           ls_dd02v       TYPE dd02v,
           lv_destination TYPE rfcdest,
-          lt_dd03p       TYPE TABLE OF dd03p.
+          lt_dd03p       TYPE TABLE OF dd03p,
+          lv_sobj_name   TYPE sobj_name.
 
     FIELD-SYMBOLS: <ls_dd03p> LIKE LINE OF lt_dd03p.
 
@@ -78,12 +79,18 @@ CLASS ZCL_AOC_CHECK_33 IMPLEMENTATION.
     ENDIF.
 
 * dont show error for appends in customer tables
-    IF ls_dd02v-sqltab(1) = 'Z' OR ls_dd02v-sqltab(1) = 'Y'.
+    lv_sobj_name = ls_dd02v-sqltab.
+    IF lv_sobj_name(1) = 'Z' OR
+        lv_sobj_name(1) = 'Y' OR
+        zcl_aoc_util_reg_atc_namespace=>is_append_obj_in_ns( lv_sobj_name ) = abap_true.
       RETURN.
     ENDIF.
 
     LOOP AT lt_dd03p ASSIGNING <ls_dd03p> WHERE fieldname <> '.INCLUDE'.
-      IF <ls_dd03p>-fieldname(2) <> 'ZZ' AND <ls_dd03p>-fieldname(2) <> 'YY'.
+      lv_sobj_name = <ls_dd03p>-fieldname.
+      IF lv_sobj_name(2) <> 'ZZ' AND
+          lv_sobj_name(2) <> 'YY' AND
+          zcl_aoc_util_reg_atc_namespace=>is_append_obj_in_ns( lv_sobj_name ) = abap_false.
         inform( p_sub_obj_type = object_type
                 p_sub_obj_name = object_name
                 p_test         = myname
