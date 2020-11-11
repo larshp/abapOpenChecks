@@ -6,42 +6,47 @@ CLASS zcl_aoc_util_reg_atc_namespace DEFINITION
   PUBLIC SECTION.
     INTERFACE if_satc_namespace_access LOAD .
 
-    TYPES: BEGIN OF ty_ns_object,
+    TYPES:
+      BEGIN OF ty_ns_object,
              namespace TYPE string,
              object    TYPE string,
-           END OF ty_ns_object.
+           END OF ty_ns_object .
 
+    TYPE-POOLS abap .
     CLASS-METHODS is_registered_fugr_uxx
       IMPORTING
-        !iv_sub_obj_name TYPE sobj_name
+      !iv_sub_obj_name TYPE sobj_name
       RETURNING
-        VALUE(rv_bool)   TYPE abap_bool .
-
+      VALUE(rv_bool) TYPE abap_bool .
     CLASS-METHODS is_in_namespace
       IMPORTING
-        !iv_pgmid           TYPE pgmid
-        !iv_object          TYPE trobjtype
-        !iv_obj_name        TYPE csequence
+      !iv_pgmid TYPE pgmid
+      !iv_object TYPE trobjtype
+      !iv_obj_name TYPE csequence
       RETURNING
-        VALUE(rv_bool)   TYPE abap_bool.
-
+      VALUE(rv_bool) TYPE abap_bool .
     CLASS-METHODS split_ns_object
       IMPORTING
-        !iv_pgmid           TYPE pgmid
-        !iv_object          TYPE trobjtype
-        !iv_obj_name        TYPE csequence
+      !iv_pgmid TYPE pgmid
+      !iv_object TYPE trobjtype
+      !iv_obj_name TYPE csequence
       RETURNING
-        VALUE(rs_ns_object) TYPE ty_ns_object.
-
+      VALUE(rs_ns_object) TYPE ty_ns_object .
+    CLASS-METHODS is_append_obj_in_ns
+      IMPORTING
+      !iv_sub_obj_name TYPE sobj_name
+      RETURNING
+      VALUE(rv_bool) TYPE abap_bool .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
 
 
+
 CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
 
 
-  METHOD is_registered_fugr_uxx.
+  METHOD is_append_obj_in_ns.
 
     DATA: lt_namespaces TYPE STANDARD TABLE OF satc_ac_namespcs.
 
@@ -53,7 +58,7 @@ CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
     SELECT * FROM satc_ac_namespcs INTO TABLE lt_namespaces.
 
     LOOP AT lt_namespaces ASSIGNING <ls_namespace>.
-      IF iv_sub_obj_name CP |{ <ls_namespace>-namespace }L*UXX|.
+      IF iv_sub_obj_name CP |{ <ls_namespace>-namespace }*|.
         rv_bool = abap_true.
         RETURN.
       ENDIF.
@@ -93,6 +98,27 @@ CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD is_registered_fugr_uxx.
+
+    DATA: lt_namespaces TYPE STANDARD TABLE OF satc_ac_namespcs.
+
+    FIELD-SYMBOLS: <ls_namespace> LIKE LINE OF lt_namespaces.
+
+
+    rv_bool = abap_false.
+
+    SELECT * FROM satc_ac_namespcs INTO TABLE lt_namespaces.
+
+    LOOP AT lt_namespaces ASSIGNING <ls_namespace>.
+      IF iv_sub_obj_name CP |{ <ls_namespace>-namespace }L*UXX|.
+        rv_bool = abap_true.
+        RETURN.
+      ENDIF.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
   METHOD split_ns_object.
 
     DATA: lv_obj_name  TYPE sobj_name,
@@ -122,5 +148,4 @@ CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
     rs_ns_object-object    = iv_obj_name+lv_len_ns.
 
   ENDMETHOD.
-
 ENDCLASS.
