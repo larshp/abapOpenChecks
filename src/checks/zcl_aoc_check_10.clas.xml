@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_10</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Use icon_ constants</DESCRIPT>
+    <DESCRIPT>010 - Use icon_ constants</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
