@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_100</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Downport: No new syntax (prior to ABAP 7.40)</DESCRIPT>
+    <DESCRIPT>100 - Downport: No new syntax (prior to ABAP 7.40)</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

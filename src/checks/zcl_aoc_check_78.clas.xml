@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_78</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>&quot;#EC CI_SUBRC can be removed</DESCRIPT>
+    <DESCRIPT>078 - &quot;#EC CI_SUBRC can be removed</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

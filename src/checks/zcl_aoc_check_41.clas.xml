@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_41</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Empty line in statement</DESCRIPT>
+    <DESCRIPT>041 - Empty line in statement</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
