@@ -2,7 +2,8 @@
 title: Checks
 ---
 
-{% for check in site.checks %}
+{% assign aChecks = site.checks | sort: "index" %}
+{% for check in aChecks %}
 <a href="{{ check.url }}">
 {{ check.cNumber }} - {{ check.title }}
 </a>
