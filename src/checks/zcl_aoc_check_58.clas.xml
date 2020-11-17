@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_58</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Method or constant not referenced statically</DESCRIPT>
+    <DESCRIPT>058 - Method or constant not referenced statically</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

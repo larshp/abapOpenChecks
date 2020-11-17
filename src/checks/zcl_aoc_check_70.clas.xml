@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_70</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Find comment markers</DESCRIPT>
+    <DESCRIPT>070 - Find comment markers</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_80</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Space before colon</DESCRIPT>
+    <DESCRIPT>080 - Space before colon</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

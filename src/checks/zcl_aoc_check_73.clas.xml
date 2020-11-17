@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_73</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>TRAN: Check for inconsistencies</DESCRIPT>
+    <DESCRIPT>073 - TRAN: Check for inconsistencies</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

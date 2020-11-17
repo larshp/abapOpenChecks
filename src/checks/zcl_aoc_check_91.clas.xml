@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_91</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Code metric: number of statements per proc. block</DESCRIPT>
+    <DESCRIPT>091 - Code metric: number of statements per proc. block</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
