@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_43</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Parameter name can be omitted</DESCRIPT>
+    <DESCRIPT>043 - Parameter name can be omitted</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

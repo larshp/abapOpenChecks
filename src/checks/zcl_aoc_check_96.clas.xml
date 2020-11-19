@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_96</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Check Editor Lock is set</DESCRIPT>
+    <DESCRIPT>096 - Check Editor Lock is set</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

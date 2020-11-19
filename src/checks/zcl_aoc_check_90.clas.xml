@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_90</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Constructor visibility must be public</DESCRIPT>
+    <DESCRIPT>090 - Constructor visibility must be public</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

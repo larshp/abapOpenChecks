@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_85</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Activate fixed point arithmetic</DESCRIPT>
+    <DESCRIPT>085 - Activate fixed point arithmetic</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
