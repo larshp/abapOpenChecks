@@ -7,7 +7,10 @@ For running Continuous Integration outside the ABAP platform see https://abaplin
 
 **Installation**
 - install via [abapGit](https://abapgit.org) using the online or offline option
-- activate checks in SCI(Code Inspector -> Management of -> Tests)
+- activate checks in SCI (depending on release)
+  - Goto -> Management of -> Tests
+  - Code Inspector -> Management of -> Tests
+  - Code Inspector -> Management of -> Checks 
 - configure check variant
 - run inspection
 
