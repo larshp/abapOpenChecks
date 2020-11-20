@@ -23,15 +23,46 @@
      <LENGTH>26</LENGTH>
     </item>
     <item>
+     <ID>I</ID>
+     <KEY>003</KEY>
+     <ENTRY>Check variant</ENTRY>
+     <LENGTH>23</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>004</KEY>
+     <ENTRY>Object Set</ENTRY>
+     <LENGTH>20</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>005</KEY>
+     <ENTRY>Person Responsible</ENTRY>
+     <LENGTH>18</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>006</KEY>
+     <ENTRY>Check variants Parameter missing</ENTRY>
+     <LENGTH>32</LENGTH>
+    </item>
+    <item>
      <ID>R</ID>
      <ENTRY>abapOpenChecks - Performance Test</ENTRY>
      <LENGTH>33</LENGTH>
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_CHKVAR</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>21</LENGTH>
+     <SPLIT>D</SPLIT>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_GLOBAL</KEY>
      <ENTRY>Global</ENTRY>
-     <LENGTH>14</LENGTH>
+     <LENGTH>25</LENGTH>
     </item>
     <item>
      <ID>S</ID>
@@ -48,9 +79,21 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_UCHKV</KEY>
+     <ENTRY>Check Variant (incl. classes)</ENTRY>
+     <LENGTH>37</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_UCLSV</KEY>
+     <ENTRY>Selected classes</ENTRY>
+     <LENGTH>32</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_USER</KEY>
      <ENTRY>.</ENTRY>
-     <LENGTH>9</LENGTH>
+     <LENGTH>26</LENGTH>
      <SPLIT>D</SPLIT>
     </item>
     <item>
