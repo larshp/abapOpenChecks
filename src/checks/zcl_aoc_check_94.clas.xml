@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_94</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Check String literals with LIKE, CP, NP</DESCRIPT>
+    <DESCRIPT>094 - Check String literals with LIKE, CP, NP</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
