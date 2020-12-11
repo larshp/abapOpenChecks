@@ -30,6 +30,17 @@
     "globalMacros": ["_code", "_test", "zzaoc_top", "zzaoc_fill_att", "zzaoc_fill_att_rb", "zzaoc_popup"]
   },
   "rules": {
+    "call_transaction_authority_check": true,
+    "function_module_recommendations": false,
+    "intf_referencing_clas": true,
+    "method_implemented_twice": true,
+    "method_overwrites_builtin": false,
+    "omit_parameter_name": true,
+    "omit_receiving": true,
+    "parser_702_chaining": true,
+    "sy_modification": false,
+    "uncaught_exception": true,
+    "unused_methods": true,
     "identical_contents": true,
     "many_parenthesis": true,
     "prefer_xsdbool": true,
