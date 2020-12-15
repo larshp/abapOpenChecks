@@ -31,7 +31,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_95 IMPLEMENTATION.
+CLASS zcl_aoc_check_95 IMPLEMENTATION.
 
 
   METHOD check.
@@ -68,7 +68,8 @@ CLASS ZCL_AOC_CHECK_95 IMPLEMENTATION.
     LOOP AT io_scan->tokens INTO ls_token FROM mv_impl_start_position.
       TRY.
           IF ls_token-str+0(4) = 'ME->'.
-            inform( p_test = myname
+            inform( p_kind = mv_errty
+                    p_test = myname
                     p_code = '002' ).
           ENDIF.
         CATCH cx_root.
@@ -85,7 +86,8 @@ CLASS ZCL_AOC_CHECK_95 IMPLEMENTATION.
       lv_class_length = strlen( object_name ) + 2.
       TRY.
           IF ls_token-str+0(lv_class_length) = object_name && '=>'.
-            inform( p_test = myname
+            inform( p_kind = mv_errty
+                    p_test = myname
                     p_code = '001' ).
           ENDIF.
         CATCH cx_root. " offset
