@@ -43,7 +43,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
+CLASS zcl_aoc_check_45 IMPLEMENTATION.
 
 
   METHOD check.
@@ -152,7 +152,8 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     DATA: lt_str       TYPE TABLE OF string,
           ls_statement LIKE LINE OF it_statements,
           lv_declare   TYPE i,
-          lv_var       TYPE string.
+          lv_var       TYPE string,
+          lv_tabix     TYPE i.
 
 
     READ TABLE it_statements INDEX lines( it_statements ) INTO ls_statement.
@@ -166,8 +167,8 @@ CLASS ZCL_AOC_CHECK_45 IMPLEMENTATION.
     IF sy-subrc <> 0.
       RETURN. " sometimes the keyword is not found, something with macros
     ENDIF.
-    sy-tabix = sy-tabix + 1.
-    READ TABLE lt_str INDEX sy-tabix INTO lv_var.
+    lv_tabix = sy-tabix + 1.
+    READ TABLE lt_str INDEX lv_tabix INTO lv_var.
     ASSERT sy-subrc = 0.
 
 * make sure it is a local variable
