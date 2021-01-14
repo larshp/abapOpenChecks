@@ -30,6 +30,7 @@
     "globalMacros": ["_code", "_test", "zzaoc_top", "zzaoc_fill_att", "zzaoc_fill_att_rb", "zzaoc_popup"]
   },
   "rules": {
+    "use_class_based_exceptions": true,
     "call_transaction_authority_check": true,
     "function_module_recommendations": false,
     "intf_referencing_clas": true,
@@ -38,7 +39,7 @@
     "omit_parameter_name": true,
     "omit_receiving": true,
     "parser_702_chaining": true,
-    "sy_modification": false,
+    "sy_modification": true,
     "uncaught_exception": true,
     "unused_methods": true,
     "identical_contents": true,
@@ -52,7 +53,7 @@
     "downport": false,
     "forbidden_pseudo_and_pragma": false,
     "forbidden_void_type": false,
-    "identical_conditions": false,
+    "identical_conditions": true,
     "line_break_multiple_parameters": false,
     "line_break_style": false,
     "names_no_dash": true,
@@ -60,7 +61,7 @@
     "prefer_inline": false,
     "prefer_is_not": false,
     "reduce_string_templates": true,
-    "unused_types": false,
+    "unused_types": true,
     "use_bool_expression": false,
     "use_line_exists": false,
     "forbidden_identifier": false,
@@ -131,7 +132,7 @@
     "contains_tab": true,
     "definitions_top": true,
     "description_empty": true,
-    "double_space": false,
+    "double_space": true,
     "empty_line_in_statement": {
       "allowChained": false
     },
