@@ -27,7 +27,14 @@
       "slin_errlv",
       "slin_todo"
     ],
-    "globalMacros": ["_code", "_test", "zzaoc_top", "zzaoc_fill_att", "zzaoc_fill_att_rb", "zzaoc_popup"]
+    "globalMacros": [
+      "_code",
+      "_test",
+      "zzaoc_top",
+      "zzaoc_fill_att",
+      "zzaoc_fill_att_rb",
+      "zzaoc_popup"
+    ]
   },
   "rules": {
     "use_class_based_exceptions": true,
@@ -67,7 +74,9 @@
     "forbidden_identifier": false,
     "try_without_catch": true,
     "unknown_types": false,
-    "prefix_is_current_class": false,
+    "prefix_is_current_class": {
+      "omitMeInstanceCalls": true
+    },
     "unused_variables": false,
     "allowed_object_naming": true,
     "check_comments": false,
@@ -117,7 +126,9 @@
     },
     "check_syntax": false,
     "class_attribute_names": {
-      "exclude": ["zcl_aoc_scan\\.clas\\.abap"],
+      "exclude": [
+        "zcl_aoc_scan\\.clas\\.abap"
+      ],
       "ignoreExceptions": true,
       "ignoreLocal": false,
       "statics": "^G._.*$",
@@ -167,7 +178,6 @@
       "length": 120
     },
     "line_only_punc": {
-
       "ignoreExceptions": true
     },
     "local_class_naming": {
@@ -186,7 +196,9 @@
       "errorWhenEmpty": false,
       "statements": 100,
       "ignoreTestClasses": false,
-      "exclude": ["zcl_aoc_check_69"]
+      "exclude": [
+        "zcl_aoc_check_69"
+      ]
     },
     "method_parameter_names": {
       "ignoreExceptions": true,
@@ -261,7 +273,10 @@
     },
     "short_case": {
       "length": 1,
-      "allow": ["column", "gv_ok_code"]
+      "allow": [
+        "column",
+        "gv_ok_code"
+      ]
     },
     "space_before_colon": true,
     "start_at_tab": true,

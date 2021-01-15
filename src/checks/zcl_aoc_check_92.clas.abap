@@ -15,7 +15,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_92 IMPLEMENTATION.
+CLASS zcl_aoc_check_92 IMPLEMENTATION.
 
 
   METHOD check.
@@ -26,17 +26,17 @@ CLASS ZCL_AOC_CHECK_92 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    IF NOT me->is_class_pool( me->program_name ) = abap_true.
+    IF NOT is_class_pool( program_name ) = abap_true.
       RETURN.
     ENDIF.
 
-    lt_unit_tests = cl_aunit_prog_info=>get_tests_of_program( me->program_name ).
+    lt_unit_tests = cl_aunit_prog_info=>get_tests_of_program( program_name ).
 
     IF lines( lt_unit_tests ) = 0.
 
-      inform( p_sub_obj_name = me->program_name
+      inform( p_sub_obj_name = program_name
               p_kind         = mv_errty
-              p_test         = me->myname
+              p_test         = myname
               p_code         = '001' ).
 
     ENDIF.
@@ -56,7 +56,7 @@ CLASS ZCL_AOC_CHECK_92 IMPLEMENTATION.
 
     insert_scimessage(
         iv_code = '001'
-        iv_text = 'No unit tests'(m01) ).                  "#EC NOTEX
+        iv_text = 'No unit tests'(m01) ).                   "#EC NOTEX
 
   ENDMETHOD.
 ENDCLASS.
