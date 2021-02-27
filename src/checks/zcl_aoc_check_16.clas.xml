@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_16</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Line contains only &quot;.&quot; or &quot;).&quot;</DESCRIPT>
+    <DESCRIPT>016 - Line contains only &quot;.&quot; or &quot;).&quot;</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

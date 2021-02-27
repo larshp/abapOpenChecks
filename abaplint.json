@@ -27,13 +27,56 @@
       "slin_errlv",
       "slin_todo"
     ],
-    "globalMacros": ["_code", "_test", "zzaoc_top", "zzaoc_fill_att", "zzaoc_fill_att_rb", "zzaoc_popup"]
+    "globalMacros": [
+      "_code",
+      "_test",
+      "zzaoc_top",
+      "zzaoc_fill_att",
+      "zzaoc_fill_att_rb",
+      "zzaoc_popup"
+    ]
   },
   "rules": {
+    "use_class_based_exceptions": true,
+    "call_transaction_authority_check": true,
+    "function_module_recommendations": false,
+    "intf_referencing_clas": true,
+    "method_implemented_twice": true,
+    "method_overwrites_builtin": false,
+    "omit_parameter_name": true,
+    "omit_receiving": true,
+    "parser_702_chaining": true,
+    "sy_modification": true,
+    "uncaught_exception": true,
+    "unused_methods": true,
+    "identical_contents": true,
+    "many_parenthesis": true,
+    "prefer_xsdbool": true,
+    "begin_single_include": true,
+    "check_subrc": false,
+    "cyclomatic_complexity": {
+      "max": 30
+    },
+    "downport": false,
+    "forbidden_pseudo_and_pragma": false,
+    "forbidden_void_type": false,
+    "identical_conditions": true,
+    "line_break_multiple_parameters": false,
+    "line_break_style": false,
+    "names_no_dash": true,
+    "parser_missing_space": true,
+    "prefer_inline": false,
+    "prefer_is_not": false,
+    "reduce_string_templates": true,
+    "unused_types": true,
+    "use_bool_expression": false,
+    "use_line_exists": false,
     "forbidden_identifier": false,
     "try_without_catch": true,
     "unknown_types": false,
-    "prefix_is_current_class": false,
+    "prefix_is_current_class": {
+      "omitMeInstanceCalls": true
+    },
     "unused_variables": false,
     "allowed_object_naming": true,
     "check_comments": false,
@@ -50,7 +93,6 @@
     "types_naming": false,
     "chain_mainly_declarations": true,
     "check_text_elements": true,
-    "type_begin_single_include": true,
     "abapdoc": false,
     "allowed_object_types": false,
     "ambiguous_statement": true,
@@ -59,7 +101,6 @@
     "check_include": true,
     "check_transformation_exists": true,
     "empty_structure": true,
-    "form_no_dash": true,
     "form_tables_obsolete": true,
     "implement_methods": true,
     "in_statement_indentation": true,
@@ -77,6 +118,7 @@
       "defaultKey": false,
       "execSQL": true,
       "kernelCall": true,
+      "describeLines": true,
       "communication": true,
       "statics": false,
       "break": true,
@@ -84,11 +126,14 @@
     },
     "check_syntax": false,
     "class_attribute_names": {
-      "exclude": ["zcl_aoc_scan\\.clas\\.abap"],
+      "exclude": [
+        "zcl_aoc_scan\\.clas\\.abap"
+      ],
       "ignoreExceptions": true,
       "ignoreLocal": false,
       "statics": "^G._.*$",
       "constants": ".",
+      "ignoreInterfaces": false,
       "instance": "^M._.*$"
     },
     "cloud_types": true,
@@ -98,7 +143,7 @@
     "contains_tab": true,
     "definitions_top": true,
     "description_empty": true,
-    "double_space": false,
+    "double_space": true,
     "empty_line_in_statement": {
       "allowChained": false
     },
@@ -122,6 +167,8 @@
     "keyword_case": {
       "style": "upper",
       "ignoreExceptions": true,
+      "ignoreGlobalClassBoundaries": false,
+      "ignoreKeywords": [],
       "ignoreLowerClassImplmentationStatement": true,
       "ignoreGlobalClassDefinition": false,
       "ignoreGlobalInterface": false,
@@ -131,7 +178,6 @@
       "length": 120
     },
     "line_only_punc": {
-
       "ignoreExceptions": true
     },
     "local_class_naming": {
@@ -150,7 +196,9 @@
       "errorWhenEmpty": false,
       "statements": 100,
       "ignoreTestClasses": false,
-      "exclude": ["zcl_aoc_check_69"]
+      "exclude": [
+        "zcl_aoc_check_69"
+      ]
     },
     "method_parameter_names": {
       "ignoreExceptions": true,
@@ -181,6 +229,7 @@
       "tran": "^Z",
       "enqu": "^Z",
       "auth": "^Z",
+      "shlp": "^Z",
       "pinf": "^Z",
       "xslt": "^Z",
       "ssfo": "^Z",
@@ -191,9 +240,13 @@
       "refresh": true,
       "compute": true,
       "add": true,
+      "fieldSymbolStructure": true,
       "subtract": true,
       "multiply": true,
+      "typePools": false,
       "move": true,
+      "load": false,
+      "withHeaderLine": true,
       "setExtended": true,
       "divide": true,
       "requested": true,
@@ -212,14 +265,18 @@
       ]
     },
     "remove_descriptions": {
-      "ignoreExceptions": false
+      "ignoreExceptions": false,
+      "ignoreWorkflow": false
     },
     "sequential_blank": {
       "lines": 4
     },
     "short_case": {
       "length": 1,
-      "allow": ["column", "gv_ok_code"]
+      "allow": [
+        "column",
+        "gv_ok_code"
+      ]
     },
     "space_before_colon": true,
     "start_at_tab": true,

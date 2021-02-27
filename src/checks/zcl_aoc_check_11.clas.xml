@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_11</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Max one statement per line</DESCRIPT>
+    <DESCRIPT>011 - Max one statement per line</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

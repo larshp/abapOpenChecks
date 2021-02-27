@@ -311,28 +311,16 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ELSE.
 
       TRY.
+* parameter "p_version" does not exist in 751
+* value p_version = '2' does not exist in 752
           CALL METHOD ('GET_STMT_CHECKSUM')
             EXPORTING
               p_position = iv_position
-              p_version  = 2
             CHANGING
               p_checksum = ls_checksum
             EXCEPTIONS
               error      = 0.
-        CATCH cx_sy_dyn_call_param_not_found.
-          TRY.
-* parameter "p_version" does not exist in 751
-              CALL METHOD ('GET_STMT_CHECKSUM')
-                EXPORTING
-                  p_position = iv_position
-                CHANGING
-                  p_checksum = ls_checksum
-                EXCEPTIONS
-                  error      = 0.
-            CATCH cx_sy_dyn_call_illegal_method.
-              RETURN.
-          ENDTRY.
-        CATCH cx_sy_dyn_call_illegal_method.
+        CATCH cx_sy_dyn_call_illegal_method cx_sy_dyn_call_param_not_found.
           RETURN.
       ENDTRY.
 

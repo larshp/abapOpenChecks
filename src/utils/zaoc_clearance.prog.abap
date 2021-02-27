@@ -345,10 +345,10 @@ CLASS lcl_alv DEFINITION FINAL.
         IMPORTING
           is_data TYPE ty_output,
       on_link_click
-            FOR EVENT link_click OF cl_salv_events_table
+          FOR EVENT link_click OF cl_salv_events_table
         IMPORTING
-            row
-            column.
+          row
+          column.
 
 ENDCLASS.                    "lcl_alv DEFINITION
 
@@ -380,7 +380,7 @@ CLASS lcl_alv IMPLEMENTATION.
     lo_alv->get_functions( )->set_all( ).
 
     lo_events = lo_alv->get_event( ).
-    SET HANDLER lcl_alv=>on_link_click FOR lo_events.
+    SET HANDLER on_link_click FOR lo_events.
     lo_alv->display( ).
 
   ENDMETHOD.                    "show

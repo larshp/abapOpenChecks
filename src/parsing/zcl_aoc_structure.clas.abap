@@ -7,7 +7,6 @@ CLASS zcl_aoc_structure DEFINITION
 
     TYPES:
       ty_structure_tt TYPE STANDARD TABLE OF REF TO zcl_aoc_structure WITH DEFAULT KEY .
-    TYPES ty_type TYPE char1 .
     TYPES:
       ty_string_tt TYPE STANDARD TABLE OF string WITH DEFAULT KEY .
     TYPES:

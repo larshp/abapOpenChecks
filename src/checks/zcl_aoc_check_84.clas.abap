@@ -8,7 +8,7 @@ CLASS zcl_aoc_check_84 DEFINITION
     METHODS constructor .
 
     METHODS run
-        REDEFINITION .
+         REDEFINITION .
 
     METHODS get_attributes
         REDEFINITION .
@@ -21,6 +21,7 @@ CLASS zcl_aoc_check_84 DEFINITION
 
   PROTECTED SECTION.
     DATA mt_classes TYPE zaoc_seoclsname_range_tt.
+    DATA mv_read_only_allowed TYPE flag.
 
   PRIVATE SECTION.
 ENDCLASS.
@@ -34,7 +35,7 @@ CLASS zcl_aoc_check_84 IMPLEMENTATION.
 
     super->constructor( ).
 
-    version  = '001'.
+    version  = '002'.
     position = '084'.
 
     has_documentation = abap_true.
@@ -51,6 +52,37 @@ CLASS zcl_aoc_check_84 IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD get_attributes.
+
+    EXPORT mv_errty   = mv_errty
+           mt_classes = mt_classes
+           mv_read_only_allowed = mv_read_only_allowed TO DATA BUFFER p_attributes.
+
+  ENDMETHOD.
+
+
+  METHOD if_ci_test~query_attributes.
+
+    zzaoc_top.
+
+    zzaoc_fill_att mv_errty 'Error Type' ''.                 "#EC NOTEXT
+    zzaoc_fill_att mt_classes 'Skip Classes' 'S'.            "#EC NOTEXT
+    zzaoc_fill_att mv_read_only_allowed 'Allow READ-ONLY attributes' ''.  "#EC NOTEXT
+    zzaoc_popup.
+
+  ENDMETHOD.
+
+
+  METHOD put_attributes.
+
+    IMPORT mv_errty   = mv_errty
+           mt_classes = mt_classes
+           mv_read_only_allowed = mv_read_only_allowed FROM DATA BUFFER p_attributes.  "#EC CI_USE_WANTED
+    ASSERT sy-subrc = 0.
+
+  ENDMETHOD.
+
+
   METHOD run.
 
 * abapOpenChecks
@@ -59,6 +91,7 @@ CLASS zcl_aoc_check_84 IMPLEMENTATION.
 
     TYPES: BEGIN OF ty_attr,
              cmpname TYPE vseocompdf-cmpname,
+             attrdonly TYPE vseocompdf-attrdonly,
            END OF ty_attr.
 
     DATA: lt_attr     TYPE STANDARD TABLE OF ty_attr WITH DEFAULT KEY,
@@ -69,7 +102,7 @@ CLASS zcl_aoc_check_84 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    SELECT cmpname FROM vseocompdf INTO CORRESPONDING FIELDS OF TABLE lt_attr
+    SELECT cmpname attrdonly FROM vseocompdf INTO CORRESPONDING FIELDS OF TABLE lt_attr
       WHERE clsname = object_name
       AND version = '1'
       AND cmptype = '0'
@@ -77,6 +110,13 @@ CLASS zcl_aoc_check_84 IMPLEMENTATION.
       AND attdecltyp <> '2'.
     IF sy-subrc <> 0.
       RETURN.
+    ENDIF.
+
+    IF mv_read_only_allowed = abap_true.
+      DELETE lt_attr WHERE attrdonly = abap_true.
+      IF lines( lt_attr ) = 0.
+        RETURN.
+      ENDIF.
     ENDIF.
 
     SELECT SINGLE category FROM seoclassdf
@@ -95,35 +135,4 @@ CLASS zcl_aoc_check_84 IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
-
-
-  METHOD get_attributes.
-
-    EXPORT mv_errty   = mv_errty
-           mt_classes = mt_classes TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD put_attributes.
-
-    IMPORT mv_errty   = mv_errty
-           mt_classes = mt_classes FROM DATA BUFFER p_attributes. "#EC CI_USE_WANTED
-    ASSERT sy-subrc = 0.
-
-  ENDMETHOD.
-
-
-  METHOD if_ci_test~query_attributes.
-
-    zzaoc_top.
-
-    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
-    zzaoc_fill_att mt_classes 'Skip Classes' 'S'.           "#EC NOTEXT
-
-    zzaoc_popup.
-
-  ENDMETHOD.
-
-
 ENDCLASS.

@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_06</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Check pretty printer use</DESCRIPT>
+    <DESCRIPT>006 - Check pretty printer use</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

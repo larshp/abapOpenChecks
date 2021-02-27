@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_98</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Combine empty catches</DESCRIPT>
+    <DESCRIPT>098 - Combine empty catches</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

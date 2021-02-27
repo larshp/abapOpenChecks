@@ -1,5 +1,3 @@
-[![abaplint](https://app.abaplint.org/badges/larshp/abapOpenChecks)](https://app.abaplint.org/project/larshp/abapOpenChecks)
-
 abapOpenChecks
 ==============
 
@@ -8,8 +6,11 @@ Open source checks for SAP Code Inspector / ABAP Test Cockpit (SCI/ATC)
 For running Continuous Integration outside the ABAP platform see https://abaplint.org
 
 **Installation**
-- install via [abapGit](https://github.com/larshp/abapGit) using the online or offline option
-- activate checks in SCI(Code Inspector -> Management of -> Tests)
+- install via [abapGit](https://abapgit.org) using the online or offline option
+- activate checks in SCI (depending on release)
+  - Goto -> Management of -> Tests
+  - Code Inspector -> Management of -> Tests
+  - Code Inspector -> Management of -> Checks 
 - configure check variant
 - run inspection
 
@@ -25,5 +26,5 @@ For running Continuous Integration outside the ABAP platform see https://abaplin
 
 Version requirement: v740sp02 or higher
 
-## [Documentation](http://docs.abapopenchecks.org)
+## [Documentation](https://docs.abapopenchecks.org)
 

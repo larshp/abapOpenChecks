@@ -48,7 +48,7 @@ CLASS zcl_aoc_parser DEFINITION
         !iv_rule           TYPE string DEFAULT 'START'
         !iv_allow_obsolete TYPE abap_bool DEFAULT abap_true
       RETURNING
-        VALUE(rs_result)   TYPE zcl_aoc_parser=>ty_result .
+        VALUE(rs_result)   TYPE ty_result.
   PROTECTED SECTION.
 
     TYPES: ty_syntax_tt TYPE STANDARD TABLE OF ssyntaxstructure.
@@ -132,7 +132,7 @@ CLASS zcl_aoc_parser DEFINITION
         !io_node         TYPE REF TO zcl_aoc_parser_node
         !iv_index        TYPE i
       RETURNING
-        VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
+        VALUE(rs_result) TYPE ty_result.
     CLASS-METHODS xml_download
       IMPORTING
         !iv_rulename TYPE string
@@ -161,31 +161,31 @@ CLASS zcl_aoc_parser DEFINITION
         !io_node         TYPE REF TO zcl_aoc_parser_node
         !iv_index        TYPE i
       RETURNING
-        VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
+        VALUE(rs_result) TYPE ty_result.
     CLASS-METHODS walk_role
       IMPORTING
         !io_node         TYPE REF TO zcl_aoc_parser_node
         !iv_index        TYPE i
       RETURNING
-        VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
+        VALUE(rs_result) TYPE ty_result.
     CLASS-METHODS walk_nonterminal
       IMPORTING
         !io_node         TYPE REF TO zcl_aoc_parser_node
         !iv_index        TYPE i
       RETURNING
-        VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
+        VALUE(rs_result) TYPE ty_result.
     CLASS-METHODS walk_node
       IMPORTING
         !io_node         TYPE REF TO zcl_aoc_parser_node
         !iv_index        TYPE i
       RETURNING
-        VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
+        VALUE(rs_result) TYPE ty_result.
     CLASS-METHODS walk_end
       IMPORTING
         !io_node         TYPE REF TO zcl_aoc_parser_node
         !iv_index        TYPE i
       RETURNING
-        VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
+        VALUE(rs_result) TYPE ty_result.
     CLASS-METHODS xml_get
       IMPORTING
         !iv_rulename   TYPE string
@@ -202,7 +202,7 @@ CLASS zcl_aoc_parser DEFINITION
         !it_tokens       TYPE stokesx_tab
         !it_statements   TYPE sstmnt_tab
       RETURNING
-        VALUE(rs_result) TYPE zcl_aoc_parser=>ty_result.
+        VALUE(rs_result) TYPE ty_result.
   PRIVATE SECTION.
 
     TYPES: BEGIN OF ty_cache,
@@ -220,7 +220,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_PARSER IMPLEMENTATION.
+CLASS zcl_aoc_parser IMPLEMENTATION.
 
 
   METHOD build.

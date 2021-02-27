@@ -65,11 +65,10 @@ CLASS ZCL_AOC_COMPILER IMPLEMENTATION.
       lo_compiler = cl_abap_compiler=>create(
         p_name             = lv_name
         p_no_package_check = abap_true ).
+      CLEAR gt_cache_result.
       IF lo_compiler IS INITIAL.
-        CLEAR gt_cache_result.
         gv_cache_error = abap_true.
       ELSE.
-        CLEAR gt_cache_result.
         lo_compiler->get_all(
           IMPORTING
             p_result = gt_cache_result ).

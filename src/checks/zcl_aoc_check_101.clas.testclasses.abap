@@ -23,7 +23,12 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_03 FOR TESTING RAISING cx_static_check,
       test001_04 FOR TESTING RAISING cx_static_check,
       test001_05 FOR TESTING RAISING cx_static_check,
-      test001_06 FOR TESTING RAISING cx_static_check.
+      test001_06 FOR TESTING RAISING cx_static_check,
+      test002_01 FOR TESTING RAISING cx_static_check,
+      test002_02 FOR TESTING RAISING cx_static_check,
+      test002_03 FOR TESTING RAISING cx_static_check,
+      test002_04 FOR TESTING RAISING cx_static_check,
+      test002_05 FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.       "lcl_Test
 
@@ -65,7 +70,7 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
-    _code 'IF NOT foo IS INITIAL'.
+    _code 'IF NOT foo IS INITIAL.'.
     _code '  foo = foo + 1.'.
     _code 'ENDIF.'.
 
@@ -80,7 +85,7 @@ CLASS ltcl_test IMPLEMENTATION.
 * ===========
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
-    _code 'IF foo IS NOT INITIAL AND NOT bar IS INITIAL'.
+    _code 'IF foo IS NOT INITIAL AND NOT bar IS INITIAL.'.
     _code '  foo = foo + 1.'.
     _code 'ENDIF.'.
 
@@ -108,7 +113,7 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD test001_05.
 * ===========
 
-    _code 'IF ( NOT foo IS INITIAL ).'.                    "Not handled by check
+    _code 'IF ( NOT foo IS INITIAL ).'.
     _code '  foo = foo + 1.'.
     _code 'ENDIF.'.
 
@@ -130,4 +135,71 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
   ENDMETHOD.
+
+  METHOD test002_01.
+* ===========
+
+    _code 'IF NOT line_exists( foo[ 1 ] ).'.
+    _code '  WRITE 1.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
+
+  METHOD test002_02.
+* ===========
+
+    _code 'IF NOT line_exists( foo[ bar = 1 ] ).'.
+    _code '  WRITE 1.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
+
+
+  METHOD test002_03.
+* ===========
+
+    _code 'IF NOT foo[ bar = 1 ]-var = 1.'.
+    _code '  WRITE 1.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '001'
+                                        act = ms_result-code ).
+  ENDMETHOD.
+
+  METHOD test002_04.
+* ===========
+
+    _code 'IF matches( val = <ls_token>-str regex = `^\w*\[$` ).'.
+    _code '  WRITE 1.'.
+    _code 'ENDIF.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
+
+  METHOD test002_05.
+* ===========
+
+    _code 'if not line_exists( foo['.
+    _code '    var1 = 1'.
+    _code '    var2 = 2 ] ).'.
+    _code '  select * from mara into table lt_mara'.
+    _code '    where matnr = ls_matnr.'.
+    _code ' endif.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
+
+
 ENDCLASS.       "lcl_Test

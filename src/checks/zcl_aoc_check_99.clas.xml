@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_99</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Minimum number of WHENs in a CASE</DESCRIPT>
+    <DESCRIPT>099 - Minimum number of WHENs in a CASE</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

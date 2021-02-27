@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_25</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Selection screen data not referenced statically</DESCRIPT>
+    <DESCRIPT>025 - Selection screen data not referenced statically</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

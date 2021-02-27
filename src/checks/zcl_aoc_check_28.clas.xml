@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_28</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Space before . or ,</DESCRIPT>
+    <DESCRIPT>028 - Space before . or ,</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

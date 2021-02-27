@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_68</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>IDoc syntax check</DESCRIPT>
+    <DESCRIPT>068 - IDoc syntax check</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

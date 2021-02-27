@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_AOC_CHECK_13</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Sequential blank lines</DESCRIPT>
+    <DESCRIPT>013 - Sequential blank lines</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
