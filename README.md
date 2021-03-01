@@ -27,4 +27,3 @@ For running Continuous Integration outside the ABAP platform see https://abaplin
 Version requirement: v740sp02 or higher
 
 ## [Documentation](https://docs.abapopenchecks.org)
-
