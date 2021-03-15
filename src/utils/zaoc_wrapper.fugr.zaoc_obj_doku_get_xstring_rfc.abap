@@ -5,7 +5,6 @@ FUNCTION zaoc_obj_doku_get_xstring_rfc.
 *"     VALUE(LANG) TYPE  SPRAS
 *"     VALUE(OBJTYPE) TYPE  LXEOBJTYPE
 *"     VALUE(OBJNAME) TYPE  LXEOBJNAME
-*"     VALUE(VERSION) TYPE  NUMC4 DEFAULT ''
 *"     VALUE(SH_EMPTY) TYPE  CHAR1 DEFAULT ''
 *"  EXPORTING
 *"     VALUE(HEADER) TYPE  THEAD
@@ -19,7 +18,6 @@ FUNCTION zaoc_obj_doku_get_xstring_rfc.
       lang     = lang
       objtype  = objtype
       objname  = objname
-      version  = version
       sh_empty = sh_empty
     IMPORTING
       header   = header
