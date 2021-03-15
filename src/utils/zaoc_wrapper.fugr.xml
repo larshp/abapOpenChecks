@@ -26,12 +26,6 @@
        <TYP>LXEOBJNAME</TYP>
       </RSIMP>
       <RSIMP>
-       <PARAMETER>VERSION</PARAMETER>
-       <DEFAULT>&apos;&apos;</DEFAULT>
-       <OPTIONAL>X</OPTIONAL>
-       <TYP>NUMC4</TYP>
-      </RSIMP>
-      <RSIMP>
        <PARAMETER>SH_EMPTY</PARAMETER>
        <DEFAULT>&apos;&apos;</DEFAULT>
        <OPTIONAL>X</OPTIONAL>
@@ -71,11 +65,6 @@
        <PARAMETER>OBJNAME</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Name of Translation Object</STEXT>
-      </RSFDO>
-      <RSFDO>
-       <PARAMETER>VERSION</PARAMETER>
-       <KIND>P</KIND>
-       <STEXT>Count parameters</STEXT>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SH_EMPTY</PARAMETER>
