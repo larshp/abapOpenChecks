@@ -29,7 +29,14 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test002_02 FOR TESTING,
       test002_03 FOR TESTING,
       test002_04 FOR TESTING,
-      test003_01 FOR TESTING.
+      test003_01 FOR TESTING,
+      test003_02 FOR TESTING,
+      test003_03 FOR TESTING,
+      test003_04 FOR TESTING,
+      test003_05 FOR TESTING,
+      test003_06 FOR TESTING,
+      test003_07 FOR TESTING,
+      test003_08 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -230,6 +237,93 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '003'
                                         act = ms_result-code ).
 
+  ENDMETHOD.
+
+  METHOD test003_02.
+    _code 'FORM foo.'.
+    _code '  lv_bar = lv_moo.'.
+    _code '  EXIT.'.
+    _code 'ENDFORM.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '003'
+                                        act = ms_result-code ).
+  ENDMETHOD.
+
+  METHOD test003_03.
+    _code 'FORM foo.'.
+    _code '  EXIT.'.
+    _code 'ENDFORM.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
+
+  METHOD test003_04.
+    _code 'FORM foo.'.
+    _code '  IF lv_foo = lv_bar.'.
+    _code '    EXIT.'.
+    _code '  ENDIF.'.
+    _code 'ENDFORM.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '003'
+                                        act = ms_result-code ).
+  ENDMETHOD.
+
+  METHOD test003_05.
+    _code 'FORM foo.'.
+    _code '  TRY.'.
+    _code '    CATCH cx_static_check.'.
+    _code '      EXIT.'.
+    _code '  ENDTRY.'.
+    _code 'ENDFORM.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '003'
+                                        act = ms_result-code ).
+  ENDMETHOD.
+
+  METHOD test003_06.
+    _code 'FORM foo.'.
+    _code '*  some comment'.
+    _code '  EXIT.'.
+    _code 'ENDFORM.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
+
+  METHOD test003_07.
+    _code 'FORM foo.'.
+    _code '  TRY.'.
+    _code '    CATCH cx_static_check.'.
+    _code '      EXIT.'.
+    _code '* somme comment'.
+    _code '  ENDTRY.'.
+    _code 'ENDFORM.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '003'
+                                        act = ms_result-code ).
+  ENDMETHOD.
+
+  METHOD test003_08.
+    _code 'FORM foo.'.
+    _code '  IF lv_foo = lv_bar.'.
+    _code '    EXIT FROM STEP-LOOP.'.
+    _code '  ENDIF.'.
+    _code 'ENDFORM.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
   ENDMETHOD.
 
 ENDCLASS.       "lcl_Test
