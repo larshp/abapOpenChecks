@@ -171,7 +171,9 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
         WHEN 'ENDCLASS' OR 'ENDMETHOD' OR 'ENDFORM' OR 'ENDINTERFACE'.
           mo_stack->pop( ).
         WHEN 'ENDFUNCTION'.
-          IF object_type = 'FUGR'.
+          IF object_type = 'FUGR' OR
+              object_type = 'FUGS' OR
+              object_type = 'FUGX'.
             IF zcl_aoc_util_reg_atc_namespace=>is_in_namespace( iv_pgmid    = 'R3TR'
                                                                 iv_object   = 'FUGR'
                                                                 iv_obj_name = object_name ) = abap_true.
