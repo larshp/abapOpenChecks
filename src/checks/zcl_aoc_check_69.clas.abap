@@ -100,6 +100,11 @@ CLASS zcl_aoc_check_69 DEFINITION
         !is_check      TYPE rsfbintfv
       RETURNING
         VALUE(rv_skip) TYPE abap_bool .
+    METHODS is_unresolved_exception_class
+        IMPORTING
+          !iv_class_fullname TYPE string
+        RETURNING
+          VALUE(rv_is_an_excpcls) TYPE xfeld .
   PRIVATE SECTION.
 
     DATA mo_scan TYPE REF TO zcl_aoc_scan .
@@ -1082,6 +1087,10 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
                 rv_prefix = ms_naming-prefix_rbadi.
               WHEN OTHERS.
                 rv_prefix = ms_naming-prefix_rclass.
+                "further check, if class is an unresolved exception class
+                IF is_unresolved_exception_class( lo_type_symbol_class->full_name ) = abap_true.
+                  rv_prefix = ms_naming-prefix_rexcep.
+                ENDIF.
             ENDCASE.
 
           WHEN OTHERS.
@@ -1219,6 +1228,37 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
     ENDIF.
 
     rv_bool = abap_true.
+
+  ENDMETHOD.
+
+
+  METHOD is_unresolved_exception_class.
+
+    DATA lv_name   TYPE program.
+    DATA lv_prefix TYPE string.
+    DATA lo_compiler TYPE REF TO cl_abap_compiler.
+    DATA lo_class TYPE REF TO cl_abap_comp_class.
+
+
+    TRY.
+        rv_is_an_excpcls = abap_false.
+        SPLIT iv_class_fullname AT '\TY:' INTO lv_prefix lv_name.
+        OVERLAY lv_name WITH '==============================CP'.
+        lo_compiler = cl_abap_compiler=>create( lv_name ).
+        IF lo_compiler IS NOT BOUND.
+          RETURN.
+        ENDIF.
+        lo_class ?= lo_compiler->get_symbol_entry( iv_class_fullname ).
+        IF lo_class IS BOUND.
+          WHILE lo_class->super_class IS BOUND.
+            lo_class = lo_class->super_class.
+          ENDWHILE.
+          IF lo_class->full_name = '\TY:CX_ROOT'.
+            rv_is_an_excpcls = abap_true.
+          ENDIF.
+        ENDIF.
+      CATCH cx_sy_move_cast_error ##NO_HANDLER.
+    ENDTRY.
 
   ENDMETHOD.
 
