@@ -42,7 +42,7 @@ CLASS zcl_aoc_check_56 DEFINITION
       IMPORTING
         !iv_full_name  TYPE string
       RETURNING
-        VALUE(rv_name) TYPE seosconame .
+        value(rv_name) TYPE seosconame .
     METHODS check_locally_referenced
       IMPORTING
         !is_method TYPE seocompo .
@@ -53,7 +53,7 @@ CLASS zcl_aoc_check_56 DEFINITION
       IMPORTING
         !is_method       TYPE seocompo
       RETURNING
-        VALUE(rt_founds) TYPE sci_findlst .
+        value(rt_founds) TYPE sci_findlst .
     METHODS report_unreferenced
       IMPORTING
         !is_method     TYPE seocompo
@@ -67,7 +67,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
+CLASS zcl_aoc_check_56 IMPLEMENTATION.
 
 
   METHOD check.
@@ -122,7 +122,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       AND version = '1'
       AND cmptype = '1'
       AND scotype <> '1'
-      ORDER BY PRIMARY KEY.                   "#EC CI_ALL_FIELDS_NEEDED
+      ORDER BY clsname cmpname sconame version. "#EC CI_ALL_FIELDS_NEEDED
     IF sy-subrc <> 0.
       RETURN.
     ENDIF.
@@ -221,7 +221,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
       AND version = '1'
       AND pardecltyp = '0'
       AND scotype = '0'
-      ORDER BY PRIMARY KEY.     "#EC CI_SUBRC "#EC CI_ALL_FIELDS_NEEDED
+      ORDER BY clsname cmpname sconame version. "#EC CI_SUBRC "#EC CI_ALL_FIELDS_NEEDED
 
     IF lines( lt_parameters ) <= 1.
       RETURN.
@@ -337,7 +337,7 @@ CLASS ZCL_AOC_CHECK_56 IMPLEMENTATION.
         batchjob_error               = 6
         wrong_type                   = 7
         object_not_exist             = 8
-        OTHERS                       = 9 ##FM_SUBRC_OK. "#EC CI_SUBRC
+        OTHERS                       = 9 ##fm_subrc_ok.   "#EC CI_SUBRC
 
   ENDMETHOD.
 

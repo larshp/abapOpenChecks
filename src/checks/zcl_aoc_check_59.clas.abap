@@ -35,18 +35,18 @@ CLASS zcl_aoc_check_59 DEFINITION
         !io_node         TYPE REF TO zcl_aoc_boolean_node
         !iv_level        TYPE i DEFAULT 0
       RETURNING
-        VALUE(rt_counts) TYPE ty_counts_tt .
+        value(rt_counts) TYPE ty_counts_tt .
     METHODS analyze
       IMPORTING
         !it_tokens     TYPE stokesx_tab
       RETURNING
-        VALUE(rv_code) TYPE sci_errc .
+        value(rv_code) TYPE sci_errc .
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
+CLASS zcl_aoc_check_59 IMPLEMENTATION.
 
 
   METHOD analyze.
@@ -216,7 +216,8 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
 
   METHOD walk.
 
-    DATA: lo_child    TYPE REF TO zcl_aoc_boolean_node,
+    DATA: lt_children_node TYPE zcl_aoc_boolean_node=>ty_children_tt,
+          lo_child    TYPE REF TO zcl_aoc_boolean_node,
           lt_children TYPE ty_counts_tt,
           ls_child    LIKE LINE OF lt_children.
 
@@ -245,7 +246,9 @@ CLASS ZCL_AOC_CHECK_59 IMPLEMENTATION.
         ASSERT 0 = 1.
     ENDCASE.
 
-    LOOP AT io_node->get_children( ) INTO lo_child.
+    lt_children_node = io_node->get_children( ).
+
+    LOOP AT lt_children_node INTO lo_child.
       IF lo_child->get_type( ) = zcl_aoc_boolean_node=>c_type-paren.
         <ls_count>-paren = <ls_count>-paren + 1.
       ENDIF.

@@ -136,7 +136,7 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
 
   METHOD constructor.
 
-    DATA lt_slin_desc_t     TYPE STANDARD TABLE OF slin_desc_t WITH EMPTY KEY.
+    DATA lt_slin_desc_t     TYPE STANDARD TABLE OF slin_desc_t.
     DATA ls_slin_desc_t     TYPE slin_desc_t.
     DATA lv_code            TYPE sci_errc.
     DATA lv_scimessage_text TYPE ty_scimessage_text.
