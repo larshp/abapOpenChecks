@@ -53,7 +53,7 @@ CLASS zcl_aoc_check_56 DEFINITION
       IMPORTING
         !is_method       TYPE seocompo
       RETURNING
-        value(rt_founds) TYPE sci_findlst .
+        VALUE(rt_founds) TYPE sci_findlst .
     METHODS report_unreferenced
       IMPORTING
         !is_method     TYPE seocompo
