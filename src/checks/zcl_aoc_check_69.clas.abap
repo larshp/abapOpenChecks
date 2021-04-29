@@ -1019,6 +1019,11 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 
   METHOD determine_type_prefix.
 
+
+    CONSTANTS:
+      "! cl_abap_comp_type=>type_kind_ddic_dbtab does not exists in 731
+      lc_type_kind_ddic_dbtab TYPE scr_typekind VALUE `7`.
+
     DATA: lo_table_symbol      TYPE REF TO cl_abap_comp_table_type,
           lo_symbol_simple     TYPE REF TO cl_abap_comp_data,
           lo_type_symbol       TYPE REF TO cl_abap_comp_type,
@@ -1050,7 +1055,7 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
           WHEN OTHERS.
             rv_prefix = ms_naming-prefix_elemen.
         ENDCASE.
-      WHEN cl_abap_comp_type=>type_kind_structure OR cl_abap_comp_type=>type_kind_ddic_dbtab.
+      WHEN cl_abap_comp_type=>type_kind_structure OR lc_type_kind_ddic_dbtab.
         rv_prefix = ms_naming-prefix_struct.
       WHEN cl_abap_comp_type=>type_kind_table.
         lo_table_symbol ?= lo_type_symbol.
@@ -1276,6 +1281,11 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 
   METHOD qualify_tokens.
 
+    DATA:
+      lv_lines TYPE i.
+
+    lv_lines = lines( rt_tokens ).
+
     INSERT LINES OF ref_scan->tokens FROM statement_wa-from
       TO statement_wa-to INTO TABLE rt_tokens.
 
@@ -1283,7 +1293,7 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
       EXPORTING
         statement_type        = statement_wa-type
         index_from            = 1
-        index_to              = lines( rt_tokens )
+        index_to              = lv_lines
       CHANGING
         stokesx_tab           = rt_tokens
       EXCEPTIONS

@@ -25,7 +25,7 @@ CLASS zcl_aoc_check_95 DEFINITION
     DATA mv_object_in_front_not_okay TYPE flag.
     DATA mv_class_in_front_not_okay TYPE flag.
 
-    DATA mv_impl_start_position TYPE syst_tabix.
+    DATA mv_impl_start_position TYPE i.
 
 ENDCLASS.
 

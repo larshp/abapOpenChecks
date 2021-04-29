@@ -33,12 +33,14 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
   METHOD analyze_condition.
 
-    DATA: lo_structure TYPE REF TO zcl_aoc_structure,
+    DATA: lt_structure TYPE zcl_aoc_structure=>ty_structure_tt,
+          lo_structure TYPE REF TO zcl_aoc_structure,
           lv_found     TYPE abap_bool.
 
+    lt_structure = io_structure->get_structure( ).
 
 * IFs must contain ELSE, CASE must contain OTHERS
-    LOOP AT io_structure->get_structure( ) INTO lo_structure.
+    LOOP AT lt_structure INTO lo_structure.
       IF ( io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if
           AND lo_structure->get_statement( )-statement = 'ELSE' )
           OR ( io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-case
@@ -77,13 +79,13 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
   METHOD compare.
 
-    DATA: lo_stru    TYPE REF TO zcl_aoc_structure,
-          lo_first   TYPE REF TO zcl_aoc_structure,
-          lo_compare TYPE REF TO zcl_aoc_structure,
-          lv_str1    TYPE string,
-          lv_str2    TYPE string,
-          lv_index   TYPE i.
-
+    DATA: lt_structure TYPE zcl_aoc_structure=>ty_structure_tt,
+          lo_stru      TYPE REF TO zcl_aoc_structure,
+          lo_first     TYPE REF TO zcl_aoc_structure,
+          lo_compare   TYPE REF TO zcl_aoc_structure,
+          lv_str1      TYPE string,
+          lv_str2      TYPE string,
+          lv_index     TYPE i.
 
     IF lines( it_structure ) = 1.
       RETURN.
@@ -98,15 +100,17 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
         lv_index = lines( lo_stru->get_structure( ) ).
       ENDIF.
 
+      lt_structure = lo_stru->get_structure( ).
+
       IF NOT lo_first IS BOUND.
-        READ TABLE lo_stru->get_structure( ) INDEX lv_index INTO lo_first.
+        READ TABLE lt_structure INDEX lv_index INTO lo_first.
         IF sy-subrc <> 0.
           RETURN.
         ENDIF.
         lv_str1 = zcl_aoc_structure=>to_string_simple( lo_first ).
         CONTINUE. " current loop
       ENDIF.
-      READ TABLE lo_stru->get_structure( ) INDEX lv_index INTO lo_compare.
+      READ TABLE lt_structure INDEX lv_index INTO lo_compare.
       IF sy-subrc <> 0.
         RETURN.
       ENDIF.
@@ -156,7 +160,8 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
 
   METHOD loop.
 
-    DATA: lo_structure TYPE REF TO zcl_aoc_structure.
+    DATA: lt_structure TYPE zcl_aoc_structure=>ty_structure_tt,
+          lo_structure TYPE REF TO zcl_aoc_structure.
 
 
     CASE io_structure->get_type( ).
@@ -165,7 +170,9 @@ CLASS ZCL_AOC_CHECK_22 IMPLEMENTATION.
         analyze_condition( io_structure ).
     ENDCASE.
 
-    LOOP AT io_structure->get_structure( ) INTO lo_structure.
+    lt_structure = io_structure->get_structure( ).
+
+    LOOP AT lt_structure INTO lo_structure.
       loop( lo_structure ).
     ENDLOOP.
 
