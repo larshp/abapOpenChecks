@@ -70,9 +70,12 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
   METHOD contains_else.
 
-    DATA: lo_structure TYPE REF TO zcl_aoc_structure.
+    DATA: lt_structure TYPE zcl_aoc_structure=>ty_structure_tt,
+          lo_structure TYPE REF TO zcl_aoc_structure.
 
-    LOOP AT io_structure->get_structure( ) INTO lo_structure.
+    lt_structure = io_structure->get_structure( ).
+
+    LOOP AT lt_structure INTO lo_structure.
       IF lo_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-else.
         rv_bool = abap_true.
         RETURN.
@@ -84,21 +87,23 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
   METHOD run_check.
 
-    DATA: lo_structure TYPE REF TO zcl_aoc_structure,
+    DATA: lt_structure TYPE zcl_aoc_structure=>ty_structure_tt,
+          lo_structure TYPE REF TO zcl_aoc_structure,
           lo_then      TYPE REF TO zcl_aoc_structure,
           lv_include   TYPE program,
           lv_if        TYPE i,
           lv_other     TYPE i.
 
+    lt_structure = io_structure->get_structure( ).
 
     IF io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if
         OR io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-else.
 
       IF io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if.
-        READ TABLE io_structure->get_structure( ) INDEX 1 INTO lo_then.
+        READ TABLE lt_structure INDEX 1 INTO lo_then.
         ASSERT sy-subrc = 0.
 
-        LOOP AT io_structure->get_structure( ) INTO lo_structure.
+        LOOP AT lt_structure INTO lo_structure.
           CASE lo_structure->get_type( ).
             WHEN zcl_aoc_scan=>gc_structure_statement-elseif
                 OR zcl_aoc_scan=>gc_structure_statement-else.
@@ -109,7 +114,7 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
         lo_then = io_structure.
       ENDIF.
 
-      LOOP AT lo_then->get_structure( ) INTO lo_structure.
+      LOOP AT lt_structure INTO lo_structure.
         CASE lo_structure->get_type( ).
           WHEN zcl_aoc_scan=>gc_structure_statement-if.
             IF contains_else( lo_structure ) = abap_true
@@ -131,7 +136,7 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
               p_test = myname
               p_code = '001' ).
     ELSE.
-      LOOP AT io_structure->get_structure( ) INTO lo_structure.
+      LOOP AT lt_structure INTO lo_structure.
         run_check( io_structure = lo_structure
                    io_scan      = io_scan ).
       ENDLOOP.
