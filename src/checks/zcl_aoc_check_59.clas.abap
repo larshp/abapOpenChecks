@@ -35,7 +35,7 @@ CLASS zcl_aoc_check_59 DEFINITION
         !io_node         TYPE REF TO zcl_aoc_boolean_node
         !iv_level        TYPE i DEFAULT 0
       RETURNING
-        value(rt_counts) TYPE ty_counts_tt .
+        VALUE(rt_counts) TYPE ty_counts_tt .
     METHODS analyze
       IMPORTING
         !it_tokens     TYPE stokesx_tab
