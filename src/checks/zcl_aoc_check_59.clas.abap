@@ -40,7 +40,7 @@ CLASS zcl_aoc_check_59 DEFINITION
       IMPORTING
         !it_tokens     TYPE stokesx_tab
       RETURNING
-        value(rv_code) TYPE sci_errc .
+        VALUE(rv_code) TYPE sci_errc .
   PRIVATE SECTION.
 ENDCLASS.
 
