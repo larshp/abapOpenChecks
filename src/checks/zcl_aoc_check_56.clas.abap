@@ -42,7 +42,7 @@ CLASS zcl_aoc_check_56 DEFINITION
       IMPORTING
         !iv_full_name  TYPE string
       RETURNING
-        value(rv_name) TYPE seosconame .
+        VALUE(rv_name) TYPE seosconame .
     METHODS check_locally_referenced
       IMPORTING
         !is_method TYPE seocompo .
