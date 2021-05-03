@@ -222,7 +222,8 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
   METHOD parse.
     DATA:
       lv_complete_text TYPE string,
-      lt_result        TYPE match_result_tab.
+      lt_result        TYPE match_result_tab,
+      lv_row           TYPE i.
 
     FIELD-SYMBOLS:
       <lv_comment_text> LIKE LINE OF it_comment_texts,
@@ -251,7 +252,8 @@ CLASS ZCL_AOC_CHECK_70 IMPLEMENTATION.
           IF mv_multiline = abap_true.
             "Append consecutive comment lines
             WHILE sy-subrc = 0.
-              READ TABLE it_comments ASSIGNING <ls_comment> WITH KEY row = <ls_comment>-row + 1.
+              lv_row = <ls_comment>-row + 1.
+              READ TABLE it_comments ASSIGNING <ls_comment> WITH KEY row = lv_row.
               IF sy-subrc <> 0.
                 EXIT.
               ENDIF.

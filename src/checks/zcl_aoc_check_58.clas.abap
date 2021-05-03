@@ -150,7 +150,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       AND type = ''
       AND cmpname <> 'CLASS_CONSTRUCTOR'
       AND cmpname <> 'CONSTRUCTOR'
-      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
+      ORDER BY clsname cmpname version.                               "#EC CI_SUBRC
 
     LOOP AT lt_methods ASSIGNING <ls_method>.
       CONCATENATE <ls_method>-clsname '\ME:' <ls_method>-cmpname INTO lv_name.
@@ -227,7 +227,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       AND version = '1'
       AND ( exposure = c_protected OR exposure = c_public OR exposure = c_private )
       AND type = ''
-      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
+      ORDER BY clsname cmpname version.                               "#EC CI_SUBRC
 
     LOOP AT lt_types ASSIGNING <ls_type>.
       CONCATENATE <ls_type>-clsname '\TY:' <ls_type>-cmpname INTO lv_name.
