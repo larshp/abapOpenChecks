@@ -322,15 +322,17 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
 
   METHOD remove_method_calls.
 
-    DATA: ls_token   TYPE stokesx,
+    DATA: lt_tokens  TYPE stokesx_tab,
+          ls_token   TYPE stokesx,
           lv_end     TYPE i,
           lv_restart TYPE abap_bool,
           lv_index   TYPE i.
 
+    lt_tokens = io_tokens->get_tokens( ).
 
     DO.
       lv_restart = abap_false.
-      LOOP AT io_tokens->get_tokens( ) INTO ls_token.
+      LOOP AT lt_tokens INTO ls_token.
         lv_index = sy-tabix.
 
         FIND REGEX '^[\w<>\/~\-=#]+\($' IN ls_token-str.
@@ -376,7 +378,12 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
 
   METHOD remove_strings.
 
-    LOOP AT io_tokens->get_tokens( ) TRANSPORTING NO FIELDS WHERE type = zcl_aoc_scan=>gc_token-literal.
+    DATA:
+      lt_tokens TYPE stokesx_tab.
+
+    lt_tokens = io_tokens->get_tokens( ).
+
+    LOOP AT lt_tokens TRANSPORTING NO FIELDS WHERE type = zcl_aoc_scan=>gc_token-literal.
       io_tokens->replace(
         iv_str   = 'str'
         iv_start = sy-tabix ).
