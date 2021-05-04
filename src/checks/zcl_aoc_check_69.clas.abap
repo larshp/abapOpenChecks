@@ -1284,10 +1284,10 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
     DATA:
       lv_lines TYPE i.
 
-    lv_lines = lines( rt_tokens ).
-
     INSERT LINES OF ref_scan->tokens FROM statement_wa-from
       TO statement_wa-to INTO TABLE rt_tokens.
+
+    lv_lines = lines( rt_tokens ).
 
     CALL FUNCTION 'RS_QUALIFY_ABAP_TOKENS_STR'
       EXPORTING
