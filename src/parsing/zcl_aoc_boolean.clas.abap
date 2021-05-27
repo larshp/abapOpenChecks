@@ -328,10 +328,9 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
           lv_restart TYPE abap_bool,
           lv_index   TYPE i.
 
-    lt_tokens = io_tokens->get_tokens( ).
-
     DO.
       lv_restart = abap_false.
+      lt_tokens = io_tokens->get_tokens( ).
       LOOP AT lt_tokens INTO ls_token.
         lv_index = sy-tabix.
 
