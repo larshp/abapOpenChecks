@@ -79,6 +79,7 @@
     },
     "unused_variables": false,
     "allowed_object_naming": true,
+    "unused_ddic": true,
     "check_comments": false,
     "fully_type_constants": true,
     "keep_single_parameter_on_one_line": false,
