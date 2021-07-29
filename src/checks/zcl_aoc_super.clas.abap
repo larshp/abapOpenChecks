@@ -304,6 +304,11 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+    IF ref_scan IS INITIAL.
+      rv_checksum = 123456. " running as unit test, return fixed checksum
+      RETURN.
+    ENDIF.
+
     READ TABLE ref_scan->statements INDEX iv_position  INTO ls_statement.
 
     IF sy-subrc <> 0 OR ls_statement-type = 'P' OR ls_statement-type = 'S' OR ls_statement-type = 'G'.
