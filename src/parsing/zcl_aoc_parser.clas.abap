@@ -1323,7 +1323,10 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
   METHOD xml_get.
 
     DATA: lv_rulename TYPE ssyntaxstructure-rulename,
-          ls_cache    LIKE LINE OF gt_cache.
+          ls_cache    LIKE LINE OF gt_cache,
+          lo_syntax_table_descr TYPE REF TO cl_abap_structdescr,
+          lt_syntax_table_components TYPE abap_component_tab,
+          lv_lines TYPE i.
 
     FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF gt_syntax.
 
@@ -1335,8 +1338,16 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
     ENDIF.
 
     IF lines( gt_syntax ) = 0.
-      SELECT * FROM ssyntaxstructure
-        INTO TABLE gt_syntax.             "#EC CI_NOWHERE "#EC CI_SUBRC
+      lo_syntax_table_descr ?= cl_abap_typedescr=>describe_by_name( 'SSYNTAXSTRUCTURE' ).
+      lt_syntax_table_components = lo_syntax_table_descr->get_components( ).
+      READ TABLE lt_syntax_table_components WITH KEY name = 'PROGLANG' TRANSPORTING NO FIELDS.
+      IF sy-subrc = 0.
+        SELECT * FROM ssyntaxstructure  "#EC CI_SUBRC
+          INTO TABLE gt_syntax WHERE (`proglang = 'A'`). "proglang = 'B' is BDL, not ABAP
+      ELSE.
+        SELECT * FROM ssyntaxstructure "#EC CI_SUBRC
+          INTO TABLE gt_syntax.
+      ENDIF.
       SORT gt_syntax BY rulename ASCENDING.
     ENDIF.
 
