@@ -50,8 +50,9 @@ CLASS ltcl_test IMPLEMENTATION.
     DATA: lv_code TYPE string.
 
 
-    CONCATENATE '                                               '
-      '                                         WRITE ''foo''. '
+    CONCATENATE '                                     '
+      '                                               '
+      '                                 WRITE ''foo''.'
       INTO lv_code RESPECTING BLANKS.
 
     _code lv_code.
