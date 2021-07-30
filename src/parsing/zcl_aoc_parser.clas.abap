@@ -1335,8 +1335,8 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
     ENDIF.
 
     IF lines( gt_syntax ) = 0.
-      SELECT * FROM ssyntaxstructure
-        INTO TABLE gt_syntax.             "#EC CI_NOWHERE "#EC CI_SUBRC
+      SELECT * FROM ssyntaxstructure  "#EC CI_SUBRC
+        INTO TABLE gt_syntax WHERE proglang = 'A'. "proglang = 'B' is BDL, not ABAP
       SORT gt_syntax BY rulename ASCENDING.
     ENDIF.
 
