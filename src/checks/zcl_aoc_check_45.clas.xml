@@ -77,7 +77,7 @@
     <item>
      <ID>I</ID>
      <KEY>M11</KEY>
-     <ENTRY>Use corresponding #( )</ENTRY>
+     <ENTRY>Use corresponding #( ) if source is initial</ENTRY>
      <LENGTH>44</LENGTH>
     </item>
     <item>
@@ -85,6 +85,12 @@
      <KEY>M12</KEY>
      <ENTRY>Use line_exists( )</ENTRY>
      <LENGTH>28</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>M13</KEY>
+     <ENTRY>Use corresponding #( base( source ) target )</ENTRY>
+     <LENGTH>88</LENGTH>
     </item>
    </TPOOL>
    <LINES>
