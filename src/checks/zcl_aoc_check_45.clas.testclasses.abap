@@ -336,11 +336,20 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD test011_01.
 
+    DATA lv_expected TYPE sci_errc.
+
+    IF mo_check->support_740sp08( ) = abap_true.
+      lv_expected = '013'.
+    ELSE.
+      lv_expected = '011'.
+    ENDIF.
+
+
     _code 'MOVE-CORRESPONDING foo TO bar.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
-    cl_abap_unit_assert=>assert_equals( exp = '011'
+    cl_abap_unit_assert=>assert_equals( exp = lv_expected
                                         act = ms_result-code ).
 
   ENDMETHOD.

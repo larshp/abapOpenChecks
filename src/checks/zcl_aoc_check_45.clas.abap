@@ -25,6 +25,9 @@ CLASS zcl_aoc_check_45 DEFINITION
     METHODS support_740sp02
       RETURNING
         VALUE(rv_supported) TYPE abap_bool .
+    METHODS support_740sp08
+      RETURNING
+        VALUE(rv_supported) TYPE abap_bool .
   PRIVATE SECTION.
 
     DATA mv_lines TYPE flag .
@@ -122,7 +125,11 @@ CLASS zcl_aoc_check_45 IMPLEMENTATION.
       ELSEIF mv_corresponding = abap_true
           AND <ls_statement>-str CP 'MOVE-CORRESPONDING * TO *'
           AND support_740sp02( ) = abap_true.
-        lv_code = '011'.
+        IF support_740sp08( ) = abap_true.
+          lv_code = '013'.
+        ELSE.
+          lv_code = '011'.
+        ENDIF.
       ELSEIF mv_line_exists = abap_true
           AND <ls_statement>-str CP 'READ TABLE * TRANSPORTING NO FIELDS*'
           AND NOT <ls_statement>-str CP '* BINARY SEARCH*'
@@ -260,11 +267,15 @@ CLASS zcl_aoc_check_45 IMPLEMENTATION.
 
     insert_scimessage(
         iv_code = '011'
-        iv_text = 'Use corresponding #( )'(m11) ).
+        iv_text = 'Use corresponding #( ) if source is initial'(m11) ).
 
     insert_scimessage(
         iv_code = '012'
         iv_text = 'Use line_exists( )'(m12) ).
+
+    insert_scimessage(
+        iv_code = '013'
+        iv_text = 'Use corresponding #( base( source ) target )'(m13) ).
 
   ENDMETHOD.
 
@@ -336,8 +347,11 @@ CLASS zcl_aoc_check_45 IMPLEMENTATION.
 
 
   METHOD support_740sp02.
-
-    rv_supported = lcl_supported=>support_740sp02( ).
-
+    rv_supported = lcl_supported=>is_740sp02_supported( ).
   ENDMETHOD.
+
+  METHOD support_740sp08.
+    rv_supported = lcl_supported=>is_740sp08_supported( ).
+  ENDMETHOD.
+
 ENDCLASS.
