@@ -1343,7 +1343,9 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
       READ TABLE lt_syntax_table_components WITH KEY name = 'PROGLANG' TRANSPORTING NO FIELDS.
       IF sy-subrc = 0.
         SELECT * FROM ssyntaxstructure  "#EC CI_SUBRC
-          INTO TABLE gt_syntax WHERE (`proglang = 'A'`). "proglang = 'B' is BDL, not ABAP
+          INTO TABLE gt_syntax WHERE proglang = 'A'
+                                  OR proglang = ''
+                                  OR proglang IS NULL. "proglang = 'B' is BDL, not ABAP
       ELSE.
         SELECT * FROM ssyntaxstructure "#EC CI_SUBRC
           INTO TABLE gt_syntax.
