@@ -1431,8 +1431,8 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 * conversion exits
     IF ms_naming-set_cfunc = abap_true
         AND rv_skip = abap_false
-        AND ( iv_name CS 'CONVERSION_EXIT_*_INPUT'
-        OR iv_name CS 'CONVERSION_EXIT_*_OUTPUT' ).
+        AND ( iv_name CP 'CONVERSION_EXIT_*_INPUT'
+        OR iv_name CP 'CONVERSION_EXIT_*_OUTPUT' ).
 
       CLEAR ls_check.
       _append import 'INPUT'.
