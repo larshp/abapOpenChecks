@@ -52,6 +52,7 @@ CLASS ZCL_AOC_BOOLEAN_NODE IMPLEMENTATION.
 
 
   METHOD append_child.
+    ASSERT io_child IS BOUND.
     APPEND io_child TO mt_children.
   ENDMETHOD.
 
