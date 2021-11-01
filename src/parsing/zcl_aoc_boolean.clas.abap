@@ -48,12 +48,21 @@ CLASS zcl_aoc_boolean DEFINITION
     CLASS-METHODS remove_strings
       IMPORTING
         !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
+    CLASS-METHODS remove_dereferences
+      IMPORTING
+        !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
+    CLASS-METHODS remove_table_expressions
+      IMPORTING
+        !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
+    CLASS-METHODS combine_structure_components
+      IMPORTING
+        !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
+CLASS zcl_aoc_boolean IMPLEMENTATION.
 
 
   METHOD is_comparator.
@@ -81,15 +90,15 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
             OR lv_token2 = 'O'
             OR lv_token2 = 'Z'
             OR lv_token2 = 'M'
-            OR lv_token2 = '<>'
+            OR lv_token2 = '<>' OR lv_token2 = '><' ">< is obsolete, but not forbidden outside ABAP Objects
             OR lv_token2 = '<'
             OR lv_token2 = 'GT'
             OR lv_token2 = '>'
             OR lv_token2 = 'LT'
-            OR lv_token2 = '>='
+            OR lv_token2 = '>=' OR lv_token2 = '=>' "=> is obsolete, but not forbidden outside ABAP Objects
             OR lv_token2 = 'GE'
             OR lv_token2 = 'NS'
-            OR lv_token2 = '<='
+            OR lv_token2 = '<=' OR lv_token2 = '=<' "=< is obsolete, but not forbidden outside ABAP Objects
             OR lv_token2 = 'LE'
             OR lv_token2 = 'NE'
             OR lv_token2 = 'NA'
@@ -375,6 +384,78 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD remove_dereferences.
+    DATA tokens TYPE stokesx_tab.
+    DATA token LIKE LINE OF tokens.
+
+    tokens = io_tokens->get_tokens( ).
+    LOOP AT tokens INTO token.
+      REPLACE ALL OCCURRENCES OF SUBSTRING '->*' IN token-str WITH ''.
+      IF sy-subrc = 0.
+        io_tokens->replace(
+          iv_str   = token-str
+          iv_start = sy-tabix ).
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+
+  METHOD remove_table_expressions.
+    DATA tokens TYPE stokesx_tab.
+    DATA ti TYPE syst_tabix.
+    DATA: before TYPE string,
+          after  TYPE string.
+
+    tokens = io_tokens->get_tokens( ).
+    IF lines( tokens ) < 3.
+      RETURN.
+    ENDIF.
+
+    ti = 2.
+    WHILE ti < ( lines( tokens ) - 2 ).
+      before = io_tokens->get_token( ti - 1 )-str.
+      after  = io_tokens->get_token( ti + 1 )-str.
+
+      IF before CP '*+[' AND after CP ']+*'.
+        io_tokens->replace(
+          iv_str   = substring_before( val = before sub = '[' occ = -1 )
+          iv_start = ti - 1
+          iv_end   = ti ).
+        io_tokens->replace(
+          iv_str   = substring_after( val = after sub = ']' occ = 1 )
+          iv_start = ti ).
+      ENDIF.
+      ti = ti + 1.
+    ENDWHILE.
+  ENDMETHOD.
+
+
+  METHOD combine_structure_components.
+    DATA tokens TYPE stokesx_tab.
+    DATA ti TYPE syst_tabix.
+    DATA: structure TYPE string,
+          component TYPE string.
+
+    tokens = io_tokens->get_tokens( ).
+    IF lines( tokens ) < 2.
+      RETURN.
+    ENDIF.
+
+    ti = 1.
+    WHILE ti < ( lines( tokens ) - 1 ).
+      component = io_tokens->get_token( ti + 1 )-str.
+
+      IF component CP '-+*'.
+        structure = io_tokens->get_token( ti )-str.
+        io_tokens->replace(
+          iv_str   = structure && component
+          iv_start = ti
+          iv_end   = ti + 1 ).
+      ENDIF.
+      ti = ti + 1.
+    ENDWHILE.
+  ENDMETHOD.
+
   METHOD remove_strings.
 
     DATA:
@@ -434,6 +515,9 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
     remove_strings( ro_tokens ).
     remove_method_calls( ro_tokens ).
     remove_calculations( ro_tokens ).
+    remove_dereferences( ro_tokens ).
+    remove_table_expressions( ro_tokens ).
+    combine_structure_components( ro_tokens ).
 
   ENDMETHOD.
 ENDCLASS.
