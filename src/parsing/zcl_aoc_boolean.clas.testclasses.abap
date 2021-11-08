@@ -92,7 +92,11 @@ CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL
       compare_ge FOR TESTING,
       compare_le FOR TESTING,
       compare_ne FOR TESTING,
-      dereference_tbl_exprssn_cmpnnt FOR TESTING.
+      dereference_tbl_exprssn_cmpnnt FOR TESTING,
+      structure_component FOR TESTING,
+      double_negation_01 FOR TESTING,
+      double_negation_02 FOR TESTING,
+      reduction_01 FOR TESTING.
 
 ENDCLASS.       "ltcl_Test
 
@@ -685,7 +689,48 @@ CLASS ltcl_parse IMPLEMENTATION.
   METHOD dereference_tbl_exprssn_cmpnnt.
     DATA: lv_result TYPE string.
 
-    lv_result = parse( 'IF root_data->*[ 1 ]-chm_nature = if_ehfnd_chm_impl_c=>gc_chm_nature-substance.' ).
+    lv_result = parse( 'IF data_ref->*[ 1 ]-component = value.' ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'COMPARE' ).
+  ENDMETHOD.
+
+  METHOD structure_component.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF ( structure-component < 1000 AND structure-component > -1000 ).' ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = '( AND( COMPARE COMPARE ) )' ).
+  ENDMETHOD.
+
+  METHOD double_negation_01.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF NOT NOT range IS INITIAL.' ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'NOT( NOT( COMPARE ) )' ).
+  ENDMETHOD.
+
+  METHOD double_negation_02.
+    DATA: lv_result TYPE string.
+
+    lv_result = parse( 'IF NOT NOT a < 10 OR b > 10.' ).
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = 'OR( NOT( NOT( COMPARE ) ) COMPARE )' ).
+  ENDMETHOD.
+
+  METHOD reduction_01.
+    DATA lv_code TYPE string.
+    DATA lv_result TYPE string.
+
+    lv_code = |IF ( REDUCE i( INIT x = 0 FOR wa IN table|
+           && |               WHERE ( flag = 'X' )|
+           && |               NEXT x = x + 1 ) )|
+           && |   GT integer_value.|.
+    lv_result = parse( lv_code ).
     cl_abap_unit_assert=>assert_equals(
       act = lv_result
       exp = 'COMPARE' ).
@@ -777,6 +822,9 @@ CLASS ltcl_remove_method_calls DEFINITION FOR TESTING DURATION SHORT RISK LEVEL 
       test10 FOR TESTING,
       test11 FOR TESTING,
       test12 FOR TESTING.
+
+    METHODS:
+      reduction_01 FOR TESTING.
 
 ENDCLASS.       "ltcl_Remove_Method_Calls
 
@@ -883,6 +931,11 @@ CLASS ltcl_remove_method_calls IMPLEMENTATION.
     test( iv_code = 'REF DATA( lt_tab )'
           iv_exp  = 'method' ).
 
+  ENDMETHOD.
+
+  METHOD reduction_01.
+    test( iv_code = |REDUCE i( INIT x = 0 FOR wa IN table WHERE ( flag = 'X' ) NEXT x = x + 1 )|
+          iv_exp  = 'reduction' ).
   ENDMETHOD.
 
 ENDCLASS.
@@ -1019,6 +1072,128 @@ CLASS ltcl_remove_calculations IMPLEMENTATION.
   METHOD test05.
     test( iv_code = 'IF SY-DATUM + 1 > + SY-DATUM'
           iv_exp  = 'IF SY-DATUM > + SY-DATUM' ).
+  ENDMETHOD.
+
+ENDCLASS.
+
+CLASS ltcl_remove_table_expressions DEFINITION DEFERRED.
+CLASS zcl_aoc_boolean DEFINITION LOCAL FRIENDS ltcl_remove_table_expressions.
+
+CLASS ltcl_remove_table_expressions DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
+
+  PRIVATE SECTION.
+    METHODS:
+      test
+        IMPORTING
+          iv_code TYPE string
+          iv_exp  TYPE string,
+      test10 FOR TESTING,
+      test11 FOR TESTING,
+      test12 FOR TESTING,
+      test13 FOR TESTING,
+      test20 FOR TESTING,
+      test21 FOR TESTING,
+      test_dereference FOR TESTING.
+
+ENDCLASS.
+
+CLASS ltcl_remove_table_expressions IMPLEMENTATION.
+
+  METHOD test.
+
+    DATA: lv_result TYPE string,
+          lo_tokens TYPE REF TO zcl_aoc_boolean_tokens.
+
+
+    lo_tokens = lcl_parse=>parse( iv_code ).
+
+    zcl_aoc_boolean=>remove_table_expressions( lo_tokens ).
+    cl_abap_unit_assert=>assert_bound( lo_tokens ).
+
+    lv_result = lo_tokens->to_string( ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = to_upper( iv_exp ) ).
+
+  ENDMETHOD.
+
+  METHOD test10.
+    test( iv_code = 'IF table[ 1 ] = some_value'
+          iv_exp  = 'IF TABLE = some_value' ).
+  ENDMETHOD.
+
+  METHOD test11.
+    test( iv_code = 'IF table[ 1 ]-component = some_value'
+          iv_exp  = 'IF TABLE-COMPONENT = some_value' ).
+  ENDMETHOD.
+
+  METHOD test12.
+    test( iv_code = 'IF table[ 1 ] - 50 < some_value'
+          iv_exp  = 'IF TABLE - 50 < some_value' ).
+  ENDMETHOD.
+
+  METHOD test13.
+    test( iv_code = 'IF table[ 1 ]-component - 50 > some_value'
+          iv_exp  = 'IF TABLE-COMPONENT - 50 > some_value' ).
+  ENDMETHOD.
+
+  METHOD test20.
+    test( iv_code = 'IF subtable[ 1 ][ 1 ] = some_value'
+          iv_exp  = 'IF subtable = some_value' ).
+  ENDMETHOD.
+
+  METHOD test21.
+    test( iv_code = 'IF subtable[ 1 ][ 1 ]-component = some_value'
+          iv_exp  = 'IF subtable-component = some_value' ).
+  ENDMETHOD.
+
+  METHOD test_dereference.
+    test( iv_code = 'IF root_data->*[ 1 ]-chm_nature = if_ehfnd_chm_impl_c=>gc_chm_nature-substance'
+          iv_exp  = 'IF root_data->*-chm_nature = if_ehfnd_chm_impl_c=>gc_chm_nature-substance' ).
+  ENDMETHOD.
+
+ENDCLASS.
+
+CLASS ltcl_remove_dereferences DEFINITION DEFERRED.
+CLASS zcl_aoc_boolean DEFINITION LOCAL FRIENDS ltcl_remove_dereferences.
+
+CLASS ltcl_remove_dereferences DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
+
+  PRIVATE SECTION.
+    METHODS:
+      test
+        IMPORTING
+          iv_code TYPE string
+          iv_exp  TYPE string,
+      test01 FOR TESTING.
+
+ENDCLASS.
+
+CLASS ltcl_remove_dereferences IMPLEMENTATION.
+
+  METHOD test.
+
+    DATA: lv_result TYPE string,
+          lo_tokens TYPE REF TO zcl_aoc_boolean_tokens.
+
+
+    lo_tokens = lcl_parse=>parse( iv_code ).
+
+    zcl_aoc_boolean=>remove_dereferences( lo_tokens ).
+    cl_abap_unit_assert=>assert_bound( lo_tokens ).
+
+    lv_result = lo_tokens->to_string( ).
+
+    cl_abap_unit_assert=>assert_equals(
+      act = lv_result
+      exp = to_upper( iv_exp ) ).
+
+  ENDMETHOD.
+
+  METHOD test01.
+    test( iv_code = 'IF root_data->*-chm_nature = if_ehfnd_chm_impl_c=>gc_chm_nature-substance'
+          iv_exp  = 'IF root_data-chm_nature = if_ehfnd_chm_impl_c=>gc_chm_nature-substance' ).
   ENDMETHOD.
 
 ENDCLASS.

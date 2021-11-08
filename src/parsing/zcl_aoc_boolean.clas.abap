@@ -54,9 +54,6 @@ CLASS zcl_aoc_boolean DEFINITION
     CLASS-METHODS remove_table_expressions
       IMPORTING
         !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
-    CLASS-METHODS combine_structure_components
-      IMPORTING
-        !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -91,6 +88,7 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
             OR lv_token2 = 'Z'
             OR lv_token2 = 'M'
             OR lv_token2 = '<>' OR lv_token2 = '><' ">< is obsolete, but not forbidden outside ABAP Objects
+            OR lv_token2 = 'NE'
             OR lv_token2 = '<'
             OR lv_token2 = 'GT'
             OR lv_token2 = '>'
@@ -100,7 +98,6 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
             OR lv_token2 = 'NS'
             OR lv_token2 = '<=' OR lv_token2 = '=<' "=< is obsolete, but not forbidden outside ABAP Objects
             OR lv_token2 = 'LE'
-            OR lv_token2 = 'NE'
             OR lv_token2 = 'NA'
             OR lv_token2 = 'CO'
             OR lv_token2 = 'CA'
@@ -148,17 +145,17 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
         EXPORTING
           iv_type = zcl_aoc_boolean_node=>c_type-compare.
       io_tokens->eat( 2 + lv_comparator ).
+    ELSEIF lv_token1 = '('.
+      ro_node = parse_paren( io_tokens ).
+    ELSEIF lv_token1 = 'NOT'.
+      io_tokens->eat( 1 ).
+      ro_node = parse_not( io_tokens ).
     ELSEIF io_tokens->get_length( ) = 1 OR lv_token2 = 'AND' OR lv_token2 = 'OR'.
 * Predicative method call, 740SP08 logical expression
       CREATE OBJECT ro_node
         EXPORTING
           iv_type = zcl_aoc_boolean_node=>c_type-compare.
       io_tokens->eat( 1 ).
-    ELSEIF lv_token1 = 'NOT'.
-      io_tokens->eat( 1 ).
-      ro_node = parse_not( io_tokens ).
-    ELSEIF lv_token1 = '('.
-      ro_node = parse_paren( io_tokens ).
     ELSEIF lv_token1 = 'AND'.
       CREATE OBJECT ro_node
         EXPORTING
@@ -201,17 +198,19 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
           lv_token2 TYPE string,
           lo_split  TYPE REF TO zcl_aoc_boolean_tokens.
 
-
-    lv_token1 = io_tokens->get_token( 1 )-str.
-    lv_token2 = io_tokens->get_token( 2 )-str.
-
     CREATE OBJECT ro_node
       EXPORTING
         iv_type = zcl_aoc_boolean_node=>c_type-not.
 
+    lv_token1 = io_tokens->get_token( 1 )-str.
+    lv_token2 = io_tokens->get_token( 2 )-str.
+
     IF lv_token1 = '('.
       lv_end = io_tokens->find_end_paren( 1 ).
       lo_split = io_tokens->eat( lv_end ).
+    ELSEIF lv_token1 = 'NOT'.
+      io_tokens->eat( 1 ).
+      lo_node = parse_not( io_tokens ).
     ELSEIF lv_token2 = 'OR' OR lv_token2 = 'AND'.
 * Predicative method call
       lo_split = io_tokens->eat( 1 ).
@@ -219,7 +218,9 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
       lo_split = io_tokens->eat( 3 ).
     ENDIF.
 
-    lo_node = parse_internal( lo_split ).
+    IF lo_node IS NOT BOUND AND lo_split IS BOUND.
+      lo_node = parse_internal( lo_split ).
+    ENDIF.
     ro_node->append_child( lo_node ).
 
   ENDMETHOD.
@@ -329,6 +330,22 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD remove_dereferences.
+    DATA tokens TYPE stokesx_tab.
+    DATA token LIKE LINE OF tokens.
+
+    tokens = io_tokens->get_tokens( ).
+    LOOP AT tokens INTO token.
+      REPLACE ALL OCCURRENCES OF SUBSTRING '->*' IN token-str WITH ''.
+      IF sy-subrc = 0.
+        io_tokens->replace(
+          iv_str   = token-str
+          iv_start = sy-tabix ).
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+
   METHOD remove_method_calls.
 
     DATA: lt_tokens  TYPE stokesx_tab,
@@ -342,6 +359,17 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
       lt_tokens = io_tokens->get_tokens( ).
       LOOP AT lt_tokens INTO ls_token.
         lv_index = sy-tabix.
+
+        "Remove reductions ('REDUCE type( what ever )') first to avoid incorrect interpretation as method call
+        IF ls_token-str = 'REDUCE'.
+          lv_end = io_tokens->find_end_paren( lv_index + 1 ).
+          io_tokens->replace(
+            iv_str   = 'REDUCTION'
+            iv_start = lv_index
+            iv_end   = lv_end ).
+          lv_restart = abap_true.
+          EXIT.
+        ENDIF.
 
         FIND REGEX '^[\w<>\/~\-=#]+\($' IN ls_token-str.
         IF sy-subrc = 0.
@@ -384,78 +412,6 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD remove_dereferences.
-    DATA tokens TYPE stokesx_tab.
-    DATA token LIKE LINE OF tokens.
-
-    tokens = io_tokens->get_tokens( ).
-    LOOP AT tokens INTO token.
-      REPLACE ALL OCCURRENCES OF SUBSTRING '->*' IN token-str WITH ''.
-      IF sy-subrc = 0.
-        io_tokens->replace(
-          iv_str   = token-str
-          iv_start = sy-tabix ).
-      ENDIF.
-    ENDLOOP.
-  ENDMETHOD.
-
-
-  METHOD remove_table_expressions.
-    DATA tokens TYPE stokesx_tab.
-    DATA ti TYPE syst_tabix.
-    DATA: before TYPE string,
-          after  TYPE string.
-
-    tokens = io_tokens->get_tokens( ).
-    IF lines( tokens ) < 3.
-      RETURN.
-    ENDIF.
-
-    ti = 2.
-    WHILE ti < ( lines( tokens ) - 2 ).
-      before = io_tokens->get_token( ti - 1 )-str.
-      after  = io_tokens->get_token( ti + 1 )-str.
-
-      IF before CP '*+[' AND after CP ']+*'.
-        io_tokens->replace(
-          iv_str   = substring_before( val = before sub = '[' occ = -1 )
-          iv_start = ti - 1
-          iv_end   = ti ).
-        io_tokens->replace(
-          iv_str   = substring_after( val = after sub = ']' occ = 1 )
-          iv_start = ti ).
-      ENDIF.
-      ti = ti + 1.
-    ENDWHILE.
-  ENDMETHOD.
-
-
-  METHOD combine_structure_components.
-    DATA tokens TYPE stokesx_tab.
-    DATA ti TYPE syst_tabix.
-    DATA: structure TYPE string,
-          component TYPE string.
-
-    tokens = io_tokens->get_tokens( ).
-    IF lines( tokens ) < 2.
-      RETURN.
-    ENDIF.
-
-    ti = 1.
-    WHILE ti < ( lines( tokens ) - 1 ).
-      component = io_tokens->get_token( ti + 1 )-str.
-
-      IF component CP '-+*'.
-        structure = io_tokens->get_token( ti )-str.
-        io_tokens->replace(
-          iv_str   = structure && component
-          iv_start = ti
-          iv_end   = ti + 1 ).
-      ENDIF.
-      ti = ti + 1.
-    ENDWHILE.
-  ENDMETHOD.
-
   METHOD remove_strings.
 
     DATA:
@@ -469,6 +425,54 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
         iv_start = sy-tabix ).
     ENDLOOP.
 
+  ENDMETHOD.
+
+
+  METHOD remove_table_expressions.
+    DATA lt_tokens TYPE stokesx_tab.
+    DATA ls_token LIKE LINE OF lt_tokens.
+    DATA lv_index TYPE syst_tabix.
+    DATA lv_end TYPE syst_tabix.
+    DATA ls_next LIKE LINE OF lt_tokens.
+    DATA lv_restart TYPE abap_bool.
+
+    DO.
+      lv_restart = abap_false.
+      lt_tokens = io_tokens->get_tokens( ).
+
+      LOOP AT lt_tokens INTO ls_token.
+        lv_index = sy-tabix.
+        IF ls_token-str CP '*+['.
+          lv_end = io_tokens->find_end_square( lv_index ).
+          io_tokens->replace(
+            iv_str   = substring_before( val = ls_token-str sub = '[' occ = -1 )
+            iv_start = sy-tabix
+            iv_end   = lv_end - 1 ).
+          ls_next = io_tokens->get_token( lv_index + 1 ).
+          IF ls_next-str = ']'.
+            io_tokens->remove( lv_index + 1 ).
+          ELSE.
+            io_tokens->replace(
+              iv_str   = substring_after( val = ls_next-str sub = ']' occ = 1 )
+              iv_start = lv_index + 1 ).
+          ENDIF.
+          ls_next = io_tokens->get_token( lv_index + 1 ).
+          IF ls_next-str(1) = '-' AND ls_next-str CN '''-.0123456789'.
+            ls_token = io_tokens->get_token( lv_index ).
+            io_tokens->replace(
+              iv_str   = ls_token-str && ls_next-str
+              iv_start = lv_index
+              iv_end   = lv_index + 1 ).
+          ENDIF.
+          lv_restart = abap_true.
+          EXIT.
+        ENDIF.
+      ENDLOOP.
+
+      IF lv_restart = abap_false.
+        EXIT.
+      ENDIF.
+    ENDDO.
   ENDMETHOD.
 
 
@@ -517,7 +521,7 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
     remove_calculations( ro_tokens ).
     remove_dereferences( ro_tokens ).
     remove_table_expressions( ro_tokens ).
-    combine_structure_components( ro_tokens ).
 
   ENDMETHOD.
+
 ENDCLASS.
