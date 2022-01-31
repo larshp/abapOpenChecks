@@ -120,8 +120,9 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
       include = is_method-include
       start-row = ls_first-statement->start_line.
 * note that for changed statements it might not find the correct STR, but this is okay
+    "search for CLEAR, but CLEAR x WITH y is okay
     IF sy-subrc = 0 AND (
-        ( ls_statement-str CP 'CLEAR *' AND ls_statement-str NP 'CLEAR * WITH *' ) "search for CLEAR, but CLEAR WITH is okay
+        ( ls_statement-str CP 'CLEAR *' AND ls_statement-str NP 'CLEAR * WITH *' )
         OR ls_statement-str CP 'REFRESH *'
         OR ls_statement-str CP 'FREE *' ).
 
