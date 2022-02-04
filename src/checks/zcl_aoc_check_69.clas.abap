@@ -227,6 +227,7 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
       ENDIF.
     ENDIF.
 
+    cl_abap_compiler=>clear_cache( ).
     CREATE OBJECT mo_stack.
     mo_compiler = cl_abap_compiler=>create( program_name ).
 
