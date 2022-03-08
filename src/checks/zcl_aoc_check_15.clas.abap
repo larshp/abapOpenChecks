@@ -57,7 +57,8 @@ CLASS zcl_aoc_check_15 IMPLEMENTATION.
           OR lv_statement CP 'CALL SELECTION-SCREEN *'
           OR lv_statement CP 'CALL TRANSACTION *'
           OR lv_statement CP 'CALL TRANSFORMATION *'
-          OR lv_statement CP 'CALL BADI *'.
+          OR lv_statement CP 'CALL BADI *'
+          OR lv_statement CP 'CALL "*'.         " AMDP method in AMDP method
         CONTINUE.
       ELSEIF lv_statement CP 'CALL *'
           OR lv_statement CP 'SYSTEM-CALL *'.
