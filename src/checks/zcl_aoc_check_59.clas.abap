@@ -64,18 +64,18 @@ CLASS zcl_aoc_check_59 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    CASE <ls_token>-str.
-      WHEN 'IF' OR 'ELSEIF' OR 'WHILE' OR 'CHECK'.
-        "Do nothing
-      WHEN 'ASSERT'.
-        READ TABLE it_tokens INDEX 2 ASSIGNING <ls_token>.
-        ASSERT sy-subrc = 0.
-        IF <ls_token>-str = 'FIELDS'.
-          RETURN.
-        ENDIF.
-      WHEN OTHERS.
+    IF <ls_token>-str = 'ASSERT'.
+      READ TABLE it_tokens INDEX 2 ASSIGNING <ls_token>.
+      ASSERT sy-subrc = 0.
+      IF <ls_token>-str = 'FIELDS'.
         RETURN.
-    ENDCASE.
+      ENDIF.
+    ELSEIF NOT ( <ls_token>-str = 'IF'
+              OR <ls_token>-str = 'ELSEIF'
+              OR <ls_token>-str = 'WHILE'
+              OR <ls_token>-str = 'CHECK' ).
+      RETURN.
+    ENDIF.
 
     lt_tokens = it_tokens.
     DELETE lt_tokens INDEX 1.
@@ -107,7 +107,6 @@ CLASS zcl_aoc_check_59 IMPLEMENTATION.
         RETURN.
       ENDIF.
     ENDLOOP.
-
 
   ENDMETHOD.
 
