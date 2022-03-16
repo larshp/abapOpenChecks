@@ -331,15 +331,15 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
 
 
   METHOD remove_dereferences.
-    DATA tokens TYPE stokesx_tab.
-    DATA token LIKE LINE OF tokens.
+    DATA lt_tokens TYPE stokesx_tab.
+    DATA lv_token LIKE LINE OF lt_tokens.
 
-    tokens = io_tokens->get_tokens( ).
-    LOOP AT tokens INTO token.
-      REPLACE ALL OCCURRENCES OF SUBSTRING '->*' IN token-str WITH ''.
+    lt_tokens = io_tokens->get_tokens( ).
+    LOOP AT lt_tokens INTO lv_token.
+      REPLACE ALL OCCURRENCES OF SUBSTRING '->*' IN lv_token-str WITH ''.
       IF sy-subrc = 0.
         io_tokens->replace(
-          iv_str   = token-str
+          iv_str   = lv_token-str
           iv_start = sy-tabix ).
       ENDIF.
     ENDLOOP.
