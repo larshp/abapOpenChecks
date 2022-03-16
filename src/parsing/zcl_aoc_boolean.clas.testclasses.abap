@@ -90,15 +90,6 @@ CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL
       test050 FOR TESTING,
       test051 FOR TESTING,
       test052 FOR TESTING.
-    METHODS:
-      compare_ge FOR TESTING,
-      compare_le FOR TESTING,
-      compare_ne FOR TESTING,
-      dereference_tbl_exprssn_cmpnnt FOR TESTING,
-      structure_component FOR TESTING,
-      double_negation_01 FOR TESTING,
-      double_negation_02 FOR TESTING,
-      reduction_01 FOR TESTING.
 
 ENDCLASS.       "ltcl_Test
 
@@ -641,6 +632,40 @@ CLASS ltcl_parse IMPLEMENTATION.
       exp = 'COMPARE' ).
   ENDMETHOD.
 
+ENDCLASS.
+
+CLASS ltcl_parse2 DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL.
+  PRIVATE SECTION.
+    METHODS:
+      parse IMPORTING iv_string        TYPE string
+            RETURNING VALUE(rv_result) TYPE string,
+      compare_ge FOR TESTING,
+      compare_le FOR TESTING,
+      compare_ne FOR TESTING,
+      dereference_tbl_exprssn_cmpnnt FOR TESTING,
+      structure_component FOR TESTING,
+      double_negation_01 FOR TESTING,
+      double_negation_02 FOR TESTING,
+      reduction_01 FOR TESTING.
+ENDCLASS. "ltcl_parse2 definition
+
+CLASS ltcl_parse2 IMPLEMENTATION.
+
+  METHOD parse.
+
+    DATA: lt_tokens TYPE stokesx_tab,
+          lo_node   TYPE REF TO zcl_aoc_boolean_node.
+
+
+    lt_tokens = lcl_parse=>parse( iv_string )->remove( 1 )->get_tokens( ).
+
+    lo_node = zcl_aoc_boolean=>parse( lt_tokens ).
+    cl_abap_unit_assert=>assert_bound( lo_node ).
+
+    rv_result = lo_node->to_string( ).
+
+  ENDMETHOD.
+
   METHOD compare_ge.
     DATA: lv_result TYPE string.
 
@@ -748,7 +773,7 @@ CLASS ltcl_parse IMPLEMENTATION.
       exp = 'COMPARE' ).
   ENDMETHOD.
 
-ENDCLASS.
+ENDCLASS. "ltcl_parse2 implementation
 
 CLASS ltcl_remove_strings DEFINITION DEFERRED.
 CLASS zcl_aoc_boolean DEFINITION LOCAL FRIENDS ltcl_remove_strings.
