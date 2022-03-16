@@ -120,31 +120,32 @@ CLASS ZCL_AOC_CHECK_79 IMPLEMENTATION.
       include = is_method-include
       start-row = ls_first-statement->start_line.
 * note that for changed statements it might not find the correct STR, but this is okay
-    IF sy-subrc <> 0 OR ( ls_statement-str NP 'CLEAR *'
-        AND ls_statement-str NP 'REFRESH *'
-        AND ls_statement-str NP 'FREE *' ).
-      RETURN.
+    "search for CLEAR, but CLEAR x WITH y is okay
+    IF sy-subrc = 0 AND (
+        ( ls_statement-str CP 'CLEAR *' AND ls_statement-str NP 'CLEAR * WITH *' )
+        OR ls_statement-str CP 'REFRESH *'
+        OR ls_statement-str CP 'FREE *' ).
+
+      LOOP AT mt_statements INTO ls_statement WHERE include = is_method-include
+          AND start-row < ls_first-line.
+        IF ls_statement-str CP 'SELECT SINGLE *'
+            OR ls_statement-str CP 'SELECT * INTO TABLE *'
+            OR ls_statement-str CP 'SELECT * INTO CORRESPONDING FIELDS OF TABLE *'
+            OR ls_statement-str CP 'SELECT * APPENDING TABLE *'
+            OR ls_statement-str CP 'SELECT * APPENDING CORRESPONDING FIELDS OF TABLE *'.
+          CONTINUE.
+        ENDIF.
+        IF ls_statement-str CP 'LOOP AT *'
+            OR ls_statement-str CP 'WHILE *'
+            OR ls_statement-str CP 'SELECT *'
+            OR ls_statement-str CP 'DO *'
+            OR ls_statement-str = 'DO'.
+          RETURN.
+        ENDIF.
+      ENDLOOP.
+
+      rv_error = abap_true.
     ENDIF.
-
-    LOOP AT mt_statements INTO ls_statement WHERE include = is_method-include
-        AND start-row < ls_first-line.
-      IF ls_statement-str CP 'SELECT SINGLE *'
-          OR ls_statement-str CP 'SELECT * INTO TABLE *'
-          OR ls_statement-str CP 'SELECT * INTO CORRESPONDING FIELDS OF TABLE *'
-          OR ls_statement-str CP 'SELECT * APPENDING TABLE *'
-          OR ls_statement-str CP 'SELECT * APPENDING CORRESPONDING FIELDS OF TABLE *'.
-        CONTINUE.
-      ENDIF.
-      IF ls_statement-str CP 'LOOP AT *'
-          OR ls_statement-str CP 'WHILE *'
-          OR ls_statement-str CP 'SELECT *'
-          OR ls_statement-str CP 'DO *'
-          OR ls_statement-str = 'DO'.
-        RETURN.
-      ENDIF.
-    ENDLOOP.
-
-    rv_error = abap_true.
 
   ENDMETHOD.
 

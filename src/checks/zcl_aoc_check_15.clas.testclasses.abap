@@ -21,7 +21,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_01 FOR TESTING,
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
-      test001_04 FOR TESTING.
+      test001_04 FOR TESTING,
+      is_amdp_call_ignored FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -91,6 +92,16 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD is_amdp_call_ignored.
+
+    _code 'CALL "ZCL_MY_AMDP_CLASS=>ANOTHER_AMDP_METHOD"( iv_input => :iv_input );'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
 
