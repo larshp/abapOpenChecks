@@ -89,6 +89,8 @@ CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL
       test049 FOR TESTING,
       test050 FOR TESTING,
       test051 FOR TESTING,
+      test052 FOR TESTING.
+    METHODS:
       compare_ge FOR TESTING,
       compare_le FOR TESTING,
       compare_ne FOR TESTING,
@@ -96,8 +98,7 @@ CLASS ltcl_parse DEFINITION FOR TESTING DURATION SHORT RISK LEVEL HARMLESS FINAL
       structure_component FOR TESTING,
       double_negation_01 FOR TESTING,
       double_negation_02 FOR TESTING,
-      reduction_01 FOR TESTING,
-      test052 FOR TESTING.
+      reduction_01 FOR TESTING.
 
 ENDCLASS.       "ltcl_Test
 
