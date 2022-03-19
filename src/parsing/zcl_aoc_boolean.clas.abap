@@ -66,26 +66,23 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
 
     DATA: lv_token2 TYPE string,
           lv_token3 TYPE string,
-          lv_token4 TYPE string,
-          lv_token5 TYPE string.
+          lv_token4 TYPE string.
 
 
     lv_token2 = io_tokens->get_token( 2 )-str.
     lv_token3 = io_tokens->get_token( 3 )-str.
     lv_token4 = io_tokens->get_token( 4 )-str.
-    lv_token5 = io_tokens->get_token( 5 )-str.
 
     rv_comparator = 0.
 
-    IF lv_token2 = 'NOT' AND lv_token3 = 'BETWEEN'
-        OR ( lv_token2 = 'IS' AND lv_token3 = 'NOT' AND lv_token4 = 'INSTANCE' AND lv_token5 = 'OF' ).
-      rv_comparator = 4.
-    ELSEIF ( lv_token2 = 'IS' AND lv_token3 = 'NOT' )
+    IF ( lv_token2 = 'IS' AND lv_token3 = 'NOT' )
         OR ( lv_token2 = 'NOT' AND lv_token3 = 'IN' ).
       rv_comparator = 2.
     ELSEIF ( lv_token2 = 'IS' AND lv_token3 = 'INSTANCE' AND lv_token4 = 'OF' )
         OR lv_token2 = 'BETWEEN'.
       rv_comparator = 3.
+    ELSEIF lv_token2 = 'NOT' AND lv_token3 = 'BETWEEN'.
+      rv_comparator = 4.
     ELSEIF lv_token2 = '='
             OR lv_token2 = 'O'
             OR lv_token2 = 'Z'
@@ -437,8 +434,8 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
   METHOD remove_table_expressions.
     DATA lt_tokens TYPE stokesx_tab.
     DATA ls_token LIKE LINE OF lt_tokens.
-    DATA lv_index TYPE syst_tabix.
-    DATA lv_end TYPE syst_tabix.
+    DATA lv_index TYPE i.
+    DATA lv_end TYPE i.
     DATA ls_next LIKE LINE OF lt_tokens.
     DATA lv_restart TYPE abap_bool.
 
