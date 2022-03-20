@@ -83,6 +83,7 @@ CLASS ZCL_AOC_BOOLEAN_NODE IMPLEMENTATION.
 
 
   METHOD prepend_child.
+    ASSERT io_child IS BOUND.
     INSERT io_child INTO mt_children INDEX 1.
   ENDMETHOD.
 

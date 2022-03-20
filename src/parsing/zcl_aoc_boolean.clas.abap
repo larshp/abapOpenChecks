@@ -48,38 +48,41 @@ CLASS zcl_aoc_boolean DEFINITION
     CLASS-METHODS remove_strings
       IMPORTING
         !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
+    CLASS-METHODS remove_dereferences
+      IMPORTING
+        !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
+    CLASS-METHODS remove_table_expressions
+      IMPORTING
+        !io_tokens TYPE REF TO zcl_aoc_boolean_tokens .
   PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
+CLASS zcl_aoc_boolean IMPLEMENTATION.
 
 
   METHOD is_comparator.
 
     DATA: lv_token2 TYPE string,
           lv_token3 TYPE string,
-          lv_token4 TYPE string,
-          lv_token5 TYPE string.
+          lv_token4 TYPE string.
 
 
     lv_token2 = io_tokens->get_token( 2 )-str.
     lv_token3 = io_tokens->get_token( 3 )-str.
     lv_token4 = io_tokens->get_token( 4 )-str.
-    lv_token5 = io_tokens->get_token( 5 )-str.
 
     rv_comparator = 0.
 
-    IF lv_token2 = 'NOT' AND lv_token3 = 'BETWEEN'
-        OR ( lv_token2 = 'IS' AND lv_token3 = 'NOT' AND lv_token4 = 'INSTANCE' AND lv_token5 = 'OF' ).
-      rv_comparator = 4.
-    ELSEIF ( lv_token2 = 'IS' AND lv_token3 = 'NOT' )
+    IF ( lv_token2 = 'IS' AND lv_token3 = 'NOT' )
         OR ( lv_token2 = 'NOT' AND lv_token3 = 'IN' ).
       rv_comparator = 2.
     ELSEIF ( lv_token2 = 'IS' AND lv_token3 = 'INSTANCE' AND lv_token4 = 'OF' )
         OR lv_token2 = 'BETWEEN'.
       rv_comparator = 3.
+    ELSEIF lv_token2 = 'NOT' AND lv_token3 = 'BETWEEN'.
+      rv_comparator = 4.
     ELSEIF lv_token2 = '='
             OR lv_token2 = 'O'
             OR lv_token2 = 'Z'
@@ -145,17 +148,17 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
         EXPORTING
           iv_type = zcl_aoc_boolean_node=>c_type-compare.
       io_tokens->eat( 2 + lv_comparator ).
+    ELSEIF lv_token1 = '('.
+      ro_node = parse_paren( io_tokens ).
+    ELSEIF lv_token1 = 'NOT'.
+      io_tokens->eat( 1 ).
+      ro_node = parse_not( io_tokens ).
     ELSEIF io_tokens->get_length( ) = 1 OR lv_token2 = 'AND' OR lv_token2 = 'OR'.
 * Predicative method call, 740SP08 logical expression
       CREATE OBJECT ro_node
         EXPORTING
           iv_type = zcl_aoc_boolean_node=>c_type-compare.
       io_tokens->eat( 1 ).
-    ELSEIF lv_token1 = 'NOT'.
-      io_tokens->eat( 1 ).
-      ro_node = parse_not( io_tokens ).
-    ELSEIF lv_token1 = '('.
-      ro_node = parse_paren( io_tokens ).
     ELSEIF lv_token1 = 'AND'.
       CREATE OBJECT ro_node
         EXPORTING
@@ -198,17 +201,19 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
           lv_token2 TYPE string,
           lo_split  TYPE REF TO zcl_aoc_boolean_tokens.
 
-
-    lv_token1 = io_tokens->get_token( 1 )-str.
-    lv_token2 = io_tokens->get_token( 2 )-str.
-
     CREATE OBJECT ro_node
       EXPORTING
         iv_type = zcl_aoc_boolean_node=>c_type-not.
 
+    lv_token1 = io_tokens->get_token( 1 )-str.
+    lv_token2 = io_tokens->get_token( 2 )-str.
+
     IF lv_token1 = '('.
       lv_end = io_tokens->find_end_paren( 1 ).
       lo_split = io_tokens->eat( lv_end ).
+    ELSEIF lv_token1 = 'NOT'.
+      io_tokens->eat( 1 ).
+      lo_node = parse_not( io_tokens ).
     ELSEIF lv_token2 = 'OR' OR lv_token2 = 'AND'.
 * Predicative method call
       lo_split = io_tokens->eat( 1 ).
@@ -216,7 +221,9 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
       lo_split = io_tokens->eat( 3 ).
     ENDIF.
 
-    lo_node = parse_internal( lo_split ).
+    IF lo_node IS NOT BOUND AND lo_split IS BOUND.
+      lo_node = parse_internal( lo_split ).
+    ENDIF.
     ro_node->append_child( lo_node ).
 
   ENDMETHOD.
@@ -326,6 +333,22 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD remove_dereferences.
+    DATA lt_tokens TYPE stokesx_tab.
+    DATA lv_token LIKE LINE OF lt_tokens.
+
+    lt_tokens = io_tokens->get_tokens( ).
+    LOOP AT lt_tokens INTO lv_token.
+      REPLACE ALL OCCURRENCES OF SUBSTRING '->*' IN lv_token-str WITH ''.
+      IF sy-subrc = 0.
+        io_tokens->replace(
+          iv_str   = lv_token-str
+          iv_start = sy-tabix ).
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+
   METHOD remove_method_calls.
 
     DATA: lt_tokens  TYPE stokesx_tab,
@@ -339,6 +362,17 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
       lt_tokens = io_tokens->get_tokens( ).
       LOOP AT lt_tokens INTO ls_token.
         lv_index = sy-tabix.
+
+        "Remove reductions ('REDUCE type( what ever )') first to avoid incorrect interpretation as method call
+        IF ls_token-str = 'REDUCE'.
+          lv_end = io_tokens->find_end_paren( lv_index + 1 ).
+          io_tokens->replace(
+            iv_str   = 'REDUCTION'
+            iv_start = lv_index
+            iv_end   = lv_end ).
+          lv_restart = abap_true.
+          EXIT.
+        ENDIF.
 
         FIND REGEX '^[\w<>\/~\-=#]+\($' IN ls_token-str.
         IF sy-subrc = 0.
@@ -397,6 +431,54 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD remove_table_expressions.
+    DATA lt_tokens TYPE stokesx_tab.
+    DATA ls_token LIKE LINE OF lt_tokens.
+    DATA lv_index TYPE i.
+    DATA lv_end TYPE i.
+    DATA ls_next LIKE LINE OF lt_tokens.
+    DATA lv_restart TYPE abap_bool.
+
+    DO.
+      lv_restart = abap_false.
+      lt_tokens = io_tokens->get_tokens( ).
+
+      LOOP AT lt_tokens INTO ls_token.
+        lv_index = sy-tabix.
+        IF ls_token-str CP '*+['.
+          lv_end = io_tokens->find_end_square( lv_index ).
+          io_tokens->replace(
+            iv_str   = substring_before( val = ls_token-str sub = '[' occ = -1 )
+            iv_start = sy-tabix
+            iv_end   = lv_end - 1 ).
+          ls_next = io_tokens->get_token( lv_index + 1 ).
+          IF ls_next-str = ']'.
+            io_tokens->remove( lv_index + 1 ).
+          ELSE.
+            io_tokens->replace(
+              iv_str   = substring_after( val = ls_next-str sub = ']' occ = 1 )
+              iv_start = lv_index + 1 ).
+          ENDIF.
+          ls_next = io_tokens->get_token( lv_index + 1 ).
+          IF ls_next-str(1) = '-' AND ls_next-str CN '''-.0123456789'.
+            ls_token = io_tokens->get_token( lv_index ).
+            io_tokens->replace(
+              iv_str   = ls_token-str && ls_next-str
+              iv_start = lv_index
+              iv_end   = lv_index + 1 ).
+          ENDIF.
+          lv_restart = abap_true.
+          EXIT.
+        ENDIF.
+      ENDLOOP.
+
+      IF lv_restart = abap_false.
+        EXIT.
+      ENDIF.
+    ENDDO.
+  ENDMETHOD.
+
+
   METHOD remove_templates.
 
     DATA: lv_start   TYPE i,
@@ -440,6 +522,9 @@ CLASS ZCL_AOC_BOOLEAN IMPLEMENTATION.
     remove_strings( ro_tokens ).
     remove_method_calls( ro_tokens ).
     remove_calculations( ro_tokens ).
+    remove_dereferences( ro_tokens ).
+    remove_table_expressions( ro_tokens ).
 
   ENDMETHOD.
+
 ENDCLASS.
