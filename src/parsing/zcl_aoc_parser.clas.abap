@@ -1356,7 +1356,7 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
     lv_rulename = iv_rulename. " type conversion
     READ TABLE gt_syntax ASSIGNING <ls_syntax>
       WITH KEY rulename = lv_rulename BINARY SEARCH.
-    IF sy-subrc NE 0.
+    IF sy-subrc <> 0.
       REPLACE ALL OCCURRENCES OF '-' IN lv_rulename WITH '__'.
       READ TABLE gt_syntax ASSIGNING <ls_syntax>
         WITH KEY rulename = lv_rulename BINARY SEARCH.
