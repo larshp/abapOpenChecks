@@ -1322,11 +1322,11 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
 
   METHOD xml_get.
 
-    DATA: lv_rulename TYPE ssyntaxstructure-rulename,
-          ls_cache    LIKE LINE OF gt_cache,
-          lo_syntax_table_descr TYPE REF TO cl_abap_structdescr,
+    DATA: lv_rulename                TYPE ssyntaxstructure-rulename,
+          ls_cache                   LIKE LINE OF gt_cache,
+          lo_syntax_table_descr      TYPE REF TO cl_abap_structdescr,
           lt_syntax_table_components TYPE abap_component_tab,
-          lv_lines TYPE i.
+          lv_lines                   TYPE i.
 
     FIELD-SYMBOLS: <ls_syntax> LIKE LINE OF gt_syntax.
 
@@ -1342,12 +1342,12 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
       lt_syntax_table_components = lo_syntax_table_descr->get_components( ).
       READ TABLE lt_syntax_table_components WITH KEY name = 'PROGLANG' TRANSPORTING NO FIELDS.
       IF sy-subrc = 0.
-        SELECT * FROM ssyntaxstructure  "#EC CI_SUBRC
+        SELECT * FROM ssyntaxstructure                    "#EC CI_SUBRC
           INTO TABLE gt_syntax WHERE (`proglang = 'A'`)
                                   OR (`proglang = ''`)
                                   OR (`proglang IS NULL`). "proglang = 'B' is BDL, not ABAP
       ELSE.
-        SELECT * FROM ssyntaxstructure "#EC CI_SUBRC
+        SELECT * FROM ssyntaxstructure                    "#EC CI_SUBRC
           INTO TABLE gt_syntax.
       ENDIF.
       SORT gt_syntax BY rulename ASCENDING.
@@ -1356,6 +1356,12 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
     lv_rulename = iv_rulename. " type conversion
     READ TABLE gt_syntax ASSIGNING <ls_syntax>
       WITH KEY rulename = lv_rulename BINARY SEARCH.
+    IF sy-subrc <> 0.
+      REPLACE ALL OCCURRENCES OF '-' IN lv_rulename WITH '__'.
+      READ TABLE gt_syntax ASSIGNING <ls_syntax>
+        WITH KEY rulename = lv_rulename BINARY SEARCH.
+
+    ENDIF.
     ASSERT sy-subrc = 0.
 
     xml_fix( CHANGING cv_xml = <ls_syntax>-description ).
