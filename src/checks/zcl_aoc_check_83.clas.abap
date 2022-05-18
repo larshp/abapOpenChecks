@@ -119,7 +119,7 @@ CLASS ZCL_AOC_CHECK_83 IMPLEMENTATION.
     TYPES: BEGIN OF ty_tadir,
              obj_name TYPE tadir-obj_name,
            END OF ty_tadir.
-    DATA lt_tadir  TYPE STANDARD TABLE OF ty_tadir WITH DEFAULT KEY..
+    DATA lt_tadir  TYPE STANDARD TABLE OF ty_tadir WITH DEFAULT KEY.
     DATA lv_name   TYPE tdsfname.
     DATA lo_sf     TYPE REF TO cl_ssf_fb_smart_form.
     FIELD-SYMBOLS <ls_data> LIKE LINE OF lo_sf->fsymbols.
