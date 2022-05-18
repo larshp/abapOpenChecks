@@ -337,7 +337,7 @@ CLASS zcl_aoc_check_56 IMPLEMENTATION.
         batchjob_error               = 6
         wrong_type                   = 7
         object_not_exist             = 8
-        OTHERS                       = 9 ##fm_subrc_ok.   "#EC CI_SUBRC
+        OTHERS                       = 9 ##FM_SUBRC_OK.   "#EC CI_SUBRC
 
   ENDMETHOD.
 
