@@ -140,7 +140,7 @@ CLASS lcl_data IMPLEMENTATION.
       WHERE trfunction = 'S'
       AND trstatus = 'D'
       AND e070~trkorr IN s_trkorr
-      AND as4user IN s_user ##too_many_itab_fields.       "#EC CI_SUBRC
+      AND as4user IN s_user ##TOO_MANY_ITAB_FIELDS.       "#EC CI_SUBRC
 
     LOOP AT gt_objects ASSIGNING <ls_object>.
       IF <ls_object>-pgmid = 'LIMU'
