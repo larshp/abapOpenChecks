@@ -66,7 +66,7 @@ CLASS ZCL_AOC_CHECK_96 IMPLEMENTATION.
         FROM vseocompdf
         INTO TABLE lt_mtdkeys
         WHERE clsname = object_name
-          AND version = 'A'
+          AND version = '1'
           AND cmptype = '1'.
       LOOP AT lt_mtdkeys ASSIGNING <ls_mtdkey>.
         cl_oo_classname_service=>get_method_include(
