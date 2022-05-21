@@ -51,7 +51,7 @@
     "modify_only_own_db_tables": true,
     "no_aliases": true,
     "no_external_form_calls": true,
-    "no_inline_in_optional_branches": true,
+    "no_inline_in_optional_branches": false,
     "no_yoda_conditions": false,
     "nrob_consistency": true,
     "omit_preceding_zeros": true,
