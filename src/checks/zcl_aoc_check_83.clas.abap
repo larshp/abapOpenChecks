@@ -11,6 +11,10 @@ CLASS zcl_aoc_check_83 DEFINITION
         REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
+
+    METHODS used_in_ssfo
+      RETURNING
+        VALUE(rv_used) TYPE abap_bool .
 ENDCLASS.
 
 
@@ -94,11 +98,62 @@ CLASS ZCL_AOC_CHECK_83 IMPLEMENTATION.
       INTO ls_wbcrossgt
       WHERE name = object_name
       AND otype = 'TY'.
-    IF sy-subrc <> 0.
-      inform( p_test = myname
-              p_kind = mv_errty
-              p_code = '001' ).
+    IF sy-subrc = 0.
+      RETURN.
     ENDIF.
+
+    IF ( object_type = 'DTEL' OR object_type = 'TABL' )
+        AND used_in_ssfo( ) = abap_true.
+      RETURN.
+    ENDIF.
+
+    inform( p_test = myname
+            p_kind = mv_errty
+            p_code = '001' ).
+
+  ENDMETHOD.
+
+
+  METHOD used_in_ssfo.
+
+    TYPES: BEGIN OF ty_tadir,
+             obj_name TYPE tadir-obj_name,
+           END OF ty_tadir.
+    DATA lt_tadir  TYPE STANDARD TABLE OF ty_tadir WITH DEFAULT KEY.
+    DATA lv_name   TYPE tdsfname.
+    DATA lo_sf     TYPE REF TO cl_ssf_fb_smart_form.
+    FIELD-SYMBOLS <ls_data> LIKE LINE OF lo_sf->fsymbols.
+
+* looks like SSFO are not included in where-used lists, as the data is stored
+* in XML. Loop through and check all,
+    SELECT obj_name FROM tadir INTO TABLE lt_tadir
+      WHERE pgmid = 'R3TR'
+      AND object = 'SSFO'
+      AND srcsystem = sy-sysid
+      AND devclass <> '$TMP'.
+    LOOP AT lt_tadir INTO DATA(ls_tadir).
+      CREATE OBJECT lo_sf.
+      lv_name = ls_tadir-obj_name.
+      TRY.
+          lo_sf->load( lv_name ).
+        CATCH cx_ssf_fb.
+          CONTINUE.
+      ENDTRY.
+
+      LOOP AT lo_sf->fsymbols ASSIGNING <ls_data>.
+        IF <ls_data>-typename = object_name.
+          rv_used = abap_true.
+          RETURN.
+        ENDIF.
+      ENDLOOP.
+
+      LOOP AT lo_sf->gdata ASSIGNING <ls_data>.
+        IF <ls_data>-typename = object_name.
+          rv_used = abap_true.
+          RETURN.
+        ENDIF.
+      ENDLOOP.
+    ENDLOOP.
 
   ENDMETHOD.
 ENDCLASS.
