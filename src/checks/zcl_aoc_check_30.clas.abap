@@ -47,7 +47,7 @@ CLASS ZCL_AOC_CHECK_30 IMPLEMENTATION.
         OR type = io_scan->gc_statement-compute_direct
         OR type = io_scan->gc_statement-method_direct.
 
-        lv_position = sy-tabix.
+      lv_position = sy-tabix.
 
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
