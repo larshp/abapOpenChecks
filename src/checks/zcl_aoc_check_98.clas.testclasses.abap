@@ -202,7 +202,6 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
   ENDMETHOD.
-  
   METHOD test003_01.
     "Issue 1028: https://github.com/larshp/abapOpenChecks/issues/1028
     _code 'try.'.
