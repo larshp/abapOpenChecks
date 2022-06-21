@@ -25,7 +25,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
+CLASS zcl_aoc_check_01 IMPLEMENTATION.
 
 
   METHOD check.
@@ -60,10 +60,11 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
+    enable_checksum( ).
 
     insert_scimessage(
-        iv_code = '001'
-        iv_text = 'IF in IF, can easily be reduced'(m01) ).
+      iv_code = '001'
+      iv_text = 'IF in IF, can easily be reduced'(m01) ).
 
   ENDMETHOD.
 
@@ -88,7 +89,9 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
           lo_then      TYPE REF TO zcl_aoc_structure,
           lv_include   TYPE program,
           lv_if        TYPE i,
-          lv_other     TYPE i.
+          lv_other     TYPE i,
+          lv_row       TYPE token_row,
+          lv_position  LIKE sy-tabix.
 
 
     IF io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if
@@ -125,11 +128,17 @@ CLASS ZCL_AOC_CHECK_01 IMPLEMENTATION.
 
     IF lv_if = 1 AND lv_other = 0.
       lv_include = io_scan->get_include( io_structure->get_statement( )-level ).
+
+      lv_row = io_structure->get_statement( )-row.
+      READ TABLE io_scan->statements WITH KEY trow = lv_row TRANSPORTING NO FIELDS.
+      lv_position = sy-tabix.
+
       inform( p_sub_obj_name = lv_include
-              p_line = io_structure->get_statement( )-row
-              p_kind = mv_errty
-              p_test = myname
-              p_code = '001' ).
+              p_position     = lv_position
+              p_line         = lv_row
+              p_kind         = mv_errty
+              p_test         = myname
+              p_code         = '001' ).
     ELSE.
       LOOP AT io_structure->get_structure( ) INTO lo_structure.
         run_check( io_structure = lo_structure

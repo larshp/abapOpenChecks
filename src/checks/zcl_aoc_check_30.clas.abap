@@ -36,7 +36,8 @@ CLASS ZCL_AOC_CHECK_30 IMPLEMENTATION.
     DATA: lv_i       TYPE i,
           lt_stack   TYPE TABLE OF ty_stack,
           ls_stack   LIKE LINE OF lt_stack,
-          lv_include TYPE sobj_name.
+          lv_include TYPE sobj_name,
+          lv_position LIKE sy-tabix.
 
     FIELD-SYMBOLS: <ls_statement> LIKE LINE OF io_scan->statements,
                    <ls_token>     LIKE LINE OF io_scan->tokens.
@@ -45,6 +46,8 @@ CLASS ZCL_AOC_CHECK_30 IMPLEMENTATION.
         WHERE type = io_scan->gc_statement-standard
         OR type = io_scan->gc_statement-compute_direct
         OR type = io_scan->gc_statement-method_direct.
+
+      lv_position = sy-tabix.
 
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
@@ -63,6 +66,7 @@ CLASS ZCL_AOC_CHECK_30 IMPLEMENTATION.
               AND ls_stack-changing = abap_false.
             lv_include = io_scan->get_include( <ls_statement>-level ).
             inform( p_sub_obj_name = lv_include
+                    p_position     = lv_position
                     p_line         = ls_stack-row
                     p_kind         = mv_errty
                     p_test         = myname
@@ -106,6 +110,7 @@ CLASS ZCL_AOC_CHECK_30 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
+    enable_checksum( ).
 
     insert_scimessage(
         iv_code = '001'
