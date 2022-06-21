@@ -1,14 +1,14 @@
 CLASS zcl_aoc_check_98 DEFINITION
   PUBLIC
   INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC .
+  CREATE PUBLIC.
 
   PUBLIC SECTION.
 
-    METHODS constructor .
+    METHODS constructor.
 
     METHODS check
-        REDEFINITION .
+        REDEFINITION.
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -18,33 +18,25 @@ ENDCLASS.
 
 CLASS ZCL_AOC_CHECK_98 IMPLEMENTATION.
 
-
   METHOD check.
-
-    DATA lt_structures        TYPE ty_structures_tt.
     DATA lv_empty_catch_count TYPE i.
 
-    FIELD-SYMBOLS <ls_structure_try>   LIKE LINE OF io_scan->structures.
-    FIELD-SYMBOLS <ls_structure_catch> LIKE LINE OF io_scan->structures.
-    FIELD-SYMBOLS <ls_statement>       LIKE LINE OF io_scan->statements.
-
-    lt_structures = io_scan->structures.
-
-    LOOP AT io_scan->structures ASSIGNING <ls_structure_try>
+    LOOP AT io_scan->structures ASSIGNING FIELD-SYMBOL(<ls_structure_try>) "#EC CI_SEL_NESTED
         WHERE stmnt_type = zcl_aoc_scan=>gc_structure_statement-try.
 
       CLEAR lv_empty_catch_count.
 
-      LOOP AT lt_structures  ASSIGNING <ls_structure_catch>
+      LOOP AT io_scan->structures ASSIGNING FIELD-SYMBOL(<ls_structure_catch>)
           FROM <ls_structure_try>-struc_from TO <ls_structure_try>-struc_to
           WHERE stmnt_type = zcl_aoc_scan=>gc_structure_statement-catch.
 
-        IF <ls_structure_catch>-struc_to < <ls_structure_catch>-struc_from.      "Empty catch.
+        IF <ls_structure_catch>-stmnt_from = <ls_structure_catch>-stmnt_to.      "Empty catch.
           lv_empty_catch_count = lv_empty_catch_count + 1.
         ENDIF.
 
-        IF lv_empty_catch_count = 2.
-          READ TABLE io_scan->statements ASSIGNING <ls_statement> INDEX <ls_structure_catch>-stmnt_from.
+        IF lv_empty_catch_count = 2.                      "#EC CI_MAGIC
+          READ TABLE io_scan->statements ASSIGNING FIELD-SYMBOL(<ls_statement>)
+              INDEX <ls_structure_catch>-stmnt_from.      "#EC CI_SUBRC
           inform( p_sub_obj_name = program_name
                   p_line         = <ls_statement>-trow
                   p_kind         = mv_errty

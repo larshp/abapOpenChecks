@@ -25,7 +25,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
       test001_04 FOR TESTING,
-      test002_01 FOR TESTING RAISING cx_static_check.
+      test002_01 FOR TESTING RAISING cx_static_check,
+      test003_01 FOR TESTING.
 
 ENDCLASS.
 
@@ -200,5 +201,19 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
+  ENDMETHOD.
+  METHOD test003_01.
+    "Issue 1028: https://github.com/larshp/abapOpenChecks/issues/1028
+    _code 'try.'.
+    _code '    write 1.'.
+    _code '  catch cx_static_check.'.
+    _code '      "ignore'.
+    _code '  catch cx_root into data(lx_error).'.
+    _code '    write 2.'.
+    _code 'endtry.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
   ENDMETHOD.
 ENDCLASS.
