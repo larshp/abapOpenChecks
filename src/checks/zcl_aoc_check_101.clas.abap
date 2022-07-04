@@ -13,6 +13,8 @@ CLASS zcl_aoc_check_101 DEFINITION
 
   PRIVATE SECTION.
     CONSTANTS mc_function_open_regex    TYPE string VALUE `^\w*\($`.
+    CONSTANTS mc_static_method_open_regex  TYPE string VALUE `^\w*(=>)\w*\($`.
+    CONSTANTS mc_instance_method_open_regex  TYPE string VALUE `^\w*(->)\w*\($`.
     CONSTANTS mc_function_close_string  TYPE string VALUE `)`.
     CONSTANTS mc_table_expr_open_regex  TYPE string VALUE `^\w*\[$`.
     CONSTANTS mc_table_expr_close_regex TYPE string VALUE `^]-?\w*$`.
@@ -82,7 +84,14 @@ CLASS zcl_aoc_check_101 IMPLEMENTATION.
           ELSEIF boolc( matches( val = <ls_token>-str regex = mc_function_open_regex ) ) = abap_true.
             lv_is_in_function = abap_true.
             CONTINUE.
+          ELSEIF boolc( matches( val = <ls_token>-str regex = mc_static_method_open_regex ) ) = abap_true.
+            lv_is_in_function = abap_true.
+            CONTINUE.
+          ELSEIF boolc( matches( val = <ls_token>-str regex = mc_instance_method_open_regex ) ) = abap_true.
+            lv_is_in_function = abap_true.
+            CONTINUE.
           ENDIF.
+
 
           IF lv_is_in_table_expression = abap_true.
             IF boolc( matches( val = <ls_token>-str regex = mc_table_expr_close_regex ) ) = abap_true.

@@ -28,7 +28,11 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test002_02 FOR TESTING RAISING cx_static_check,
       test002_03 FOR TESTING RAISING cx_static_check,
       test002_04 FOR TESTING RAISING cx_static_check,
-      test002_05 FOR TESTING RAISING cx_static_check.
+      test002_05 FOR TESTING RAISING cx_static_check,
+      test003_01 FOR TESTING RAISING cx_static_check,
+      test003_02 FOR TESTING RAISING cx_static_check,
+      test003_03 FOR TESTING RAISING cx_static_check,
+      test003_04 FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.       "lcl_Test
 
@@ -201,5 +205,55 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
   ENDMETHOD.
 
+
+  METHOD test003_01.
+* ===========
+
+    _code 'if not lcl_program=>some_check( lv_param ).'.
+    _code '  "some code'.
+    _code 'endif.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
+
+
+  METHOD test003_02.
+* ===========
+
+    _code 'if not lcl_program=>some_check( iv_param = lv_param ).'.
+    _code '  "some code'.
+    _code 'endif.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
+
+  METHOD test003_03.
+* ===========
+
+    _code 'if not lcl_program->some_check( lv_param ).'.
+    _code '  "some code'.
+    _code 'endif.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
+
+
+  METHOD test003_04.
+* ===========
+
+    _code 'if not lcl_program->some_check( iv_param = lv_param ).'.
+    _code '  "some code'.
+    _code 'endif.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
 
 ENDCLASS.       "lcl_Test
