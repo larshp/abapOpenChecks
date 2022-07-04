@@ -32,7 +32,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test003_01 FOR TESTING RAISING cx_static_check,
       test003_02 FOR TESTING RAISING cx_static_check,
       test003_03 FOR TESTING RAISING cx_static_check,
-      test003_04 FOR TESTING RAISING cx_static_check.
+      test003_04 FOR TESTING RAISING cx_static_check,
+      test003_05 FOR TESTING RAISING cx_static_check,
+      test003_06 FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.       "lcl_Test
 
@@ -256,4 +258,28 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
   ENDMETHOD.
 
+  METHOD test003_05.
+* ===========
+
+    _code 'if not lcl_program=>some_check( ).'.
+    _code '  "some code'.
+    _code 'endif.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
+
+
+  METHOD test003_06.
+* ===========
+
+    _code 'if not lcl_program->some_check( ).'.
+    _code '  "some code'.
+    _code 'endif.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
 ENDCLASS.       "lcl_Test
