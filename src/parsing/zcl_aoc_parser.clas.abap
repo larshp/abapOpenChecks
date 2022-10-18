@@ -240,58 +240,58 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
     CASE lv_name.
       WHEN 'Sequence'.
         build_sequence(
-            ii_rule   = ii_rule
-            iv_rulename = iv_rulename
-            io_before = io_before
-            io_after  = io_after ).
+          ii_rule     = ii_rule
+          iv_rulename = iv_rulename
+          io_before   = io_before
+          io_after    = io_after ).
       WHEN 'Alternative'.
         build_alternative(
-            ii_rule   = ii_rule
-            iv_rulename = iv_rulename
-            io_before = io_before
-            io_after  = io_after ).
+          ii_rule     = ii_rule
+          iv_rulename = iv_rulename
+          io_before   = io_before
+          io_after    = io_after ).
       WHEN 'Nonterminal'.
         build_nonterminal(
-            ii_rule   = ii_rule
-            iv_rulename = iv_rulename
-            io_before = io_before
-            io_after  = io_after ).
+          ii_rule     = ii_rule
+          iv_rulename = iv_rulename
+          io_before   = io_before
+          io_after    = io_after ).
       WHEN 'Terminal'.
         build_terminal(
-            ii_rule   = ii_rule
-            iv_rulename = iv_rulename
-            io_before = io_before
-            io_after  = io_after ).
+          ii_rule     = ii_rule
+          iv_rulename = iv_rulename
+          io_before   = io_before
+          io_after    = io_after ).
       WHEN 'Role'.
         build_role(
-            ii_rule   = ii_rule
-            iv_rulename = iv_rulename
-            io_before = io_before
-            io_after  = io_after ).
+          ii_rule     = ii_rule
+          iv_rulename = iv_rulename
+          io_before   = io_before
+          io_after    = io_after ).
       WHEN 'Option'.
         build_option(
-            ii_rule   = ii_rule
-            iv_rulename = iv_rulename
-            io_before = io_before
-            io_after  = io_after ).
+          ii_rule     = ii_rule
+          iv_rulename = iv_rulename
+          io_before   = io_before
+          io_after    = io_after ).
       WHEN 'Permutation'.
         build_permutation(
-            ii_rule   = ii_rule
-            iv_rulename = iv_rulename
-            io_before = io_before
-            io_after  = io_after ).
+          ii_rule     = ii_rule
+          iv_rulename = iv_rulename
+          io_before   = io_before
+          io_after    = io_after ).
       WHEN 'Iteration'.
         build_iteration(
-            ii_rule   = ii_rule
-            iv_rulename = iv_rulename
-            io_before = io_before
-            io_after  = io_after ).
+          ii_rule     = ii_rule
+          iv_rulename = iv_rulename
+          io_before   = io_before
+          io_after    = io_after ).
       WHEN 'Optionlist'.
         build_optionlist(
-            ii_rule   = ii_rule
-            iv_rulename = iv_rulename
-            io_before = io_before
-            io_after  = io_after ).
+          ii_rule     = ii_rule
+          iv_rulename = iv_rulename
+          io_before   = io_before
+          io_after    = io_after ).
     ENDCASE.
 
   ENDMETHOD.
@@ -317,10 +317,10 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
     DO li_children->get_length( ) TIMES.
       li_child = li_children->get_item( sy-index - 1 ).
       li_child = li_child->get_first_child( ). " get rid of <Alt> tag
-      build( ii_rule   = li_child
+      build( ii_rule     = li_child
              iv_rulename = iv_rulename
-             io_before = lo_dummy
-             io_after  = io_after ).
+             io_before   = lo_dummy
+             io_after    = io_after ).
     ENDDO.
 
   ENDMETHOD.
@@ -351,10 +351,10 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
     lo_dummy2->edge( io_after ).
     lo_dummy2->edge( lo_dummy1 ).
 
-    build( ii_rule   = li_child
+    build( ii_rule     = li_child
            iv_rulename = iv_rulename
-           io_before = lo_dummy1
-           io_after  = lo_dummy2 ).
+           io_before   = lo_dummy1
+           io_after    = lo_dummy2 ).
 
   ENDMETHOD.
 
@@ -395,10 +395,10 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
 
     io_before->edge( lo_dummy ).
 
-    build( ii_rule   = li_child
+    build( ii_rule     = li_child
            iv_rulename = iv_rulename
-           io_before = lo_dummy
-           io_after  = io_after ).
+           io_before   = lo_dummy
+           io_after    = io_after ).
 
 * easy way should be the last option/edge
     lo_dummy->edge( io_after ).
@@ -457,10 +457,10 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
             iv_rulename = iv_rulename.                        "#EC NOTEXT
 
         li_child = li_opt->get_item( sy-index - 1 ).
-        build( ii_rule   = li_child
+        build( ii_rule     = li_child
                iv_rulename = iv_rulename
-               io_before = lo_seq_before
-               io_after  = lo_seq_after ).
+               io_before   = lo_seq_before
+               io_after    = lo_seq_after ).
 
         IF lv_last = abap_true.
           lo_seq_after->edge( lo_after ).
@@ -555,10 +555,10 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
             iv_value    = 'PerSeq'
             iv_rulename = iv_rulename.
 
-        build( ii_rule   = li_child
+        build( ii_rule     = li_child
                iv_rulename = iv_rulename
-               io_before = lo_seq_before
-               io_after  = lo_seq_after ).
+               io_before   = lo_seq_before
+               io_after    = lo_seq_after ).
 
         IF lv_index = li_children->get_length( ).
           lo_seq_after->edge( lo_after ).
@@ -688,34 +688,34 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
 
     cl_gui_frontend_services=>gui_download(
       EXPORTING
-        filename                  = lv_filename
+        filename                = lv_filename
       CHANGING
-        data_tab                  = lt_data
+        data_tab                = lt_data
       EXCEPTIONS
-        file_write_error          = 1
-        no_batch                  = 2
-        gui_refuse_filetransfer   = 3
-        invalid_type              = 4
-        no_authority              = 5
-        unknown_error             = 6
-        header_not_allowed        = 7
-        separator_not_allowed     = 8
-        filesize_not_allowed      = 9
-        header_too_long           = 10
-        dp_error_create           = 11
-        dp_error_send             = 12
-        dp_error_write            = 13
-        unknown_dp_error          = 14
-        access_denied             = 15
-        dp_out_of_memory          = 16
-        disk_full                 = 17
-        dp_timeout                = 18
-        file_not_found            = 19
-        dataprovider_exception    = 20
-        control_flush_error       = 21
-        not_supported_by_gui      = 22
-        error_no_gui              = 23
-        OTHERS                    = 24 ).
+        file_write_error        = 1
+        no_batch                = 2
+        gui_refuse_filetransfer = 3
+        invalid_type            = 4
+        no_authority            = 5
+        unknown_error           = 6
+        header_not_allowed      = 7
+        separator_not_allowed   = 8
+        filesize_not_allowed    = 9
+        header_too_long         = 10
+        dp_error_create         = 11
+        dp_error_send           = 12
+        dp_error_write          = 13
+        unknown_dp_error        = 14
+        access_denied           = 15
+        dp_out_of_memory        = 16
+        disk_full               = 17
+        dp_timeout              = 18
+        file_not_found          = 19
+        dataprovider_exception  = 20
+        control_flush_error     = 21
+        not_supported_by_gui    = 22
+        error_no_gui            = 23
+        OTHERS                  = 24 ).
     IF sy-subrc <> 0.
       MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
                  WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
@@ -744,15 +744,15 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
         iv_value    = iv_rulename
         iv_rulename = iv_rulename.
 
-    build( ii_rule   = li_rule
+    build( ii_rule     = li_rule
            iv_rulename = iv_rulename
-           io_before = eo_start
-           io_after  = eo_end ).
+           io_before   = eo_start
+           io_after    = eo_end ).
 
     IF gv_debug = abap_true.
       graph_download(
-          iv_rulename = iv_rulename
-          io_start    = eo_start ).
+        iv_rulename = iv_rulename
+        io_start    = eo_start ).
     ENDIF.
 
   ENDMETHOD.
@@ -885,10 +885,10 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
       ENDIF.
 
       graph_build( EXPORTING iv_rulename = gv_end_rule
-                   IMPORTING eo_start = lo_start ).
+                   IMPORTING eo_start    = lo_start ).
 
-      rs_result = walk( io_node   = lo_start
-                        iv_index  = 1 ).
+      rs_result = walk( io_node  = lo_start
+                        iv_index = 1 ).
       IF rs_result-match = abap_false.
         RETURN.
       ENDIF.
@@ -953,19 +953,19 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
 
     CASE io_node->mv_type.
       WHEN gc_dummy OR gc_start.
-        rs_result = walk_node( io_node = io_node
+        rs_result = walk_node( io_node  = io_node
                                iv_index = iv_index ).
       WHEN gc_end.
-        rs_result = walk_end( io_node = io_node
+        rs_result = walk_end( io_node  = io_node
                               iv_index = iv_index ).
       WHEN gc_role.
-        rs_result = walk_role( io_node = io_node
+        rs_result = walk_role( io_node  = io_node
                                iv_index = iv_index ).
       WHEN gc_terminal.
-        rs_result = walk_terminal( io_node = io_node
+        rs_result = walk_terminal( io_node  = io_node
                                    iv_index = iv_index ).
       WHEN gc_nonterminal.
-        rs_result = walk_nonterminal( io_node = io_node
+        rs_result = walk_nonterminal( io_node  = io_node
                                       iv_index = iv_index ).
     ENDCASE.
 
@@ -980,8 +980,8 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    rs_result = walk_node( io_node   = io_node
-                           iv_index  = iv_index ).
+    rs_result = walk_node( io_node  = io_node
+                           iv_index = iv_index ).
 
   ENDMETHOD.
 
@@ -992,8 +992,8 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
 
 
     LOOP AT io_node->mt_edges INTO lo_node.
-      rs_result = walk( io_node   = lo_node
-                        iv_index  = iv_index ).
+      rs_result = walk( io_node  = lo_node
+                        iv_index = iv_index ).
       IF rs_result-match = abap_true.
         RETURN.
       ENDIF.
@@ -1345,10 +1345,12 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
         SELECT * FROM ssyntaxstructure                    "#EC CI_SUBRC
           INTO TABLE gt_syntax WHERE (`proglang = 'A'`)
                                   OR (`proglang = ''`)
-                                  OR (`proglang IS NULL`). "proglang = 'B' is BDL, not ABAP
+                                  OR (`proglang IS NULL`)
+                            ORDER BY PRIMARY KEY. "proglang = 'B' is BDL, not ABAP
       ELSE.
         SELECT * FROM ssyntaxstructure                    "#EC CI_SUBRC
-          INTO TABLE gt_syntax.
+          INTO TABLE gt_syntax
+          ORDER BY PRIMARY KEY.
       ENDIF.
       SORT gt_syntax BY rulename ASCENDING.
     ENDIF.
@@ -1409,13 +1411,15 @@ CLASS zcl_aoc_parser IMPLEMENTATION.
 
     IF gv_debug = abap_true.
       xml_download(
-          iv_rulename = iv_rulename
-          ii_xml      = li_ixml
-          ii_xml_doc  = li_xml_doc ).
+        iv_rulename = iv_rulename
+        ii_xml      = li_ixml
+        ii_xml_doc  = li_xml_doc ).
     ENDIF.
 
     li_collection =
-      li_xml_doc->get_elements_by_tag_name( depth = 0 name = 'View' ). "#EC NOTEXT
+      li_xml_doc->get_elements_by_tag_name(
+      depth = 0
+      name  = 'View' ). "#EC NOTEXT
 
     li_iterator = li_collection->create_iterator( ).
     li_node = li_iterator->get_next( ).
