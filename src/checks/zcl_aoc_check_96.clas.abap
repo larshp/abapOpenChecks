@@ -21,7 +21,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_96 IMPLEMENTATION.
+CLASS zcl_aoc_check_96 IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -39,8 +39,8 @@ CLASS ZCL_AOC_CHECK_96 IMPLEMENTATION.
     add_obj_type( 'CLAS' ).
 
     insert_scimessage(
-        iv_code = '001'
-        iv_text = '''Editor Lock'' is set.'(m01) ).            "#EC NOTEX
+      iv_code = '001'
+      iv_text = '''Editor Lock'' is set.'(m01) ).            "#EC NOTEX
 
   ENDMETHOD.
 
@@ -67,7 +67,9 @@ CLASS ZCL_AOC_CHECK_96 IMPLEMENTATION.
         INTO TABLE lt_mtdkeys
         WHERE clsname = object_name
           AND version = '1'
-          AND cmptype = '1'.
+          AND cmptype = '1'
+          ORDER BY clsname ASCENDING
+                   cmpname ASCENDING.
       LOOP AT lt_mtdkeys ASSIGNING <ls_mtdkey>.
         cl_oo_classname_service=>get_method_include(
           EXPORTING
@@ -82,16 +84,16 @@ CLASS ZCL_AOC_CHECK_96 IMPLEMENTATION.
         IF is_edt_lock( lv_program_name ) = abap_true.
           inform( p_sub_obj_type = c_type_include
                   p_sub_obj_name = lv_program_name
-                  p_kind    = mv_errty
-                  p_test    = myname
-                  p_code    = '001' ).
+                  p_kind         = mv_errty
+                  p_test         = myname
+                  p_code         = '001' ).
         ENDIF.
 
       ENDLOOP.
     ELSEIF is_edt_lock( program_name ) = abap_true.
-      inform( p_kind    = mv_errty
-              p_test    = myname
-              p_code    = '001' ).
+      inform( p_kind = mv_errty
+              p_test = myname
+              p_code = '001' ).
     ENDIF.
 
   ENDMETHOD.
