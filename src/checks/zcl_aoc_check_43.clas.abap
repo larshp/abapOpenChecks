@@ -57,7 +57,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
+CLASS zcl_aoc_check_43 IMPLEMENTATION.
 
 
   METHOD check.
@@ -108,8 +108,8 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
           SPLIT lv_str AT '(' INTO lv_foobar lv_str.
           IF lv_str <> ''.
             check_parameters(
-                is_call = <ls_call>
-                iv_code = lv_str ).
+              is_call = <ls_call>
+              iv_code = lv_str ).
           ENDIF.
 
         ENDLOOP.
@@ -188,8 +188,8 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     insert_scimessage(
-        iv_code = '001'
-        iv_text = 'Parameter name &1 can be omitted'(m01) ).
+      iv_code = '001'
+      iv_text = 'Parameter name &1 can be omitted'(m01) ).
 
   ENDMETHOD.
 
@@ -248,7 +248,8 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
       WHERE clsname = iv_class
       AND cmpname = iv_method
       AND pardecltyp = '0'
-      AND type <> ''.                         "#EC CI_ALL_FIELDS_NEEDED
+      AND type <> ''
+      ORDER BY PRIMARY KEY.                   "#EC CI_ALL_FIELDS_NEEDED
     IF sy-subrc <> 0.
       SELECT SINGLE refclsname
         FROM seometarel
@@ -259,8 +260,8 @@ CLASS ZCL_AOC_CHECK_43 IMPLEMENTATION.
       IF sy-subrc = 0 AND NOT lv_super IS INITIAL.
 * try looking in super class
         rt_parameters = read_parameters(
-            iv_class  = lv_super
-            iv_method = iv_method ).
+          iv_class  = lv_super
+          iv_method = iv_method ).
       ENDIF.
     ENDIF.
 

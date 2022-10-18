@@ -70,7 +70,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
+CLASS zcl_aoc_check_61 IMPLEMENTATION.
 
 
   METHOD check_package_interfaces.
@@ -166,8 +166,8 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
     add_obj_type( 'VIEW' ).
 
     insert_scimessage(
-        iv_code = '001'
-        iv_text = 'Uses &1 &2, which is outside of the encapsulation(&3)'(m01) ).
+      iv_code = '001'
+      iv_text = 'Uses &1 &2, which is outside of the encapsulation(&3)'(m01) ).
 
   ENDMETHOD.
 
@@ -184,14 +184,17 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
       SELECT elem_key AS intf_name FROM ifobjshort
         APPENDING CORRESPONDING FIELDS OF TABLE lt_pinf
         WHERE intf_name = ls_permission-intf_name
-        AND elem_type = 'PINF'.                           "#EC CI_SUBRC
+        AND elem_type = 'PINF'
+        ORDER BY elem_key.                                "#EC CI_SUBRC
 
       SELECT elem_type AS obj_type
         elem_key AS obj_name
         FROM ifobjshort
         APPENDING TABLE rt_allowed
         WHERE intf_name = ls_permission-intf_name
-        AND elem_type <> 'PINF'.                          "#EC CI_SUBRC
+        AND elem_type <> 'PINF'
+        ORDER BY elem_type ASCENDING
+                 elem_key  ASCENDING.                     "#EC CI_SUBRC
     ENDLOOP.
 
     IF lines( lt_pinf ) > 0.
@@ -294,7 +297,8 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
   METHOD list_permissions.
 
     SELECT * FROM permission INTO TABLE rt_list
-      WHERE client_pak = iv_package.                      "#EC CI_SUBRC
+      WHERE client_pak = iv_package
+      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
 
   ENDMETHOD.
 
@@ -306,7 +310,8 @@ CLASS ZCL_AOC_CHECK_61 IMPLEMENTATION.
 
 
     SELECT devclass INTO TABLE rt_list
-      FROM tdevc WHERE parentcl = iv_package. "#EC CI_GENBUFF "#EC CI_SUBRC
+      FROM tdevc WHERE parentcl = iv_package
+      ORDER BY devclass ASCENDING.        "#EC CI_GENBUFF "#EC CI_SUBRC
 
 * note the recursion, since packages are added to the list
     LOOP AT rt_list INTO lv_devclass.

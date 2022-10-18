@@ -15,7 +15,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_44 IMPLEMENTATION.
+CLASS zcl_aoc_check_44 IMPLEMENTATION.
 
 
   METHOD check.
@@ -49,7 +49,8 @@ CLASS ZCL_AOC_CHECK_44 IMPLEMENTATION.
       WHERE clsname = object_name
       AND ( pardecltyp = '1'
       OR pardecltyp = '2'
-      OR pardecltyp = '3' ).                              "#EC CI_SUBRC
+      OR pardecltyp = '3' )
+      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
 
     LOOP AT lt_seosubcodf ASSIGNING <ls_data> WHERE pardecltyp = '1'.
       LOOP AT lt_seosubcodf TRANSPORTING NO FIELDS
@@ -121,8 +122,8 @@ CLASS ZCL_AOC_CHECK_44 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     insert_scimessage(
-        iv_code = '001'
-        iv_text = 'EXPORTING can be changed to RETURNING, method &1'(m01) ).
+      iv_code = '001'
+      iv_text = 'EXPORTING can be changed to RETURNING, method &1'(m01) ).
 
   ENDMETHOD.
 ENDCLASS.

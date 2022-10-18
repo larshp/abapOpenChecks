@@ -121,7 +121,8 @@ CLASS lcl_data IMPLEMENTATION.
       AND obj_name IN s_name
       AND created_on IN s_cdat
       AND delflag = abap_false
-      AND devclass IN s_devcla.           "#EC CI_SUBRC "#EC CI_GENBUFF
+      AND devclass IN s_devcla
+      ORDER BY object ASCENDING.          "#EC CI_SUBRC "#EC CI_GENBUFF
 
     lv_lines = lines( lt_tadir ).
 
@@ -345,7 +346,7 @@ CLASS lcl_alv DEFINITION FINAL.
         IMPORTING
           is_data TYPE ty_output,
       on_link_click
-          FOR EVENT link_click OF cl_salv_events_table
+        FOR EVENT link_click OF cl_salv_events_table
         IMPORTING
           row
           column.

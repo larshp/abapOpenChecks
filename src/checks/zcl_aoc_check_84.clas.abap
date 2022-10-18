@@ -8,7 +8,7 @@ CLASS zcl_aoc_check_84 DEFINITION
     METHODS constructor .
 
     METHODS run
-         REDEFINITION .
+        REDEFINITION .
 
     METHODS get_attributes
         REDEFINITION .
@@ -46,8 +46,8 @@ CLASS zcl_aoc_check_84 IMPLEMENTATION.
     add_obj_type( 'CLAS' ).
 
     insert_scimessage(
-        iv_code = '001'
-        iv_text = 'No public attributes, &1'(m01) ).
+      iv_code = '001'
+      iv_text = 'No public attributes, &1'(m01) ).
 
   ENDMETHOD.
 
@@ -65,9 +65,9 @@ CLASS zcl_aoc_check_84 IMPLEMENTATION.
 
     zzaoc_top.
 
-    zzaoc_fill_att mv_errty 'Error Type' ''.                 "#EC NOTEXT
-    zzaoc_fill_att mt_classes 'Skip Classes' 'S'.            "#EC NOTEXT
-    zzaoc_fill_att mv_read_only_allowed 'Allow READ-ONLY attributes' ''.  "#EC NOTEXT
+    zzaoc_fill_att mv_errty 'Error Type' ''.                "#EC NOTEXT
+    zzaoc_fill_att mt_classes 'Skip Classes' 'S'.           "#EC NOTEXT
+    zzaoc_fill_att mv_read_only_allowed 'Allow READ-ONLY attributes' ''. "#EC NOTEXT
     zzaoc_popup.
 
   ENDMETHOD.
@@ -77,7 +77,7 @@ CLASS zcl_aoc_check_84 IMPLEMENTATION.
 
     IMPORT mv_errty   = mv_errty
            mt_classes = mt_classes
-           mv_read_only_allowed = mv_read_only_allowed FROM DATA BUFFER p_attributes.  "#EC CI_USE_WANTED
+           mv_read_only_allowed = mv_read_only_allowed FROM DATA BUFFER p_attributes. "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
   ENDMETHOD.
@@ -90,7 +90,7 @@ CLASS zcl_aoc_check_84 IMPLEMENTATION.
 * MIT License
 
     TYPES: BEGIN OF ty_attr,
-             cmpname TYPE vseocompdf-cmpname,
+             cmpname   TYPE vseocompdf-cmpname,
              attrdonly TYPE vseocompdf-attrdonly,
            END OF ty_attr.
 
@@ -107,7 +107,9 @@ CLASS zcl_aoc_check_84 IMPLEMENTATION.
       AND version = '1'
       AND cmptype = '0'
       AND exposure = '2'
-      AND attdecltyp <> '2'.
+      AND attdecltyp <> '2'
+      ORDER BY cmpname   ASCENDING
+               attrdonly ASCENDING.
     IF sy-subrc <> 0.
       RETURN.
     ENDIF.

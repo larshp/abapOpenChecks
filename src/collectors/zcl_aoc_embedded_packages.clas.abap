@@ -29,7 +29,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
+CLASS zcl_aoc_embedded_packages IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -57,7 +57,8 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
 
     SELECT devclass FROM tdevc
       INTO TABLE lt_packages
-      WHERE devclass IN mt_packages.                    "#EC CI_GENBUFF
+      WHERE devclass IN mt_packages
+      ORDER BY devclass ASCENDING.                      "#EC CI_GENBUFF
     IF sy-subrc <> 0.
       RETURN.
     ENDIF.
@@ -69,7 +70,8 @@ CLASS ZCL_AOC_EMBEDDED_PACKAGES IMPLEMENTATION.
         FROM tdevc
         INTO TABLE lt_packages
         FOR ALL ENTRIES IN lt_packages
-        WHERE parentcl = lt_packages-table_line.        "#EC CI_GENBUFF
+        WHERE parentcl = lt_packages-table_line
+        ORDER BY PRIMARY KEY.                           "#EC CI_GENBUFF
       IF sy-subrc = 0.
         APPEND LINES OF lt_packages TO rt_embedded.
       ENDIF.
