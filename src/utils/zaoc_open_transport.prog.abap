@@ -140,7 +140,7 @@ CLASS lcl_data IMPLEMENTATION.
       WHERE trfunction = 'S'
       AND trstatus = 'D'
       AND e070~trkorr IN s_trkorr
-      AND as4user IN s_user 
+      AND as4user IN s_user
       ORDER BY e070~trkorr ASCENDING
                as4user     ASCENDING ##TOO_MANY_ITAB_FIELDS.                     "#EC CI_SUBRC
 
