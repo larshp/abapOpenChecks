@@ -7,12 +7,12 @@ REPORT zaoc_line_length.
 TABLES: tdevc.
 
 SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-001.
-  SELECT-OPTIONS: s_devc FOR tdevc-devclass OBLIGATORY.
+SELECT-OPTIONS: s_devc FOR tdevc-devclass OBLIGATORY.
 SELECTION-SCREEN END OF BLOCK b1.
 
 SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-002.
-  PARAMETERS: p_split TYPE i DEFAULT 10,
-              p_mview TYPE c AS CHECKBOX DEFAULT 'X'.
+PARAMETERS: p_split TYPE i DEFAULT 10,
+            p_mview TYPE c AS CHECKBOX DEFAULT 'X'.
 SELECTION-SCREEN END OF BLOCK b2.
 
 ******************************************************************
