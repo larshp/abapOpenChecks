@@ -28,7 +28,8 @@ FORM run RAISING cx_salv_msg.
   SELECT * FROM tadir INTO TABLE lt_tadir
     WHERE devclass IN s_devc
     AND pgmid = 'R3TR'
-    AND object = 'PROG'.                  "#EC CI_GENBUFF "#EC CI_SUBRC
+    AND object = 'PROG'
+    ORDER BY PRIMARY KEY.                 "#EC CI_GENBUFF "#EC CI_SUBRC
 
   LOOP AT lt_tadir ASSIGNING <ls_tadir>.
     SELECT SINGLE subc INTO lv_subc FROM reposrc

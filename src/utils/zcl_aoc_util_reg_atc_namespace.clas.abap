@@ -8,35 +8,35 @@ CLASS zcl_aoc_util_reg_atc_namespace DEFINITION
 
     TYPES:
       BEGIN OF ty_ns_object,
-             namespace TYPE string,
-             object    TYPE string,
-           END OF ty_ns_object .
+        namespace TYPE string,
+        object    TYPE string,
+      END OF ty_ns_object .
 
     TYPE-POOLS abap .
     CLASS-METHODS is_registered_fugr_uxx
       IMPORTING
-      !iv_sub_obj_name TYPE sobj_name
+        !iv_sub_obj_name TYPE sobj_name
       RETURNING
-      VALUE(rv_bool) TYPE abap_bool .
+        VALUE(rv_bool)   TYPE abap_bool .
     CLASS-METHODS is_in_namespace
       IMPORTING
-      !iv_pgmid TYPE pgmid
-      !iv_object TYPE trobjtype
-      !iv_obj_name TYPE csequence
+        !iv_pgmid      TYPE pgmid
+        !iv_object     TYPE trobjtype
+        !iv_obj_name   TYPE csequence
       RETURNING
-      VALUE(rv_bool) TYPE abap_bool .
+        VALUE(rv_bool) TYPE abap_bool .
     CLASS-METHODS split_ns_object
       IMPORTING
-      !iv_pgmid TYPE pgmid
-      !iv_object TYPE trobjtype
-      !iv_obj_name TYPE csequence
+        !iv_pgmid           TYPE pgmid
+        !iv_object          TYPE trobjtype
+        !iv_obj_name        TYPE csequence
       RETURNING
-      VALUE(rs_ns_object) TYPE ty_ns_object .
+        VALUE(rs_ns_object) TYPE ty_ns_object .
     CLASS-METHODS is_append_obj_in_ns
       IMPORTING
-      !iv_sub_obj_name TYPE sobj_name
+        !iv_sub_obj_name TYPE sobj_name
       RETURNING
-      VALUE(rv_bool) TYPE abap_bool .
+        VALUE(rv_bool)   TYPE abap_bool .
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -55,7 +55,7 @@ CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
 
     rv_bool = abap_false.
 
-    SELECT * FROM satc_ac_namespcs INTO TABLE lt_namespaces.
+    SELECT * FROM satc_ac_namespcs INTO TABLE lt_namespaces ORDER BY PRIMARY KEY.
 
     LOOP AT lt_namespaces ASSIGNING <ls_namespace>.
       IF iv_sub_obj_name CP |{ <ls_namespace>-namespace }*|.
@@ -107,7 +107,7 @@ CLASS zcl_aoc_util_reg_atc_namespace IMPLEMENTATION.
 
     rv_bool = abap_false.
 
-    SELECT * FROM satc_ac_namespcs INTO TABLE lt_namespaces.
+    SELECT * FROM satc_ac_namespcs INTO TABLE lt_namespaces ORDER BY PRIMARY KEY.
 
     LOOP AT lt_namespaces ASSIGNING <ls_namespace>.
       IF iv_sub_obj_name CP |{ <ls_namespace>-namespace }L*UXX|.

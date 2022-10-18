@@ -35,7 +35,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
+CLASS zcl_aoc_util_programs IMPLEMENTATION.
 
 
   METHOD class_includes.
@@ -140,7 +140,9 @@ CLASS ZCL_AOC_UTIL_PROGRAMS IMPLEMENTATION.
       INTO CORRESPONDING FIELDS OF TABLE lt_tadir
       WHERE pgmid = 'R3TR'
       AND ( object = 'CLAS' OR object = 'PROG' OR object = 'FUGR' )
-      AND devclass = iv_devclass.         "#EC CI_GENBUFF "#EC CI_SUBRC
+      AND devclass = iv_devclass
+      ORDER BY object ASCENDING
+               obj_name ASCENDING.        "#EC CI_GENBUFF "#EC CI_SUBRC
 
     IF iv_ignore_gateway = abap_true.
       DELETE lt_tadir WHERE obj_name CP '*_DPC' AND object = 'CLAS'.

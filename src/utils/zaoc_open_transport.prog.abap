@@ -140,7 +140,9 @@ CLASS lcl_data IMPLEMENTATION.
       WHERE trfunction = 'S'
       AND trstatus = 'D'
       AND e070~trkorr IN s_trkorr
-      AND as4user IN s_user ##TOO_MANY_ITAB_FIELDS.       "#EC CI_SUBRC
+      AND as4user IN s_user ##TOO_MANY_ITAB_FIELDS
+      ORDER BY e070~trkorr ASCENDING
+               as4user     ASCENDING.                     "#EC CI_SUBRC
 
     LOOP AT gt_objects ASSIGNING <ls_object>.
       IF <ls_object>-pgmid = 'LIMU'
@@ -188,7 +190,7 @@ CLASS lcl_alv DEFINITION FINAL.
         IMPORTING
           is_data TYPE ty_output,
       on_link_click
-          FOR EVENT link_click OF cl_salv_events_table
+        FOR EVENT link_click OF cl_salv_events_table
         IMPORTING
           row
           column.

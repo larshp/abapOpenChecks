@@ -37,10 +37,10 @@ CLASS lcl_alv DEFINITION FINAL.
   PUBLIC SECTION.
     CLASS-METHODS:
       on_link_click
-            FOR EVENT link_click OF cl_salv_events_table
+        FOR EVENT link_click OF cl_salv_events_table
         IMPORTING
-            row
-            column.
+          row
+          column.
 
 ENDCLASS.
 
@@ -97,7 +97,8 @@ FORM run RAISING cx_salv_error.
     WHERE devclass IN s_devc
     AND object = 'CLAS'
     AND obj_name IN s_objn
-    AND delflag = abap_false.             "#EC CI_GENBUFF "#EC CI_SUBRC
+    AND delflag = abap_false
+    ORDER BY obj_name ASCENDING.          "#EC CI_GENBUFF "#EC CI_SUBRC
 
   LOOP AT lt_tadir INTO ls_tadir.
     lv_class = ls_tadir-obj_name.
