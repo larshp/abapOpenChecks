@@ -24,7 +24,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_35 IMPLEMENTATION.
+CLASS zcl_aoc_check_35 IMPLEMENTATION.
 
 
   METHOD analyze.
@@ -47,7 +47,7 @@ CLASS ZCL_AOC_CHECK_35 IMPLEMENTATION.
 
     ASSERT lines( lt_name ) > 0.
     SELECT name FROM cross INTO TABLE lt_cross
-      FOR ALL ENTRIES IN lt_name
+       FOR ALL ENTRIES IN lt_name
       WHERE ( type = '3' OR type = 'N' )
       AND name = lt_name-table_line.                      "#EC CI_SUBRC
     SORT lt_cross BY name ASCENDING.
@@ -95,8 +95,8 @@ CLASS ZCL_AOC_CHECK_35 IMPLEMENTATION.
     add_obj_type( 'MSAG' ).
 
     insert_scimessage(
-        iv_code = '001'
-        iv_text = 'Message not in use, &1'(m01) ).
+      iv_code = '001'
+      iv_text = 'Message not in use, &1'(m01) ).
 
   ENDMETHOD.
 
@@ -116,7 +116,8 @@ CLASS ZCL_AOC_CHECK_35 IMPLEMENTATION.
 
     SELECT * FROM t100 INTO TABLE lt_t100
       WHERE sprsl = sy-langu
-      AND arbgb = object_name.                          "#EC CI_GENBUFF
+      AND arbgb = object_name
+      ORDER BY PRIMARY KEY.                             "#EC CI_GENBUFF
     IF sy-subrc <> 0.
       RETURN.
     ENDIF.
