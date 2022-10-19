@@ -74,7 +74,8 @@ CLASS zcl_aoc_check_01 IMPLEMENTATION.
     DATA: lo_structure TYPE REF TO zcl_aoc_structure.
 
     LOOP AT io_structure->get_structure( ) INTO lo_structure.
-      IF lo_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-else.
+      IF lo_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-else
+      OR lo_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-elseif.
         rv_bool = abap_true.
         RETURN.
       ENDIF.
