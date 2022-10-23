@@ -41,7 +41,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_21 FOR TESTING,
       test001_22 FOR TESTING,
       test001_23 FOR TESTING,
-      test001_24 FOR TESTING.
+      test001_24 FOR TESTING,
+      test001_25 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -468,6 +469,20 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
+  ENDMETHOD.
+
+  METHOD test001_25.
+    _code 'IF sy-subrc EQ 0.          '.
+    _code '  IF val IS NOT INITIAL.        '.
+    _code '    WRITE: ''foo''.'.
+    _code '  ELSEIF count IS NOT INITIAL .            '.
+    _code '    WRITE: ''bar''.'.
+    _code '  ENDIF.           '.
+    _code 'ENDIF.             '.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
   ENDMETHOD.
 
 ENDCLASS.       "lcl_Test
