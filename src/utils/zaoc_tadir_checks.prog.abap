@@ -35,12 +35,14 @@ CLASS lcl_logic IMPLEMENTATION.
     SELECT * FROM e071 INTO TABLE lt_e071
       WHERE pgmid = is_tadir-pgmid
       AND object = is_tadir-object
-      AND obj_name = is_tadir-obj_name.                   "#EC CI_SUBRC
+      AND obj_name = is_tadir-obj_name
+      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
     IF lines( lt_e071 ) > 0.
       SELECT * FROM e070 INTO TABLE lt_e070
         FOR ALL ENTRIES IN lt_e071
         WHERE trkorr = lt_e071-trkorr
-        AND trstatus = 'D'.                               "#EC CI_SUBRC
+        AND trstatus = 'D'
+        ORDER BY PRIMARY KEY.                             "#EC CI_SUBRC
     ENDIF.
 
     IF lines( lt_e070 ) > 0.
@@ -61,7 +63,8 @@ FORM run.
 
 
   SELECT * FROM tadir INTO TABLE lt_tadir
-    WHERE devclass IN s_devc.             "#EC CI_GENBUFF "#EC CI_SUBRC
+    WHERE devclass IN s_devc
+    ORDER BY PRIMARY KEY.                 "#EC CI_GENBUFF "#EC CI_SUBRC
 
   LOOP AT lt_tadir ASSIGNING <ls_tadir>.
     IF sy-tabix MOD 500 = 0.

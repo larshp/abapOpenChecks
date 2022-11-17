@@ -52,7 +52,8 @@ CLASS lcl_app IMPLEMENTATION.
     init_result( ).
 
     SELECT devclass FROM tdevc INTO TABLE lt_packages
-      WHERE devclass IN s_devc.           "#EC CI_GENBUFF "#EC CI_SUBRC
+      WHERE devclass IN s_devc
+      ORDER BY devclass ASCENDING.        "#EC CI_GENBUFF "#EC CI_SUBRC
 
     LOOP AT lt_packages INTO lv_package.
       run_package( lv_package ).
@@ -87,16 +88,16 @@ CLASS lcl_app IMPLEMENTATION.
 
 
     lt_programs = zcl_aoc_util_programs=>get_programs_in_package(
-      iv_devclass = iv_devclass
+      iv_devclass          = iv_devclass
       iv_ignore_mview_fugr = p_mview ).
 
     LOOP AT lt_programs INTO lv_program.
       IF sy-tabix MOD 100 = 0.
         cl_progress_indicator=>progress_indicate(
-            i_text               = iv_devclass
-            i_processed          = sy-tabix
-            i_total              = lines( lt_programs )
-            i_output_immediately = abap_true ).
+          i_text               = iv_devclass
+          i_processed          = sy-tabix
+          i_total              = lines( lt_programs )
+          i_output_immediately = abap_true ).
       ENDIF.
 
       run_program( lv_program ).

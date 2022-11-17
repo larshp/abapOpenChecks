@@ -114,7 +114,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
+CLASS zcl_aoc_dependencies IMPLEMENTATION.
 
 
   METHOD amend_packages.
@@ -360,7 +360,8 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 
     SELECT * FROM cross INTO TABLE lt_cross
       WHERE include = iv_name
-      AND name <> '?'.                                    "#EC CI_SUBRC
+      AND name <> '?'
+      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
     LOOP AT lt_cross ASSIGNING <ls_cross>.
       CASE <ls_cross>-type.
         WHEN 'F'.
@@ -411,7 +412,8 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 
     SELECT * FROM wbcrossgt INTO TABLE lt_wbcrossgt
       WHERE include = iv_name
-      AND direct = abap_true.                             "#EC CI_SUBRC
+      AND direct = abap_true
+      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
     LOOP AT lt_wbcrossgt ASSIGNING <ls_wbcrossgt>.
       CLEAR lv_type.
       CASE <ls_wbcrossgt>-otype.
@@ -508,7 +510,8 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 
 
     SELECT * FROM wbcrossi INTO TABLE lt_wbcrossi
-      WHERE include = iv_name.                            "#EC CI_SUBRC
+      WHERE include = iv_name
+      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
     LOOP AT lt_wbcrossi ASSIGNING <ls_wbcrossi>.
       CASE <ls_wbcrossi>-otype.
         WHEN 'IC'.
@@ -540,7 +543,8 @@ CLASS ZCL_AOC_DEPENDENCIES IMPLEMENTATION.
 
     SELECT domname rollname comptype
       FROM dd03l INTO TABLE lt_dd03l
-      WHERE tabname = iv_name.
+      WHERE tabname = iv_name
+      ORDER BY domname ASCENDING.
     IF sy-subrc <> 0.
       RETURN.
     ENDIF.

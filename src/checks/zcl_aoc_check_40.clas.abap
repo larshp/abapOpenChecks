@@ -69,7 +69,7 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
 
       "re-check return code of last statement within IF/CASE-clause
       LOOP AT lt_stack INTO ls_stack WHERE stackposition = lv_stack.
-        IF NOT lv_statement CP '* SY-SUBRC *'
+        IF NOT lv_statement CP '* SY-SUBRC*'
             AND NOT lv_statement CP '*CL_ABAP_UNIT_ASSERT=>ASSERT_SUBRC*'.
           lv_include = io_scan->get_include( <ls_statement>-level ).
           inform( p_sub_obj_name = lv_include
@@ -120,7 +120,7 @@ CLASS ZCL_AOC_CHECK_40 IMPLEMENTATION.
       ENDIF.
 
       IF lv_check = abap_true
-          AND NOT lv_statement CP '* SY-SUBRC *'
+          AND NOT lv_statement CP '* SY-SUBRC*'
           AND NOT lv_statement CP '*CL_ABAP_UNIT_ASSERT=>ASSERT_SUBRC*'.
         lv_include = io_scan->get_include( <ls_statement>-level ).
         inform( p_sub_obj_name = lv_include

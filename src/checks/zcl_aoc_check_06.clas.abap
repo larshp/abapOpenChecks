@@ -136,7 +136,8 @@ CLASS zcl_aoc_check_06 IMPLEMENTATION.
     SELECT * FROM d020s
       INTO CORRESPONDING FIELDS OF TABLE lt_d020s
       WHERE prog = object_name
-      AND type <> 'S'.
+      AND type <> 'S'
+      ORDER BY PRIMARY KEY.
     IF sy-subrc <> 0.
       RETURN.
     ENDIF.
@@ -255,14 +256,14 @@ CLASS zcl_aoc_check_06 IMPLEMENTATION.
     enable_rfc( ).
 
     insert_scimessage(
-      iv_code  = '001'
-      iv_text  = 'Use pretty printer'(m01) ).
+      iv_code = '001'
+      iv_text = 'Use pretty printer'(m01) ).
     insert_scimessage(
-      iv_code  = '002'
-      iv_text  = 'Pretty printer settings do not match'(m02) ).
+      iv_code = '002'
+      iv_text = 'Pretty printer settings do not match'(m02) ).
     insert_scimessage(
-      iv_code  = '003'
-      iv_text  = 'Use pretty printer, screen &1'(m03) ).
+      iv_code = '003'
+      iv_text = 'Use pretty printer, screen &1'(m03) ).
 
   ENDMETHOD.
 
