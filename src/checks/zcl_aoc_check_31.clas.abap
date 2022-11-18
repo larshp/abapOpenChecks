@@ -161,7 +161,7 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
       lv_scimessage_text = ls_slin_desc_t-description.
       insert_scimessage(
         iv_code = lv_code
-        iv_text = lv_scimessage_text ).
+        iv_text = |{ lv_scimessage_text } { cl_abap_char_utilities=>newline } &1| ).
     ENDLOOP.
 
   ENDMETHOD.
