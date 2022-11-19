@@ -15,8 +15,6 @@ CLASS zcl_aoc_check_31 DEFINITION
         REDEFINITION .
     METHODS put_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -163,7 +161,7 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
       lv_scimessage_text = ls_slin_desc_t-description.
       insert_scimessage(
         iv_code = lv_code
-        iv_text = lv_scimessage_text ).
+        iv_text = |{ lv_scimessage_text } { cl_abap_char_utilities=>newline } &1| ).
     ENDLOOP.
 
   ENDMETHOD.
@@ -180,13 +178,6 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
       mv_default_standard = mv_default_standard
       mv_default_atc = mv_default_atc
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    p_text = '&1'.                                          "#EC NOTEXT
 
   ENDMETHOD.
 
