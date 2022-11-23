@@ -52,7 +52,7 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
           lv_errty    TYPE sci_errty,
           lv_todo     TYPE slin_desc-todo_overlay,
           lt_result   TYPE slin_result.
-    DATA  ls_mapping  TYPE ty_mapping_slin_sci_code.
+    DATA ls_mapping  TYPE ty_mapping_slin_sci_code.
 
     FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result,
                    <ls_line>   LIKE LINE OF <ls_result>-lines.
@@ -139,7 +139,7 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
 
     DATA lt_slin_desc_t TYPE STANDARD TABLE OF slin_desc_t.
     DATA ls_slin_desc_t TYPE slin_desc_t.
-    DATA i              TYPE i.
+    DATA l_i            TYPE i.
     DATA ls_mapping     TYPE ty_mapping_slin_sci_code.
 
     super->constructor( ).
@@ -161,10 +161,10 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
 
     LOOP AT lt_slin_desc_t INTO ls_slin_desc_t.
       CLEAR ls_mapping.
-      i = i + 1.
+      l_i = l_i + 1.
 
       ls_mapping-slin_code = ls_slin_desc_t-code_nr.
-      ls_mapping-sci_code  = i.
+      ls_mapping-sci_code  = l_i.
       INSERT ls_mapping INTO TABLE mt_mapping_slin_sci_code.
 
       insert_scimessage(
