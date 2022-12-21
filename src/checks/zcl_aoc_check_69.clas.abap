@@ -1023,7 +1023,10 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 
     CONSTANTS:
       "! cl_abap_comp_type=>type_kind_ddic_dbtab does not exists in 731
-      lc_type_kind_ddic_dbtab TYPE scr_typekind VALUE `7`.
+      lc_type_kind_ddic_dbtab TYPE scr_typekind VALUE `7`,
+      "! cl_abap_comp_type=>type_kind_enum does not exists before 751
+      lc_type_kind_enum TYPE scr_typekind VALUE `8`,
+      lc_type_kind_ddic_entity TYPE scr_typekind VALUE `9`.
 
     DATA: lo_table_symbol      TYPE REF TO cl_abap_comp_table_type,
           lo_symbol_simple     TYPE REF TO cl_abap_comp_data,
@@ -1049,14 +1052,14 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
     ENDWHILE.
 
     CASE lo_type_symbol->type_kind.
-      WHEN cl_abap_comp_type=>type_kind_elementary.
+      WHEN cl_abap_comp_type=>type_kind_elementary OR lc_type_kind_enum.
         CASE lo_type_symbol->full_name.
           WHEN '\PT:ANY' OR '\PT:DATA'.
             rv_prefix = ms_naming-prefix_generi.
           WHEN OTHERS.
             rv_prefix = ms_naming-prefix_elemen.
         ENDCASE.
-      WHEN cl_abap_comp_type=>type_kind_structure OR lc_type_kind_ddic_dbtab.
+      WHEN cl_abap_comp_type=>type_kind_structure OR lc_type_kind_ddic_dbtab OR lc_type_kind_ddic_entity.
         rv_prefix = ms_naming-prefix_struct.
       WHEN cl_abap_comp_type=>type_kind_table.
         lo_table_symbol ?= lo_type_symbol.
