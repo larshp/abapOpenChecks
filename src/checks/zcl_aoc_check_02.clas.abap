@@ -196,7 +196,7 @@ CLASS zcl_aoc_check_02 IMPLEMENTATION.
     DATA(lv_from) = SWITCH i( lps_struct->type
       WHEN scan_struc_type-routine THEN lps_struct->stmnt_from + 1 " +1 skips METHOD/FORM/FUNCTION etc
       ELSE lps_struct->stmnt_from
-    ).
+      ).
     LOOP AT io_scan->statements REFERENCE INTO DATA(lps_statement)
       FROM lv_from
       TO iv_statement_index - 1. " -1 skips current CHECK
