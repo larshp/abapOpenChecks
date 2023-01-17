@@ -186,7 +186,6 @@ CLASS zcl_aoc_check_02 IMPLEMENTATION.
         EXIT.
       ENDIF.
       lv_struct_index = lps_struct->back.
-*      clear lps_struct.
     ENDWHILE.
     IF lps_struct IS NOT BOUND.
       RETURN.
