@@ -19,6 +19,13 @@ CLASS zcl_aoc_check_02 DEFINITION
   PROTECTED SECTION.
     DATA mv_check TYPE flag.
     DATA mv_exit TYPE flag.
+
+  methods _IS_CHECK_ALLOW
+    importing
+      !IO_SCAN type ref to ZCL_AOC_SCAN
+      !IV_STATEMENT_INDEX type I
+    returning
+      value(RV_RESULT) type ABAP_BOOL .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -65,6 +72,12 @@ CLASS zcl_aoc_check_02 IMPLEMENTATION.
         EXIT. " current loop
       ENDLOOP.
       IF sy-subrc <> 0.
+        IF lv_error = '002' AND _is_check_allow(
+                                  io_scan            = io_scan
+                                  iv_statement_index = lv_index
+                                ) IS NOT INITIAL.
+          CONTINUE.
+        ENDIF.
         lv_line = io_scan->statement_row( lv_index ).
 
         lv_include = io_scan->get_include( <ls_statement>-level ).
@@ -141,5 +154,105 @@ CLASS zcl_aoc_check_02 IMPLEMENTATION.
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
+  ENDMETHOD.
+
+
+  METHOD _is_check_allow.
+************************************************************************
+* Copyright (c) 2023 by Alexandr Zhuravlev
+* MIT License
+* https://github.com/alezhu/abapOpenChecks/
+
+*Rule
+*
+*Only use  RETURN to exit procedures
+
+*Exception !!!!!!
+*
+*An exception to the rule to only use RETURN to exit procedures are
+*CHECK statements that are located at the beginning of a procedure and
+*that check the prerequisites for the execution of the procedure there.
+*
+*Using the CHECK statement in such a way does not impair the legibility
+*and is thus allowed.
+************************************************************************
+
+    DATA(lps_check) = REF #( io_scan->statements[ iv_statement_index ] ).
+    DATA(lv_struct_index) = lps_check->struc.
+    "Search Routine parent
+    WHILE lv_struct_index > 0.
+      DATA(lps_struct) = REF #( io_scan->structures[ lv_struct_index ] ).
+      IF lps_struct->type = scan_struc_type-routine.
+        EXIT.
+      ENDIF.
+      lv_struct_index = lps_struct->back.
+*      clear lps_struct.
+    ENDWHILE.
+    IF lps_struct IS NOT BOUND.
+      RETURN.
+    ENDIF.
+
+    "Check all statements from routine start to current CHECK
+    "and skip available statements
+    DATA(lv_from) = SWITCH i( lps_struct->type
+      WHEN scan_struc_type-routine THEN lps_struct->stmnt_from + 1 " +1 skips METHOD/FORM/FUNCTION etc
+      ELSE lps_struct->stmnt_from
+    ).
+    LOOP AT io_scan->statements REFERENCE INTO DATA(lps_statement)
+      FROM lv_from
+      TO iv_statement_index - 1. " -1 skips current CHECK
+
+      CASE lps_statement->type.
+        WHEN scan_stmnt_type-include
+          OR scan_stmnt_type-include_miss
+          OR scan_stmnt_type-type_pools
+          OR scan_stmnt_type-type_pools_miss
+          OR scan_stmnt_type-macro_definition
+          OR scan_stmnt_type-comment
+          OR scan_stmnt_type-comment_in_stmnt
+          OR scan_stmnt_type-pragma
+          OR scan_stmnt_type-abap_doc
+          OR scan_stmnt_type-empty.
+          "Skip allow
+        WHEN scan_stmnt_type-standard
+          OR scan_stmnt_type-unknown.
+          DATA(lv_keyword) = io_scan->statement_keyword( sy-tabix ).
+          CASE lv_keyword.
+            WHEN 'TYPES'
+              OR 'DATA'
+              OR 'CONSTANTS'
+              OR 'STATICS'
+              OR 'TABLES'
+              OR 'FIELD-SYMBOLS'.
+            WHEN 'CLEAR'
+              OR 'FREE'
+              OR 'REFRESH'.
+            WHEN 'ASSERT'
+              OR 'CHECK'
+              OR 'RETURN'
+              OR 'LEAVE'
+              OR 'RAISE'
+              OR 'EXIT'.
+            WHEN 'BREAK-POINT'
+              OR 'LOG-POINT'.
+            WHEN 'DESCRIBE'
+              OR 'GET'
+              OR 'INCLUDE'
+              OR 'ASSIGN'.
+            WHEN 'IF'
+              OR 'ENDIF'.
+            WHEN 'DEFINE'
+              OR 'END-OF-DEFINITION'.
+            WHEN OTHERS.
+              "CHECK not allow after others
+              RETURN.
+          ENDCASE.
+        WHEN OTHERS.
+          "CHECK not allow after such statement type
+          RETURN.
+      ENDCASE.
+    ENDLOOP.
+
+    rv_result = abap_true.
   ENDMETHOD.
 ENDCLASS.
