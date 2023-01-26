@@ -20,12 +20,12 @@ CLASS zcl_aoc_check_02 DEFINITION
     DATA mv_check TYPE flag.
     DATA mv_exit TYPE flag.
 
-  methods _IS_CHECK_ALLOW
-    importing
-      !IO_SCAN type ref to ZCL_AOC_SCAN
-      !IV_STATEMENT_INDEX type I
-    returning
-      value(RV_RESULT) type ABAP_BOOL .
+    METHODS _is_check_allow
+      IMPORTING
+        !io_scan TYPE REF TO zcl_aoc_scan
+        !iv_statement_index TYPE i
+      RETURNING
+        VALUE(rv_result) TYPE abap_bool .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -177,71 +177,71 @@ CLASS zcl_aoc_check_02 IMPLEMENTATION.
 *and is thus allowed.
 ************************************************************************
 
-    DATA(lps_check) = REF #( io_scan->statements[ iv_statement_index ] ).
-    DATA(lv_struct_index) = lps_check->struc.
+    DATA(lp_s_check) = REF #( io_scan->statements[ iv_statement_index ] ).
+    DATA(lv_struct_index) = lp_s_check->struc.
     "Search Routine parent
     WHILE lv_struct_index > 0.
-      DATA(lps_struct) = REF #( io_scan->structures[ lv_struct_index ] ).
-      IF lps_struct->type = scan_struc_type-routine.
+      DATA(lp_s_struct) = REF #( io_scan->structures[ lv_struct_index ] ).
+      IF lp_s_struct->type = scan_struc_type-routine.
         EXIT.
       ENDIF.
-      lv_struct_index = lps_struct->back.
+      lv_struct_index = lp_s_struct->back.
     ENDWHILE.
-    IF lps_struct IS NOT BOUND.
+    IF lp_s_struct IS NOT BOUND.
       RETURN.
     ENDIF.
 
     "Check all statements from routine start to current CHECK
     "and skip available statements
-    DATA(lv_from) = SWITCH i( lps_struct->type
-      WHEN scan_struc_type-routine THEN lps_struct->stmnt_from + 1 " +1 skips METHOD/FORM/FUNCTION etc
-      ELSE lps_struct->stmnt_from
-      ).
-    LOOP AT io_scan->statements REFERENCE INTO DATA(lps_statement)
-      FROM lv_from
-      TO iv_statement_index - 1. " -1 skips current CHECK
+    DATA(lv_from) = SWITCH i( lp_s_struct->type
+      WHEN scan_struc_type-routine THEN lp_s_struct->stmnt_from + 1 " +1 skips METHOD/FORM/FUNCTION etc
+      ELSE lp_s_struct->stmnt_from ).
+    LOOP AT io_scan->statements REFERENCE INTO DATA(lp_s_statement)
+        FROM lv_from
+        TO iv_statement_index - 1. " -1 skips current CHECK
 
-      CASE lps_statement->type.
+      CASE lp_s_statement->type.
         WHEN scan_stmnt_type-include
-          OR scan_stmnt_type-include_miss
-          OR scan_stmnt_type-type_pools
-          OR scan_stmnt_type-type_pools_miss
-          OR scan_stmnt_type-macro_definition
-          OR scan_stmnt_type-comment
-          OR scan_stmnt_type-comment_in_stmnt
-          OR scan_stmnt_type-pragma
-          OR scan_stmnt_type-abap_doc
-          OR scan_stmnt_type-empty.
+            OR scan_stmnt_type-include_miss
+            OR scan_stmnt_type-type_pools
+            OR scan_stmnt_type-type_pools_miss
+            OR scan_stmnt_type-comment
+            OR scan_stmnt_type-comment_in_stmnt
+            OR scan_stmnt_type-pragma
+            OR scan_stmnt_type-abap_doc
+            OR scan_stmnt_type-macro_definition
+            OR scan_stmnt_type-empty.
           "Skip allow
+          CONTINUE.
         WHEN scan_stmnt_type-standard
-          OR scan_stmnt_type-unknown.
+            OR scan_stmnt_type-unknown.
           DATA(lv_keyword) = io_scan->statement_keyword( sy-tabix ).
           CASE lv_keyword.
             WHEN 'TYPES'
-              OR 'DATA'
-              OR 'CONSTANTS'
-              OR 'STATICS'
-              OR 'TABLES'
-              OR 'FIELD-SYMBOLS'.
+                OR 'DATA'
+                OR 'STATICS'
+                OR 'TABLES'
+                OR 'CONSTANTS'
+                OR 'FIELD-SYMBOLS'.
             WHEN 'CLEAR'
-              OR 'FREE'
-              OR 'REFRESH'.
+                OR 'FREE'
+                OR 'REFRESH'.
             WHEN 'ASSERT'
-              OR 'CHECK'
-              OR 'RETURN'
-              OR 'LEAVE'
-              OR 'RAISE'
-              OR 'EXIT'.
+                OR 'CHECK'
+                OR 'LEAVE'
+                OR 'RAISE'
+                OR 'RETURN'
+                OR 'EXIT'.
             WHEN 'BREAK-POINT'
-              OR 'LOG-POINT'.
+                OR 'LOG-POINT'.
             WHEN 'DESCRIBE'
-              OR 'GET'
-              OR 'INCLUDE'
-              OR 'ASSIGN'.
+                OR 'GET'
+                OR 'INCLUDE'
+                OR 'ASSIGN'.
             WHEN 'IF'
-              OR 'ENDIF'.
+                OR 'ENDIF'.
             WHEN 'DEFINE'
-              OR 'END-OF-DEFINITION'.
+                OR 'END-OF-DEFINITION'.
             WHEN OTHERS.
               "CHECK not allow after others
               RETURN.

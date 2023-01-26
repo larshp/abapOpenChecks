@@ -199,7 +199,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code ''.
     _code 'ENDMETHOD.'.
     _code 'ENDCLASS.'.
-    
+
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
     cl_abap_unit_assert=>assert_initial( ms_result ).
   ENDMETHOD.                    "test002_05
