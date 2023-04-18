@@ -1431,7 +1431,6 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 
       rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
                                           is_check      = ls_check ).
-                                          
       "IDOC Output
       IF rv_skip = abap_false.
         CLEAR ls_check.
