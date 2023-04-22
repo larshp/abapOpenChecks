@@ -1416,6 +1416,7 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 * idoc processing function module
     IF ms_naming-set_idocfm = abap_true
         AND rv_skip = abap_false.
+      "IDOC Input
       _append import 'INPUT_METHOD'.
       _append import 'MASS_PROCESSING'.
       _append export 'WORKFLOW_RESULT'.
@@ -1430,6 +1431,18 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 
       rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
                                           is_check      = ls_check ).
+      "IDOC Output
+      IF rv_skip = abap_false.
+        CLEAR ls_check.
+        _append import 'OBJECT'.
+        _append import 'CONTROL_RECORD_IN'.
+        _append export 'OBJECT_TYPE'.
+        _append export 'CONTROL_RECORD_OUT'.
+        _append tables 'INT_EDIDD'.
+
+        rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                            is_check      = ls_check ).
+      ENDIF.
     ENDIF.
 
 * conversion exits
