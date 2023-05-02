@@ -91,7 +91,7 @@ CLASS zcl_aoc_check_86 IMPLEMENTATION.
 
 
 * check zip is loaded
-    SELECT SINGLE * FROM zaoc_sidb INTO ls_sidb.
+    SELECT SINGLE * FROM zaoc_sidb INTO ls_sidb. "#EC CI_NOORDER
     IF sy-subrc <> 0.
       inform( p_test = myname
               p_kind = c_note

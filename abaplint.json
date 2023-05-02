@@ -37,6 +37,8 @@
     ]
   },
   "rules": {
+    "select_single_full_key": true,
+    "smim_consistency": true,
     "cds_comment_style": true,
     "cds_legacy_view": true,
     "change_if_to_case": false,
