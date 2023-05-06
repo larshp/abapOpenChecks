@@ -44,7 +44,7 @@ CLASS zcl_aoc_check_06 DEFINITION
         VALUE(rv_skip) TYPE abap_bool.
     METHODS get_user_type
       RETURNING
-        VALUE(rv_user_type) TYPE xuustyp.
+        VALUE(rv_user_type) TYPE usr02-ustyp.
 ENDCLASS.
 
 
