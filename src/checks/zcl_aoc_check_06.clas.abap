@@ -42,6 +42,9 @@ CLASS zcl_aoc_check_06 DEFINITION
         !iv_name       TYPE csequence
       RETURNING
         VALUE(rv_skip) TYPE abap_bool.
+    METHODS get_user_type
+      RETURNING
+        VALUE(rv_user_type) TYPE usr02-ustyp.
 ENDCLASS.
 
 
@@ -80,11 +83,10 @@ CLASS zcl_aoc_check_06 IMPLEMENTATION.
 * MIT License
 
     DATA: lv_option  TYPE c LENGTH 5.
-
-
     lv_option = build_option( ).
 
-    IF ( mv_lower = abap_true AND lv_option <> 'LOWER' )
+    IF get_user_type( ) = 'A'
+        AND ( mv_lower = abap_true AND lv_option <> 'LOWER' )
         OR ( mv_hikey = abap_true AND lv_option <> 'HIKEY' )
         OR ( mv_lokey = abap_true AND lv_option <> 'LOKEY' )
         OR ( mv_upper = abap_true AND lv_option <> 'UPPER' ).
@@ -355,4 +357,12 @@ CLASS zcl_aoc_check_06 IMPLEMENTATION.
     ASSERT sy-subrc = 0.
 
   ENDMETHOD.
+
+  METHOD get_user_type.
+    SELECT SINGLE ustyp
+      FROM usr02
+      INTO rv_user_type
+      WHERE bname = sy-uname.
+  ENDMETHOD.
+
 ENDCLASS.
