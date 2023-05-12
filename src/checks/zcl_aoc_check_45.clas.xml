@@ -89,7 +89,7 @@
     <item>
      <ID>I</ID>
      <KEY>M13</KEY>
-     <ENTRY>Use corresponding #( base( source ) target )</ENTRY>
+     <ENTRY>Use corresponding #( base ( source ) target )</ENTRY>
      <LENGTH>88</LENGTH>
     </item>
    </TPOOL>

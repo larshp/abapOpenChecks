@@ -277,7 +277,7 @@ CLASS zcl_aoc_check_45 IMPLEMENTATION.
 
     insert_scimessage(
         iv_code = '013'
-        iv_text = 'Use corresponding #( base( source ) target )'(m13) ).
+        iv_text = 'Use corresponding #( base ( source ) target )'(m13) ).
 
   ENDMETHOD.
 
