@@ -94,7 +94,7 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
 
       CLEAR lv_code.
 
-      IF mv_001 = abap_true AND lv_statement CP 'REFRESH *'.
+      IF mv_001 = abap_true AND lv_statement CP 'REFRESH *' AND NOT lv_statement CP 'REFRESH CONTROL *'.
         lv_code = '001'.
       ELSEIF mv_002 = abap_true AND lv_statement CP '* IS REQUESTED*'.
         lv_code = '002'.
