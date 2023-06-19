@@ -218,7 +218,7 @@ CLASS zcl_aoc_check_06 IMPLEMENTATION.
       LOOP AT lt_code ASSIGNING <lv_code>.
         lv_row = sy-tabix.
 
-        IF lv_row = 1 AND <lv_code>(8) = 'FUNCTION'.
+        IF lv_row = 1 AND <lv_code> CP 'FUNCTION*'.
           " Ignore Function Module and Function Pool definitions
           CONTINUE.
         ENDIF.
