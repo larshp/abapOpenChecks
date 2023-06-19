@@ -257,7 +257,6 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD test001_16.
 *  ===========
-    
     _code ''.
     _code 'CLASS lcl_test IMPLEMENTATION'.
     _code 'ENDCLASS.'.
