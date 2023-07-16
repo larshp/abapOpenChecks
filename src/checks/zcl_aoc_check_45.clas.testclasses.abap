@@ -1,18 +1,12 @@
 CLASS ltcl_test DEFINITION DEFERRED.
 CLASS zcl_aoc_check_45 DEFINITION LOCAL FRIENDS ltcl_test.
 
-*----------------------------------------------------------------------*
-*       CLASS lcl_Test DEFINITION
-*----------------------------------------------------------------------*
-*
-*----------------------------------------------------------------------*
 CLASS ltcl_test DEFINITION FOR TESTING
   DURATION SHORT
   RISK LEVEL HARMLESS
   FINAL.
 
   PRIVATE SECTION.
-* ================
 
     DATA: mt_code   TYPE string_table,
           ms_result TYPE scirest_ad,
@@ -40,18 +34,15 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test005_01 FOR TESTING,
       test005_02 FOR TESTING,
       test005_03 FOR TESTING,
+      test009_01 FOR TESTING,
+      test009_02 FOR TESTING,
       test010_01 FOR TESTING,
       test011_01 FOR TESTING RAISING cx_static_check.
 
-ENDCLASS.       "lcl_Test
+ENDCLASS.
 
-*----------------------------------------------------------------------*
-*       CLASS lcl_Test IMPLEMENTATION
-*----------------------------------------------------------------------*
-*
-*----------------------------------------------------------------------*
+
 CLASS ltcl_test IMPLEMENTATION.
-* ==============================
 
   DEFINE _code.
     APPEND &1 TO mt_code.
@@ -60,14 +51,13 @@ CLASS ltcl_test IMPLEMENTATION.
   METHOD setup.
     CREATE OBJECT mo_check.
     zcl_aoc_unit_test=>set_check( mo_check ).
-  ENDMETHOD.                    "setup
+  ENDMETHOD.
 
   METHOD export_import.
     zcl_aoc_unit_test=>export_import( mo_check ).
   ENDMETHOD.
 
   METHOD test001_01.
-* ===========
 
     _code 'DESCRIBE TABLE lt_fcat.'.
 
@@ -76,10 +66,9 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_equals( exp = '001'
                                         act = ms_result-code ).
 
-  ENDMETHOD.                    "test1
+  ENDMETHOD.
 
   METHOD test001_02.
-* ===========
 
     _code 'DESCRIBE TABLE lt_fcat LINES lv_lines.'.
 
@@ -91,7 +80,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test001_03.
-* ===========
 
     _code 'lv_lines = lines( lt_fcat ).'.
 
@@ -102,7 +90,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test002_01.
-* ===========
 
     IF mo_check->support_740sp02( ) = abap_false.
       RETURN.
@@ -117,7 +104,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test002_02.
-* ===========
 
     IF mo_check->support_740sp02( ) = abap_false.
       RETURN.
@@ -323,6 +309,29 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD test009_01.
+
+    mo_check->mv_templates = abap_true.
+
+    _code 'CONCATENATE foo bar INTO data.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_equals( exp = '009'
+                                        act = ms_result-code ).
+
+  ENDMETHOD.
+
+  METHOD test009_02.
+
+    _code 'CONCATENATE foo bar INTO data RESPECTING BLANKS.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.
+
   METHOD test010_01.
 
     _code 'GET REFERENCE OF i_data INTO lo_data.'.
@@ -344,7 +353,6 @@ CLASS ltcl_test IMPLEMENTATION.
       lv_expected = '011'.
     ENDIF.
 
-
     _code 'MOVE-CORRESPONDING foo TO bar.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -354,4 +362,4 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
-ENDCLASS.       "lcl_Test
+ENDCLASS.
