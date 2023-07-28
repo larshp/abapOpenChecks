@@ -15,11 +15,15 @@ CLASS zcl_aoc_check_83 DEFINITION
     METHODS used_in_ssfo
       RETURNING
         VALUE(rv_used) TYPE abap_bool .
+
+    METHODS used_in_func_module_signature
+      RETURNING
+        VALUE(rv_used) TYPE abap_bool.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_83 IMPLEMENTATION.
+CLASS zcl_aoc_check_83 IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -64,9 +68,14 @@ CLASS ZCL_AOC_CHECK_83 IMPLEMENTATION.
         IF sy-subrc = 0.
           RETURN.
         ENDIF.
+
       WHEN 'DTEL'.
         SELECT SINGLE * FROM dd03l INTO ls_dd03l WHERE rollname = object_name.
         IF sy-subrc = 0.
+          RETURN.
+        ENDIF.
+
+        IF used_in_func_module_signature( ) = abap_true.
           RETURN.
         ENDIF.
       WHEN 'TABL'.
@@ -74,22 +83,30 @@ CLASS ZCL_AOC_CHECK_83 IMPLEMENTATION.
         IF ( sy-subrc = 0 AND ls_dd02l-tabclass = 'APPEND' ) OR sy-subrc <> 0.
           RETURN.
         ENDIF.
+
         SELECT SINGLE * FROM dd40l INTO ls_dd40l WHERE rowtype = object_name.
         IF sy-subrc = 0.
           RETURN.
         ENDIF.
+
         SELECT SINGLE * FROM dd03l INTO ls_dd03l
           WHERE ( fieldname = '.INCLUDE' AND precfield = object_name )
           OR ( rollname = object_name AND datatype = 'STRU' ).
         IF sy-subrc = 0.
           RETURN.
         ENDIF.
+
         SELECT SINGLE * FROM dd25l INTO ls_dd25l WHERE roottab = object_name. "#EC CI_NOFIRST
         IF sy-subrc = 0.
           RETURN.
         ENDIF.
+
         SELECT SINGLE * FROM edisdef INTO ls_edisdef WHERE segtyp = object_name.
         IF sy-subrc = 0.
+          RETURN.
+        ENDIF.
+
+        IF used_in_func_module_signature( ) = abap_true.
           RETURN.
         ENDIF.
     ENDCASE.
@@ -156,4 +173,15 @@ CLASS ZCL_AOC_CHECK_83 IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
+
+  METHOD used_in_func_module_signature.
+    DATA lv_dummy TYPE fupararef-funcname.
+
+    SELECT SINGLE funcname FROM fupararef INTO lv_dummy WHERE structure = object_name.
+
+    IF sy-subrc = 0.
+      rv_used = abap_true.
+    ENDIF.
+  ENDMETHOD.
+
 ENDCLASS.
