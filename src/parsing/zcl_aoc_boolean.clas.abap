@@ -77,7 +77,7 @@ CLASS zcl_aoc_boolean IMPLEMENTATION.
 
     rv_comparator = 0.
 
-    IF ( lv_token2 = 'IS' AND lv_token3 = 'NOT' AND lv_token4 = 'INSTANCE' AND lv_token5 = 'OF' ).
+    IF lv_token2 = 'IS' AND lv_token3 = 'NOT' AND lv_token4 = 'INSTANCE' AND lv_token5 = 'OF'.
       rv_comparator = 4.
     ELSEIF ( lv_token2 = 'IS' AND lv_token3 = 'NOT' )
         OR ( lv_token2 = 'NOT' AND lv_token3 = 'IN' ).
