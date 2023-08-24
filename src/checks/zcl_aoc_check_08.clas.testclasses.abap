@@ -1,15 +1,9 @@
-*----------------------------------------------------------------------*
-*       CLASS lcl_Test DEFINITION
-*----------------------------------------------------------------------*
-*
-*----------------------------------------------------------------------*
 CLASS ltcl_test DEFINITION FOR TESTING
   DURATION SHORT
   RISK LEVEL HARMLESS
   FINAL.
 
   PRIVATE SECTION.
-* ================
 
     DATA: mt_code   TYPE string_table,
           ms_result TYPE scirest_ad,
@@ -31,6 +25,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test005_02 FOR TESTING,
       test005_03 FOR TESTING,
       test006_01 FOR TESTING,
+      test006_02 FOR TESTING,
       test007_01 FOR TESTING,
       test007_02 FOR TESTING,
       test007_03 FOR TESTING,
@@ -55,15 +50,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test023_01 FOR TESTING,
       test024_01 FOR TESTING.
 
-ENDCLASS.       "lcl_Test
+ENDCLASS.
 
-*----------------------------------------------------------------------*
-*       CLASS lcl_Test IMPLEMENTATION
-*----------------------------------------------------------------------*
-*
-*----------------------------------------------------------------------*
 CLASS ltcl_test IMPLEMENTATION.
-* ==============================
 
   DEFINE _code.
     APPEND &1 TO mt_code.
@@ -79,7 +68,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test001_01.
-* ===========
 
     _code 'REFRESH lt_foobar.'.
 
@@ -91,7 +79,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.                    "test1
 
   METHOD test001_02.
-* ===========
 
     _code 'CLEAR lt_foobar[].'.
 
@@ -102,7 +89,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.                    "test2
 
   METHOD test001_03.
-* ===========
 
     _code 'REFRESH CONTROL something.'.
 
@@ -113,7 +99,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.                    "test3
 
   METHOD test002_01.
-* ===========
 
     _code 'IF iv_input IS REQUESTED. '.
     _code '  WRITE ''foo''.          '.
@@ -127,7 +112,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.                    "test1
 
   METHOD test002_02.
-* ===========
 
     _code 'IF iv_input IS SUPPLIED.  '.
     _code '  WRITE ''foo''.          '.
@@ -139,7 +123,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.                    "test2
 
   METHOD test002_03.
-* ===========
 
     _code 'WRITE: / ''foo IS REQUESTED bar'''.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -149,7 +132,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test003_01.
-* ===========
 
     _code 'LEAVE.'.
 
@@ -161,7 +143,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.                    "test1
 
   METHOD test003_02.
-* ===========
 
     _code 'LEAVE LIST-PROCESSING.'.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
@@ -171,7 +152,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.                    "test2
 
   METHOD test004_01.
-* ===========
 
     _code 'COMPUTE lv_foo = lv_bar.'.
 
@@ -183,7 +163,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test005_01.
-* ===========
 
     _code 'MOVE lv_foo TO lv_bar.'.
 
@@ -195,7 +174,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test005_02.
-* ===========
 
     _code 'MOVE-CORRESPONDING lv_foo TO lv_bar.'.
 
@@ -206,7 +184,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test005_03.
-* ===========
 
     _code 'MOVE EXACT is_status-installed_release TO lv_number.'.
 
@@ -217,7 +194,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test006_01.
-* ===========
 
     _code 'IF lv_foo >< lv_bar.'.
     _code 'ENDIF.'.
@@ -229,8 +205,19 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD test006_02.
+
+    _code 'result = SELECT field1'.
+    _code 'FROM schema._SYS_BIC.view_name'.
+    _code 'PLACEHOLDER.$$parameter$$ => :input;'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
   METHOD test007_01.
-* ===========
 
     _code 'IF lv_foo EQ lv_bar.'.
     _code 'ENDIF.'.
@@ -243,7 +230,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test007_02.
-* ===========
 
     _code 'IF lv_foo NE ''asf''.'.
     _code 'ENDIF.'.
@@ -256,7 +242,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test007_03.
-* ===========
 
     _code 'DATA eq TYPE i.'.
 
@@ -267,7 +252,6 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test007_04.
-* ===========
 
     _code 'DATA moo TYPE c LENGTH 2 VALUE ''EQ''.'.
 
