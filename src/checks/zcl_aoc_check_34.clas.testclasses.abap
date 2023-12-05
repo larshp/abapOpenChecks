@@ -169,6 +169,5 @@ CLASS ltcl_test IMPLEMENTATION.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
-  
   ENDMETHOD.
 ENDCLASS.       "lcl_Test
