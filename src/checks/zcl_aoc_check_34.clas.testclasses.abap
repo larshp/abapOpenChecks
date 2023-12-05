@@ -154,7 +154,6 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD test001_06.
 * ===========
-  
     mo_check->mv_incl_comments = abap_false.
     mo_check->mv_lines = 5.
 
