@@ -24,7 +24,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
       test001_04 FOR TESTING RAISING cx_static_check,
-      test001_05 FOR TESTING RAISING cx_static_check.
+      test001_05 FOR TESTING RAISING cx_static_check,
+      test001_06 FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.       "lcl_Test
 
@@ -151,4 +152,22 @@ CLASS ltcl_test IMPLEMENTATION.
 
   ENDMETHOD.
 
+  METHOD test001_06.
+* ===========
+    mo_check->mv_incl_comments = abap_false.
+    mo_check->mv_lines = 5.
+
+    _code 'CASE lv_foo.'.
+    _code '  WHEN ''bar''.'.
+    _code '    WRITE: ''hello''.'.
+    _code '    WRITE: ''hello''.'.
+    _code '*.'.
+    _code '    WRITE: ''hello''.'.
+    _code '    WRITE: ''hello''.'.
+    _code 'ENDCASE.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
 ENDCLASS.       "lcl_Test
