@@ -370,13 +370,13 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
             ignore_case   = abap_true
           ).
           DATA(lo_match) = lo_regex->create_matcher( text = iv_statement ).
-          IF lo_match->find_next( ).
+          IF lo_match->find_next( ) = abap_true.
             lo_regex = cl_regex_cache=>get_singleton( )->get_regex(
               pattern       = lv_exclude
               ignore_case   = abap_true
             ).
             lo_match = lo_regex->create_matcher( text = iv_statement ).
-            IF NOT lo_match->find_next( ).
+            IF lo_match->find_next( ) = abap_false.
               rv_old = abap_true.
               RETURN.
             ENDIF.
@@ -420,7 +420,6 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
     ASSERT sy-subrc = 0.
 
   ENDMETHOD.
-  
   
   METHOD _fill_old_options.
     APPEND 'EQ' TO mt_old_option.

@@ -263,7 +263,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
-  
+
   METHOD test007_05.
 
     _code 'SELECT-OPTIONS s_date FOR d DEFAULT ''20231207'' SIGN I OPTION GE MODIF ID mr.'.
@@ -273,7 +273,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
-  
+
   METHOD test007_06.
 
     _code 'SELECT-OPTIONS s_date FOR d DEFAULT ''20231207'' SIGN I OPTION GE.'.
@@ -294,7 +294,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.  
-  
+
   METHOD test008_01.
 
     _code 'DEMAND something.'.
