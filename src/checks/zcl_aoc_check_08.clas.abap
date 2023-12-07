@@ -368,7 +368,7 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
           DATA(lo_regex) = cl_regex_cache=>get_singleton( )->get_regex(
             pattern       = lv_include
             ignore_case   = abap_true
-          ).
+            ).
           DATA(lo_match) = lo_regex->create_matcher( text = iv_statement ).
           IF lo_match->find_next( ) = abap_true.
             lo_regex = cl_regex_cache=>get_singleton( )->get_regex(
