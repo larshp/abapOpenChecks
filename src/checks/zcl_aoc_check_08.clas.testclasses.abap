@@ -31,6 +31,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test007_03 FOR TESTING,
       test007_04 FOR TESTING,
       test007_05 FOR TESTING,
+      test007_06 FOR TESTING,
+      test007_07 FOR TESTING,
       test008_01 FOR TESTING,
       test009_01 FOR TESTING,
       test010_01 FOR TESTING,
@@ -271,6 +273,27 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
   ENDMETHOD.
+  
+  METHOD test007_06.
+
+    _code 'SELECT-OPTIONS s_date FOR d DEFAULT ''20231207'' SIGN I OPTION GE.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test007_07.
+
+    _code 'SELECT-OPTIONS s_date FOR d DEFAULT ''20231207'' SIGN I OPTION GE'.
+    _code 'MODIF ID mr.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.  
   
   METHOD test008_01.
 

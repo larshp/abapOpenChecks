@@ -362,8 +362,8 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
     rv_old = abap_false.
 
     LOOP AT mt_old_option INTO DATA(lv_option).
-      DATA(lv_include) = |\\s+{ lv_option }\\s+|.
-      DATA(lv_exclude) = |(\\s+{ lv_option }\\s+TYPE\\s+)\|(\\s+OPTION\\s+{ lv_option }\\s+)|.
+      DATA(lv_include) = |\\s{ lv_option }\\s|.
+      DATA(lv_exclude) = |(\\s{ lv_option }\\s+TYPE\\b)\|(\\sOPTION\\s+{ lv_option }\\b)|.
       TRY.
           DATA(lo_regex) = cl_regex_cache=>get_singleton( )->get_regex(
             pattern       = lv_include
