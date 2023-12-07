@@ -293,7 +293,7 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
-  ENDMETHOD.  
+  ENDMETHOD.
 
   METHOD test008_01.
 
