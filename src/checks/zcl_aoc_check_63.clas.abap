@@ -33,7 +33,7 @@ CLASS ZCL_AOC_CHECK_63 IMPLEMENTATION.
     add_obj_type( 'INTF' ).
 
     insert_scimessage(
-        iv_code = '003'
+        iv_code = '001'
         iv_text = '&1'(m01) ).
 
   ENDMETHOD.

@@ -94,7 +94,7 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
 
       CLEAR lv_code.
 
-      IF mv_001 = abap_true AND lv_statement CP 'REFRESH *'.
+      IF mv_001 = abap_true AND lv_statement CP 'REFRESH *' AND NOT lv_statement CP 'REFRESH CONTROL *'.
         lv_code = '001'.
       ELSEIF mv_002 = abap_true AND lv_statement CP '* IS REQUESTED*'.
         lv_code = '002'.
@@ -109,7 +109,8 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
       ELSEIF mv_006 = abap_true
           AND ( lv_statement CP '* >< *'
           OR lv_statement CP '* =< *'
-          OR lv_statement CP '* => *' ).
+          OR lv_statement CP '* => *' )
+          AND NOT lv_statement CP '*$$*$$*'. " Allow for SDA HANA query parameters
         lv_code = '006'.
       ELSEIF mv_007 = abap_true AND is_old( lv_statement ) = abap_true.
         lv_code = '007'.
