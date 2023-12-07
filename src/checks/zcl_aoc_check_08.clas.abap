@@ -421,7 +421,6 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
 
   ENDMETHOD.
   
-  
   METHOD _fill_old_options.
     APPEND 'EQ' TO mt_old_option.
     APPEND 'NE' TO mt_old_option.
