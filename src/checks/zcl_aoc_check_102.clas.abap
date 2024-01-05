@@ -58,8 +58,8 @@ CLASS zcl_aoc_check_102 IMPLEMENTATION.
     LOOP AT io_scan->statements ASSIGNING FIELD-SYMBOL(<ls_statement>).
       LOOP AT io_scan->tokens ASSIGNING FIELD-SYMBOL(<ls_token>)
            FROM <ls_statement>-from TO <ls_statement>-to
-           WHERE    str CP 'SY-SYSID*'
-                 OR str CP '@SY-SYSID*'.
+           WHERE str CP 'SY-SYSID*'
+              OR str CP '@SY-SYSID*'.
 
         DATA(lv_index_token) = sy-tabix.
 
