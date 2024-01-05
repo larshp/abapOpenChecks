@@ -65,8 +65,10 @@ CLASS lcl_check_helper IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD is_using_only_first_letter.
-    rv_result = xsdbool( is_token-str = 'SY-SYSID+0(1)'
-                         OR is_token-str = 'SY-SYSID(1)' ).
+    CASE is_token-str.
+      WHEN 'SY-SYSID+0(1)' OR 'SY-SYSID(1)'.
+        rv_result = abap_true.
+    ENDCASE.
   ENDMETHOD.
 
   METHOD is_used_in_macro.
