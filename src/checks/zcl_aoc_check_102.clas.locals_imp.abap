@@ -56,7 +56,7 @@ CLASS lcl_check_helper IMPLEMENTATION.
         READ TABLE mo_scan->tokens ASSIGNING <ls_token_before_sysid> INDEX iv_index_token - 1.
 
         IF <ls_token_before_sysid>-str = '='
-           AND iv_index_token - is_statement-from = 2.
+            AND iv_index_token - is_statement-from = 2.
           rv_error_code = gc_code-assigned_to_variable.
         ELSE.
           rv_error_code = gc_code-usage_uncategorized.
@@ -75,7 +75,7 @@ CLASS lcl_check_helper IMPLEMENTATION.
     ASSIGN mo_scan->tokens[ is_statement-to + 1 ] TO FIELD-SYMBOL(<ls_token_after_statement>).
 
     IF sy-subrc = 0
-       AND <ls_token_after_statement>-str = zcl_aoc_scan=>gc_keyword-end_of_definition.
+        AND <ls_token_after_statement>-str = zcl_aoc_scan=>gc_keyword-end_of_definition.
       rv_result = abap_true.
     ENDIF.
   ENDMETHOD.
