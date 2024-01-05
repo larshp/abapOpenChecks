@@ -55,7 +55,7 @@ CLASS lcl_check_helper IMPLEMENTATION.
       WHEN OTHERS.
         READ TABLE mo_scan->tokens ASSIGNING <ls_token_before_sysid> INDEX iv_index_token - 1.
 
-        IF     <ls_token_before_sysid>-str        = '='
+        IF <ls_token_before_sysid>-str = '='
            AND iv_index_token - is_statement-from = 2.
           rv_error_code = gc_code-assigned_to_variable.
         ELSE.
@@ -65,14 +65,14 @@ CLASS lcl_check_helper IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD is_using_only_first_letter.
-    rv_result = xsdbool(    is_token-str = 'SY-SYSID+0(1)'
+    rv_result = xsdbool( is_token-str = 'SY-SYSID+0(1)'
                          OR is_token-str = 'SY-SYSID(1)' ).
   ENDMETHOD.
 
   METHOD is_used_in_macro.
     ASSIGN mo_scan->tokens[ is_statement-to + 1 ] TO FIELD-SYMBOL(<ls_token_after_statement>).
 
-    IF     sy-subrc = 0
+    IF sy-subrc = 0
        AND <ls_token_after_statement>-str = zcl_aoc_scan=>gc_keyword-end_of_definition.
       rv_result = abap_true.
     ENDIF.
