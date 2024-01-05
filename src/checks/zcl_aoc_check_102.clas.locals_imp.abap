@@ -4,12 +4,12 @@ CLASS lcl_check_helper IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD determine_error_code.
-    IF is_using_only_first_letter( is_token ).
+    IF is_using_only_first_letter( is_token ) = abap_true.
       rv_error_code = gc_code-first_letter_used.
       RETURN.
     ENDIF.
 
-    IF is_used_in_macro( is_statement ).
+    IF is_used_in_macro( is_statement ) = abap_true.
       rv_error_code = gc_code-within_macro.
       RETURN.
     ENDIF.
