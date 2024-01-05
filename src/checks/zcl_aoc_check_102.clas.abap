@@ -8,9 +8,6 @@ CLASS zcl_aoc_check_102 DEFINITION
     METHODS constructor.
 
     METHODS check REDEFINITION.
-
-  PRIVATE SECTION.
-
 ENDCLASS.
 
 
@@ -23,6 +20,8 @@ CLASS zcl_aoc_check_102 IMPLEMENTATION.
 
     has_attributes = abap_true.
     attributes_ok  = abap_true.
+
+    enable_rfc( ).
 
     insert_scimessage( iv_code = gc_code-usage_uncategorized
                        iv_text = TEXT-001 ).
