@@ -23,7 +23,7 @@ CLASS lcl_check_helper DEFINITION.
     METHODS determine_error_code
       IMPORTING
         is_token             TYPE stokesx
-        iv_index_token       TYPE syst_tabix
+        iv_index_token       TYPE sy-tabix
         is_statement         TYPE sstmnt
       RETURNING
         VALUE(rv_error_code) TYPE sci_errc.
