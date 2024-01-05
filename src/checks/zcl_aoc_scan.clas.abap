@@ -56,6 +56,29 @@ CLASS zcl_aoc_scan DEFINITION
                  program      TYPE c LENGTH 1 VALUE 'P',
                END OF gc_level.
 
+    CONSTANTS: BEGIN OF gc_keyword,
+                 if                TYPE string VALUE 'IF',
+                 elseif            TYPE string VALUE 'ELSEIF',
+                 case              TYPE string VALUE 'CASE',
+                 when              TYPE string VALUE 'WHEN',
+                 check             TYPE string VALUE 'CHECK',
+                 assert            TYPE string VALUE 'ASSERT',
+                 types             TYPE string VALUE 'TYPES',
+                 ranges            TYPE string VALUE 'RANGES',
+                 methods           TYPE string VALUE 'METHODS',
+                 class_methods     TYPE string VALUE 'CLASS-METHODS',
+                 data              TYPE string VALUE 'DATA',
+                 class_data        TYPE string VALUE 'CLASS-DATA',
+                 end_of_definition TYPE string VALUE 'END-OF-DEFINITION',
+                 concatenate       TYPE string VALUE 'CONCATENATE',
+                 write             TYPE string VALUE 'WRITE',
+                 message           TYPE string VALUE 'MESSAGE',
+                 select            TYPE string VALUE 'SELECT',
+                 default           TYPE string VALUE 'DEFAULT',
+                 type              TYPE string VALUE 'TYPE',
+                 like              TYPE string VALUE 'LIKE',
+               END OF gc_keyword.
+
     TYPES:
       BEGIN OF ty_position,
         row TYPE token_row,
@@ -125,7 +148,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_SCAN IMPLEMENTATION.
+CLASS zcl_aoc_scan IMPLEMENTATION.
 
 
   METHOD build_statements.
