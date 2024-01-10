@@ -141,7 +141,7 @@ CLASS zcl_aoc_sy_variable_analyzer IMPLEMENTATION.
     ASSIGN mo_scan->tokens[ is_statement-to + 1 ] TO FIELD-SYMBOL(<ls_token_after_statement>).
 
     IF sy-subrc = 0
-       AND <ls_token_after_statement>-str = zcl_aoc_scan=>gc_keyword-end_of_definition.
+        AND <ls_token_after_statement>-str = zcl_aoc_scan=>gc_keyword-end_of_definition.
       rv_result = abap_true.
     ENDIF.
   ENDMETHOD.
