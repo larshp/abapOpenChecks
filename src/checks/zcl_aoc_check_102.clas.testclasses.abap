@@ -52,7 +52,6 @@ CLASS ltcl_test DEFINITION
     METHODS message FOR TESTING.
     METHODS check_condition FOR TESTING.
     METHODS assert_condition FOR TESTING.
-
 ENDCLASS.
 
 
