@@ -38,7 +38,7 @@ CLASS zcl_aoc_sy_variable_analyzer DEFINITION
       IMPORTING
         iv_sy_variable_name TYPE stokesx-str
       RETURNING
-        VALUE(rt_result) TYPE ty_t_result.
+        VALUE(rt_result)    TYPE ty_t_result.
 
   PRIVATE SECTION.
     DATA mo_scan TYPE REF TO zcl_aoc_scan.
@@ -128,8 +128,8 @@ CLASS zcl_aoc_sy_variable_analyzer IMPLEMENTATION.
             rv_usage_kind = gc_usage_kind-type_definition.
         ENDCASE.
       WHEN OTHERS.
-        IF     <ls_token_before_sysid>-str        = '='
-           AND iv_index_token - is_statement-from = 2.
+        IF <ls_token_before_sysid>-str        = '='
+            AND iv_index_token - is_statement-from = 2.
           rv_usage_kind = gc_usage_kind-assigned_to_variable.
         ELSE.
           rv_usage_kind = gc_usage_kind-usage_uncategorized.
@@ -140,7 +140,7 @@ CLASS zcl_aoc_sy_variable_analyzer IMPLEMENTATION.
   METHOD is_used_in_macro.
     ASSIGN mo_scan->tokens[ is_statement-to + 1 ] TO FIELD-SYMBOL(<ls_token_after_statement>).
 
-    IF     sy-subrc = 0
+    IF sy-subrc = 0
        AND <ls_token_after_statement>-str = zcl_aoc_scan=>gc_keyword-end_of_definition.
       rv_result = abap_true.
     ENDIF.
