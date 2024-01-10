@@ -22,6 +22,7 @@ CLASS ltcl_test DEFINITION
     METHODS if_condition_01 FOR TESTING.
     METHODS first_letter_01 FOR TESTING.
     METHODS first_letter_02 FOR TESTING.
+    METHODS first_letter_03 FOR TESTING.
     METHODS if_condition_02 FOR TESTING.
     METHODS if_condition_03 FOR TESTING.
     METHODS case_condition_01 FOR TESTING.
@@ -110,6 +111,23 @@ CLASS ltcl_test IMPLEMENTATION.
     " Given
     _code `IF sy-sysid(1) = 'P'.`.
     _code `ENDIF.`.
+
+    " When
+    execute_check( ).
+
+    " Then
+    assert_error_code( gc_code-first_letter_used ).
+  ENDMETHOD.
+
+  METHOD first_letter_03.
+    " Given
+    _code `SELECT host`.
+    _code `  FROM ztable`.
+    _code `  UP TO 1 ROWS`.
+    _code `  INTO @DATA(lv_host)`.
+    _code `  WHERE sysname = @sy-sysid+0(1)`.
+    _code `  ORDER BY PRIMARY KEY.`.
+    _code `ENDSELECT.`.
 
     " When
     execute_check( ).

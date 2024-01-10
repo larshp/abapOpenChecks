@@ -120,7 +120,7 @@ CLASS zcl_aoc_check_102 IMPLEMENTATION.
 
   METHOD is_using_only_first_letter.
     rv_result = SWITCH #( is_token-str
-                          WHEN `SY-SYSID+0(1)` OR `SY-SYSID(1)`
+                          WHEN `SY-SYSID+0(1)` OR `SY-SYSID(1)` OR `@SY-SYSID+0(1)` OR `@SY-SYSID(1)`
                           THEN abap_true
                           ELSE abap_false ).
   ENDMETHOD.
