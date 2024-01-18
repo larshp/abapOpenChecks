@@ -225,17 +225,7 @@ CLASS lcl_data IMPLEMENTATION.
     TRY.
         DATA(lo_send_request) = cl_bcs=>create_persistent( ).
 
-        lv_mail_line-line = 'Some of your open transports do not comply with our abap development guidelines.'.
-        APPEND lv_mail_line TO lt_mail_body.
-        lv_mail_line-line = 'These guidelines are *insert_generic_message*'.
-        APPEND lv_mail_line TO lt_mail_body.
-        lv_mail_line-line = 'Remember, use the *code_check_name* code check to validate guidelines compliance'.
-        APPEND lv_mail_line TO lt_mail_body.
-        lv_mail_line-line = 'For more information or interest in collaboration, check *ref_link*'.
-        APPEND lv_mail_line TO lt_mail_body.
-        lv_mail_line-line = ''.
-        APPEND lv_mail_line TO lt_mail_body.
-        lv_mail_line-line = 'These are your non-compliant transports:'.
+        lv_mail_line-line = 'Generic message about development guidelines.'.
         APPEND lv_mail_line TO lt_mail_body.
 
         LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_object>)
