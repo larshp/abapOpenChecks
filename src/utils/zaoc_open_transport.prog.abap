@@ -19,10 +19,12 @@ TYPES: BEGIN OF ty_output,
 
 TYPES: ty_output_tt TYPE STANDARD TABLE OF ty_output WITH DEFAULT KEY.
 
-PARAMETERS: p_insp TYPE sciins_inf-inspecname OBLIGATORY.
+PARAMETERS p_insp TYPE sciins_inf-inspecname OBLIGATORY.
 
 SELECT-OPTIONS: s_trkorr FOR e070-trkorr,
                 s_user   FOR e070-as4user.
+
+PARAMETERS p_mail AS CHECKBOX DEFAULT ''.
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_app DEFINITION
@@ -53,7 +55,14 @@ CLASS lcl_data DEFINITION FINAL.
       find_objects,
       read_inspection,
       filter
-        RETURNING VALUE(rt_data) TYPE ty_output_tt.
+        RETURNING VALUE(rt_data) TYPE ty_output_tt,
+      send_mails
+        IMPORTING
+          it_data TYPE ty_output_tt,
+      get_address
+        IMPORTING
+          iv_user TYPE e070-as4user
+        RETURNING VALUE(rv_email) TYPE adr6-smtp_addr.
 
 ENDCLASS.                    "lcl_app DEFINITION
 
@@ -71,6 +80,10 @@ CLASS lcl_data IMPLEMENTATION.
 
     rt_data = filter( ).
 
+    IF p_mail = abap_true.
+      send_mails( rt_data ).
+    ENDIF.
+
   ENDMETHOD.                    "run
 
   METHOD filter.
@@ -83,18 +96,26 @@ CLASS lcl_data IMPLEMENTATION.
     SORT gt_objects BY include ASCENDING.
     DELETE ADJACENT DUPLICATES FROM gt_objects COMPARING include.
 
-    LOOP AT gt_sci ASSIGNING <ls_sci>.
-
-      IF <ls_sci>-sobjtype = 'PROG'.
-        READ TABLE gt_objects ASSIGNING <ls_object>
-          WITH KEY include = <ls_sci>-sobjname BINARY SEARCH.
-        IF sy-subrc = 0.
-          APPEND INITIAL LINE TO rt_data ASSIGNING <ls_data>.
-          MOVE-CORRESPONDING <ls_sci> TO <ls_data>.
-          MOVE-CORRESPONDING <ls_object> TO <ls_data>.
+    LOOP AT gt_objects ASSIGNING <ls_object>.
+      CASE <ls_object>-object.
+        WHEN 'PROG'.
+          READ TABLE gt_sci ASSIGNING <ls_sci>
+            WITH KEY sobjname = <ls_object>-include BINARY SEARCH.
+        WHEN OTHERS.
+          READ TABLE gt_sci ASSIGNING <ls_sci>
+            WITH KEY objname = <ls_object>-obj_name.
+      ENDCASE.
+      IF sy-subrc = 0.
+        APPEND INITIAL LINE TO rt_data ASSIGNING <ls_data>.
+        MOVE-CORRESPONDING <ls_sci> TO <ls_data>.
+        MOVE-CORRESPONDING <ls_object> TO <ls_data>.
+        IF <ls_data>-sobjtype IS INITIAL.
+          <ls_data>-sobjtype = <ls_object>-object.
+        ENDIF.
+        IF <ls_data>-sobjname IS INITIAL.
+          <ls_data>-sobjname = <ls_object>-obj_name.
         ENDIF.
       ENDIF.
-
     ENDLOOP.
 
   ENDMETHOD.                    "filter
@@ -165,6 +186,102 @@ CLASS lcl_data IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.                    "find_objects
+
+  METHOD get_address.
+
+    DATA: ls_address TYPE bapiaddr3,
+          lt_return  TYPE TABLE OF bapiret2,
+          lt_smtp    TYPE TABLE OF bapiadsmtp.
+
+    CALL FUNCTION 'BAPI_USER_GET_DETAIL'
+      EXPORTING
+        username = iv_user
+      IMPORTING
+        address  = ls_address
+      TABLES
+        return   = lt_return
+        addsmtp  = lt_smtp.
+
+    LOOP AT lt_return TRANSPORTING NO FIELDS WHERE type CA 'EA'.
+      RETURN.
+    ENDLOOP.
+
+  " Choose the first email from SU01
+    SORT lt_smtp BY consnumber ASCENDING.
+
+    LOOP AT lt_smtp INTO DATA(ls_smtp).
+      rv_email = ls_smtp-e_mail.
+      EXIT.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+  METHOD send_mails.
+
+    DATA: lt_mail_body TYPE bcsy_text,
+          lv_mail_line TYPE soli,
+          lv_mail_subject TYPE so_obj_des.
+
+    TRY.
+        DATA(lo_send_request) = cl_bcs=>create_persistent( ).
+
+        lv_mail_line-line = 'Some of your open transports do not comply with SAP Matters abap development guidelines.'.
+        APPEND lv_mail_line TO lt_mail_body.
+        lv_mail_line-line = 'These guidelines are not enforced, but metrics will be gathered to check for compliance.'.
+        APPEND lv_mail_line TO lt_mail_body.
+        lv_mail_line-line = 'Remember, use the YLEGO_GUIDELINES code check to validate guidelines compliance'.
+        APPEND lv_mail_line TO lt_mail_body.
+        lv_mail_line-line = 'For more information or interest in collaboration, check SAP Matters in Baseplate/GitHub'.
+        APPEND lv_mail_line TO lt_mail_body.
+        lv_mail_line-line = ''.
+        APPEND lv_mail_line TO lt_mail_body.
+        lv_mail_line-line = 'These are your non-compliant transports:'.
+        APPEND lv_mail_line TO lt_mail_body.
+
+        LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_object>)
+            GROUP BY ( key1 = <ls_object>-as4user )
+            INTO DATA(ls_group1).
+
+          LOOP AT GROUP ls_group1 ASSIGNING FIELD-SYMBOL(<ls_group>).
+            cl_abap_container_utilities=>fill_container_c(
+              EXPORTING
+                im_value = <ls_group>
+              IMPORTING
+                ex_container = DATA(lv_container) ).
+            lv_mail_line-line = lv_container.
+            APPEND lv_mail_line TO lt_mail_body.
+            CLEAR lv_mail_line.
+          ENDLOOP.
+
+          DATA(lv_recipient) = cl_cam_address_bcs=>create_internet_address(
+            i_address_string = get_address( <ls_group>-as4user ) ).
+
+          IF lv_recipient IS INITIAL.
+            CONTINUE.
+          ENDIF.
+
+          lo_send_request->add_recipient( i_recipient = lv_recipient ).
+
+          DATA(lv_sender) = cl_cam_address_bcs=>create_internet_address(
+            i_address_string = get_address( sy-uname ) ).
+
+          lo_send_request->set_sender( i_sender = lv_sender ).
+
+          DATA(lo_document) = cl_document_bcs=>create_document(
+            i_type    = 'RAW'
+            i_text    = lt_mail_body
+            i_subject = lv_mail_subject ).
+          lo_send_request->set_document( lo_document ).
+
+          lo_send_request->send( i_with_error_screen = 'X' ).
+          COMMIT WORK.
+
+        ENDLOOP.
+      CATCH cx_bcs.
+        RETURN.
+    ENDTRY.
+
+  ENDMETHOD.
 
 ENDCLASS.                    "lcl_app IMPLEMENTATION
 
