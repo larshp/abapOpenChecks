@@ -225,13 +225,13 @@ CLASS lcl_data IMPLEMENTATION.
     TRY.
         DATA(lo_send_request) = cl_bcs=>create_persistent( ).
 
-        lv_mail_line-line = 'Some of your open transports do not comply with SAP Matters abap development guidelines.'.
+        lv_mail_line-line = 'Some of your open transports do not comply with our abap development guidelines.'.
         APPEND lv_mail_line TO lt_mail_body.
-        lv_mail_line-line = 'These guidelines are not enforced, but metrics will be gathered to check for compliance.'.
+        lv_mail_line-line = 'These guidelines are *insert_generic_message*'.
         APPEND lv_mail_line TO lt_mail_body.
-        lv_mail_line-line = 'Remember, use the YLEGO_GUIDELINES code check to validate guidelines compliance'.
+        lv_mail_line-line = 'Remember, use the *code_check_name* code check to validate guidelines compliance'.
         APPEND lv_mail_line TO lt_mail_body.
-        lv_mail_line-line = 'For more information or interest in collaboration, check SAP Matters in Baseplate/GitHub'.
+        lv_mail_line-line = 'For more information or interest in collaboration, check *ref_link*'.
         APPEND lv_mail_line TO lt_mail_body.
         lv_mail_line-line = ''.
         APPEND lv_mail_line TO lt_mail_body.
