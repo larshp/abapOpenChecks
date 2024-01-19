@@ -58,11 +58,7 @@ CLASS lcl_data DEFINITION FINAL.
         RETURNING VALUE(rt_data) TYPE ty_output_tt,
       send_mails
         IMPORTING
-          it_data TYPE ty_output_tt,
-      get_address
-        IMPORTING
-          iv_user TYPE e070-as4user
-        RETURNING VALUE(rv_email) TYPE adr6-smtp_addr.
+          it_data TYPE ty_output_tt.
 
 ENDCLASS.                    "lcl_app DEFINITION
 
@@ -187,35 +183,6 @@ CLASS lcl_data IMPLEMENTATION.
 
   ENDMETHOD.                    "find_objects
 
-  METHOD get_address.
-
-    DATA: ls_address TYPE bapiaddr3,
-          lt_return  TYPE TABLE OF bapiret2,
-          lt_smtp    TYPE TABLE OF bapiadsmtp.
-
-    CALL FUNCTION 'BAPI_USER_GET_DETAIL'
-      EXPORTING
-        username = iv_user
-      IMPORTING
-        address  = ls_address
-      TABLES
-        return   = lt_return
-        addsmtp  = lt_smtp.
-
-    LOOP AT lt_return TRANSPORTING NO FIELDS WHERE type CA 'EA'.
-      RETURN.
-    ENDLOOP.
-
-  " Choose the first email from SU01
-    SORT lt_smtp BY consnumber ASCENDING.
-
-    LOOP AT lt_smtp INTO DATA(ls_smtp).
-      rv_email = ls_smtp-e_mail.
-      EXIT.
-    ENDLOOP.
-
-  ENDMETHOD.
-
   METHOD send_mails.
 
     DATA: lt_mail_body TYPE bcsy_text,
@@ -243,8 +210,9 @@ CLASS lcl_data IMPLEMENTATION.
             CLEAR lv_mail_line.
           ENDLOOP.
 
-          DATA(lv_recipient) = cl_cam_address_bcs=>create_internet_address(
-            i_address_string = get_address( <ls_group>-as4user ) ).
+          DATA(lv_recipient) = cl_cam_address_bcs=>create_user_home_address(
+                                i_commtype = 'INT'
+                                i_user     = <ls_group>-as4user ).
 
           IF lv_recipient IS INITIAL.
             CONTINUE.
@@ -252,8 +220,9 @@ CLASS lcl_data IMPLEMENTATION.
 
           lo_send_request->add_recipient( i_recipient = lv_recipient ).
 
-          DATA(lv_sender) = cl_cam_address_bcs=>create_internet_address(
-            i_address_string = get_address( sy-uname ) ).
+          DATA(lv_sender) = cl_cam_address_bcs=>create_user_home_address(
+                            i_commtype = 'INT'
+                            i_user     = sy-uname ).
 
           lo_send_request->set_sender( i_sender = lv_sender ).
 
