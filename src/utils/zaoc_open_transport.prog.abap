@@ -188,28 +188,45 @@ CLASS lcl_data IMPLEMENTATION.
   METHOD send_mails.
 
     DATA: lt_mail_body TYPE bcsy_text,
-          lv_mail_line TYPE soli,
+          lv_mail_table TYPE soli,
           lv_mail_subject TYPE so_obj_des.
 
     TRY.
         DATA(lo_send_request) = cl_bcs=>create_persistent( ).
 
-        lv_mail_subject = 'About your open transports and our development guidelines.'.
-        lv_mail_line-line = 'Generic message about development guidelines.'.
-        APPEND lv_mail_line TO lt_mail_body.
+        lv_mail_subject = 'Your open transport and our development guidelines'.
+        lv_mail_table-line = |Generic message about development guidelines in system: { sy-sysid } |.
+        APPEND lv_mail_table TO lt_mail_body.
+        lv_mail_table-line = ''.
+        APPEND lv_mail_table TO lt_mail_body.
+        lv_mail_table-line = |<html><table><thead><tr><th>Request/Task</th><th>Owner</th><th>Message type</th>|.
+        APPEND lv_mail_table TO lt_mail_body.
+        lv_mail_table-line = |<th>Text</th><th>Description</th><th>Object type</th>|.
+        APPEND lv_mail_table TO lt_mail_body.
+        lv_mail_table-line = |<th>Object name</th><th>Line</th></tr></thead>|.
+        APPEND lv_mail_table TO lt_mail_body.
+        lv_mail_table-line = '<tbody>'.
+        APPEND lv_mail_table TO lt_mail_body.
 
         LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_object>).
           AT NEW as4user.
             LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_group>)
                 WHERE as4user = <ls_object>-as4user.
-              cl_abap_container_utilities=>fill_container_c(
-                EXPORTING
-                  im_value = <ls_group>-sobjname
-                IMPORTING
-                  ex_container = DATA(lv_container) ).
-              lv_mail_line-line = lv_container.
-              APPEND lv_mail_line TO lt_mail_body.
-              CLEAR lv_mail_line.
+              lv_mail_table-line = |<tr><td> { <ls_group>-trkorr } </td><td> { <ls_group>-as4user } </td>|.
+              APPEND lv_mail_table TO lt_mail_body.
+              lv_mail_table-line = |<td> { <ls_group>-kind } </td><td> { <ls_group>-text } </td>|.
+              APPEND lv_mail_table TO lt_mail_body.
+              lv_mail_table-line = |<td> { <ls_group>-description } </td><td> { <ls_group>-sobjtype } </td>|.
+              APPEND lv_mail_table TO lt_mail_body.
+              lv_mail_table-line = |<td> { <ls_group>-sobjname } </td><td> { <ls_group>-line } </td></tr>|.
+              APPEND lv_mail_table TO lt_mail_body.
+              lv_mail_table-line = '</tbody>'.
+              APPEND lv_mail_table TO lt_mail_body.
+              lv_mail_table-line = '</table>'.
+              APPEND lv_mail_table TO lt_mail_body.
+              lv_mail_table-line = '</html>'.
+              APPEND lv_mail_table TO lt_mail_body.
+              CLEAR lv_mail_table.
             ENDLOOP.
             DATA(lv_recipient) = cl_cam_address_bcs=>create_user_home_address(
                                   i_commtype = 'INT'
@@ -225,7 +242,7 @@ CLASS lcl_data IMPLEMENTATION.
             lo_send_request->set_sender( i_sender = lv_sender ).
 
             DATA(lo_document) = cl_document_bcs=>create_document(
-              i_type    = 'RAW'
+              i_type    = 'HTM'
               i_text    = lt_mail_body
               i_subject = lv_mail_subject ).
             lo_send_request->set_document( lo_document ).
