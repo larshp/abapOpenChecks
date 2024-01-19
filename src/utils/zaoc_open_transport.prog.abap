@@ -114,6 +114,8 @@ CLASS lcl_data IMPLEMENTATION.
       ENDIF.
     ENDLOOP.
 
+    SORT rt_data BY as4user ASCENDING.
+
   ENDMETHOD.                    "filter
 
   METHOD read_inspection.
@@ -192,49 +194,46 @@ CLASS lcl_data IMPLEMENTATION.
     TRY.
         DATA(lo_send_request) = cl_bcs=>create_persistent( ).
 
+        lv_mail_subject = 'About your open transports and our development guidelines.'.
         lv_mail_line-line = 'Generic message about development guidelines.'.
         APPEND lv_mail_line TO lt_mail_body.
 
-        LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_object>)
-            GROUP BY ( key1 = <ls_object>-as4user )
-            INTO DATA(ls_group1).
+        LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_object>).
+          AT NEW as4user.
+            LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_group>)
+                WHERE as4user = <ls_object>-as4user.
+              cl_abap_container_utilities=>fill_container_c(
+                EXPORTING
+                  im_value = <ls_group>-sobjname
+                IMPORTING
+                  ex_container = DATA(lv_container) ).
+              lv_mail_line-line = lv_container.
+              APPEND lv_mail_line TO lt_mail_body.
+              CLEAR lv_mail_line.
+            ENDLOOP.
+            DATA(lv_recipient) = cl_cam_address_bcs=>create_user_home_address(
+                                  i_commtype = 'INT'
+                                  i_user     = <ls_object>-as4user ).
+            IF lv_recipient IS INITIAL.
+              CONTINUE.
+            ENDIF.
+            lo_send_request->add_recipient( i_recipient = lv_recipient ).
 
-          LOOP AT GROUP ls_group1 ASSIGNING FIELD-SYMBOL(<ls_group>).
-            cl_abap_container_utilities=>fill_container_c(
-              EXPORTING
-                im_value = <ls_group>
-              IMPORTING
-                ex_container = DATA(lv_container) ).
-            lv_mail_line-line = lv_container.
-            APPEND lv_mail_line TO lt_mail_body.
-            CLEAR lv_mail_line.
-          ENDLOOP.
+            DATA(lv_sender) = cl_cam_address_bcs=>create_user_home_address(
+                              i_commtype = 'INT'
+                              i_user     = sy-uname ).
+            lo_send_request->set_sender( i_sender = lv_sender ).
 
-          DATA(lv_recipient) = cl_cam_address_bcs=>create_user_home_address(
-                                i_commtype = 'INT'
-                                i_user     = <ls_group>-as4user ).
-
-          IF lv_recipient IS INITIAL.
-            CONTINUE.
-          ENDIF.
-
-          lo_send_request->add_recipient( i_recipient = lv_recipient ).
-
-          DATA(lv_sender) = cl_cam_address_bcs=>create_user_home_address(
-                            i_commtype = 'INT'
-                            i_user     = sy-uname ).
-
-          lo_send_request->set_sender( i_sender = lv_sender ).
-
-          DATA(lo_document) = cl_document_bcs=>create_document(
-            i_type    = 'RAW'
-            i_text    = lt_mail_body
-            i_subject = lv_mail_subject ).
-          lo_send_request->set_document( lo_document ).
-
-          lo_send_request->send( i_with_error_screen = 'X' ).
-          COMMIT WORK.
-
+            DATA(lo_document) = cl_document_bcs=>create_document(
+              i_type    = 'RAW'
+              i_text    = lt_mail_body
+              i_subject = lv_mail_subject ).
+            lo_send_request->set_document( lo_document ).
+            DATA(lv_sent_to_all) = lo_send_request->send( i_with_error_screen = 'X' ).
+            IF lv_sent_to_all = abap_true.
+              COMMIT WORK.
+            ENDIF.
+          ENDAT.
         ENDLOOP.
       CATCH cx_bcs.
         RETURN.
