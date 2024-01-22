@@ -206,7 +206,7 @@ CLASS lcl_data IMPLEMENTATION.
             APPEND lv_mail_table TO lt_mail_body.
             lv_mail_table-line = ''.
             APPEND lv_mail_table TO lt_mail_body.
-            lv_mail_table-line = |<html><table><thead><tr><th>Request/Task</th><th>Owner</th><th>Message type</th>|.
+            lv_mail_table-line = |<html><table><thead><tr align= "left"><th>Request/Task</th><th>Owner</th>|.
             APPEND lv_mail_table TO lt_mail_body.
             lv_mail_table-line = |<th>Text</th><th>Description</th><th>Object type</th>|.
             APPEND lv_mail_table TO lt_mail_body.
