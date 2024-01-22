@@ -90,16 +90,20 @@ CLASS lcl_data IMPLEMENTATION.
 
 
     SORT gt_objects BY include ASCENDING.
-    DELETE ADJACENT DUPLICATES FROM gt_objects COMPARING include.
+    DELETE ADJACENT DUPLICATES FROM gt_objects COMPARING trkorr
+                                                        object
+                                                        obj_name
+                                                        include.
 
-    LOOP AT gt_objects ASSIGNING <ls_object>.
-      CASE <ls_object>-object.
+    LOOP AT gt_sci ASSIGNING <ls_sci>.
+
+      CASE <ls_sci>-sobjtype.
         WHEN 'PROG'.
-          READ TABLE gt_sci ASSIGNING <ls_sci>
-            WITH KEY sobjname = <ls_object>-include BINARY SEARCH.
+          READ TABLE gt_objects ASSIGNING <ls_object>
+            WITH KEY include = <ls_sci>-sobjname BINARY SEARCH.
         WHEN OTHERS.
-          READ TABLE gt_sci ASSIGNING <ls_sci>
-            WITH KEY objname = <ls_object>-obj_name.
+          READ TABLE gt_objects ASSIGNING <ls_object>
+            WITH KEY obj_name = <ls_sci>-objname.
       ENDCASE.
       IF sy-subrc = 0.
         APPEND INITIAL LINE TO rt_data ASSIGNING <ls_data>.
