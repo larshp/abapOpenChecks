@@ -329,6 +329,7 @@ CLASS lcl_alv IMPLEMENTATION.
 
     lo_events = lo_alv->get_event( ).
     SET HANDLER on_link_click FOR lo_events.
+    MESSAGE 'Relevant emails to the users with problematic objects were sent, check SOST' TYPE 'S' DISPLAY LIKE 'I'.
     lo_alv->display( ).
 
   ENDMETHOD.                    "show
