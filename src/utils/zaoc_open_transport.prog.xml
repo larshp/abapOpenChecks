@@ -24,6 +24,12 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_MAIL</KEY>
+     <ENTRY>Notify developers via email</ENTRY>
+     <LENGTH>35</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>S_TRKORR</KEY>
      <ENTRY>.</ENTRY>
      <LENGTH>9</LENGTH>
