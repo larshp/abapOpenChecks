@@ -196,24 +196,24 @@ CLASS lcl_data IMPLEMENTATION.
           lv_mail_subject TYPE so_obj_des.
 
     TRY.
-        DATA(lo_send_request) = cl_bcs=>create_persistent( ).
 
         lv_mail_subject = 'Your open transport and our development guidelines'.
-        lv_mail_table-line = |Generic message about development guidelines in system: { sy-sysid } |.
-        APPEND lv_mail_table TO lt_mail_body.
-        lv_mail_table-line = ''.
-        APPEND lv_mail_table TO lt_mail_body.
-        lv_mail_table-line = |<html><table><thead><tr><th>Request/Task</th><th>Owner</th><th>Message type</th>|.
-        APPEND lv_mail_table TO lt_mail_body.
-        lv_mail_table-line = |<th>Text</th><th>Description</th><th>Object type</th>|.
-        APPEND lv_mail_table TO lt_mail_body.
-        lv_mail_table-line = |<th>Object name</th><th>Line</th></tr></thead>|.
-        APPEND lv_mail_table TO lt_mail_body.
-        lv_mail_table-line = '<tbody>'.
-        APPEND lv_mail_table TO lt_mail_body.
 
         LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_object>).
           AT NEW as4user.
+            CLEAR lt_mail_body.
+            lv_mail_table-line = |Generic message about development guidelines in system: { sy-sysid } |.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = ''.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = |<html><table><thead><tr><th>Request/Task</th><th>Owner</th><th>Message type</th>|.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = |<th>Text</th><th>Description</th><th>Object type</th>|.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = |<th>Object name</th><th>Line</th></tr></thead>|.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = '<tbody>'.
+            APPEND lv_mail_table TO lt_mail_body.
             LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_group>)
                 WHERE as4user = <ls_object>-as4user.
               lv_mail_table-line = |<tr><td> { <ls_group>-trkorr } </td><td> { <ls_group>-as4user } </td>|.
@@ -224,26 +224,32 @@ CLASS lcl_data IMPLEMENTATION.
               APPEND lv_mail_table TO lt_mail_body.
               lv_mail_table-line = |<td> { <ls_group>-sobjname } </td><td> { <ls_group>-line } </td></tr>|.
               APPEND lv_mail_table TO lt_mail_body.
-              lv_mail_table-line = '</tbody>'.
-              APPEND lv_mail_table TO lt_mail_body.
-              lv_mail_table-line = '</table>'.
-              APPEND lv_mail_table TO lt_mail_body.
-              lv_mail_table-line = '</html>'.
-              APPEND lv_mail_table TO lt_mail_body.
-              CLEAR lv_mail_table.
             ENDLOOP.
+            lv_mail_table-line = '</tbody>'.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = '</table>'.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = '</html>'.
+            APPEND lv_mail_table TO lt_mail_body.
+            CLEAR lv_mail_table.
+
+            DATA(lo_send_request) = cl_bcs=>create_persistent( ).
+
             DATA(lv_recipient) = cl_cam_address_bcs=>create_user_home_address(
                                   i_commtype = 'INT'
                                   i_user     = <ls_object>-as4user ).
             IF lv_recipient IS INITIAL.
+              FREE lv_recipient.
               CONTINUE.
             ENDIF.
             lo_send_request->add_recipient( i_recipient = lv_recipient ).
+            FREE lv_recipient.
 
             DATA(lv_sender) = cl_cam_address_bcs=>create_user_home_address(
                               i_commtype = 'INT'
                               i_user     = sy-uname ).
             lo_send_request->set_sender( i_sender = lv_sender ).
+            FREE lv_sender.
 
             DATA(lo_document) = cl_document_bcs=>create_document(
               i_type    = 'HTM'
@@ -254,6 +260,7 @@ CLASS lcl_data IMPLEMENTATION.
             IF lv_sent_to_all = abap_true.
               COMMIT WORK.
             ENDIF.
+            CLEAR lo_send_request.
           ENDAT.
         ENDLOOP.
       CATCH cx_bcs.
