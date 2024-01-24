@@ -24,7 +24,17 @@ PARAMETERS p_insp TYPE sciins_inf-inspecname OBLIGATORY.
 SELECT-OPTIONS: s_trkorr FOR e070-trkorr,
                 s_user   FOR e070-as4user.
 
+SELECTION-SCREEN SKIP 1.
+
 PARAMETERS p_mail AS CHECKBOX DEFAULT ''.
+
+SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-t01.
+PARAMETERS p_sub  TYPE string.
+SELECTION-SCREEN COMMENT /1(20) TEXT-t02.
+SELECTION-SCREEN PUSHBUTTON 33(8) TEXT-t04 USER-COMMAND b_head.
+SELECTION-SCREEN COMMENT /1(20) TEXT-t03.
+SELECTION-SCREEN PUSHBUTTON 33(8) TEXT-t04 USER-COMMAND b_foot.
+SELECTION-SCREEN END OF BLOCK b1.
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_app DEFINITION
@@ -197,22 +207,20 @@ CLASS lcl_data IMPLEMENTATION.
 
     TRY.
 
-        lv_mail_subject = 'Your open transport and our development guidelines'.
+        lv_mail_subject = p_sub.
 
         LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_object>).
           AT NEW as4user.
             CLEAR lt_mail_body.
-            lv_mail_table-line = |Generic message about development guidelines in system: { sy-sysid } |.
-            APPEND lv_mail_table TO lt_mail_body.
-            lv_mail_table-line = ''.
-            APPEND lv_mail_table TO lt_mail_body.
-            lv_mail_table-line = |<html><table><thead><tr align= "left"><th>Request/Task</th><th>Owner</th>|.
-            APPEND lv_mail_table TO lt_mail_body.
-            lv_mail_table-line = |<th>Text</th><th>Description</th><th>Object type</th>|.
-            APPEND lv_mail_table TO lt_mail_body.
-            lv_mail_table-line = |<th>Object name</th><th>Line</th></tr></thead>|.
+            lv_mail_table-line = ''."p_head.
             APPEND lv_mail_table TO lt_mail_body.
             lv_mail_table-line = '<tbody>'.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = |<html><table border="1"><thead><tr align= "left"><th>Request/Task</th><th>Owner</th>|.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = |<th>Text</th><th>Description</th><th>Check Description</th><th>Object Type</th>|.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = |<th>Object name</th><th>Line of code</th></tr></thead>|.
             APPEND lv_mail_table TO lt_mail_body.
             LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_group>)
                 WHERE as4user = <ls_object>-as4user.
@@ -225,11 +233,11 @@ CLASS lcl_data IMPLEMENTATION.
               lv_mail_table-line = |<td> { <ls_group>-sobjname } </td><td> { <ls_group>-line } </td></tr>|.
               APPEND lv_mail_table TO lt_mail_body.
             ENDLOOP.
-            lv_mail_table-line = '</tbody>'.
-            APPEND lv_mail_table TO lt_mail_body.
             lv_mail_table-line = '</table>'.
             APPEND lv_mail_table TO lt_mail_body.
-            lv_mail_table-line = '</html>'.
+            lv_mail_table-line = '<br><br>'.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = ''."p_foot.
             APPEND lv_mail_table TO lt_mail_body.
             CLEAR lv_mail_table.
 

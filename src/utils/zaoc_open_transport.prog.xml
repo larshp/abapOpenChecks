@@ -11,6 +11,30 @@
    </PROGDIR>
    <TPOOL>
     <item>
+     <ID>I</ID>
+     <KEY>T01</KEY>
+     <ENTRY>Email contents:</ENTRY>
+     <LENGTH>25</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>T02</KEY>
+     <ENTRY>Email main text:</ENTRY>
+     <LENGTH>16</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>T03</KEY>
+     <ENTRY>Email footer text:</ENTRY>
+     <LENGTH>18</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>T04</KEY>
+     <ENTRY>Edit</ENTRY>
+     <LENGTH>4</LENGTH>
+    </item>
+    <item>
      <ID>R</ID>
      <ENTRY>abapOpenChecks - Errors in open transports</ENTRY>
      <LENGTH>42</LENGTH>
@@ -27,6 +51,12 @@
      <KEY>P_MAIL</KEY>
      <ENTRY>Notify developers via email</ENTRY>
      <LENGTH>35</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_SUB</KEY>
+     <ENTRY>Email subject/title</ENTRY>
+     <LENGTH>27</LENGTH>
     </item>
     <item>
      <ID>S</ID>
