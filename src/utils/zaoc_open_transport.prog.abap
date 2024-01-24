@@ -18,6 +18,10 @@ TYPES: BEGIN OF ty_output,
        END OF ty_output.
 
 TYPES: ty_output_tt TYPE STANDARD TABLE OF ty_output WITH DEFAULT KEY.
+DATA: go_container TYPE REF TO cl_gui_custom_container,
+      gt_email_head TYPE soli_tab,
+      gt_email_foot TYPE soli_tab,
+      gv_ucomm      TYPE sy-ucomm.
 
 PARAMETERS p_insp TYPE sciins_inf-inspecname OBLIGATORY.
 
@@ -30,11 +34,17 @@ PARAMETERS p_mail AS CHECKBOX DEFAULT ''.
 
 SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-t01.
 PARAMETERS p_sub  TYPE string.
-SELECTION-SCREEN COMMENT /1(20) TEXT-t02.
+SELECTION-SCREEN COMMENT /1(30) TEXT-t02.
 SELECTION-SCREEN PUSHBUTTON 33(8) TEXT-t04 USER-COMMAND b_head.
-SELECTION-SCREEN COMMENT /1(20) TEXT-t03.
+SELECTION-SCREEN COMMENT /1(30) TEXT-t03.
 SELECTION-SCREEN PUSHBUTTON 33(8) TEXT-t04 USER-COMMAND b_foot.
 SELECTION-SCREEN END OF BLOCK b1.
+
+AT SELECTION-SCREEN.
+  IF sy-ucomm = 'B_HEAD' OR sy-ucomm = 'B_FOOT'.
+    gv_ucomm = sy-ucomm.
+    CALL SCREEN 1001 STARTING AT 10 5.
+  ENDIF.
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_app DEFINITION
@@ -212,8 +222,10 @@ CLASS lcl_data IMPLEMENTATION.
         LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_object>).
           AT NEW as4user.
             CLEAR lt_mail_body.
-            lv_mail_table-line = ''."p_head.
-            APPEND lv_mail_table TO lt_mail_body.
+            LOOP AT gt_email_head ASSIGNING FIELD-SYMBOL(<ls_email>).
+              lv_mail_table-line = <ls_email>.
+              APPEND lv_mail_table TO lt_mail_body.
+            ENDLOOP.
             lv_mail_table-line = '<tbody>'.
             APPEND lv_mail_table TO lt_mail_body.
             lv_mail_table-line = |<html><table border="1"><thead><tr align= "left"><th>Request/Task</th><th>Owner</th>|.
@@ -264,10 +276,10 @@ CLASS lcl_data IMPLEMENTATION.
               i_text    = lt_mail_body
               i_subject = lv_mail_subject ).
             lo_send_request->set_document( lo_document ).
-            DATA(lv_sent_to_all) = lo_send_request->send( i_with_error_screen = 'X' ).
-            IF lv_sent_to_all = abap_true.
-              COMMIT WORK.
-            ENDIF.
+            " DATA(lv_sent_to_all) = lo_send_request->send( i_with_error_screen = 'X' ).
+            " IF lv_sent_to_all = abap_true.
+            "   COMMIT WORK.
+            " ENDIF.
             CLEAR lo_send_request.
           ENDAT.
         ENDLOOP.
@@ -380,3 +392,37 @@ ENDCLASS.                    "lcl_alv IMPLEMENTATION
 
 START-OF-SELECTION.
   lcl_alv=>show( lcl_data=>fetch( ) ).
+
+MODULE status_1001 OUTPUT.
+  SET PF-STATUS 'POPUP'.
+  SET TITLEBAR 'POPUP'.
+  go_container = NEW #( container_name = 'CONTAINER' ).
+  DATA(lo_editor) = NEW cl_gui_textedit( parent            = go_container
+                                         wordwrap_mode     = '2'
+                                         wordwrap_position = '250' ).
+  CASE gv_ucomm.
+    WHEN 'B_HEAD'.
+      lo_editor->set_text_as_r3table( table = gt_email_head[] ).
+    WHEN 'B_FOOT'.
+      lo_editor->set_text_as_r3table( table = gt_email_foot[] ).
+  ENDCASE.
+  cl_gui_docking_container=>set_focus( lo_editor ).
+  lo_editor->set_readonly_mode( 0 ).
+ENDMODULE.
+MODULE user_command_1001 INPUT.
+  CASE sy-ucomm.
+    WHEN 'OK'.
+      CASE gv_ucomm.
+        WHEN 'B_HEAD'.
+          lo_editor->get_text_as_r3table( IMPORTING table = gt_email_head[] ).
+        WHEN 'B_FOOT'.
+          lo_editor->get_text_as_r3table( IMPORTING table = gt_email_foot[] ).
+      ENDCASE.
+      cl_gui_cfw=>flush( ).
+      SET SCREEN 0.
+      LEAVE SCREEN.
+    WHEN 'CANCEL'.
+      SET SCREEN 0.
+      LEAVE SCREEN.
+  ENDCASE.
+ENDMODULE.
