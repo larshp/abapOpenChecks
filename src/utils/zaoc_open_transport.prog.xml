@@ -193,7 +193,13 @@
     <item>
      <ID>I</ID>
      <KEY>T05</KEY>
-     <ENTRY>HTML compatible</ENTRY>
+     <ENTRY>Load template stored in DB:</ENTRY>
+     <LENGTH>27</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>T06</KEY>
+     <ENTRY>HTML compatible:</ENTRY>
      <LENGTH>26</LENGTH>
     </item>
     <item>
@@ -210,9 +216,27 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_LOAD</KEY>
+     <ENTRY>Load email template</ENTRY>
+     <LENGTH>27</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>P_MAIL</KEY>
      <ENTRY>Notify developers via email</ENTRY>
      <LENGTH>35</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_NAME</KEY>
+     <ENTRY>Name of template:</ENTRY>
+     <LENGTH>25</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_SAVE</KEY>
+     <ENTRY>Create and save new template</ENTRY>
+     <LENGTH>36</LENGTH>
     </item>
     <item>
      <ID>S</ID>

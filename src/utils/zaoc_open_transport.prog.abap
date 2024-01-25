@@ -33,15 +33,52 @@ SELECTION-SCREEN SKIP 1.
 PARAMETERS p_mail AS CHECKBOX DEFAULT ''.
 
 SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-t01.
-PARAMETERS p_sub  TYPE string.
-SELECTION-SCREEN COMMENT /1(30) TEXT-t02.
-SELECTION-SCREEN PUSHBUTTON 33(8) TEXT-t04 USER-COMMAND b_head.
-SELECTION-SCREEN COMMENT /1(30) TEXT-t03.
-SELECTION-SCREEN PUSHBUTTON 33(8) TEXT-t04 USER-COMMAND b_foot.
+
+PARAMETERS: p_load TYPE abap_bool RADIOBUTTON GROUP g1 DEFAULT 'X' USER-COMMAND c_load,
+            p_save TYPE abap_bool RADIOBUTTON GROUP g1.
+
 SELECTION-SCREEN END OF BLOCK b1.
 
-AT SELECTION-SCREEN.
-  IF sy-ucomm = 'B_HEAD' OR sy-ucomm = 'B_FOOT'.
+SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-t05.
+PARAMETERS p_name TYPE string MODIF ID i1.
+SELECTION-SCREEN END OF BLOCK b2.
+
+SELECTION-SCREEN BEGIN OF BLOCK b3 WITH FRAME TITLE TEXT-t06.
+PARAMETERS: p_sub  TYPE string MODIF ID i2.
+SELECTION-SCREEN COMMENT /1(30) TEXT-t02 MODIF ID i2.
+SELECTION-SCREEN PUSHBUTTON 33(8) TEXT-t04 USER-COMMAND c_head MODIF ID i2.
+SELECTION-SCREEN COMMENT /1(30) TEXT-t03 MODIF ID i2.
+SELECTION-SCREEN PUSHBUTTON 33(8) TEXT-t04 USER-COMMAND c_foot MODIF ID i2.
+SELECTION-SCREEN END OF BLOCK b3.
+
+
+AT SELECTION-SCREEN OUTPUT.
+  CASE p_load.
+    WHEN abap_true.
+      LOOP AT SCREEN.
+        CASE screen-group1.
+          WHEN 'I1'.
+            screen-active = '1'.
+            MODIFY SCREEN.
+          WHEN 'I2'.
+            screen-active = '0'.
+            MODIFY SCREEN.
+        ENDCASE.
+      ENDLOOP.
+    WHEN abap_false.
+      LOOP AT SCREEN.
+        CASE screen-group1.
+          WHEN 'I1'.
+            screen-active = '0'.
+            MODIFY SCREEN.
+          WHEN 'I2'.
+            screen-active = '1'.
+            MODIFY SCREEN.
+        ENDCASE.
+      ENDLOOP.
+  ENDCASE.
+
+  IF sy-ucomm = 'c_head' OR sy-ucomm = 'c_foot'.
     gv_ucomm = sy-ucomm.
     CALL SCREEN 1001 STARTING AT 10 5.
   ENDIF.
@@ -401,9 +438,9 @@ MODULE status_1001 OUTPUT.
                                          wordwrap_mode     = '2'
                                          wordwrap_position = '250' ).
   CASE gv_ucomm.
-    WHEN 'B_HEAD'.
+    WHEN 'c_head'.
       lo_editor->set_text_as_r3table( table = gt_email_head[] ).
-    WHEN 'B_FOOT'.
+    WHEN 'c_foot'.
       lo_editor->set_text_as_r3table( table = gt_email_foot[] ).
   ENDCASE.
   cl_gui_docking_container=>set_focus( lo_editor ).
@@ -413,9 +450,9 @@ MODULE user_command_1001 INPUT.
   CASE sy-ucomm.
     WHEN 'OK'.
       CASE gv_ucomm.
-        WHEN 'B_HEAD'.
+        WHEN 'c_head'.
           lo_editor->get_text_as_r3table( IMPORTING table = gt_email_head[] ).
-        WHEN 'B_FOOT'.
+        WHEN 'c_foot'.
           lo_editor->get_text_as_r3table( IMPORTING table = gt_email_foot[] ).
       ENDCASE.
       cl_gui_cfw=>flush( ).
