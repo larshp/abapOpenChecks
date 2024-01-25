@@ -276,10 +276,10 @@ CLASS lcl_data IMPLEMENTATION.
               i_text    = lt_mail_body
               i_subject = lv_mail_subject ).
             lo_send_request->set_document( lo_document ).
-            " DATA(lv_sent_to_all) = lo_send_request->send( i_with_error_screen = 'X' ).
-            " IF lv_sent_to_all = abap_true.
-            "   COMMIT WORK.
-            " ENDIF.
+            DATA(lv_sent_to_all) = lo_send_request->send( i_with_error_screen = 'X' ).
+            IF lv_sent_to_all = abap_true.
+              COMMIT WORK.
+            ENDIF.
             CLEAR lo_send_request.
           ENDAT.
         ENDLOOP.
