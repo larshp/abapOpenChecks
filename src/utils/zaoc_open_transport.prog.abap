@@ -78,7 +78,9 @@ AT SELECTION-SCREEN OUTPUT.
       ENDLOOP.
   ENDCASE.
 
-  IF sy-ucomm = 'c_head' OR sy-ucomm = 'c_foot'.
+AT SELECTION-SCREEN.
+
+  IF sy-ucomm = 'C_HEAD' OR sy-ucomm = 'C_FOOT'.
     gv_ucomm = sy-ucomm.
     CALL SCREEN 1001 STARTING AT 10 5.
   ENDIF.
