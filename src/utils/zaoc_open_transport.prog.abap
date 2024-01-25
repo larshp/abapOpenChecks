@@ -261,8 +261,8 @@ CLASS lcl_data IMPLEMENTATION.
         LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_object>).
           AT NEW as4user.
             CLEAR lt_mail_body.
-            LOOP AT gt_email_head ASSIGNING FIELD-SYMBOL(<ls_email>).
-              lv_mail_table-line = <ls_email>.
+            LOOP AT gt_email_head ASSIGNING FIELD-SYMBOL(<ls_head>).
+              lv_mail_table-line = <ls_head>.
               APPEND lv_mail_table TO lt_mail_body.
             ENDLOOP.
             lv_mail_table-line = '<tbody>'.
@@ -288,8 +288,10 @@ CLASS lcl_data IMPLEMENTATION.
             APPEND lv_mail_table TO lt_mail_body.
             lv_mail_table-line = '<br><br>'.
             APPEND lv_mail_table TO lt_mail_body.
-            lv_mail_table-line = ''."p_foot.
-            APPEND lv_mail_table TO lt_mail_body.
+            LOOP AT gt_email_foot ASSIGNING FIELD-SYMBOL(<ls_foot>).
+              lv_mail_table-line = <ls_foot>.
+              APPEND lv_mail_table TO lt_mail_body.
+            ENDLOOP.
             CLEAR lv_mail_table.
 
             DATA(lo_send_request) = cl_bcs=>create_persistent( ).
@@ -436,13 +438,13 @@ MODULE status_1001 OUTPUT.
   SET PF-STATUS 'POPUP'.
   SET TITLEBAR 'POPUP'.
   go_container = NEW #( container_name = 'CONTAINER' ).
-  DATA(lo_editor) = NEW cl_gui_textedit( parent            = go_container
-                                         wordwrap_mode     = '2'
-                                         wordwrap_position = '250' ).
+  DATA(lo_editor) = NEW cl_gui_textedit( parent        = go_container
+                                     wordwrap_mode     = '2'
+                                     wordwrap_position = '250' ).
   CASE gv_ucomm.
-    WHEN 'c_head'.
+    WHEN 'C_HEAD'.
       lo_editor->set_text_as_r3table( table = gt_email_head[] ).
-    WHEN 'c_foot'.
+    WHEN 'C_FOOT'.
       lo_editor->set_text_as_r3table( table = gt_email_foot[] ).
   ENDCASE.
   cl_gui_docking_container=>set_focus( lo_editor ).
@@ -452,11 +454,12 @@ MODULE user_command_1001 INPUT.
   CASE sy-ucomm.
     WHEN 'OK'.
       CASE gv_ucomm.
-        WHEN 'c_head'.
+        WHEN 'C_HEAD'.
           lo_editor->get_text_as_r3table( IMPORTING table = gt_email_head[] ).
-        WHEN 'c_foot'.
+        WHEN 'C_FOOT'.
           lo_editor->get_text_as_r3table( IMPORTING table = gt_email_foot[] ).
       ENDCASE.
+      go_container->free( ).
       cl_gui_cfw=>flush( ).
       SET SCREEN 0.
       LEAVE SCREEN.
