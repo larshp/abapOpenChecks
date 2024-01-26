@@ -235,7 +235,7 @@
     <item>
      <ID>S</ID>
      <KEY>P_SAVE</KEY>
-     <ENTRY>Create and save new template</ENTRY>
+     <ENTRY>Create a one time email</ENTRY>
      <LENGTH>36</LENGTH>
     </item>
     <item>
