@@ -40,7 +40,8 @@ PARAMETERS: p_load TYPE abap_bool RADIOBUTTON GROUP g1 DEFAULT 'X' USER-COMMAND 
 SELECTION-SCREEN END OF BLOCK b1.
 
 SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-t05.
-PARAMETERS p_name TYPE string MODIF ID i1.
+PARAMETERS p_id   TYPE thead-tdid MODIF ID i1.
+PARAMETERS p_name TYPE thead-tdname MODIF ID i1.
 SELECTION-SCREEN END OF BLOCK b2.
 
 SELECTION-SCREEN BEGIN OF BLOCK b3 WITH FRAME TITLE TEXT-t06.
@@ -111,6 +112,7 @@ CLASS lcl_data DEFINITION FINAL.
                 gt_objects TYPE TABLE OF ty_objects WITH DEFAULT KEY.
 
     CLASS-METHODS:
+      load_template,
       find_objects,
       read_inspection,
       filter
@@ -136,6 +138,7 @@ CLASS lcl_data IMPLEMENTATION.
     rt_data = filter( ).
 
     IF p_mail = abap_true.
+      load_template( ).
       send_mails( rt_data ).
     ENDIF.
 
@@ -327,6 +330,42 @@ CLASS lcl_data IMPLEMENTATION.
       CATCH cx_bcs.
         RETURN.
     ENDTRY.
+
+  ENDMETHOD.
+
+  METHOD load_template.
+
+    DATA: lt_lines TYPE STANDARD TABLE OF tline WITH EMPTY KEY,
+          ls_header TYPE thead.
+
+    CALL FUNCTION 'READ_TEXT'
+      EXPORTING
+        client = sy-mandt
+        object = 'TEXT'
+        name = p_name
+        id = p_id
+        language = sy-langu
+      IMPORTING
+        header = ls_header
+      TABLES
+        lines = lt_lines
+      EXCEPTIONS
+        id = 1
+        language = 2
+        name = 3
+        not_found = 4
+        object = 5
+        reference_check = 6
+        wrong_access_to_archive = 7
+        OTHERS = 8.
+
+    LOOP AT lt_lines ASSIGNING FIELD-SYMBOL(<ls_line>).
+      IF <ls_line>-tdformat = 'YT'.
+        p_sub = <ls_line>-tdline.
+        CONTINUE.
+      ENDIF.
+      APPEND <ls_line>-tdline TO gt_email_head.
+    ENDLOOP.
 
   ENDMETHOD.
 
