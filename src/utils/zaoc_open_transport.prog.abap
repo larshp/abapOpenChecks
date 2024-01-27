@@ -138,8 +138,11 @@ CLASS lcl_data IMPLEMENTATION.
     rt_data = filter( ).
 
     IF p_mail = abap_true.
-      load_template( ).
+      IF p_load = abap_true.
+        load_template( ).
+      ENDIF.
       send_mails( rt_data ).
+      CLEAR: gt_email_head, gt_email_foot, p_id, p_name, p_sub.
     ENDIF.
 
   ENDMETHOD.                    "run
@@ -270,6 +273,8 @@ CLASS lcl_data IMPLEMENTATION.
             ENDLOOP.
             lv_mail_table-line = '<tbody>'.
             APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = |System: { sy-sysid } |.
+            APPEND lv_mail_table TO lt_mail_body.
             lv_mail_table-line = |<html><table border="1"><thead><tr align= "left"><th>Request/Task</th><th>Owner</th>|.
             APPEND lv_mail_table TO lt_mail_body.
             lv_mail_table-line = |<th>Text</th><th>Description</th><th>Check Description</th><th>Object Type</th>|.
@@ -289,7 +294,7 @@ CLASS lcl_data IMPLEMENTATION.
             ENDLOOP.
             lv_mail_table-line = '</table>'.
             APPEND lv_mail_table TO lt_mail_body.
-            lv_mail_table-line = '<br><br>'.
+            lv_mail_table-line = '<br>'.
             APPEND lv_mail_table TO lt_mail_body.
             LOOP AT gt_email_foot ASSIGNING FIELD-SYMBOL(<ls_foot>).
               lv_mail_table-line = <ls_foot>.
@@ -360,11 +365,14 @@ CLASS lcl_data IMPLEMENTATION.
         OTHERS = 8.
 
     LOOP AT lt_lines ASSIGNING FIELD-SYMBOL(<ls_line>).
-      IF <ls_line>-tdformat = 'YT'.
-        p_sub = <ls_line>-tdline.
-        CONTINUE.
-      ENDIF.
-      APPEND <ls_line>-tdline TO gt_email_head.
+      CASE <ls_line>-tdformat. "texts, text objects, styles configurable via std. SO10.
+        WHEN 'YT'.
+          p_sub = <ls_line>-tdline.
+        WHEN 'Y1'.
+          APPEND <ls_line>-tdline TO gt_email_head.
+        WHEN 'Y2'.
+          APPEND <ls_line>-tdline TO gt_email_foot.
+      ENDCASE.
     ENDLOOP.
 
   ENDMETHOD.
