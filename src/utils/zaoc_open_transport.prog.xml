@@ -193,8 +193,8 @@
     <item>
      <ID>I</ID>
      <KEY>T05</KEY>
-     <ENTRY>Load template stored in DB:</ENTRY>
-     <LENGTH>27</LENGTH>
+     <ENTRY>Load template stored in DB (SO10):</ENTRY>
+     <LENGTH>40</LENGTH>
     </item>
     <item>
      <ID>I</ID>
@@ -206,6 +206,12 @@
      <ID>R</ID>
      <ENTRY>abapOpenChecks - Errors in open transports</ENTRY>
      <LENGTH>42</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_ID</KEY>
+     <ENTRY>Text ID:</ENTRY>
+     <LENGTH>16</LENGTH>
     </item>
     <item>
      <ID>S</ID>
@@ -241,8 +247,8 @@
     <item>
      <ID>S</ID>
      <KEY>P_SUB</KEY>
-     <ENTRY>Email subject/title</ENTRY>
-     <LENGTH>27</LENGTH>
+     <ENTRY>Email subject/title:</ENTRY>
+     <LENGTH>28</LENGTH>
     </item>
     <item>
      <ID>S</ID>
