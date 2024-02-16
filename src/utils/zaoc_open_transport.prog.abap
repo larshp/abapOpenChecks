@@ -303,6 +303,7 @@ CLASS lcl_data IMPLEMENTATION.
             CLEAR lv_mail_table.
 
             DATA(lo_send_request) = cl_bcs=>create_persistent( ).
+            DATA(lo_send_request2) = NEW cl_bcs_message( ).
 
             DATA(lv_recipient) = cl_cam_address_bcs=>create_user_home_address(
                                   i_commtype = 'INT'
@@ -312,24 +313,35 @@ CLASS lcl_data IMPLEMENTATION.
               CONTINUE.
             ENDIF.
             lo_send_request->add_recipient( i_recipient = lv_recipient ).
+            lo_send_request2->add_recipient( iv_address = lv_recipient->address_string ).
             FREE lv_recipient.
 
             DATA(lv_sender) = cl_cam_address_bcs=>create_user_home_address(
                               i_commtype = 'INT'
                               i_user     = sy-uname ).
             lo_send_request->set_sender( i_sender = lv_sender ).
+            lo_send_request2->set_sender( iv_address = lv_sender->address_string ).
             FREE lv_sender.
 
             DATA(lo_document) = cl_document_bcs=>create_document(
               i_type    = 'HTM'
               i_text    = lt_mail_body
               i_subject = lv_mail_subject ).
+
             lo_send_request->set_document( lo_document ).
+            lo_send_request2->set_subject( lv_mail_subject ).
+            lo_send_request2->set_main_doc( iv_contents_txt = lt_mail_body
+                                            iv_doctype      = 'HTM' ).
+
             DATA(lv_sent_to_all) = lo_send_request->send( i_with_error_screen = 'X' ).
             IF lv_sent_to_all = abap_true.
               COMMIT WORK.
             ENDIF.
             CLEAR lo_send_request.
+
+            lo_send_request2->set_update_task( abap_true ).
+            lo_send_request2->send( ).
+
           ENDAT.
         ENDLOOP.
       CATCH cx_bcs.
