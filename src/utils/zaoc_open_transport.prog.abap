@@ -260,12 +260,8 @@ CLASS lcl_data IMPLEMENTATION.
           lv_mail_table   TYPE soli,
           lv_mail_subject TYPE so_obj_des,
           lv_subject_str  TYPE string,
-          lo_recipient    TYPE REF TO cl_cam_address_bcs,
-          lo_sender       TYPE REF TO cl_cam_address_bcs,
           lo_send_request TYPE REF TO cl_bcs_message.
 
-    lo_recipient     = NEW #( ).
-    lo_sender        = NEW #( ).
     lo_send_request  = NEW #( ).
 
     TRY.
@@ -310,20 +306,15 @@ CLASS lcl_data IMPLEMENTATION.
             ENDLOOP.
             CLEAR lv_mail_table.
 
-            lo_recipient->create_user_home_address( i_commtype = 'INT'
-                                                    i_user     = <ls_object>-as4user ).
+            DATA(lo_recipient) = cl_cam_address_bcs=>create_user_home_address( i_commtype = 'INT'
+                                                          i_user     = <ls_object>-as4user ).
 
-            IF lo_recipient IS INITIAL.
-              FREE lo_recipient.
-              CONTINUE.
-            ENDIF.
-
-            lo_send_request->add_recipient( iv_address = lo_recipient->get_address_string( ) ).
+            lo_send_request->add_recipient( iv_address = lo_recipient->if_sender_bcs~address_string( ) ).
             FREE lo_recipient.
 
-            lo_sender->create_user_home_address( i_commtype = 'INT'
-                                                 i_user     = sy-uname ).
-            lo_send_request->set_sender( lo_sender->get_address_string( ) ).
+            DATA(lo_sender) = cl_cam_address_bcs=>create_user_home_address( i_commtype = 'INT'
+                                                                            i_user     = sy-uname ).
+            lo_send_request->set_sender( lo_sender->if_sender_bcs~address_string( ) ).
 
             DATA(lo_document) = cl_document_bcs=>create_document(
               i_type    = 'HTM'
