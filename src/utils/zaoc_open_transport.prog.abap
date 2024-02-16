@@ -256,9 +256,17 @@ CLASS lcl_data IMPLEMENTATION.
 
   METHOD send_mails.
 
-    DATA: lt_mail_body TYPE bcsy_text,
-          lv_mail_table TYPE soli,
-          lv_mail_subject TYPE so_obj_des.
+    DATA: lt_mail_body    TYPE bcsy_text,
+          lv_mail_table   TYPE soli,
+          lv_mail_subject TYPE so_obj_des,
+          lv_subject_str  TYPE string,
+          lo_recipient    TYPE REF TO cl_cam_address_bcs,
+          lo_sender       TYPE REF TO cl_cam_address_bcs,
+          lo_send_request TYPE REF TO cl_bcs_message.
+
+    lo_recipient     = NEW #( ).
+    lo_sender        = NEW #( ).
+    lo_send_request  = NEW #( ).
 
     TRY.
 
@@ -302,45 +310,33 @@ CLASS lcl_data IMPLEMENTATION.
             ENDLOOP.
             CLEAR lv_mail_table.
 
-            DATA(lo_send_request) = cl_bcs=>create_persistent( ).
-            DATA(lo_send_request2) = NEW cl_bcs_message( ).
+            lo_recipient->create_user_home_address( i_commtype = 'INT'
+                                                    i_user     = <ls_object>-as4user ).
 
-            DATA(lv_recipient) = cl_cam_address_bcs=>create_user_home_address(
-                                  i_commtype = 'INT'
-                                  i_user     = <ls_object>-as4user ).
-            IF lv_recipient IS INITIAL.
-              FREE lv_recipient.
+            IF lo_recipient IS INITIAL.
+              FREE lo_recipient.
               CONTINUE.
             ENDIF.
-            lo_send_request->add_recipient( i_recipient = lv_recipient ).
-            lo_send_request2->add_recipient( iv_address = lv_recipient->address_string ).
-            FREE lv_recipient.
 
-            DATA(lv_sender) = cl_cam_address_bcs=>create_user_home_address(
-                              i_commtype = 'INT'
-                              i_user     = sy-uname ).
-            lo_send_request->set_sender( i_sender = lv_sender ).
-            lo_send_request2->set_sender( iv_address = lv_sender->address_string ).
-            FREE lv_sender.
+            lo_send_request->add_recipient( iv_address = lo_recipient->get_address_string( ) ).
+            FREE lo_recipient.
+
+            lo_sender->create_user_home_address( i_commtype = 'INT'
+                                                 i_user     = sy-uname ).
+            lo_send_request->set_sender( lo_sender->get_address_string( ) ).
 
             DATA(lo_document) = cl_document_bcs=>create_document(
               i_type    = 'HTM'
               i_text    = lt_mail_body
               i_subject = lv_mail_subject ).
 
-            lo_send_request->set_document( lo_document ).
-            lo_send_request2->set_subject( lv_mail_subject ).
-            lo_send_request2->set_main_doc( iv_contents_txt = lt_mail_body
-                                            iv_doctype      = 'HTM' ).
+            lv_subject_str = lv_mail_subject.
+            lo_send_request->set_subject( lv_subject_str ).
+            lo_send_request->set_main_doc( iv_contents_txt = 'TEST'
+                                           iv_doctype      = 'HTM' ).
 
-            DATA(lv_sent_to_all) = lo_send_request->send( i_with_error_screen = 'X' ).
-            IF lv_sent_to_all = abap_true.
-              COMMIT WORK.
-            ENDIF.
-            CLEAR lo_send_request.
-
-            lo_send_request2->set_update_task( abap_true ).
-            lo_send_request2->send( ).
+            lo_send_request->set_update_task( abap_true ).
+            lo_send_request->send( ).
 
           ENDAT.
         ENDLOOP.
