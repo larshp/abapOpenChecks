@@ -308,7 +308,6 @@ CLASS lcl_data IMPLEMENTATION.
 
             DATA(lo_recipient) = cl_cam_address_bcs=>create_user_home_address( i_commtype = 'INT'
                                                           i_user     = <ls_object>-as4user ).
-
             lo_send_request->add_recipient( iv_address = lo_recipient->if_sender_bcs~address_string( ) ).
             FREE lo_recipient.
 
@@ -323,12 +322,10 @@ CLASS lcl_data IMPLEMENTATION.
 
             lv_subject_str = lv_mail_subject.
             lo_send_request->set_subject( lv_subject_str ).
-            lo_send_request->set_main_doc( iv_contents_txt = 'TEST'
+            DATA(lv_email) = concat_lines_of( table = lt_mail_body sep = ' ' ).
+            lo_send_request->set_main_doc( iv_contents_txt = lv_email
                                            iv_doctype      = 'HTM' ).
-
-            lo_send_request->set_update_task( abap_true ).
             lo_send_request->send( ).
-
           ENDAT.
         ENDLOOP.
       CATCH cx_bcs.
