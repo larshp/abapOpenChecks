@@ -18,11 +18,73 @@ TYPES: BEGIN OF ty_output,
        END OF ty_output.
 
 TYPES: ty_output_tt TYPE STANDARD TABLE OF ty_output WITH DEFAULT KEY.
+DATA: go_container TYPE REF TO cl_gui_custom_container,
+      gt_email_head TYPE soli_tab,
+      gt_email_foot TYPE soli_tab,
+      gv_ucomm      TYPE sy-ucomm.
 
-PARAMETERS: p_insp TYPE sciins_inf-inspecname OBLIGATORY.
+PARAMETERS p_insp TYPE sciins_inf-inspecname OBLIGATORY.
 
 SELECT-OPTIONS: s_trkorr FOR e070-trkorr,
                 s_user   FOR e070-as4user.
+
+SELECTION-SCREEN SKIP 1.
+
+PARAMETERS p_mail AS CHECKBOX DEFAULT ''.
+
+SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-t01.
+
+PARAMETERS: p_load TYPE abap_bool RADIOBUTTON GROUP g1 DEFAULT 'X' USER-COMMAND c_load,
+            p_save TYPE abap_bool RADIOBUTTON GROUP g1.
+
+SELECTION-SCREEN END OF BLOCK b1.
+
+SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-t05.
+PARAMETERS p_id   TYPE thead-tdid MODIF ID i1.
+PARAMETERS p_name TYPE thead-tdname MODIF ID i1.
+SELECTION-SCREEN END OF BLOCK b2.
+
+SELECTION-SCREEN BEGIN OF BLOCK b3 WITH FRAME TITLE TEXT-t06.
+PARAMETERS: p_sub  TYPE string MODIF ID i2.
+SELECTION-SCREEN COMMENT /1(30) TEXT-t02 MODIF ID i2.
+SELECTION-SCREEN PUSHBUTTON 33(8) TEXT-t04 USER-COMMAND c_head MODIF ID i2.
+SELECTION-SCREEN COMMENT /1(30) TEXT-t03 MODIF ID i2.
+SELECTION-SCREEN PUSHBUTTON 33(8) TEXT-t04 USER-COMMAND c_foot MODIF ID i2.
+SELECTION-SCREEN END OF BLOCK b3.
+
+
+AT SELECTION-SCREEN OUTPUT.
+  CASE p_load.
+    WHEN abap_true.
+      LOOP AT SCREEN.
+        CASE screen-group1.
+          WHEN 'I1'.
+            screen-active = '1'.
+            MODIFY SCREEN.
+          WHEN 'I2'.
+            screen-active = '0'.
+            MODIFY SCREEN.
+        ENDCASE.
+      ENDLOOP.
+    WHEN abap_false.
+      LOOP AT SCREEN.
+        CASE screen-group1.
+          WHEN 'I1'.
+            screen-active = '0'.
+            MODIFY SCREEN.
+          WHEN 'I2'.
+            screen-active = '1'.
+            MODIFY SCREEN.
+        ENDCASE.
+      ENDLOOP.
+  ENDCASE.
+
+AT SELECTION-SCREEN.
+
+  IF sy-ucomm = 'C_HEAD' OR sy-ucomm = 'C_FOOT'.
+    gv_ucomm = sy-ucomm.
+    CALL SCREEN 1001 STARTING AT 10 5.
+  ENDIF.
 
 *----------------------------------------------------------------------*
 *       CLASS lcl_app DEFINITION
@@ -50,10 +112,14 @@ CLASS lcl_data DEFINITION FINAL.
                 gt_objects TYPE TABLE OF ty_objects WITH DEFAULT KEY.
 
     CLASS-METHODS:
+      load_template,
       find_objects,
       read_inspection,
       filter
-        RETURNING VALUE(rt_data) TYPE ty_output_tt.
+        RETURNING VALUE(rt_data) TYPE ty_output_tt,
+      send_mails
+        IMPORTING
+          it_data TYPE ty_output_tt.
 
 ENDCLASS.                    "lcl_app DEFINITION
 
@@ -71,6 +137,14 @@ CLASS lcl_data IMPLEMENTATION.
 
     rt_data = filter( ).
 
+    IF p_mail = abap_true.
+      IF p_load = abap_true.
+        load_template( ).
+      ENDIF.
+      send_mails( rt_data ).
+      CLEAR: gt_email_head, gt_email_foot, p_id, p_name, p_sub.
+    ENDIF.
+
   ENDMETHOD.                    "run
 
   METHOD filter.
@@ -81,21 +155,35 @@ CLASS lcl_data IMPLEMENTATION.
 
 
     SORT gt_objects BY include ASCENDING.
-    DELETE ADJACENT DUPLICATES FROM gt_objects COMPARING include.
+    DELETE ADJACENT DUPLICATES FROM gt_objects COMPARING trkorr
+                                                        object
+                                                        obj_name
+                                                        include.
 
     LOOP AT gt_sci ASSIGNING <ls_sci>.
 
-      IF <ls_sci>-sobjtype = 'PROG'.
-        READ TABLE gt_objects ASSIGNING <ls_object>
-          WITH KEY include = <ls_sci>-sobjname BINARY SEARCH.
-        IF sy-subrc = 0.
-          APPEND INITIAL LINE TO rt_data ASSIGNING <ls_data>.
-          MOVE-CORRESPONDING <ls_sci> TO <ls_data>.
-          MOVE-CORRESPONDING <ls_object> TO <ls_data>.
+      CASE <ls_sci>-sobjtype.
+        WHEN 'PROG'.
+          READ TABLE gt_objects ASSIGNING <ls_object>
+            WITH KEY include = <ls_sci>-sobjname BINARY SEARCH.
+        WHEN OTHERS.
+          READ TABLE gt_objects ASSIGNING <ls_object>
+            WITH KEY obj_name = <ls_sci>-objname.
+      ENDCASE.
+      IF sy-subrc = 0.
+        APPEND INITIAL LINE TO rt_data ASSIGNING <ls_data>.
+        MOVE-CORRESPONDING <ls_sci> TO <ls_data>.
+        MOVE-CORRESPONDING <ls_object> TO <ls_data>.
+        IF <ls_data>-sobjtype IS INITIAL.
+          <ls_data>-sobjtype = <ls_object>-object.
+        ENDIF.
+        IF <ls_data>-sobjname IS INITIAL.
+          <ls_data>-sobjname = <ls_object>-obj_name.
         ENDIF.
       ENDIF.
-
     ENDLOOP.
+
+    SORT rt_data BY as4user ASCENDING.
 
   ENDMETHOD.                    "filter
 
@@ -166,6 +254,129 @@ CLASS lcl_data IMPLEMENTATION.
 
   ENDMETHOD.                    "find_objects
 
+  METHOD send_mails.
+
+    DATA: lt_mail_body TYPE bcsy_text,
+          lv_mail_table TYPE soli,
+          lv_mail_subject TYPE so_obj_des.
+
+    TRY.
+
+        lv_mail_subject = p_sub.
+
+        LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_object>).
+          AT NEW as4user.
+            CLEAR lt_mail_body.
+            LOOP AT gt_email_head ASSIGNING FIELD-SYMBOL(<ls_head>).
+              lv_mail_table-line = <ls_head>.
+              APPEND lv_mail_table TO lt_mail_body.
+            ENDLOOP.
+            lv_mail_table-line = '<tbody>'.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = |System: { sy-sysid } |.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = |<html><table border="1"><thead><tr align= "left"><th>Request/Task</th><th>Owner</th>|.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = |<th>Text</th><th>Description</th><th>Check Description</th><th>Object Type</th>|.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = |<th>Object name</th><th>Line of code</th></tr></thead>|.
+            APPEND lv_mail_table TO lt_mail_body.
+            LOOP AT it_data ASSIGNING FIELD-SYMBOL(<ls_group>)
+                WHERE as4user = <ls_object>-as4user.
+              lv_mail_table-line = |<tr><td> { <ls_group>-trkorr } </td><td> { <ls_group>-as4user } </td>|.
+              APPEND lv_mail_table TO lt_mail_body.
+              lv_mail_table-line = |<td> { <ls_group>-kind } </td><td> { <ls_group>-text } </td>|.
+              APPEND lv_mail_table TO lt_mail_body.
+              lv_mail_table-line = |<td> { <ls_group>-description } </td><td> { <ls_group>-sobjtype } </td>|.
+              APPEND lv_mail_table TO lt_mail_body.
+              lv_mail_table-line = |<td> { <ls_group>-sobjname } </td><td> { <ls_group>-line } </td></tr>|.
+              APPEND lv_mail_table TO lt_mail_body.
+            ENDLOOP.
+            lv_mail_table-line = '</table>'.
+            APPEND lv_mail_table TO lt_mail_body.
+            lv_mail_table-line = '<br>'.
+            APPEND lv_mail_table TO lt_mail_body.
+            LOOP AT gt_email_foot ASSIGNING FIELD-SYMBOL(<ls_foot>).
+              lv_mail_table-line = <ls_foot>.
+              APPEND lv_mail_table TO lt_mail_body.
+            ENDLOOP.
+            CLEAR lv_mail_table.
+
+            DATA(lo_send_request) = cl_bcs=>create_persistent( ).
+
+            DATA(lv_recipient) = cl_cam_address_bcs=>create_user_home_address(
+                                  i_commtype = 'INT'
+                                  i_user     = <ls_object>-as4user ).
+            IF lv_recipient IS INITIAL.
+              FREE lv_recipient.
+              CONTINUE.
+            ENDIF.
+            lo_send_request->add_recipient( i_recipient = lv_recipient ).
+            FREE lv_recipient.
+
+            DATA(lv_sender) = cl_cam_address_bcs=>create_user_home_address(
+                              i_commtype = 'INT'
+                              i_user     = sy-uname ).
+            lo_send_request->set_sender( i_sender = lv_sender ).
+            FREE lv_sender.
+
+            DATA(lo_document) = cl_document_bcs=>create_document(
+              i_type    = 'HTM'
+              i_text    = lt_mail_body
+              i_subject = lv_mail_subject ).
+            lo_send_request->set_document( lo_document ).
+            DATA(lv_sent_to_all) = lo_send_request->send( i_with_error_screen = 'X' ).
+            IF lv_sent_to_all = abap_true.
+              COMMIT WORK.
+            ENDIF.
+            CLEAR lo_send_request.
+          ENDAT.
+        ENDLOOP.
+      CATCH cx_bcs.
+        RETURN.
+    ENDTRY.
+
+  ENDMETHOD.
+
+  METHOD load_template.
+
+    DATA: lt_lines TYPE STANDARD TABLE OF tline WITH EMPTY KEY,
+          ls_header TYPE thead.
+
+    CALL FUNCTION 'READ_TEXT'
+      EXPORTING
+        client = sy-mandt
+        object = 'TEXT'
+        name = p_name
+        id = p_id
+        language = sy-langu
+      IMPORTING
+        header = ls_header
+      TABLES
+        lines = lt_lines
+      EXCEPTIONS
+        id = 1
+        language = 2
+        name = 3
+        not_found = 4
+        object = 5
+        reference_check = 6
+        wrong_access_to_archive = 7
+        OTHERS = 8.
+
+    LOOP AT lt_lines ASSIGNING FIELD-SYMBOL(<ls_line>).
+      CASE <ls_line>-tdformat. "texts, text objects, styles configurable via std. SO10.
+        WHEN 'YT'.
+          p_sub = <ls_line>-tdline.
+        WHEN 'Y1'.
+          APPEND <ls_line>-tdline TO gt_email_head.
+        WHEN 'Y2'.
+          APPEND <ls_line>-tdline TO gt_email_foot.
+      ENDCASE.
+    ENDLOOP.
+
+  ENDMETHOD.
+
 ENDCLASS.                    "lcl_app IMPLEMENTATION
 
 *----------------------------------------------------------------------*
@@ -226,6 +437,9 @@ CLASS lcl_alv IMPLEMENTATION.
 
     lo_events = lo_alv->get_event( ).
     SET HANDLER on_link_click FOR lo_events.
+    IF p_mail = abap_true.
+      MESSAGE 'Relevant emails to the users with problematic objects were sent, check SOST' TYPE 'S' DISPLAY LIKE 'I'.
+    ENDIF.
     lo_alv->display( ).
 
   ENDMETHOD.                    "show
@@ -266,3 +480,38 @@ ENDCLASS.                    "lcl_alv IMPLEMENTATION
 
 START-OF-SELECTION.
   lcl_alv=>show( lcl_data=>fetch( ) ).
+
+MODULE status_1001 OUTPUT.
+  SET PF-STATUS 'POPUP'.
+  SET TITLEBAR 'POPUP'.
+  go_container = NEW #( container_name = 'CONTAINER' ).
+  DATA(lo_editor) = NEW cl_gui_textedit( parent        = go_container
+                                     wordwrap_mode     = '2'
+                                     wordwrap_position = '250' ).
+  CASE gv_ucomm.
+    WHEN 'C_HEAD'.
+      lo_editor->set_text_as_r3table( table = gt_email_head[] ).
+    WHEN 'C_FOOT'.
+      lo_editor->set_text_as_r3table( table = gt_email_foot[] ).
+  ENDCASE.
+  cl_gui_docking_container=>set_focus( lo_editor ).
+  lo_editor->set_readonly_mode( 0 ).
+ENDMODULE.
+MODULE user_command_1001 INPUT.
+  CASE sy-ucomm.
+    WHEN 'OK'.
+      CASE gv_ucomm.
+        WHEN 'C_HEAD'.
+          lo_editor->get_text_as_r3table( IMPORTING table = gt_email_head[] ).
+        WHEN 'C_FOOT'.
+          lo_editor->get_text_as_r3table( IMPORTING table = gt_email_foot[] ).
+      ENDCASE.
+      go_container->free( ).
+      cl_gui_cfw=>flush( ).
+      SET SCREEN 0.
+      LEAVE SCREEN.
+    WHEN 'CANCEL'.
+      SET SCREEN 0.
+      LEAVE SCREEN.
+  ENDCASE.
+ENDMODULE.
