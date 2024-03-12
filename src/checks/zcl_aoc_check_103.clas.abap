@@ -13,7 +13,7 @@ CLASS zcl_aoc_check_103 DEFINITION
     METHODS check REDEFINITION.
 
   PRIVATE SECTION.
-    CLASS-DATA mt_proxy_objects TYPE HASHED TABLE OF dd02v WITH UNIQUE KEY tabname.
+    CLASS-DATA gt_proxy_objects TYPE HASHED TABLE OF dd02v WITH UNIQUE KEY tabname.
 
     METHODS get_tokens_for_statement
       IMPORTING is_statement     TYPE sstmnt
@@ -21,8 +21,8 @@ CLASS zcl_aoc_check_103 DEFINITION
       RETURNING VALUE(rt_tokens) TYPE stokesx_tab.
 
     METHODS get_table_info
-      IMPORTING VALUE(iv_tabname)   TYPE tabname
-      RETURNING VALUE(r_table_info) TYPE dd02v.
+      IMPORTING i_tabname   TYPE tabname
+      RETURNING VALUE(rs_table_info) TYPE dd02v.
 ENDCLASS.
 
 
@@ -48,7 +48,7 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
     DATA lv_tabname          TYPE tabname.
     DATA lt_statement_tokens TYPE stokesx_tab.
     DATA ls_next             LIKE LINE OF lt_statement_tokens.
-
+    DATA ls_table_info TYPE dd02v.
     FIELD-SYMBOLS <ls_statement> LIKE LINE OF io_scan->statements.
     FIELD-SYMBOLS <ls_token>     LIKE LINE OF io_scan->tokens.
 
@@ -76,7 +76,6 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
       ENDIF.
       lv_tabname = ls_next-str.
 
-      DATA ls_table_info TYPE dd02v.
       ls_table_info = get_table_info( lv_tabname ).
 
       IF ls_table_info-viewref IS NOT INITIAL AND ls_table_info-viewref <> space.
@@ -104,28 +103,29 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_table_info.
-    READ TABLE mt_proxy_objects WITH KEY tabname = iv_tabname INTO r_table_info.
+    DATA lv_destination TYPE rfcdest.
+    READ TABLE gt_proxy_objects WITH KEY tabname = i_tabname INTO rs_table_info.
     IF sy-subrc = 0.
       RETURN.
     ENDIF.
 
-    DATA lv_destination TYPE rfcdest.
+
     lv_destination = get_destination( ).
     CALL FUNCTION 'DD_TABL_GET'
       DESTINATION lv_destination
       EXPORTING
-        tabl_name             = iv_tabname
+        tabl_name             = i_tabname
       IMPORTING
-        dd02v_wa_a            = r_table_info
+        dd02v_wa_a            = rs_table_info
       EXCEPTIONS
         access_failure        = 1
         communication_failure = 2
         system_failure        = 3
         OTHERS                = 4.
 
-    IF sy-subrc <> 0 OR r_table_info IS INITIAL.
+    IF sy-subrc <> 0 OR rs_table_info IS INITIAL.
       RETURN.
     ENDIF.
-    INSERT r_table_info INTO TABLE mt_proxy_objects.
+    INSERT rs_table_info INTO TABLE gt_proxy_objects.
   ENDMETHOD.
 ENDCLASS.
