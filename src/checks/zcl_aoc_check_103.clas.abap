@@ -1,33 +1,33 @@
-CLASS zcl_aoc_check_103 DEFINITION
-  PUBLIC
-  INHERITING FROM zcl_aoc_super
-  CREATE PUBLIC.
+class zcl_aoc_check_103 definition
+  public
+  inheriting from zcl_aoc_super
+  create public.
 
-  PUBLIC SECTION.
-    CONSTANTS:
-      BEGIN OF gc_code,
-        table_has_replacement_object TYPE sci_errc VALUE '001',
-      END OF gc_code.
+  public section.
+    constants:
+      begin of gc_code,
+        table_has_replacement_object type sci_errc value '001',
+      end of gc_code.
 
-    METHODS constructor.
-    METHODS check REDEFINITION.
+    methods constructor.
+    methods check redefinition.
 
-  PRIVATE SECTION.
-    CLASS-DATA mt_proxy_objects TYPE HASHED TABLE OF dd02v WITH UNIQUE KEY tabname.
+  private section.
+    class-data mt_proxy_objects type hashed table of dd02v with unique key tabname.
 
-    METHODS get_tokens_for_statement
-      IMPORTING is_statement     TYPE sstmnt
-                it_tokens        TYPE stokesx_tab
-      RETURNING VALUE(rt_tokens) TYPE stokesx_tab.
+    methods get_tokens_for_statement
+      importing is_statement     type sstmnt
+                it_tokens        type stokesx_tab
+      returning value(rt_tokens) type stokesx_tab.
 
-    METHODS get_table_info
-      IMPORTING VALUE(iv_tabname)   TYPE tabname
-      RETURNING VALUE(r_table_info) TYPE dd02v.
-ENDCLASS.
+    methods get_table_info
+      importing value(iv_tabname)   type tabname
+      returning value(r_table_info) type dd02v.
+endclass.
 
 
-CLASS zcl_aoc_check_103 IMPLEMENTATION.
-  METHOD constructor.
+class zcl_aoc_check_103 implementation.
+  method constructor.
     super->constructor( ).
 
     version  = '001'.
@@ -41,45 +41,45 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
 
     insert_scimessage( iv_code = gc_code-table_has_replacement_object
                        iv_text = 'Table/View &1 has replacement object &2'(m01) ).
-  ENDMETHOD.
+  endmethod.
 
-  METHOD check.
-    DATA lv_include          TYPE sobj_name.
-    DATA lv_tabname          TYPE tabname.
-    DATA lt_statement_tokens TYPE stokesx_tab.
-    DATA ls_next             LIKE LINE OF lt_statement_tokens.
+  method check.
+    data lv_include          type sobj_name.
+    data lv_tabname          type tabname.
+    data lt_statement_tokens type stokesx_tab.
+    data ls_next             like line of lt_statement_tokens.
 
-    FIELD-SYMBOLS <ls_statement> LIKE LINE OF io_scan->statements.
-    FIELD-SYMBOLS <ls_token>     LIKE LINE OF io_scan->tokens.
+    field-symbols <ls_statement> like line of io_scan->statements.
+    field-symbols <ls_token>     like line of io_scan->tokens.
 
-    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
+    loop at io_scan->statements assigning <ls_statement>.
 
-      READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
-      IF sy-subrc <> 0.
-        CONTINUE.
-      ENDIF.
+      read table io_scan->tokens assigning <ls_token> index <ls_statement>-from.
+      if sy-subrc <> 0.
+        continue.
+      endif.
 
-      IF <ls_token>-str <> 'SELECT'.
-        CONTINUE.
-      ENDIF.
+      if <ls_token>-str <> 'SELECT'.
+        continue.
+      endif.
 
       lt_statement_tokens = get_tokens_for_statement( is_statement = <ls_statement>
                                                       it_tokens    = io_scan->tokens ).
 
-      READ TABLE lt_statement_tokens WITH KEY str = 'FROM' TRANSPORTING NO FIELDS.
-      IF sy-subrc <> 0.
-        CONTINUE.
-      ENDIF.
-      READ TABLE lt_statement_tokens INDEX sy-tabix + 1 INTO ls_next.
-      IF sy-subrc <> 0.
-        CONTINUE.
-      ENDIF.
+      read table lt_statement_tokens with key str = 'FROM' transporting no fields.
+      if sy-subrc <> 0.
+        continue.
+      endif.
+      read table lt_statement_tokens index sy-tabix + 1 into ls_next.
+      if sy-subrc <> 0.
+        continue.
+      endif.
       lv_tabname = ls_next-str.
 
-      DATA ls_table_info TYPE dd02v.
+      data ls_table_info type dd02v.
       ls_table_info = get_table_info( lv_tabname ).
 
-      IF ls_table_info-viewref IS NOT INITIAL AND ls_table_info-viewref <> space.
+      if ls_table_info-viewref is not initial and ls_table_info-viewref <> space.
         lv_include = io_scan->get_include( <ls_statement>-level ).
         inform( p_sub_obj_name = lv_include
                 p_line         = <ls_token>-row
@@ -90,39 +90,42 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
                 p_param_2      = ls_table_info-viewref
                 p_code         = gc_code-table_has_replacement_object ).
 
-      ENDIF.
+      endif.
 
-    ENDLOOP.
-  ENDMETHOD.
+    endloop.
+  endmethod.
 
-  METHOD get_tokens_for_statement.
-    FIELD-SYMBOLS <ls_token> LIKE LINE OF it_tokens.
+  method get_tokens_for_statement.
+    field-symbols <ls_token> like line of it_tokens.
 
-    LOOP AT it_tokens FROM is_statement-from TO is_statement-to ASSIGNING <ls_token>.
-      APPEND <ls_token> TO rt_tokens.
-    ENDLOOP.
-  ENDMETHOD.
+    loop at it_tokens from is_statement-from to is_statement-to assigning <ls_token>.
+      append <ls_token> to rt_tokens.
+    endloop.
+  endmethod.
 
-  METHOD get_table_info.
-    READ TABLE mt_proxy_objects WITH KEY tabname = iv_tabname INTO r_table_info.
-    IF sy-subrc = 0.
-      RETURN.
-    ENDIF.
+  method get_table_info.
+    read table mt_proxy_objects with key tabname = iv_tabname into r_table_info.
+    if sy-subrc = 0.
+      return.
+    endif.
 
-    DATA lv_destination TYPE rfcdest.
+    data lv_destination type rfcdest.
     lv_destination = get_destination( ).
-    CALL FUNCTION 'DD_TABL_GET'
-      DESTINATION lv_destination
-      EXPORTING  tabl_name             = iv_tabname
-      IMPORTING  dd02v_wa_a            = r_table_info
-      EXCEPTIONS access_failure        = 1
-                 communication_failure = 2
-                 system_failure        = 3
-                 OTHERS                = 4.
+    call function 'DD_TABL_GET'
+      destination lv_destination
+      exporting
+        tabl_name             = iv_tabname
+      importing
+        dd02v_wa_a            = r_table_info
+      exceptions
+        access_failure        = 1
+        communication_failure = 2
+        system_failure        = 3
+        others                = 4.
 
-    IF sy-subrc <> 0 OR r_table_info IS INITIAL.
-      RETURN.
-    ENDIF.
-    INSERT r_table_info INTO TABLE mt_proxy_objects.
-  ENDMETHOD.
-ENDCLASS.
+    if sy-subrc <> 0 or r_table_info is initial.
+      return.
+    endif.
+    insert r_table_info into table mt_proxy_objects.
+  endmethod.
+endclass.
