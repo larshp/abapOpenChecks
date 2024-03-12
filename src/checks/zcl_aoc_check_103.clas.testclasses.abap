@@ -1,57 +1,57 @@
 *"* use this source file for your ABAP unit test classes
-class ltcl_test definition
-  final
-  for testing
-  risk level harmless
-  duration short.
+CLASS ltcl_test DEFINITION
+  FINAL
+  FOR TESTING
+  RISK LEVEL HARMLESS
+  DURATION SHORT.
 
-  private section.
-    data mt_code type string_table.
-    data ms_result type scirest_ad.
-    data mo_check type ref to zcl_aoc_check_103.
+  PRIVATE SECTION.
+    DATA mt_code TYPE string_table.
+    DATA ms_result TYPE scirest_ad.
+    DATA mo_check TYPE REF TO zcl_aoc_check_103.
 
-    methods setup.
+    METHODS setup.
 
-    methods assert_error_code
-      importing
-        iv_expected_error_code type sci_errc.
+    METHODS assert_error_code
+      IMPORTING
+        iv_expected_error_code TYPE sci_errc.
 
-    methods assert_no_error_code.
-    methods execute_check.
+    METHODS assert_no_error_code.
+    METHODS execute_check.
 
-    methods database_select_01 for testing.
-    methods database_select_02 for testing.
-    methods database_select_03 for testing.
+    METHODS database_select_01 FOR TESTING.
+    METHODS database_select_02 FOR TESTING.
+    METHODS database_select_03 FOR TESTING.
 
-endclass.
+ENDCLASS.
 
 
-class ltcl_test implementation.
-  define _code.
-    append &1 to mt_code.
-  end-of-definition.
+CLASS ltcl_test IMPLEMENTATION.
+  DEFINE _code.
+    APPEND &1 TO mt_code.
+  END-OF-DEFINITION.
 
-  method setup.
-    mo_check = new #( ).
+  METHOD setup.
+    mo_check = NEW #( ).
     zcl_aoc_unit_test=>set_check( mo_check ).
-  endmethod.
+  ENDMETHOD.
 
-  method execute_check.
+  METHOD execute_check.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
-  endmethod.
+  ENDMETHOD.
 
-  method assert_error_code.
+  METHOD assert_error_code.
     cl_abap_unit_assert=>assert_equals( exp = iv_expected_error_code
                                         act = ms_result-code ).
-  endmethod.
+  ENDMETHOD.
 
-  method assert_no_error_code.
+  METHOD assert_no_error_code.
     cl_abap_unit_assert=>assert_initial( ms_result ).
-  endmethod.
+  ENDMETHOD.
 
 
 
-  method database_select_03.
+  METHOD database_select_03.
     " Given
     _code `SELECT *`.
     _code `  FROM demo_sumdist`.
@@ -65,11 +65,11 @@ class ltcl_test implementation.
 
     " Then
     assert_error_code( zcl_aoc_check_103=>gc_code-table_has_replacement_object ).
-  endmethod.
+  ENDMETHOD.
 
 
 
-  method database_select_01.
+  METHOD database_select_01.
     " Given
     _code `SELECT host`.
     _code `  FROM ztable`.
@@ -84,9 +84,9 @@ class ltcl_test implementation.
 
     " Then
     assert_no_error_code( ).
-  endmethod.
+  ENDMETHOD.
 
-  method database_select_02.
+  METHOD database_select_02.
     " Given
     _code `DATA lv_host TYPE string.`.
     _code `SELECT host`.
@@ -102,7 +102,7 @@ class ltcl_test implementation.
 
     " Then
     assert_no_error_code( ).
-  endmethod.
+  ENDMETHOD.
 
 
-endclass.
+ENDCLASS.
