@@ -21,7 +21,7 @@ CLASS zcl_aoc_check_103 DEFINITION
       RETURNING VALUE(rt_tokens) TYPE stokesx_tab.
 
     METHODS get_table_info
-      IMPORTING i_tabname   TYPE tabname
+      IMPORTING iv_tabname   TYPE tabname
       RETURNING VALUE(rs_table_info) TYPE dd02v.
 ENDCLASS.
 
@@ -104,7 +104,7 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
 
   METHOD get_table_info.
     DATA lv_destination TYPE rfcdest.
-    READ TABLE gt_proxy_objects WITH KEY tabname = i_tabname INTO rs_table_info.
+    READ TABLE gt_proxy_objects WITH KEY tabname = iv_tabname INTO rs_table_info.
     IF sy-subrc = 0.
       RETURN.
     ENDIF.
@@ -114,7 +114,7 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
     CALL FUNCTION 'DD_TABL_GET'
       DESTINATION lv_destination
       EXPORTING
-        tabl_name             = i_tabname
+        tabl_name             = iv_tabname
       IMPORTING
         dd02v_wa_a            = rs_table_info
       EXCEPTIONS
