@@ -46,7 +46,7 @@ CLASS zcl_aoc_check_103 DEFINITION
         iv_tabname               TYPE tabname
         iv_replacement_object    TYPE dd02v-viewref
       RETURNING
-        VALUE(rs_message_detail) TYPE zcl_aoc_check_103=>ty_message_detail.
+        VALUE(rs_message_detail) TYPE ty_message_detail.
 ENDCLASS.
 
 
@@ -86,8 +86,10 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
     DATA lv_position TYPE int4.
     DATA lv_detail TYPE xstring.
     DATA lv_message_detail TYPE ty_message_detail.
+    DATA lt_source TYPE string_table.
     FIELD-SYMBOLS <ls_statement> LIKE LINE OF io_scan->statements.
     FIELD-SYMBOLS <ls_token>     LIKE LINE OF io_scan->tokens.
+    FIELD-SYMBOLS <ls_level> TYPE slevel.
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>.
       lv_position = sy-tabix.
@@ -120,15 +122,16 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
       IF ls_table_info-viewref IS NOT INITIAL AND ls_table_info-viewref <> space.
         lv_include = io_scan->get_include( <ls_statement>-level ).
 
-        LOOP AT io_scan->levels ASSIGNING FIELD-SYMBOL(<ls_level>) WHERE name = lv_include.
-          DATA(source) = get_source( <ls_level> ).
-        ENDLOOP.
+        READ TABLE io_scan->levels ASSIGNING <ls_level> WITH KEY name = lv_include.
+        IF sy-subrc = 0.
+          lt_source = get_source( is_level = <ls_level> ).
+        ENDIF.
 
         lv_detail = lcl_quickfix=>get_quick_fixes( iv_current_tab_name = lv_tabname
                                                    iv_new_tab_name = ls_table_info-viewref
                                                    iv_include = lv_include
-                                                   iv_col = CONV #( ls_next-col )
-                                                   iv_source = source
+                                                   iv_col = ls_next-col
+                                                   iv_source = lt_source
                                                    iv_line = ls_next-row ).
 
         lv_message_detail = get_message_detail( iv_tabname = lv_tabname
@@ -145,7 +148,8 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
                 p_param_4      = lv_message_detail-oss_note
                 p_code         = lv_message_detail-message_code
                 p_suppress     = gc_pseudo_comment
-                p_detail       = lv_detail ).
+                p_detail       = lv_detail
+                 ).
 
       ENDIF.
 

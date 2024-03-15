@@ -21,9 +21,9 @@ CLASS lcl_quickfix DEFINITION FINAL.
         iv_include          TYPE program
         iv_source           TYPE string_table
         iv_line             TYPE i
-        iv_col              TYPE i
+        iv_col              TYPE token_col
       RETURNING
-        VALUE(r_result)     TYPE xstring.
+        VALUE(rv_qf_xstring)     TYPE xstring.
 
     CLASS-METHODS build_proposals_list RETURNING VALUE(rt_proposals) TYPE zcl_aoc_check_103=>tty_proposals.
   PROTECTED SECTION.
@@ -87,7 +87,7 @@ CLASS lcl_quickfix IMPLEMENTATION.
     TRY.
         CALL METHOD lv_quickfixes->('EXPORT_TO_XSTRING')
           RECEIVING
-            p_detail = r_result.
+            p_detail = rv_qf_xstring.
       CATCH cx_root.
         RETURN.
     ENDTRY.
@@ -115,7 +115,7 @@ CLASS lcl_quickfix IMPLEMENTATION.
     CALL METHOD lv_quickfix->('IF_CI_QUICKFIX_SINGLE~ADD_DOCU_FROM_MSGCLASS')
       EXPORTING
         p_msg_class      = 'ZAOC_CHECKS'
-        p_msg_number     = 001
+        p_msg_number     = '001'
         p_msg_parameter1 = iv_current_tab_name
         p_msg_parameter2 = iv_proposal-to.
 
@@ -142,7 +142,7 @@ CLASS lcl_quickfix IMPLEMENTATION.
     add_replacement_proposal 'MSSA' 1 'NSDM_MIG_MSSA' '2206980'.
     add_replacement_proposal 'MSPR' 1 'V_MSPR_MD' '2206980'.
     add_replacement_proposal 'MSPR' 2 'NSDM_MIG_MSPR' '2206980'.
-    add_replacement_proposal 'MSSL' 1 'NSDM_MIG_MSSL ' '2206980'.
+    add_replacement_proposal 'MSSL' 1 'NSDM_MIG_MSSL' '2206980'.
     add_replacement_proposal 'MSSQ' 1 'NSDM_MIG_MSSQ' '2206980'.
     add_replacement_proposal 'MSKU' 1 'V_MSKU_MD' '2206980'.
     add_replacement_proposal 'MSKU' 2 'NSDM_MIG_MSKU' '2206980'.
