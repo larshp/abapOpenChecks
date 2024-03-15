@@ -98,6 +98,9 @@ CLASS lcl_quickfix IMPLEMENTATION.
 
     DATA lv_quickfix TYPE REF TO object.
     DATA lv_quickfix_code TYPE c LENGTH 10.
+    DATA lv_current_tab_for_msg TYPE sy-msgv1.
+    DATA lv_new_tab_for_msg TYPE sy-msgv2.
+
 
     "Each quick-fix should have a unique code
     CONCATENATE '001_' iv_proposal-sequence  INTO lv_quickfix_code.
@@ -113,12 +116,16 @@ CLASS lcl_quickfix IMPLEMENTATION.
         p_context  = iv_context.
 
     CALL METHOD lv_quickfix->('IF_CI_QUICKFIX_SINGLE~ENABLE_AUTOMATIC_EXECUTION').
+    CONCATENATE ' ' iv_current_tab_name INTO lv_current_tab_for_msg RESPECTING BLANKS.
+    CONCATENATE ' ' iv_proposal-to INTO lv_new_tab_for_msg RESPECTING BLANKS.
     CALL METHOD lv_quickfix->('IF_CI_QUICKFIX_SINGLE~ADD_DOCU_FROM_MSGCLASS')
       EXPORTING
-        p_msg_class      = 'ZAOC_CHECKS'
+        p_msg_class      = '00'
         p_msg_number     = '001'
-        p_msg_parameter1 = iv_current_tab_name
-        p_msg_parameter2 = iv_proposal-to.
+        p_msg_parameter1 = 'Replace'(m03)
+        p_msg_parameter2 = lv_current_tab_for_msg
+        p_msg_parameter3 = ' with'(m04)
+        p_msg_parameter4 = lv_new_tab_for_msg.
 
   ENDMETHOD.
 
