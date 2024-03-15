@@ -16,14 +16,14 @@ CLASS lcl_quickfix DEFINITION FINAL.
   PUBLIC SECTION.
     CLASS-METHODS get_quick_fixes
       IMPORTING
-        iv_current_tab_name TYPE tabname
-        iv_new_tab_name     TYPE tabname
-        iv_include          TYPE program
-        iv_source           TYPE string_table
-        iv_line             TYPE i
-        iv_col              TYPE token_col
+        iv_current_tab_name  TYPE tabname
+        iv_new_tab_name      TYPE tabname
+        iv_include           TYPE program
+        iv_source            TYPE string_table
+        iv_line              TYPE i
+        iv_col               TYPE token_col
       RETURNING
-        VALUE(rv_qf_xstring)     TYPE xstring.
+        VALUE(rv_qf_xstring) TYPE xstring.
 
     CLASS-METHODS build_proposals_list RETURNING VALUE(rt_proposals) TYPE zcl_aoc_check_103=>tty_proposals.
   PROTECTED SECTION.
@@ -47,6 +47,7 @@ CLASS lcl_quickfix IMPLEMENTATION.
     DATA: lo_context_interface TYPE REF TO data.
     DATA: lv_quickfix TYPE REF TO object.
     DATA: lv_quickfix_pragma TYPE REF TO object.
+    DATA: lv_column TYPE i.
     FIELD-SYMBOLS: <lv_context> TYPE any.
     FIELD-SYMBOLS: <lv_proposal> TYPE zcl_aoc_check_103=>ty_replace_proposal.
 
@@ -55,13 +56,13 @@ CLASS lcl_quickfix IMPLEMENTATION.
         p_quickfix_alternatives = lv_quickfixes.
 
 
-
+    lv_column = iv_col.
     CALL METHOD ('CL_CI_QUICKFIX_ABAP_CONTEXT')=>('CREATE_FROM_INCLUDE')
       EXPORTING
         p_include = iv_include
         p_source  = iv_source
         p_line    = iv_line
-        p_col     = iv_col
+        p_col     = lv_column
       RECEIVING
         p_context = lo_context.
 
