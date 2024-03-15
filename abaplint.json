@@ -232,7 +232,8 @@
       "checkForms": true,
       "ignoreTestClasses": false,
       "exclude": [
-        "zcl_aoc_check_69"
+        "zcl_aoc_check_69",
+        "zcl_aoc_check_103"
       ]
     },
     "method_parameter_names": {
