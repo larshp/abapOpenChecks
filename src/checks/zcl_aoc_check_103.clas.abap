@@ -121,7 +121,7 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
         lv_include = io_scan->get_include( <ls_statement>-level ).
 
         LOOP AT io_scan->levels ASSIGNING FIELD-SYMBOL(<ls_level>) WHERE name = lv_include.
-          DATA(source) = get_source( is_level = <ls_level> ).
+          DATA(source) = get_source( <ls_level> ).
         ENDLOOP.
 
         lv_detail = lcl_quickfix=>get_quick_fixes( iv_current_tab_name = lv_tabname
