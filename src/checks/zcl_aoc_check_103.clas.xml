@@ -25,6 +25,18 @@
      <ENTRY>Table/View &amp;1 has replacement object &amp;2. Consider using &amp;3 instead. OSS Note &amp;4</ENTRY>
      <LENGTH>132</LENGTH>
     </item>
+    <item>
+     <ID>I</ID>
+     <KEY>M03</KEY>
+     <ENTRY>Replace</ENTRY>
+     <LENGTH>30</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>M04</KEY>
+     <ENTRY> with</ENTRY>
+     <LENGTH>10</LENGTH>
+    </item>
    </TPOOL>
    <LINES>
     <TLINE>
