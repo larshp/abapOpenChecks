@@ -124,7 +124,7 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
 
         READ TABLE io_scan->levels ASSIGNING <ls_level> WITH KEY name = lv_include.
         IF sy-subrc = 0.
-          lt_source = get_source( is_level = <ls_level> ).
+          lt_source = get_source( <ls_level> ).
         ENDIF.
 
         lv_detail = lcl_quickfix=>get_quick_fixes( iv_current_tab_name = lv_tabname
@@ -148,8 +148,7 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
                 p_param_4      = lv_message_detail-oss_note
                 p_code         = lv_message_detail-message_code
                 p_suppress     = gc_pseudo_comment
-                p_detail       = lv_detail
-                 ).
+                p_detail       = lv_detail ).
 
       ENDIF.
 
