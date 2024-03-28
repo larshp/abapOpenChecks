@@ -1,7 +1,7 @@
 abapOpenChecks
 ==============
 
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/andy778/abapOpenChecks/badge)](https://securityscorecards.dev/viewer/?uri=github.com/andy778/abapOpenChecks)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/larshp/abapOpenChecks/badge)](https://securityscorecards.dev/viewer/?uri=github.com/larshp/abapOpenChecks)
 
 
 Open source checks for SAP Code Inspector / ABAP Test Cockpit (SCI/ATC)
