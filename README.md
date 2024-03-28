@@ -1,6 +1,9 @@
 abapOpenChecks
 ==============
 
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/andy778/abapOpenChecks/badge)](https://securityscorecards.dev/viewer/?uri=github.com/andy778/abapOpenChecks)
+
+
 Open source checks for SAP Code Inspector / ABAP Test Cockpit (SCI/ATC)
 
 * For running Continuous Integration outside the ABAP platform see https://abaplint.org
