@@ -25,7 +25,7 @@ CLASS zcl_aoc_check_103 DEFINITION
              message_code       TYPE sci_errc,
              oss_note           TYPE c LENGTH 10,
            END OF ty_message_detail.
-    CLASS-DATA gt_replace_proposalst TYPE tty_proposals READ-ONLY.
+    CLASS-DATA gt_replace_proposals TYPE tty_proposals READ-ONLY.
     METHODS constructor.
     METHODS check REDEFINITION.
     CLASS-METHODS class_constructor.
@@ -47,6 +47,12 @@ CLASS zcl_aoc_check_103 DEFINITION
         iv_replacement_object    TYPE dd02v-viewref
       RETURNING
         VALUE(rs_message_detail) TYPE ty_message_detail.
+    METHODS check_table_as_used
+      IMPORTING
+        it_statement_tokens TYPE stokesx_tab
+        iv_tabix type sy-tabix
+      RETURNING
+        VALUE(rv_table_as_used)      TYPE abap_bool.
 ENDCLASS.
 
 
@@ -80,8 +86,9 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
   METHOD check.
     DATA lv_include          TYPE sobj_name.
     DATA lv_tabname          TYPE tabname.
+    DATA lv_table_as_used    TYPE abap_bool.
     DATA lt_statement_tokens TYPE stokesx_tab.
-    DATA ls_next             LIKE LINE OF lt_statement_tokens.
+    DATA ls_next             TYPE stokesx.
     DATA ls_table_info TYPE dd02v.
     DATA lv_position TYPE int4.
     DATA lv_detail TYPE xstring.
@@ -115,6 +122,10 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
       ENDIF.
 
       lv_tabname = ls_next-str.
+
+      lv_table_as_used = check_table_as_used( it_statement_tokens   =  lt_statement_tokens
+                                              iv_tabix = sy-tabix + 1 ).
+
       ls_table_info = get_table_info( lv_tabname ).
 
 
@@ -128,13 +139,14 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
         ENDIF.
 
         lv_detail = lcl_quickfix=>get_quick_fixes( iv_current_tab_name = lv_tabname
-                                                   iv_new_tab_name = ls_table_info-viewref
-                                                   iv_include = lv_include
-                                                   iv_col = ls_next-col
-                                                   iv_source = lt_source
-                                                   iv_line = ls_next-row ).
+                                                   iv_new_tab_name     = ls_table_info-viewref
+                                                   iv_include          = lv_include
+                                                   iv_col              = ls_next-col
+                                                   iv_source           = lt_source
+                                                   iv_line             = ls_next-row
+                                                   iv_table_as_used    = lv_table_as_used ).
 
-        lv_message_detail = get_message_detail( iv_tabname = lv_tabname
+        lv_message_detail = get_message_detail( iv_tabname            = lv_tabname
                                                 iv_replacement_object = ls_table_info-viewref ).
         inform( p_sub_obj_name = lv_include
                 p_line         = <ls_token>-row
@@ -154,6 +166,21 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
 
     ENDLOOP.
   ENDMETHOD.
+
+  METHOD check_table_as_used.
+    DATA ls_next             TYPE stokesx.
+
+    READ TABLE it_statement_tokens INDEX iv_tabix INTO ls_next.
+    IF sy-subrc = 0 AND ls_next-str = 'AS'.
+      READ TABLE it_statement_tokens INDEX iv_tabix + 1 INTO ls_next.
+      IF sy-subrc = 0.
+        rv_table_as_used = abap_true.
+      ENDIF.
+    ENDIF.
+
+  ENDMETHOD.
+
+
 
   METHOD get_tokens_for_statement.
     FIELD-SYMBOLS <ls_token> LIKE LINE OF it_tokens.
@@ -191,14 +218,14 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD class_constructor.
-    gt_replace_proposalst = lcl_quickfix=>build_proposals_list( ).
+    gt_replace_proposals = lcl_quickfix=>build_proposals_list( ).
   ENDMETHOD.
 
 
   METHOD get_message_detail.
     DATA lv_proposals TYPE ty_replace_proposal.
 
-    READ TABLE gt_replace_proposalst INTO lv_proposals WITH KEY from = iv_tabname sequence = 1.
+    READ TABLE gt_replace_proposals INTO lv_proposals WITH KEY from = iv_tabname sequence = 1.
     IF sy-subrc = 0.
       rs_message_detail-message_code = gc_code-table_has_replacement_proposal.
       rs_message_detail-proposed_table = lv_proposals-to.
