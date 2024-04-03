@@ -49,10 +49,10 @@ CLASS zcl_aoc_check_103 DEFINITION
         VALUE(rs_message_detail) TYPE ty_message_detail.
     METHODS check_table_as_used
       IMPORTING
-        it_statement_tokens TYPE stokesx_tab
-        iv_tabix type sy-tabix
+        it_statement_tokens     TYPE stokesx_tab
+        iv_tabix                TYPE sy-tabix
       RETURNING
-        VALUE(rv_table_as_used)      TYPE abap_bool.
+        VALUE(rv_table_as_used) TYPE abap_bool.
 ENDCLASS.
 
 
@@ -123,8 +123,8 @@ CLASS zcl_aoc_check_103 IMPLEMENTATION.
 
       lv_tabname = ls_next-str.
 
-      lv_table_as_used = check_table_as_used( it_statement_tokens   =  lt_statement_tokens
-                                              iv_tabix = sy-tabix + 1 ).
+      lv_table_as_used = check_table_as_used( it_statement_tokens = lt_statement_tokens
+                                              iv_tabix            = sy-tabix + 1 ).
 
       ls_table_info = get_table_info( lv_tabname ).
 
