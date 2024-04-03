@@ -22,6 +22,7 @@ CLASS lcl_quickfix DEFINITION FINAL.
         iv_source            TYPE string_table
         iv_line              TYPE i
         iv_col               TYPE token_col
+        iv_table_as_used     TYPE abap_bool
       RETURNING
         VALUE(rv_qf_xstring) TYPE xstring.
 
@@ -34,7 +35,8 @@ CLASS lcl_quickfix DEFINITION FINAL.
         iv_current_tab_name TYPE tabname
         iv_quickfixes       TYPE REF TO object
         iv_context          TYPE any
-        iv_proposal         TYPE zcl_aoc_check_103=>ty_replace_proposal.
+        iv_proposal         TYPE zcl_aoc_check_103=>ty_replace_proposal
+        iv_table_as_used    TYPE abap_bool.
 
 ENDCLASS.
 
@@ -70,11 +72,12 @@ CLASS lcl_quickfix IMPLEMENTATION.
     ASSIGN lo_context_interface->* TO <lv_context>.
     <lv_context> ?= lo_context.
 
-    LOOP AT zcl_aoc_check_103=>gt_replace_proposalst ASSIGNING <lv_proposal> WHERE from = iv_current_tab_name.
+    LOOP AT zcl_aoc_check_103=>gt_replace_proposals ASSIGNING <lv_proposal> WHERE from = iv_current_tab_name.
       add_new_quickfix( iv_current_tab_name = iv_current_tab_name
-                        iv_quickfixes = lv_quickfixes
-                        iv_context = <lv_context>
-                         iv_proposal = <lv_proposal> ).
+                        iv_quickfixes       = lv_quickfixes
+                        iv_context          = <lv_context>
+                        iv_proposal         = <lv_proposal>
+                        iv_table_as_used    = iv_table_as_used ).
     ENDLOOP.
     CALL METHOD lv_quickfixes->('CREATE_QUICKFIX')
       RECEIVING
@@ -100,7 +103,15 @@ CLASS lcl_quickfix IMPLEMENTATION.
     DATA lv_quickfix_code TYPE c LENGTH 10.
     DATA lv_current_tab_for_msg TYPE sy-msgv1.
     DATA lv_new_tab_for_msg TYPE sy-msgv2.
+    DATA lv_proposal TYPE c LENGTH 255.
 
+    IF iv_table_as_used = abap_false.
+      CONCATENATE iv_proposal-to ' AS '  iv_proposal-from INTO lv_proposal RESPECTING BLANKS.
+    ELSE.
+      lv_proposal = iv_proposal-to.
+    ENDIF.
+
+    CONDENSE lv_proposal.
 
     "Each quick-fix should have a unique code
     CONCATENATE '001_' iv_proposal-sequence  INTO lv_quickfix_code.
@@ -112,7 +123,7 @@ CLASS lcl_quickfix IMPLEMENTATION.
         p_quickfix      = lv_quickfix.
     CALL METHOD lv_quickfix->('IF_CI_QUICKFIX_ABAP_ACTIONS~REPLACE_BY')
       EXPORTING
-        p_new_code = iv_proposal-to
+        p_new_code = lv_proposal
         p_context  = iv_context.
 
     CALL METHOD lv_quickfix->('IF_CI_QUICKFIX_SINGLE~ENABLE_AUTOMATIC_EXECUTION').
