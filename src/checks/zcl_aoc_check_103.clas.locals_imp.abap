@@ -53,46 +53,52 @@ CLASS lcl_quickfix IMPLEMENTATION.
     FIELD-SYMBOLS: <lv_context> TYPE any.
     FIELD-SYMBOLS: <lv_proposal> TYPE zcl_aoc_check_103=>ty_replace_proposal.
 
-    CALL METHOD ('CL_CI_QUICKFIX_CREATION')=>('CREATE_QUICKFIX_ALTERNATIVES')
-      RECEIVING
-        p_quickfix_alternatives = lv_quickfixes.
-
-
-    lv_column = iv_col.
-    CALL METHOD ('CL_CI_QUICKFIX_ABAP_CONTEXT')=>('CREATE_FROM_INCLUDE')
-      EXPORTING
-        p_include = iv_include
-        p_source  = iv_source
-        p_line    = iv_line
-        p_col     = lv_column
-      RECEIVING
-        p_context = lo_context.
-
-    CREATE DATA lo_context_interface TYPE REF TO ('IF_CI_QUICKFIX_ABAP_CONTEXT').
-    ASSIGN lo_context_interface->* TO <lv_context>.
-    <lv_context> ?= lo_context.
-
-    LOOP AT zcl_aoc_check_103=>gt_replace_proposals ASSIGNING <lv_proposal> WHERE from = iv_current_tab_name.
-      add_new_quickfix( iv_current_tab_name = iv_current_tab_name
-                        iv_quickfixes       = lv_quickfixes
-                        iv_context          = <lv_context>
-                        iv_proposal         = <lv_proposal>
-                        iv_table_as_used    = iv_table_as_used ).
-    ENDLOOP.
-    CALL METHOD lv_quickfixes->('CREATE_QUICKFIX')
-      RECEIVING
-        p_quickfix = lv_quickfix_pragma.
-
-    CALL METHOD lv_quickfix_pragma->('IF_CI_QUICKFIX_ABAP_ACTIONS~ADD_PSEUDO_COMMENT')
-      EXPORTING
-        p_pseudo_comment = zcl_aoc_check_103=>gc_pseudo_comment
-        p_context        = <lv_context>.
-
     TRY.
-        CALL METHOD lv_quickfixes->('EXPORT_TO_XSTRING')
+        CALL METHOD ('CL_CI_QUICKFIX_CREATION')=>('CREATE_QUICKFIX_ALTERNATIVES')
           RECEIVING
-            p_detail = rv_qf_xstring.
-      CATCH cx_root.
+            p_quickfix_alternatives = lv_quickfixes.
+
+
+        lv_column = iv_col.
+        CALL METHOD ('CL_CI_QUICKFIX_ABAP_CONTEXT')=>('CREATE_FROM_INCLUDE')
+          EXPORTING
+            p_include = iv_include
+            p_source  = iv_source
+            p_line    = iv_line
+            p_col     = lv_column
+          RECEIVING
+            p_context = lo_context.
+
+        CREATE DATA lo_context_interface TYPE REF TO ('IF_CI_QUICKFIX_ABAP_CONTEXT').
+        ASSIGN lo_context_interface->* TO <lv_context>.
+        <lv_context> ?= lo_context.
+
+        LOOP AT zcl_aoc_check_103=>gt_replace_proposals ASSIGNING <lv_proposal> WHERE from = iv_current_tab_name.
+          add_new_quickfix( iv_current_tab_name = iv_current_tab_name
+                            iv_quickfixes       = lv_quickfixes
+                            iv_context          = <lv_context>
+                            iv_proposal         = <lv_proposal>
+                            iv_table_as_used    = iv_table_as_used ).
+        ENDLOOP.
+        CALL METHOD lv_quickfixes->('CREATE_QUICKFIX')
+          RECEIVING
+            p_quickfix = lv_quickfix_pragma.
+
+        CALL METHOD lv_quickfix_pragma->('IF_CI_QUICKFIX_ABAP_ACTIONS~ADD_PSEUDO_COMMENT')
+          EXPORTING
+            p_pseudo_comment = zcl_aoc_check_103=>gc_pseudo_comment
+            p_context        = <lv_context>.
+
+        TRY.
+            CALL METHOD lv_quickfixes->('EXPORT_TO_XSTRING')
+              RECEIVING
+                p_detail = rv_qf_xstring.
+          CATCH cx_root.
+            RETURN.
+        ENDTRY.
+
+      CATCH cx_sy_dyn_call_illegal_class.
+        "Quick fixes not allowed on this version of NW
         RETURN.
     ENDTRY.
   ENDMETHOD.
