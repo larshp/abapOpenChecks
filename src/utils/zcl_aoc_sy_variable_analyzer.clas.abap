@@ -8,7 +8,7 @@ CLASS zcl_aoc_sy_variable_analyzer DEFINITION
     TYPES ty_v_usage_kind TYPE i.
 
     TYPES: BEGIN OF ty_s_result,
-             statement_level TYPE stmnt_levl,
+             statement_index TYPE sy-tabix,
              token_index     TYPE sy-tabix,
              usage_kind      TYPE ty_v_usage_kind,
            END OF ty_s_result.
@@ -66,6 +66,8 @@ CLASS zcl_aoc_sy_variable_analyzer IMPLEMENTATION.
 
   METHOD analyze_variable_usage.
     LOOP AT mo_scan->statements ASSIGNING FIELD-SYMBOL(<ls_statement>).
+      DATA(lv_statement_index) = sy-tabix.
+
       LOOP AT mo_scan->tokens ASSIGNING FIELD-SYMBOL(<ls_token>)
            FROM <ls_statement>-from TO <ls_statement>-to
            WHERE str CP |SY-{ iv_sy_variable_name }*|
@@ -77,7 +79,7 @@ CLASS zcl_aoc_sy_variable_analyzer IMPLEMENTATION.
                                                     iv_index_token = lv_token_index
                                                     is_statement   = <ls_statement> ).
 
-        INSERT VALUE #( statement_level = <ls_statement>-level
+        INSERT VALUE #( statement_index = lv_statement_index
                         token_index     = lv_token_index
                         usage_kind      = lv_usage_kind ) INTO TABLE rt_result.
       ENDLOOP.

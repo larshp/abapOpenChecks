@@ -100,6 +100,7 @@ CLASS zcl_aoc_check_102 IMPLEMENTATION.
 
       lv_error_code = <ls_error_code_map>-error_code.
 
+      ASSIGN io_scan->statements[ <ls_variable_usage>-statement_index ] TO FIELD-SYMBOL(<ls_statement>).
       ASSIGN io_scan->tokens[ <ls_variable_usage>-token_index ] TO FIELD-SYMBOL(<ls_token>).
 
       IF is_using_only_first_letter( <ls_token> ) = abap_true.
@@ -107,7 +108,7 @@ CLASS zcl_aoc_check_102 IMPLEMENTATION.
         lv_error_code = gc_code-first_letter_used.
       ENDIF.
 
-      DATA(lv_include) = io_scan->get_include( <ls_variable_usage>-statement_level ).
+      DATA(lv_include) = io_scan->get_include( <ls_statement>-level ).
 
       inform( p_sub_obj_name = lv_include
               p_line         = <ls_token>-row
