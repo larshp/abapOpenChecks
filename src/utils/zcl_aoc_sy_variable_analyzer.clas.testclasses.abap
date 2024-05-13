@@ -565,6 +565,8 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD multiple_results.
+    DATA lt_expected_result LIKE mt_result.
+
     " Given
     _code `IF sy-sysid = 'PRD'.`.
     _code `  WRITE sy-sysid.`.
@@ -576,7 +578,6 @@ CLASS ltcl_test IMPLEMENTATION.
     analyze_variables( ).
 
     " Then
-    DATA lt_expected_result LIKE mt_result.
     lt_expected_result = VALUE #( ( statement_index = 1
                                     token_index     = 2
                                     usage_kind      = gc_usage_kind-in_condition )
