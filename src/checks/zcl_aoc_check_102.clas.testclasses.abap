@@ -53,6 +53,7 @@ CLASS ltcl_test DEFINITION
     METHODS message FOR TESTING.
     METHODS check_condition FOR TESTING.
     METHODS assert_condition FOR TESTING.
+    METHODS call_function FOR TESTING.
 ENDCLASS.
 
 
@@ -506,5 +507,18 @@ CLASS ltcl_test IMPLEMENTATION.
 
     " Then
     assert_error_code( gc_code-in_condition ).
+  ENDMETHOD.
+
+  METHOD call_function.
+    " Given
+    _code `CALL FUNCTION 'ZEXAMPLE'`.
+    _code `  EXPORTING`.
+    _code `    sysid = sy-sysid.`.
+
+    " When
+    execute_check( ).
+
+    " Then
+    assert_error_code( gc_code-in_function_module_call ).
   ENDMETHOD.
 ENDCLASS.

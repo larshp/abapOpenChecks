@@ -68,7 +68,10 @@ CLASS zcl_aoc_check_102 IMPLEMENTATION.
                                    text       = TEXT-010 )
                                  ( usage_kind = zcl_aoc_sy_variable_analyzer=>gc_usage_kind-within_macro
                                    error_code = gc_code-within_macro
-                                   text       = TEXT-011 ) ).
+                                   text       = TEXT-011 )
+                                 ( usage_kind = zcl_aoc_sy_variable_analyzer=>gc_usage_kind-in_function_module_call
+                                   error_code = gc_code-in_function_module_call
+                                   text       = TEXT-012 ) ).
 
     LOOP AT mt_error_code_map ASSIGNING FIELD-SYMBOL(<ls_error_code_map>).
       insert_scimessage( iv_code = <ls_error_code_map>-error_code
