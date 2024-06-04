@@ -84,6 +84,8 @@ CLASS ltcl_test DEFINITION
     METHODS no_result FOR TESTING RAISING cx_static_check.
 
     METHODS multiple_results FOR TESTING RAISING cx_static_check.
+
+    METHODS call_function FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 
@@ -591,4 +593,20 @@ CLASS ltcl_test IMPLEMENTATION.
                                     token_index     = 1
                                     usage_kind      = gc_usage_kind-overridden ) ).
   ENDMETHOD.
+
+  METHOD call_function.
+    " Given
+    _code `CALL FUNCTION 'ZEXAMPLE'`.
+    _code `  EXPORTING`.
+    _code `    sysid = sy-sysid.`.
+
+    " When
+    analyze_variables( ).
+
+    " Then
+    assert_single_result( VALUE #( statement_index = 1
+                                   token_index     = 7
+                                   usage_kind      = gc_usage_kind-in_function_module_call ) ).
+  ENDMETHOD.
+
 ENDCLASS.

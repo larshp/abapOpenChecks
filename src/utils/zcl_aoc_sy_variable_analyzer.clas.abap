@@ -17,17 +17,18 @@ CLASS zcl_aoc_sy_variable_analyzer DEFINITION
 
     CONSTANTS:
       BEGIN OF gc_usage_kind,
-        usage_uncategorized  TYPE ty_v_usage_kind VALUE 1,
-        in_condition         TYPE ty_v_usage_kind VALUE 2,
-        type_definition      TYPE ty_v_usage_kind VALUE 3,
-        as_default_value     TYPE ty_v_usage_kind VALUE 4,
-        in_concatenate       TYPE ty_v_usage_kind VALUE 5,
-        overridden           TYPE ty_v_usage_kind VALUE 6,
-        assigned_to_variable TYPE ty_v_usage_kind VALUE 7,
-        in_database_select   TYPE ty_v_usage_kind VALUE 8,
-        in_write             TYPE ty_v_usage_kind VALUE 9,
-        in_message           TYPE ty_v_usage_kind VALUE 10,
-        within_macro         TYPE ty_v_usage_kind VALUE 11,
+        usage_uncategorized     TYPE ty_v_usage_kind VALUE 1,
+        in_condition            TYPE ty_v_usage_kind VALUE 2,
+        type_definition         TYPE ty_v_usage_kind VALUE 3,
+        as_default_value        TYPE ty_v_usage_kind VALUE 4,
+        in_concatenate          TYPE ty_v_usage_kind VALUE 5,
+        overridden              TYPE ty_v_usage_kind VALUE 6,
+        assigned_to_variable    TYPE ty_v_usage_kind VALUE 7,
+        in_database_select      TYPE ty_v_usage_kind VALUE 8,
+        in_write                TYPE ty_v_usage_kind VALUE 9,
+        in_message              TYPE ty_v_usage_kind VALUE 10,
+        within_macro            TYPE ty_v_usage_kind VALUE 11,
+        in_function_module_call TYPE ty_v_usage_kind VALUE 12,
       END OF gc_usage_kind.
 
     METHODS constructor
@@ -129,6 +130,13 @@ CLASS zcl_aoc_sy_variable_analyzer IMPLEMENTATION.
           WHEN OTHERS.
             rv_usage_kind = gc_usage_kind-type_definition.
         ENDCASE.
+      WHEN zcl_aoc_scan=>gc_keyword-call.
+        ASSIGN mo_scan->tokens[ is_statement-from + 1 ] TO FIELD-SYMBOL(<ls_second_token_of_statement>).
+        IF <ls_second_token_of_statement>-str = zcl_aoc_scan=>gc_keyword-function.
+          rv_usage_kind = gc_usage_kind-in_function_module_call.
+        ELSE.
+          rv_usage_kind = gc_usage_kind-usage_uncategorized.
+        ENDIF.
       WHEN OTHERS.
         IF <ls_token_before_sysid>-str        = '='
             AND iv_index_token - is_statement-from = 2.

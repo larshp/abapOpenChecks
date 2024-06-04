@@ -77,6 +77,8 @@ CLASS zcl_aoc_scan DEFINITION
                  default           TYPE string VALUE 'DEFAULT',
                  type              TYPE string VALUE 'TYPE',
                  like              TYPE string VALUE 'LIKE',
+                 call              TYPE string VALUE 'CALL',
+                 function          TYPE string VALUE 'FUNCTION',
                END OF gc_keyword.
 
     TYPES:
