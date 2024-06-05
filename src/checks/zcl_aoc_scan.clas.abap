@@ -79,6 +79,8 @@ CLASS zcl_aoc_scan DEFINITION
                  like              TYPE string VALUE 'LIKE',
                  call              TYPE string VALUE 'CALL',
                  function          TYPE string VALUE 'FUNCTION',
+                 move              TYPE string VALUE 'MOVE',
+                 to                TYPE string VALUE 'TO',
                END OF gc_keyword.
 
     TYPES:
