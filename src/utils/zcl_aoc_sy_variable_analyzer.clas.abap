@@ -95,7 +95,7 @@ CLASS zcl_aoc_sy_variable_analyzer IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    ASSIGN mo_scan->tokens[ iv_index_token - 1 ] TO FIELD-SYMBOL(<ls_token_before_sysid>).
+    ASSIGN mo_scan->tokens[ iv_index_token - 1 ] TO FIELD-SYMBOL(<ls_token_before_sy_var>).
     ASSIGN mo_scan->tokens[ is_statement-from ] TO FIELD-SYMBOL(<ls_first_token_of_statement>).
 
     CASE <ls_first_token_of_statement>-str.
@@ -124,7 +124,7 @@ CLASS zcl_aoc_sy_variable_analyzer IMPLEMENTATION.
           OR zcl_aoc_scan=>gc_keyword-data
           OR zcl_aoc_scan=>gc_keyword-class_data.
 
-        CASE <ls_token_before_sysid>-str.
+        CASE <ls_token_before_sy_var>-str.
           WHEN zcl_aoc_scan=>gc_keyword-default.
             rv_usage_kind = gc_usage_kind-as_default_value.
           WHEN OTHERS.
@@ -137,8 +137,20 @@ CLASS zcl_aoc_sy_variable_analyzer IMPLEMENTATION.
         ELSE.
           rv_usage_kind = gc_usage_kind-usage_uncategorized.
         ENDIF.
+      WHEN zcl_aoc_scan=>gc_keyword-move.
+        IF <ls_token_before_sy_var>-str = zcl_aoc_scan=>gc_keyword-to.
+          rv_usage_kind = gc_usage_kind-overridden.
+        ELSE.
+          ASSIGN mo_scan->tokens[ iv_index_token + 1 ] TO FIELD-SYMBOL(<ls_token_after_sy_var>).
+
+          IF <ls_token_after_sy_var>-str = zcl_aoc_scan=>gc_keyword-to.
+            rv_usage_kind = gc_usage_kind-assigned_to_variable.
+          ELSE.
+            rv_usage_kind = gc_usage_kind-usage_uncategorized.
+          ENDIF.
+        ENDIF.
       WHEN OTHERS.
-        IF <ls_token_before_sysid>-str        = '='
+        IF <ls_token_before_sy_var>-str            = '='
             AND iv_index_token - is_statement-from = 2.
           rv_usage_kind = gc_usage_kind-assigned_to_variable.
         ELSE.

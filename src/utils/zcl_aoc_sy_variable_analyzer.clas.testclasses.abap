@@ -86,6 +86,10 @@ CLASS ltcl_test DEFINITION
     METHODS multiple_results FOR TESTING RAISING cx_static_check.
 
     METHODS call_function FOR TESTING RAISING cx_static_check.
+
+    METHODS move_01 FOR TESTING RAISING cx_static_check.
+
+    METHODS move_02 FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 
@@ -607,6 +611,32 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_single_result( VALUE #( statement_index = 1
                                    token_index     = 7
                                    usage_kind      = gc_usage_kind-in_function_module_call ) ).
+  ENDMETHOD.
+
+  METHOD move_01.
+    " Given
+    _code `MOVE sy-sysid TO DATA(lv_sysid).`.
+
+    " When
+    analyze_variables( ).
+
+    " Then
+    assert_single_result( VALUE #( statement_index = 1
+                                   token_index     = 2
+                                   usage_kind      = gc_usage_kind-assigned_to_variable ) ).
+  ENDMETHOD.
+
+  METHOD move_02.
+    " Given
+    _code `MOVE 'DEV' TO sy-sysid.`.
+
+    " When
+    analyze_variables( ).
+
+    " Then
+    assert_single_result( VALUE #( statement_index = 1
+                                   token_index     = 4
+                                   usage_kind      = gc_usage_kind-overridden ) ).
   ENDMETHOD.
 
 ENDCLASS.
