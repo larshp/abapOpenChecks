@@ -39,7 +39,6 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
         AND type <> io_scan->gc_statement-pragma.
 
       CLEAR lv_statement.
-      lv_count = 0.
 
       LOOP AT io_scan->tokens ASSIGNING <ls_token>
           FROM <ls_statement>-from TO <ls_statement>-to
