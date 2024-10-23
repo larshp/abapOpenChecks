@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>ZCL_AOC_CLASS_DEF_SCAN</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>Scan object specially for class definition</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>CONSTRUCTOR</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Constructor</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>DETERMINE_LINE_TOTAL</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Determine the total line number</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>GET_CODE_LINE_DEF</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get Class Definition Info for Search Term</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>GET_LEVEL_NAME</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get Include Name by Level</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>GET_SCAN_BY_REF</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get Instance by Ref Scan object</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>LINES_FOR_SECTION</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get last line number for specific section</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>LINES_PRIVATE_SEC</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get last line number of private section</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>LINES_PROTECTED_SEC</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get last line number of protected section</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>LINES_PUBLIC_SEC</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get last line number of public section</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SET_OO_OBJECT_NAME</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Set the OO Object Name</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SET_SOURCE_CODE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Set internal table with Source Code</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SET_SOURCE_CODE_SECTIONS</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Set internal tables with Source Code for sections</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>

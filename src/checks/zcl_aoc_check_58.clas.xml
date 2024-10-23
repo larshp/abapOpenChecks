@@ -17,7 +17,7 @@
     <item>
      <ID>I</ID>
      <KEY>M01</KEY>
-     <ENTRY>Method not referenced statically</ENTRY>
+     <ENTRY>Method &amp;1 not referenced statically</ENTRY>
      <LENGTH>64</LENGTH>
     </item>
     <item>
@@ -29,7 +29,7 @@
     <item>
      <ID>I</ID>
      <KEY>M03</KEY>
-     <ENTRY>Method is only referenced locally. Should be changed to private or protected.</ENTRY>
+     <ENTRY>Method &amp;1 is only referenced locally. Should be changed to private or protected.</ENTRY>
      <LENGTH>132</LENGTH>
     </item>
     <item>

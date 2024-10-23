@@ -34,17 +34,11 @@ CLASS zcl_aoc_check_58 DEFINITION
     CONSTANTS c_public TYPE seocompodf-exposure VALUE '2' ##NO_TEXT.
     DATA mv_skip_ccau TYPE sap_bool .
     DATA mt_methods TYPE zaoc_seocmpname_range_tt .
+    DATA mo_scan TYPE REF TO zcl_aoc_class_def_scan .
 
-    METHODS check_types .
-    METHODS report_clas
-      IMPORTING
-        !is_method   TYPE gty_reference_s
-        !iv_err_code TYPE sci_errc .
-    METHODS is_bopf_interface
-      RETURNING
-        VALUE(rv_boolean) TYPE abap_bool .
     METHODS check_constants .
     METHODS check_methods .
+    METHODS check_types .
     METHODS filter_implementations
       IMPORTING
         !is_method  TYPE gty_reference_s
@@ -55,6 +49,13 @@ CLASS zcl_aoc_check_58 DEFINITION
         !is_method  TYPE gty_reference_s
       CHANGING
         !ct_include TYPE gty_include_t .
+    METHODS is_bopf_interface
+      RETURNING
+        VALUE(rv_boolean) TYPE abap_bool .
+    METHODS report_clas
+      IMPORTING
+        !is_method   TYPE gty_reference_s
+        !iv_err_code TYPE sci_errc .
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -72,6 +73,8 @@ CLASS zcl_aoc_check_58 IMPLEMENTATION.
     IF object_type <> 'CLAS' AND object_type <> 'INTF'.
       RETURN.
     ENDIF.
+
+    mo_scan = zcl_aoc_class_def_scan=>get_scan_by_ref( io_ref = ref_scan ).
 
     check_methods( ).
     check_constants( ).
@@ -111,7 +114,9 @@ CLASS zcl_aoc_check_58 IMPLEMENTATION.
           lv_include = cl_oo_classname_service=>get_interfacepool_name( <ls_constant>-clsname ).
         ENDIF.
 
-        inform( p_sub_obj_name = lv_include
+        DATA(ls_source_code_line) = mo_scan->get_code_line_def( CONV #( <ls_constant>-cmpname ) ).
+        inform( p_sub_obj_name = mo_scan->get_level_name( ls_source_code_line-level_total )
+                p_line         = ls_source_code_line-line_total
                 p_kind         = mv_errty
                 p_test         = myname
                 p_code         = '002'
@@ -167,13 +172,11 @@ CLASS zcl_aoc_check_58 IMPLEMENTATION.
 
       IF lines( lt_ref_include ) = 0 AND object_type = 'CLAS'.
         IF <ls_method>-alias = abap_false.
-          report_clas(
-            is_method   = <ls_method>
-            iv_err_code = '001' ).
+          report_clas(  is_method   = <ls_method>
+                        iv_err_code = '001' ).
         ELSE.
-          report_clas(
-            is_method   = <ls_method>
-            iv_err_code = '007' ).
+          report_clas(  is_method   = <ls_method>
+                        iv_err_code = '007' ).
         ENDIF.
       ELSEIF lines( lt_ref_include ) = 0 AND object_type = 'INTF'.
         inform( p_param_1 = <ls_method>-cmpname
@@ -240,7 +243,9 @@ CLASS zcl_aoc_check_58 IMPLEMENTATION.
           lv_include = cl_oo_classname_service=>get_interfacepool_name( <ls_type>-clsname ).
         ENDIF.
 
-        inform( p_sub_obj_name = lv_include
+        DATA(ls_source_code_line) = mo_scan->get_code_line_def( CONV #( <ls_type>-cmpname ) ).
+        inform( p_sub_obj_name = mo_scan->get_level_name( ls_source_code_line-level_total )
+                p_line         = ls_source_code_line-line_total
                 p_kind         = mv_errty
                 p_test         = myname
                 p_code         = '006'
@@ -265,7 +270,7 @@ CLASS zcl_aoc_check_58 IMPLEMENTATION.
 
     insert_scimessage(
       iv_code = '001'
-      iv_text = 'Method not referenced statically'(m01) ).
+      iv_text = 'Method &1 not referenced statically'(m01) ).
 
     insert_scimessage(
       iv_code = '002'
@@ -273,7 +278,7 @@ CLASS zcl_aoc_check_58 IMPLEMENTATION.
 
     insert_scimessage(
       iv_code = '003'
-      iv_text = 'Method is only referenced locally. Should be changed to private or protected.'(m03) ).
+      iv_text = 'Method &1 is only referenced locally. Should be changed to private or protected.'(m03) ).
 
     insert_scimessage(
       iv_code = '004'
@@ -464,10 +469,13 @@ CLASS zcl_aoc_check_58 IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    inform( p_sub_obj_name = lv_include
+    DATA(ls_source_code_line) = mo_scan->get_code_line_def( CONV #( ls_mtdkey-cpdname ) ).
+    inform( p_sub_obj_name = mo_scan->get_level_name( ls_source_code_line-level_total )
+            p_line         = ls_source_code_line-line_total
             p_kind         = mv_errty
             p_test         = myname
-            p_code         = iv_err_code ).
+            p_code         = iv_err_code
+            p_param_1      = ls_mtdkey-cpdname ).
 
   ENDMETHOD.
 ENDCLASS.
