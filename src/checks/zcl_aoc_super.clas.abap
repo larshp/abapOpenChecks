@@ -78,6 +78,7 @@ CLASS zcl_aoc_super DEFINITION
 
     METHODS inform
         REDEFINITION .
+    METHODS get_docu_for_test REDEFINITION.
   PRIVATE SECTION.
 
     TYPES:
@@ -116,7 +117,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_SUPER IMPLEMENTATION.
+CLASS zcl_aoc_super IMPLEMENTATION.
 
 
   METHOD check.
@@ -739,4 +740,24 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ENDIF.
 
   ENDMETHOD.
+
+  METHOD get_docu_for_test.
+
+    DATA lv_url    TYPE string VALUE 'http://docs.abapopenchecks.org/checks/' ##NO_TEXT.
+    DATA lt_string TYPE STANDARD TABLE OF string.
+    DATA lv_num    TYPE string.
+    DATA lv_lines  TYPE i.
+
+    SPLIT myname AT '_' INTO TABLE lt_string.
+    lv_lines = lines( lt_string ).
+
+    lv_url = |{ lv_url }{ lt_string[ lv_lines ] }|.
+
+    p_document_header = VALUE #( tdname = 'OpenCheck' ).
+    p_document_lines = VALUE #( tdformat = 'AS'
+      ( tdline = |<DS:URLA.{ lv_url }>Open Check documentation </>| )
+    ).
+
+  ENDMETHOD.
+
 ENDCLASS.
