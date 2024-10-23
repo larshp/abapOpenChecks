@@ -34,6 +34,9 @@ CLASS zcl_aoc_unit_test DEFINITION
     CLASS-METHODS export_import
       IMPORTING
         !io_check TYPE REF TO cl_ci_test_root.
+    CLASS-METHODS set_object_name
+      IMPORTING
+        !iv_object_name TYPE sobj_name.
     CLASS-METHODS set_object_type
       IMPORTING
         !iv_object_type TYPE trobjtype.
@@ -58,7 +61,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_unit_test IMPLEMENTATION.
+CLASS ZCL_AOC_UNIT_TEST IMPLEMENTATION.
 
 
   METHOD check.
@@ -81,6 +84,31 @@ CLASS zcl_aoc_unit_test IMPLEMENTATION.
 
     rs_result = gs_result.
 
+  ENDMETHOD.
+
+
+  METHOD create_scan.
+    DATA: lt_tokens     TYPE stokesx_tab,
+          lt_statements TYPE sstmnt_tab,
+          lt_levels     TYPE slevel_tab,
+          lt_structures TYPE zcl_aoc_super=>ty_structures_tt.
+
+    SCAN ABAP-SOURCE it_code
+         TOKENS INTO lt_tokens
+         STATEMENTS INTO lt_statements
+         LEVELS INTO lt_levels
+         STRUCTURES INTO lt_structures
+         WITH ANALYSIS
+         WITH COMMENTS
+         WITH PRAGMAS abap_true.
+    cl_abap_unit_assert=>assert_subrc( msg = 'Error while parsing'(001) ).
+
+    CREATE OBJECT ro_scan
+      EXPORTING
+        it_tokens     = lt_tokens
+        it_statements = lt_statements
+        it_levels     = lt_levels
+        it_structures = lt_structures.
   ENDMETHOD.
 
 
@@ -132,34 +160,16 @@ CLASS zcl_aoc_unit_test IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD set_object_name.
+
+    go_check->object_name = iv_object_name.
+
+  ENDMETHOD.
+
+
   METHOD set_object_type.
 
     go_check->object_type = iv_object_type.
 
   ENDMETHOD.
-
-  METHOD create_scan.
-    DATA: lt_tokens     TYPE stokesx_tab,
-          lt_statements TYPE sstmnt_tab,
-          lt_levels     TYPE slevel_tab,
-          lt_structures TYPE zcl_aoc_super=>ty_structures_tt.
-
-    SCAN ABAP-SOURCE it_code
-         TOKENS INTO lt_tokens
-         STATEMENTS INTO lt_statements
-         LEVELS INTO lt_levels
-         STRUCTURES INTO lt_structures
-         WITH ANALYSIS
-         WITH COMMENTS
-         WITH PRAGMAS abap_true.
-    cl_abap_unit_assert=>assert_subrc( msg = 'Error while parsing'(001) ).
-
-    CREATE OBJECT ro_scan
-      EXPORTING
-        it_tokens     = lt_tokens
-        it_statements = lt_statements
-        it_levels     = lt_levels
-        it_structures = lt_structures.
-  ENDMETHOD.
-
 ENDCLASS.
