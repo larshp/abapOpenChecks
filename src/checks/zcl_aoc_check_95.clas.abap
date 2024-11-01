@@ -9,13 +9,13 @@ CLASS zcl_aoc_check_95 DEFINITION
     METHODS constructor .
 
     METHODS check
-        REDEFINITION .
+         REDEFINITION .
     METHODS get_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS if_ci_test~query_attributes
-        REDEFINITION .
+         REDEFINITION .
     METHODS put_attributes
-        REDEFINITION .
+         REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -31,24 +31,29 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_check_95 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_95 IMPLEMENTATION.
 
 
   METHOD check.
 
-    DATA lv_token_string_in_char TYPE char35.
-    DATA ls_token TYPE stokesx.
+    DATA lt_statements TYPE zcl_aoc_scan=>ty_statements.
+
+    FIELD-SYMBOLS <ls_statement> LIKE LINE OF lt_statements.
+    FIELD-SYMBOLS <ls_statement_index> LIKE LINE OF io_scan->statements.
 
     IF object_type <> 'CLAS'.
       RETURN.
     ENDIF.
 
-    LOOP AT io_scan->tokens INTO ls_token.
-      lv_token_string_in_char = ls_token-str.
-      IF lv_token_string_in_char+30(5) = 'CCIMP'.
-        mv_impl_start_position = sy-tabix.
+    lt_statements = io_scan->build_statements( ).
+
+    READ TABLE lt_statements ASSIGNING <ls_statement> WITH KEY str = 'INCLUDE METHODS'.
+    IF sy-subrc = 0.
+      READ TABLE io_scan->statements ASSIGNING <ls_statement_index> INDEX <ls_statement>-index.
+      IF sy-subrc = 0.
+        mv_impl_start_position = <ls_statement_index>-to + 1.
       ENDIF.
-    ENDLOOP.
+    ENDIF.
 
     " check for static calls
     IF mv_class_in_front_not_okay = abap_true.
