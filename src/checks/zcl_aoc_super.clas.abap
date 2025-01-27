@@ -311,7 +311,7 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
     READ TABLE ref_scan->statements INDEX iv_position  INTO ls_statement.
 
-    IF sy-subrc <> 0 OR ls_statement-type = 'P' OR ls_statement-type = 'S' OR ls_statement-type = 'G'.
+    IF sy-subrc <> 0.
       set_uses_checksum( abap_false ).
     ELSE.
 
