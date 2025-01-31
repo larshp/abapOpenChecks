@@ -163,6 +163,7 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
+    enable_checksum( ).
 
     insert_scimessage(
         iv_code = '001'
