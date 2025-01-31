@@ -35,6 +35,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
 * MIT License
 
     DATA: lt_statements TYPE zcl_aoc_scan=>ty_statements,
+          lv_position   LIKE sy-tabix,
           lv_index      TYPE i,
           lv_code       TYPE sci_errc,
           ls_prev       LIKE LINE OF lt_statements.
@@ -49,6 +50,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
     lt_statements = io_scan->build_statements( ).
 
     LOOP AT lt_statements ASSIGNING <ls_statement>.
+      lv_position = sy-tabix.
       lv_index = sy-tabix - 1.
       CLEAR ls_prev.
       READ TABLE lt_statements INDEX lv_index INTO ls_prev. "#EC CI_SUBRC
@@ -84,6 +86,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
       ENDIF.
 
       inform( p_sub_obj_name = <ls_statement>-include
+              p_position     = lv_position
               p_line         = <ls_statement>-start-row
               p_kind         = mv_errty
               p_test         = myname
@@ -104,6 +107,7 @@ CLASS ZCL_AOC_CHECK_57 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
+    enable_checksum( ).
 
     mv_into    = abap_true.
     mv_raising = abap_true.
