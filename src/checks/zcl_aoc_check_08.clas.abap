@@ -18,36 +18,39 @@ CLASS zcl_aoc_check_08 DEFINITION
 
   PROTECTED SECTION.
 
-    DATA mv_001 TYPE flag .
-    DATA mv_002 TYPE flag .
-    DATA mv_003 TYPE flag .
-    DATA mv_004 TYPE flag .
-    DATA mv_005 TYPE flag .
-    DATA mv_006 TYPE flag .
-    DATA mv_007 TYPE flag .
-    DATA mv_008 TYPE flag .
-    DATA mv_009 TYPE flag .
-    DATA mv_010 TYPE flag .
-    DATA mv_011 TYPE flag .
-    DATA mv_012 TYPE flag .
-    DATA mv_013 TYPE flag .
-    DATA mv_014 TYPE flag .
-    DATA mv_015 TYPE flag .
-    DATA mv_016 TYPE flag .
-    DATA mv_017 TYPE flag .
-    DATA mv_018 TYPE flag .
-    DATA mv_019 TYPE flag .
-    DATA mv_020 TYPE flag .
-    DATA mv_021 TYPE flag .
-    DATA mv_022 TYPE flag .
-    DATA mv_023 TYPE flag .
-    DATA mv_024 TYPE flag .
+    DATA mv_001 TYPE flag.
+    DATA mv_002 TYPE flag.
+    DATA mv_003 TYPE flag.
+    DATA mv_004 TYPE flag.
+    DATA mv_005 TYPE flag.
+    DATA mv_006 TYPE flag.
+    DATA mv_007 TYPE flag.
+    DATA mv_008 TYPE flag.
+    DATA mv_009 TYPE flag.
+    DATA mv_010 TYPE flag.
+    DATA mv_011 TYPE flag.
+    DATA mv_012 TYPE flag.
+    DATA mv_013 TYPE flag.
+    DATA mv_014 TYPE flag.
+    DATA mv_015 TYPE flag.
+    DATA mv_016 TYPE flag.
+    DATA mv_017 TYPE flag.
+    DATA mv_018 TYPE flag.
+    DATA mv_019 TYPE flag.
+    DATA mv_020 TYPE flag.
+    DATA mv_021 TYPE flag.
+    DATA mv_022 TYPE flag.
+    DATA mv_023 TYPE flag.
+    DATA mv_024 TYPE flag.
+
+    DATA mt_old_option TYPE STANDARD TABLE OF char2 WITH DEFAULT KEY.
 
     METHODS is_old
       IMPORTING
         !iv_statement TYPE string
       RETURNING
-        VALUE(rv_old) TYPE abap_bool .
+        VALUE(rv_old) TYPE abap_bool.
+    METHODS _fill_old_options.
   PRIVATE SECTION.
 ENDCLASS.
 
@@ -281,6 +284,8 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
     mv_023 = abap_true.
     mv_024 = abap_true.
 
+    _fill_old_options( ).
+
   ENDMETHOD.
 
 
@@ -356,29 +361,27 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
 
     rv_old = abap_false.
 
-    IF iv_statement CP '* EQ *' AND NOT iv_statement CP '* EQ TYPE *'.
-      rv_old = abap_true.
-    ENDIF.
-
-    IF iv_statement CP '* NE *' AND NOT iv_statement CP '* NE TYPE *'.
-      rv_old = abap_true.
-    ENDIF.
-
-    IF iv_statement CP '* LT *' AND NOT iv_statement CP '* LT TYPE *'.
-      rv_old = abap_true.
-    ENDIF.
-
-    IF iv_statement CP '* GT *' AND NOT iv_statement CP '* GT TYPE *'.
-      rv_old = abap_true.
-    ENDIF.
-
-    IF iv_statement CP '* LE *' AND NOT iv_statement CP '* LE TYPE *'.
-      rv_old = abap_true.
-    ENDIF.
-
-    IF iv_statement CP '* GE *' AND NOT iv_statement CP '* GE TYPE *'.
-      rv_old = abap_true.
-    ENDIF.
+    LOOP AT mt_old_option INTO DATA(lv_option).
+      DATA(lv_include) = |\\s{ lv_option }\\s|.
+      DATA(lv_exclude) = |(\\s{ lv_option }\\s+TYPE\\b)\|(\\sOPTION\\s+{ lv_option }\\b)|.
+      TRY.
+          DATA(lo_regex) = cl_regex_cache=>get_singleton( )->get_regex(
+            pattern       = lv_include
+            ignore_case   = abap_true ).
+          DATA(lo_match) = lo_regex->create_matcher( text = iv_statement ).
+          IF lo_match->find_next( ) = abap_true.
+            lo_regex = cl_regex_cache=>get_singleton( )->get_regex(
+              pattern       = lv_exclude
+              ignore_case   = abap_true ).
+            lo_match = lo_regex->create_matcher( text = iv_statement ).
+            IF lo_match->find_next( ) = abap_false.
+              rv_old = abap_true.
+              RETURN.
+            ENDIF.
+          ENDIF.
+        CATCH cx_sy_regex cx_sy_matcher INTO DATA(lx_ignore).
+      ENDTRY.
+    ENDLOOP.
 
   ENDMETHOD.
 
@@ -414,5 +417,14 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
       FROM DATA BUFFER p_attributes.                 "#EC CI_USE_WANTED
     ASSERT sy-subrc = 0.
 
+  ENDMETHOD.
+
+  METHOD _fill_old_options.
+    APPEND 'EQ' TO mt_old_option.
+    APPEND 'NE' TO mt_old_option.
+    APPEND 'LT' TO mt_old_option.
+    APPEND 'GT' TO mt_old_option.
+    APPEND 'LE' TO mt_old_option.
+    APPEND 'GE' TO mt_old_option.
   ENDMETHOD.
 ENDCLASS.
