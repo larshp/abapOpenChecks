@@ -51,7 +51,8 @@ CLASS zcl_aoc_check_08 DEFINITION
   PRIVATE SECTION.
     METHODS is_class_amdp
       RETURNING
-        VALUE(result) TYPE abap_bool.
+        VALUE(rv_class_amdp) TYPE abap_bool.
+
 ENDCLASS.
 
 
@@ -434,7 +435,7 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
         AND version = '1'
         AND reltype = '1'.
       IF sy-subrc = 0.
-        result = abap_true.
+        rv_class_amdp = abap_true.
       ENDIF.
     ENDIF.
 
