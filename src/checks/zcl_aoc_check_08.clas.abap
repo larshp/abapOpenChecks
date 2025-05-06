@@ -72,13 +72,16 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
                    <ls_statement> LIKE LINE OF io_scan->statements.
 
     IF object_type = 'CLAS'.
-      SELECT SINGLE @abap_true
+      SELECT SINGLE clsname
         FROM seometarel
         WHERE clsname = @object_name
         AND refclsname = 'IF_AMDP_MARKER_HDB'
         AND version = '1'
         AND reltype = '1'
-        INTO @DATA(is_amdp).
+        INTO @DATA(seometarel).
+      IF sy-subrc = 0.
+        DATA(is_amdp) = abap_true.
+      ENDIF.
     ENDIF.
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>.
