@@ -71,6 +71,15 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
     FIELD-SYMBOLS: <ls_token>     LIKE LINE OF io_scan->tokens,
                    <ls_statement> LIKE LINE OF io_scan->statements.
 
+    IF object_type = 'CLAS'.
+      SELECT SINGLE @abap_true
+        FROM seometarel
+        WHERE clsname = @object_name
+        AND refclsname = 'IF_AMDP_MARKER_HDB'
+        AND version = '1'
+        AND reltype = '1'
+        INTO @DATA(is_amdp).
+    ENDIF.
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>.
 
@@ -110,7 +119,7 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
           AND ( lv_statement CP '* >< *'
           OR lv_statement CP '* =< *'
           OR lv_statement CP '* => *' )
-          AND NOT lv_statement CP '*$$*$$*'. " Allow for SDA HANA query parameters
+          AND is_amdp = abap_false.
         lv_code = '006'.
       ELSEIF mv_007 = abap_true AND is_old( lv_statement ) = abap_true.
         lv_code = '007'.
