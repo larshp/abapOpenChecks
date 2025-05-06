@@ -49,6 +49,9 @@ CLASS zcl_aoc_check_08 DEFINITION
       RETURNING
         VALUE(rv_old) TYPE abap_bool .
   PRIVATE SECTION.
+    METHODS is_class_amdp
+      RETURNING
+        VALUE(result) TYPE abap_bool.
 ENDCLASS.
 
 
@@ -62,27 +65,17 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_position  TYPE i,
-          lv_include   TYPE sobj_name,
-          lv_code      TYPE sci_errc,
-          lv_token     TYPE string,
-          lv_statement TYPE string.
+    DATA: lv_position   TYPE i,
+          lv_include    TYPE sobj_name,
+          lv_code       TYPE sci_errc,
+          lv_token      TYPE string,
+          lv_statement  TYPE string,
+          lv_is_amdp    TYPE abap_bool.
 
     FIELD-SYMBOLS: <ls_token>     LIKE LINE OF io_scan->tokens,
                    <ls_statement> LIKE LINE OF io_scan->statements.
 
-    IF object_type = 'CLAS'.
-      SELECT SINGLE clsname
-        FROM seometarel
-        WHERE clsname = @object_name
-        AND refclsname = 'IF_AMDP_MARKER_HDB'
-        AND version = '1'
-        AND reltype = '1'
-        INTO @DATA(seometarel).
-      IF sy-subrc = 0.
-        DATA(is_amdp) = abap_true.
-      ENDIF.
-    ENDIF.
+    lv_is_amdp = is_class_amdp( ).
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>.
 
@@ -122,7 +115,7 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
           AND ( lv_statement CP '* >< *'
           OR lv_statement CP '* =< *'
           OR lv_statement CP '* => *' )
-          AND is_amdp = abap_false.
+          AND lv_is_amdp = abap_false.
         lv_code = '006'.
       ELSEIF mv_007 = abap_true AND is_old( lv_statement ) = abap_true.
         lv_code = '007'.
@@ -427,4 +420,24 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
     ASSERT sy-subrc = 0.
 
   ENDMETHOD.
+
+  METHOD is_class_amdp.
+
+    DATA lv_seometarel TYPE seometarel.
+
+    IF object_type = 'CLAS'.
+      SELECT SINGLE clsname
+        FROM seometarel
+        INTO lv_seometarel
+        WHERE clsname = object_name
+        AND refclsname = 'IF_AMDP_MARKER_HDB'
+        AND version = '1'
+        AND reltype = '1'.
+      IF sy-subrc = 0.
+        result = abap_true.
+      ENDIF.
+    ENDIF.
+
+  ENDMETHOD.
+
 ENDCLASS.
