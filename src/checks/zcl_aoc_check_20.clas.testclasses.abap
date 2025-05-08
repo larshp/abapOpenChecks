@@ -33,6 +33,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_13 FOR TESTING,
       test001_14 FOR TESTING,
       test001_15 FOR TESTING,
+      test001_16 FOR TESTING,
       test002_01 FOR TESTING,
       test002_02 FOR TESTING.
 
@@ -273,6 +274,20 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result-code ).
 
   ENDMETHOD.                    "test001_15
+
+  METHOD test001_16.
+* ===========
+
+    _code `METHOD my_method BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT USING zclass=>method_1 zclass=>method_2.`.
+    _code `  "ZCLASS=>METHOD_1" ( param1 => 'A', result => data1 );`.
+    _code `  "ZCLASS=>METHOD_2" ( param1 => 'A', param2 => 'B', result => data2 );`.
+    _code `ENDMETHOD.`.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result-code ).
+
+  ENDMETHOD.                    "test001_16
 
   METHOD test002_01.
 * ===========
