@@ -49,9 +49,6 @@ CLASS zcl_aoc_check_08 DEFINITION
       RETURNING
         VALUE(rv_old) TYPE abap_bool .
   PRIVATE SECTION.
-    METHODS is_class_amdp
-      RETURNING
-        VALUE(rv_class_amdp) TYPE abap_bool.
 
 ENDCLASS.
 
@@ -70,15 +67,14 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
           lv_include    TYPE sobj_name,
           lv_code       TYPE sci_errc,
           lv_token      TYPE string,
-          lv_statement  TYPE string,
-          lv_is_amdp    TYPE abap_bool.
+          lv_statement  TYPE string.
 
     FIELD-SYMBOLS: <ls_token>     LIKE LINE OF io_scan->tokens,
                    <ls_statement> LIKE LINE OF io_scan->statements.
 
-    lv_is_amdp = is_class_amdp( ).
 
-    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
+        WHERE type <> io_scan->gc_statement-native_sql.
 
       lv_position = sy-tabix.
       CLEAR lv_statement.
@@ -115,8 +111,7 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
       ELSEIF mv_006 = abap_true
           AND ( lv_statement CP '* >< *'
           OR lv_statement CP '* =< *'
-          OR lv_statement CP '* => *' )
-          AND lv_is_amdp = abap_false.
+          OR lv_statement CP '* => *' ).
         lv_code = '006'.
       ELSEIF mv_007 = abap_true AND is_old( lv_statement ) = abap_true.
         lv_code = '007'.
@@ -422,23 +417,5 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD is_class_amdp.
-
-    DATA lv_seometarel TYPE seometarel.
-
-    IF object_type = 'CLAS'.
-      SELECT SINGLE clsname
-        FROM seometarel
-        INTO lv_seometarel
-        WHERE clsname = object_name
-        AND refclsname = 'IF_AMDP_MARKER_HDB'
-        AND version = '1'
-        AND reltype = '1'.
-      IF sy-subrc = 0.
-        rv_class_amdp = abap_true.
-      ENDIF.
-    ENDIF.
-
-  ENDMETHOD.
 
 ENDCLASS.

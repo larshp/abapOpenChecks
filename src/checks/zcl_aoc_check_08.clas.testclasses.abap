@@ -209,12 +209,12 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test006_02.
-    mo_check->object_type = 'CLAS'.
-    mo_check->object_name = 'CL_AMDP_HDB_UTIL'.
 
+    _code 'METHOD my_method BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.'.
     _code 'result = SELECT field1'.
     _code 'FROM schema._SYS_BIC.view_name'.
     _code 'PLACEHOLDER.$$parameter$$ => :input;'.
+    _code 'ENDMETHOD.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
@@ -223,11 +223,11 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD test006_03.
-    mo_check->object_type = 'CLAS'.
-    mo_check->object_name = 'CL_AMDP_HDB_UTIL'.
 
-    _code 'CALL "ZCLASS=>GET_DATA" ( result => data );'.
-    _code '"ZCLASS=>GET_DATA" ( result => data );'.
+    _code `METHOD my_method BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT USING zclass=>method_1 zclass=>method_2.`.
+    _code `CALL "ZCLASS=>METHOD_1" ( param1 => 'A', result => data1 );`.
+    _code `"ZCLASS=>METHOD_2" ( result => data );`.
+    _code `ENDMETHOD.`.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 
