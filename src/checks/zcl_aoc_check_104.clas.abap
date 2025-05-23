@@ -48,7 +48,7 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
               DATA(lv_function_module_name_length) = strlen( <ls_token_function_name>-str ) - 2.
               DATA(lv_function_module_name) = <ls_token_function_name>-str+1(lv_function_module_name_length).
 
-              IF NOT mo_system->is_function_module_existing( CONV #( lv_function_module_name ) ).
+              IF mo_system->is_function_module_existing( CONV #( lv_function_module_name ) ) = abap_false.
                 DATA(lv_include) = io_scan->get_include( <ls_statement>-level ).
 
                 inform( p_sub_obj_name = lv_include
