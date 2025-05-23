@@ -1,0 +1,121 @@
+CONSTANTS: BEGIN OF gc_function_modules,
+             existing     TYPE funcname VALUE 'ZEXISTING',
+             not_existing TYPE funcname VALUE 'ZNOTEXISTING',
+           END OF gc_function_modules.
+
+CLASS ltcl_system_mock DEFINITION FOR TESTING.
+
+  PUBLIC SECTION.
+    INTERFACES zif_aoc_system.
+ENDCLASS.
+
+
+CLASS lcx_not_supported DEFINITION
+  INHERITING FROM cx_no_check FOR TESTING.
+ENDCLASS.
+
+
+CLASS lcx_not_supported IMPLEMENTATION.
+ENDCLASS.
+
+
+CLASS ltcl_system_mock IMPLEMENTATION.
+  METHOD zif_aoc_system~is_function_module_existing.
+    rv_result = SWITCH #( iv_function_module_name
+                          WHEN gc_function_modules-existing     THEN abap_true
+                          WHEN gc_function_modules-not_existing THEN abap_false
+                          ELSE                                       THROW lcx_not_supported( ) ).
+  ENDMETHOD.
+ENDCLASS.
+
+
+CLASS ltcl_test DEFINITION
+  FINAL
+  FOR TESTING
+  RISK LEVEL HARMLESS
+  DURATION SHORT.
+
+  PRIVATE SECTION.
+    DATA mt_code TYPE string_table.
+    DATA ms_result TYPE scirest_ad.
+    DATA mo_check TYPE REF TO zcl_aoc_check_104.
+
+    METHODS setup.
+
+    METHODS assert_error_code
+      IMPORTING
+        iv_expected_error_code TYPE sci_errc.
+
+    METHODS assert_no_error_code.
+    METHODS execute_check.
+
+    METHODS export_import FOR TESTING.
+    METHODS existing_function FOR TESTING.
+    METHODS not_existing_function FOR TESTING.
+    METHODS without_destination FOR TESTING.
+ENDCLASS.
+
+
+CLASS ltcl_test IMPLEMENTATION.
+  METHOD setup.
+    mo_check = NEW #( NEW ltcl_system_mock( ) ).
+    zcl_aoc_unit_test=>set_check( mo_check ).
+  ENDMETHOD.
+
+
+  METHOD execute_check.
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+  ENDMETHOD.
+
+
+  METHOD export_import.
+    zcl_aoc_unit_test=>export_import( mo_check ).
+  ENDMETHOD.
+
+
+  METHOD assert_error_code.
+    cl_abap_unit_assert=>assert_equals( exp = iv_expected_error_code
+                                        act = ms_result-code ).
+  ENDMETHOD.
+
+
+  METHOD assert_no_error_code.
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.
+
+
+  METHOD existing_function.
+    " Given
+    INSERT |CALL FUNCTION '{ gc_function_modules-existing }' DESTINATION 'RFC'.| INTO TABLE mt_code.
+
+    " When
+    execute_check( ).
+
+    " Then
+    assert_no_error_code( ).
+  ENDMETHOD.
+
+
+  METHOD not_existing_function.
+    " Given
+    INSERT |CALL FUNCTION '{ gc_function_modules-not_existing }' DESTINATION 'RFC'.| INTO TABLE mt_code.
+
+    " When
+    execute_check( ).
+
+    " Then
+    assert_error_code( gc_code-function_module_does_not_exist ).
+  ENDMETHOD.
+
+
+  METHOD without_destination.
+    " Given
+    INSERT |CALL FUNCTION '{ gc_function_modules-not_existing }'.| INTO TABLE mt_code.
+
+    " When
+    execute_check( ).
+
+    " Then: We don't care if DESTINATION was not used
+    assert_no_error_code( ).
+  ENDMETHOD.
+ENDCLASS.
