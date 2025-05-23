@@ -5,4 +5,10 @@ INTERFACE zif_aoc_system
       iv_function_module_name TYPE funcname
     RETURNING
       VALUE(rv_result)        TYPE abap_bool.
+
+  METHODS is_function_module_rfc_enabled
+    IMPORTING
+      iv_function_module_name TYPE funcname
+    RETURNING
+      VALUE(rv_result)        TYPE abap_bool.
 ENDINTERFACE.

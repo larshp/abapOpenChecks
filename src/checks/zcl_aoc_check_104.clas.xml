@@ -19,6 +19,12 @@
      <ENTRY>Function module does not exist locally</ENTRY>
      <LENGTH>76</LENGTH>
     </item>
+    <item>
+     <ID>I</ID>
+     <KEY>002</KEY>
+     <ENTRY>Function module is not RFC-enabled</ENTRY>
+     <LENGTH>68</LENGTH>
+    </item>
    </TPOOL>
   </asx:values>
  </asx:abap>
