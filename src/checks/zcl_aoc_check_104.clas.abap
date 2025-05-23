@@ -100,7 +100,7 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
             RETURN.
           ENDIF.
 
-          IF io_scan->tokens[ is_statement-from + 3 ]-str = zcl_aoc_scan=>gc_keyword-starting.
+          IF io_scan->tokens[ is_statement-from + 3 ]-str <> zcl_aoc_scan=>gc_keyword-starting.
             " The token is not the DESTINATION keyword
             RETURN.
           ENDIF.
