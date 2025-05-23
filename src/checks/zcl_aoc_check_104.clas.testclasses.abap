@@ -70,6 +70,9 @@ CLASS ltcl_test DEFINITION
     METHODS not_existing_function FOR TESTING.
     METHODS without_destination FOR TESTING.
     METHODS existing_function_rfc_disabled FOR TESTING RAISING cx_static_check.
+    METHODS not_confused_with_parameter_1 FOR TESTING RAISING cx_static_check.
+    METHODS not_confused_with_parameter_2 FOR TESTING RAISING cx_static_check.
+    METHODS not_confused_with_task_name FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 
@@ -145,6 +148,41 @@ CLASS ltcl_test IMPLEMENTATION.
     execute_check( ).
 
     " Then: We don't care if DESTINATION was not used
+    assert_no_error_code( ).
+  ENDMETHOD.
+
+  METHOD not_confused_with_parameter_1.
+    " Given: The first parameter is named destination, but the function is not called via RFC
+    INSERT |CALL FUNCTION '{ gc_function_modules-not_existing }' EXPORTING destination = 'A'.| INTO TABLE mt_code.
+
+    " When
+    execute_check( ).
+
+    " Then
+    assert_no_error_code( ).
+  ENDMETHOD.
+
+  METHOD not_confused_with_parameter_2.
+    " Given: The second parameter is named destination, but the function is not called via RFC
+    INSERT |CALL FUNCTION '{ gc_function_modules-not_existing }' EXPORTING a = 'A' destination = 'A'.|
+           INTO TABLE mt_code.
+
+    " When
+    execute_check( ).
+
+    " Then
+    assert_no_error_code( ).
+  ENDMETHOD.
+
+
+  METHOD not_confused_with_task_name.
+    " Given: A task is named destination, but the function is not called via RFC (far-fetched, but possible)
+    INSERT |CALL FUNCTION '{ gc_function_modules-not_existing }' STARTING NEW TASK destination.| INTO TABLE mt_code.
+
+    " When
+    execute_check( ).
+
+    " Then
     assert_no_error_code( ).
   ENDMETHOD.
 ENDCLASS.
