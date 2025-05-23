@@ -40,7 +40,7 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
            WHERE str = zcl_aoc_scan=>gc_keyword-destination.
 
         TRY.
-            IF     io_scan->tokens[ <ls_statement>-from ]-str     = zcl_aoc_scan=>gc_keyword-call
+            IF io_scan->tokens[ <ls_statement>-from ]-str = zcl_aoc_scan=>gc_keyword-call
                AND io_scan->tokens[ <ls_statement>-from + 1 ]-str = zcl_aoc_scan=>gc_keyword-function.
 
               ASSIGN io_scan->tokens[ <ls_statement>-from + 2 ] TO FIELD-SYMBOL(<ls_token_function_name>).
