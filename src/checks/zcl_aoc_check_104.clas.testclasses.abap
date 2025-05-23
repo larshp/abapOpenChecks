@@ -1,6 +1,7 @@
 CONSTANTS: BEGIN OF gc_function_modules,
-             existing     TYPE funcname VALUE 'ZEXISTING',
-             not_existing TYPE funcname VALUE 'ZNOTEXISTING',
+             existing_rfc_enabled  TYPE funcname VALUE 'ZEXISTING_RFC_ENABLED',
+             existing_rfc_disabled TYPE funcname VALUE 'ZEXISTING_RFC_DISABLED',
+             not_existing          TYPE funcname VALUE 'ZNOTEXISTING',
            END OF gc_function_modules.
 
 CLASS ltcl_system_mock DEFINITION FOR TESTING.
@@ -22,9 +23,24 @@ ENDCLASS.
 CLASS ltcl_system_mock IMPLEMENTATION.
   METHOD zif_aoc_system~is_function_module_existing.
     rv_result = SWITCH #( iv_function_module_name
-                          WHEN gc_function_modules-existing     THEN abap_true
-                          WHEN gc_function_modules-not_existing THEN abap_false
-                          ELSE THROW ltcl_x_not_supported( ) ).
+                          WHEN gc_function_modules-existing_rfc_enabled
+                            OR gc_function_modules-existing_rfc_disabled
+                            THEN abap_true
+                          WHEN gc_function_modules-not_existing
+                            THEN abap_false
+                          ELSE
+                            THROW ltcl_x_not_supported( ) ).
+  ENDMETHOD.
+
+
+  METHOD zif_aoc_system~is_function_module_rfc_enabled.
+    rv_result = SWITCH #( iv_function_module_name
+                          WHEN gc_function_modules-existing_rfc_enabled
+                            THEN abap_true
+                          WHEN gc_function_modules-existing_rfc_disabled
+                            THEN abap_false
+                          ELSE
+                            THROW ltcl_x_not_supported( ) ).
   ENDMETHOD.
 ENDCLASS.
 
@@ -50,9 +66,10 @@ CLASS ltcl_test DEFINITION
     METHODS execute_check.
 
     METHODS export_import FOR TESTING.
-    METHODS existing_function FOR TESTING.
+    METHODS existing_function_rfc_enabled FOR TESTING.
     METHODS not_existing_function FOR TESTING.
     METHODS without_destination FOR TESTING.
+    METHODS existing_function_rfc_disabled FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 
@@ -84,15 +101,27 @@ CLASS ltcl_test IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD existing_function.
+  METHOD existing_function_rfc_enabled.
     " Given
-    INSERT |CALL FUNCTION '{ gc_function_modules-existing }' DESTINATION 'RFC'.| INTO TABLE mt_code.
+    INSERT |CALL FUNCTION '{ gc_function_modules-existing_rfc_enabled }' DESTINATION 'RFC'.| INTO TABLE mt_code.
 
     " When
     execute_check( ).
 
     " Then
     assert_no_error_code( ).
+  ENDMETHOD.
+
+
+  METHOD existing_function_rfc_disabled.
+    " Given
+    INSERT |CALL FUNCTION '{ gc_function_modules-existing_rfc_disabled }' DESTINATION 'RFC'.| INTO TABLE mt_code.
+
+    " When
+    execute_check( ).
+
+    " Then
+    assert_error_code( gc_code-rfc_not_enabled ).
   ENDMETHOD.
 
 

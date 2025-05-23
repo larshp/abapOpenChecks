@@ -29,6 +29,9 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
 
     insert_scimessage( iv_code = gc_code-function_module_does_not_exist
                        iv_text = TEXT-001 ).
+
+    insert_scimessage( iv_code = gc_code-rfc_not_enabled
+                       iv_text = TEXT-002 ).
   ENDMETHOD.
 
 
@@ -48,15 +51,23 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
               DATA(lv_function_module_name_length) = strlen( <ls_token_function_name>-str ) - 2.
               DATA(lv_function_module_name) = <ls_token_function_name>-str+1(lv_function_module_name_length).
 
-              IF mo_system->is_function_module_existing( CONV #( lv_function_module_name ) ) = abap_false.
-                DATA(lv_include) = io_scan->get_include( <ls_statement>-level ).
+              DATA(lv_error_code) = VALUE sci_errc( ).
 
-                inform( p_sub_obj_name = lv_include
-                        p_line         = <ls_token_function_name>-row
-                        p_kind         = mv_errty
-                        p_test         = myname
-                        p_code         = gc_code-function_module_does_not_exist ).
+              IF mo_system->is_function_module_existing( CONV #( lv_function_module_name ) ) = abap_false.
+                lv_error_code = gc_code-function_module_does_not_exist.
+              ELSEIF mo_system->is_function_module_rfc_enabled( CONV #( lv_function_module_name ) ) = abap_false.
+                lv_error_code = gc_code-rfc_not_enabled.
+              ELSE.
+                CONTINUE.
               ENDIF.
+
+              DATA(lv_include) = io_scan->get_include( <ls_statement>-level ).
+
+              inform( p_sub_obj_name = lv_include
+                      p_line         = <ls_token_function_name>-row
+                      p_kind         = mv_errty
+                      p_test         = myname
+                      p_code         = lv_error_code ).
             ENDIF.
           CATCH cx_sy_itab_line_not_found.
             " Does not match function module call syntax, ignore

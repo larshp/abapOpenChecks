@@ -21,4 +21,18 @@ CLASS zcl_aoc_local_system IMPLEMENTATION.
       rv_result = abap_true.
     ENDIF.
   ENDMETHOD.
+
+
+  METHOD zif_aoc_system~is_function_module_rfc_enabled.
+    DATA lv_dummy TYPE funcname ##NEEDED.
+    SELECT SINGLE funcname
+      FROM tfdir
+      INTO lv_dummy
+      WHERE funcname = iv_function_module_name
+        AND fmode    = 'R'.
+
+    IF sy-subrc = 0.
+      rv_result = abap_true.
+    ENDIF.
+  ENDMETHOD.
 ENDCLASS.
