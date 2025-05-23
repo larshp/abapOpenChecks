@@ -88,7 +88,7 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
   METHOD is_destination_in_rfc_call.
     TRY.
         IF io_scan->tokens[ is_statement-from ]-str <> zcl_aoc_scan=>gc_keyword-call
-           OR io_scan->tokens[ is_statement-from + 1 ]-str <> zcl_aoc_scan=>gc_keyword-function.
+            OR io_scan->tokens[ is_statement-from + 1 ]-str <> zcl_aoc_scan=>gc_keyword-function.
           " The token is not in a CALL FUNCTION statement
           RETURN.
         ENDIF.
