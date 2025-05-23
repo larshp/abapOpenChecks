@@ -10,12 +10,12 @@ CLASS ltcl_system_mock DEFINITION FOR TESTING.
 ENDCLASS.
 
 
-CLASS ltcx_not_supported DEFINITION
+CLASS ltcl_x_not_supported DEFINITION
   INHERITING FROM cx_no_check FOR TESTING.
 ENDCLASS.
 
 
-CLASS ltcx_not_supported IMPLEMENTATION.
+CLASS ltcl_x_not_supported IMPLEMENTATION.
 ENDCLASS.
 
 
@@ -24,7 +24,7 @@ CLASS ltcl_system_mock IMPLEMENTATION.
     rv_result = SWITCH #( iv_function_module_name
                           WHEN gc_function_modules-existing     THEN abap_true
                           WHEN gc_function_modules-not_existing THEN abap_false
-                          ELSE THROW ltcx_not_supported( ) ).
+                          ELSE THROW ltcl_x_not_supported( ) ).
   ENDMETHOD.
 ENDCLASS.
 
