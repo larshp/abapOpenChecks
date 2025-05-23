@@ -81,6 +81,7 @@ CLASS zcl_aoc_scan DEFINITION
                  function          TYPE string VALUE 'FUNCTION',
                  move              TYPE string VALUE 'MOVE',
                  to                TYPE string VALUE 'TO',
+                 destination       TYPE string VALUE 'DESTINATION',
                END OF gc_keyword.
 
     TYPES:
