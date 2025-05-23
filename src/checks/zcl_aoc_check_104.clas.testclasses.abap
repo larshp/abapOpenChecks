@@ -164,7 +164,8 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD not_confused_with_parameter_2.
     " Given: The second parameter is named destination, but the function is not called via RFC
-    INSERT |CALL FUNCTION '{ gc_function_modules-not_existing }' EXPORTING a = 'A' destination = 'A'.| INTO TABLE mt_code.
+    INSERT |CALL FUNCTION '{ gc_function_modules-not_existing }' EXPORTING a = 'A' destination = 'A'.|
+           INTO TABLE mt_code.
 
     " When
     execute_check( ).
