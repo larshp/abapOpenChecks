@@ -66,7 +66,7 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
 
         ASSIGN io_scan->tokens[ <ls_statement>-from + 2 ] TO FIELD-SYMBOL(<ls_token_function_name>).
 
-        IF is_dynamic_func_module_name( <ls_token_function_name>-str ).
+        IF is_dynamic_func_module_name( <ls_token_function_name>-str ) = abap_true.
           CONTINUE.
         ENDIF.
 
