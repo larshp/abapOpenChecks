@@ -25,6 +25,12 @@
      <ENTRY>Function module is not RFC-enabled</ENTRY>
      <LENGTH>68</LENGTH>
     </item>
+    <item>
+     <ID>I</ID>
+     <KEY>003</KEY>
+     <ENTRY>Error when calling RFC function</ENTRY>
+     <LENGTH>62</LENGTH>
+    </item>
    </TPOOL>
   </asx:values>
  </asx:abap>

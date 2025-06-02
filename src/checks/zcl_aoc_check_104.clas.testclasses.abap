@@ -2,6 +2,7 @@ CONSTANTS: BEGIN OF gc_function_modules,
              existing_rfc_enabled  TYPE funcname VALUE 'ZEXISTING_RFC_ENABLED',
              existing_rfc_disabled TYPE funcname VALUE 'ZEXISTING_RFC_DISABLED',
              not_existing          TYPE funcname VALUE 'ZNOTEXISTING',
+             triggers_rfc_error    TYPE funcname VALUE 'ZTRIGGER_RFC_ERROR',
            END OF gc_function_modules.
 
 CLASS ltcl_system_mock DEFINITION FOR TESTING.
@@ -21,26 +22,19 @@ ENDCLASS.
 
 
 CLASS ltcl_system_mock IMPLEMENTATION.
-  METHOD zif_aoc_system~is_function_module_existing.
-    rv_result = SWITCH #( iv_function_module_name
-                          WHEN gc_function_modules-existing_rfc_enabled
-                            OR gc_function_modules-existing_rfc_disabled
-                            THEN abap_true
-                          WHEN gc_function_modules-not_existing
-                            THEN abap_false
-                          ELSE
-                            THROW ltcl_x_not_supported( ) ).
-  ENDMETHOD.
-
-
   METHOD zif_aoc_system~is_function_module_rfc_enabled.
-    rv_result = SWITCH #( iv_function_module_name
-                          WHEN gc_function_modules-existing_rfc_enabled
-                            THEN abap_true
-                          WHEN gc_function_modules-existing_rfc_disabled
-                            THEN abap_false
-                          ELSE
-                            THROW ltcl_x_not_supported( ) ).
+    CASE iv_function_module_name.
+      WHEN gc_function_modules-existing_rfc_enabled.
+        rv_result = abap_true.
+      WHEN gc_function_modules-existing_rfc_disabled.
+        rv_result = abap_false.
+      WHEN gc_function_modules-not_existing.
+        RAISE EXCEPTION TYPE zcx_aoc_object_not_found.
+      WHEN gc_function_modules-triggers_rfc_error.
+        RAISE EXCEPTION TYPE zcx_aoc_rfc_error.
+      WHEN OTHERS.
+        RAISE EXCEPTION TYPE ltcl_x_not_supported.
+    ENDCASE.
   ENDMETHOD.
 ENDCLASS.
 
@@ -75,6 +69,7 @@ CLASS ltcl_test DEFINITION
     METHODS not_confused_with_task_name FOR TESTING RAISING cx_static_check.
     METHODS ignore_dynamic_function_name FOR TESTING RAISING cx_static_check.
     METHODS handle_alternative_notation FOR TESTING RAISING cx_static_check.
+    METHODS handle_rfc_error FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 
@@ -213,4 +208,16 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_error_code( gc_code-rfc_not_enabled ).
   ENDMETHOD.
+
+  METHOD handle_rfc_error.
+    " Given: System mock is set up to raise an RFC error for this function module
+    INSERT |CALL FUNCTION '{ gc_function_modules-triggers_rfc_error }' DESTINATION 'RFC'.| INTO TABLE mt_code.
+
+    " When
+    execute_check( ).
+
+    " Then
+    assert_error_code( gc_code-rfc_error ).
+  ENDMETHOD.
+
 ENDCLASS.
