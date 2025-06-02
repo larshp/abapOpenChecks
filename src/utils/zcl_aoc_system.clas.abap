@@ -1,4 +1,4 @@
-"! <p class="shorttext synchronized">Local system</p>
+"! <p class="shorttext synchronized">System</p>
 CLASS zcl_aoc_system DEFINITION
   PUBLIC
   FINAL
