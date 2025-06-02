@@ -73,6 +73,8 @@ CLASS ltcl_test DEFINITION
     METHODS not_confused_with_parameter_1 FOR TESTING RAISING cx_static_check.
     METHODS not_confused_with_parameter_2 FOR TESTING RAISING cx_static_check.
     METHODS not_confused_with_task_name FOR TESTING RAISING cx_static_check.
+    METHODS ignore_dynamic_function_name FOR TESTING RAISING cx_static_check.
+    METHODS handle_alternative_notation FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 
@@ -151,6 +153,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_no_error_code( ).
   ENDMETHOD.
 
+
   METHOD not_confused_with_parameter_1.
     " Given: The first parameter is named destination, but the function is not called via RFC
     INSERT |CALL FUNCTION '{ gc_function_modules-not_existing }' EXPORTING destination = 'A'.| INTO TABLE mt_code.
@@ -161,6 +164,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_no_error_code( ).
   ENDMETHOD.
+
 
   METHOD not_confused_with_parameter_2.
     " Given: The second parameter is named destination, but the function is not called via RFC
@@ -184,5 +188,29 @@ CLASS ltcl_test IMPLEMENTATION.
 
     " Then
     assert_no_error_code( ).
+  ENDMETHOD.
+
+
+  METHOD ignore_dynamic_function_name.
+    " Given
+    INSERT |CALL FUNCTION variable_name DESTINATION 'RFC'.| INTO TABLE mt_code.
+
+    " When
+    execute_check( ).
+
+    " Then
+    assert_no_error_code( ).
+  ENDMETHOD.
+
+
+  METHOD handle_alternative_notation.
+    " Given: Like EXISTING_FUNCTION_RFC_DISABLED, but ` is used instead of the typical '
+    INSERT |CALL FUNCTION `{ gc_function_modules-existing_rfc_disabled }` DESTINATION 'RFC'.| INTO TABLE mt_code.
+
+    " When
+    execute_check( ).
+
+    " Then
+    assert_error_code( gc_code-rfc_not_enabled ).
   ENDMETHOD.
 ENDCLASS.

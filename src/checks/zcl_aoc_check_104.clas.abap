@@ -21,6 +21,12 @@ CLASS zcl_aoc_check_104 DEFINITION
         iv_token_index   TYPE syst_tabix
       RETURNING
         VALUE(rv_result) TYPE abap_bool.
+
+    METHODS is_dynamic_func_module_name
+      IMPORTING
+        iv_name          TYPE string
+      RETURNING
+        VALUE(rv_result) TYPE abap_bool.
 ENDCLASS.
 
 
@@ -59,6 +65,10 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
         ENDIF.
 
         ASSIGN io_scan->tokens[ <ls_statement>-from + 2 ] TO FIELD-SYMBOL(<ls_token_function_name>).
+
+        IF is_dynamic_func_module_name( <ls_token_function_name>-str ).
+          CONTINUE.
+        ENDIF.
 
         DATA(lv_function_module_name_length) = strlen( <ls_token_function_name>-str ) - 2.
         DATA(lv_function_module_name) = <ls_token_function_name>-str+1(lv_function_module_name_length).
@@ -111,5 +121,12 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
 
     " All previous checks have passed
     rv_result = abap_true.
+  ENDMETHOD.
+
+
+  METHOD is_dynamic_func_module_name.
+    IF iv_name(1) <> '`' AND iv_name(1) <> `'`.
+      rv_result = abap_true.
+    ENDIF.
   ENDMETHOD.
 ENDCLASS.
