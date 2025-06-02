@@ -3,9 +3,10 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_AOC_LOCAL_SYSTEM</CLSNAME>
+    <CLSNAME>ZCX_AOC_OBJECT_NOT_FOUND</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Local system</DESCRIPT>
+    <DESCRIPT>Raised when object was not found</DESCRIPT>
+    <CATEGORY>40</CATEGORY>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

@@ -34,9 +34,13 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
   METHOD constructor.
     super->constructor( ).
 
+    enable_rfc( ).
+
+    DATA(lv_destination) = zcl_aoc_super=>get_destination( ).
+
     mo_system = COND #( WHEN io_system IS BOUND
                         THEN io_system
-                        ELSE NEW zcl_aoc_local_system( ) ).
+                        ELSE NEW zcl_aoc_system( lv_destination ) ).
 
     version = '001'.
     position = '104'.
@@ -46,6 +50,9 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
 
     insert_scimessage( iv_code = gc_code-rfc_not_enabled
                        iv_text = TEXT-002 ).
+
+    insert_scimessage( iv_code = gc_code-rfc_error
+                       iv_text = TEXT-003 ).
   ENDMETHOD.
 
 
@@ -75,13 +82,17 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
 
         DATA(lv_error_code) = VALUE sci_errc( ).
 
-        IF mo_system->is_function_module_existing( CONV #( lv_function_module_name ) ) = abap_false.
-          lv_error_code = gc_code-function_module_does_not_exist.
-        ELSEIF mo_system->is_function_module_rfc_enabled( CONV #( lv_function_module_name ) ) = abap_false.
-          lv_error_code = gc_code-rfc_not_enabled.
-        ELSE.
-          CONTINUE.
-        ENDIF.
+        TRY.
+            IF mo_system->is_function_module_rfc_enabled( CONV #( lv_function_module_name ) ) = abap_false.
+              lv_error_code = gc_code-rfc_not_enabled.
+            ELSE.
+              CONTINUE.
+            ENDIF.
+          CATCH zcx_aoc_object_not_found.
+            lv_error_code = gc_code-function_module_does_not_exist.
+          CATCH zcx_aoc_rfc_error.
+            lv_error_code = gc_code-rfc_error.
+        ENDTRY.
 
         DATA(lv_include) = io_scan->get_include( <ls_statement>-level ).
 
