@@ -16,13 +16,13 @@
     <item>
      <ID>I</ID>
      <KEY>001</KEY>
-     <ENTRY>Function module does not exist locally</ENTRY>
+     <ENTRY>Function module &amp;1 does not exist locally</ENTRY>
      <LENGTH>76</LENGTH>
     </item>
     <item>
      <ID>I</ID>
      <KEY>002</KEY>
-     <ENTRY>Function module is not RFC-enabled</ENTRY>
+     <ENTRY>Function module &amp;1 is not RFC-enabled</ENTRY>
      <LENGTH>68</LENGTH>
     </item>
     <item>
