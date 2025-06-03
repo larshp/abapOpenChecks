@@ -100,7 +100,8 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
                 p_line         = <ls_token_function_name>-row
                 p_kind         = mv_errty
                 p_test         = myname
-                p_code         = lv_error_code ).
+                p_code         = lv_error_code
+                p_param_1      = lv_function_module_name ).
       ENDLOOP.
     ENDLOOP.
   ENDMETHOD.
