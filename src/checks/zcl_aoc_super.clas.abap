@@ -496,10 +496,9 @@ CLASS zcl_aoc_super IMPLEMENTATION.
         RETURN. " custom HR infotype includes
       ENDIF.
 
-      IF cl_enh_badi_def_utility=>is_sap_system( ) = abap_false.
-        IF is_active_version_by_sap( p_sub_obj_name ).
-          RETURN.
-        ENDIF.
+      IF cl_enh_badi_def_utility=>is_sap_system( ) = abap_false
+          AND is_active_version_by_sap( p_sub_obj_name ) = abap_true.
+        RETURN.
       ENDIF.
     ENDIF.
 
