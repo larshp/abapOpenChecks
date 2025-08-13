@@ -359,7 +359,11 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
     ENDIF.
 
     IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = abap_false.
-      lv_name = get_token_rel( 4 ).
+      IF get_token_rel( 4 ) = 'ENUM' AND get_token_rel( 5 ) IS NOT INITIAL.
+        lv_name = get_token_rel( 5 ).
+      ELSE.
+        lv_name = get_token_rel( 4 ).
+      ENDIF.
       mv_begin = 1.
     ELSEIF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF'.
       mv_begin = mv_begin + 1.
@@ -409,7 +413,11 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
     lv_name = get_token_rel( 2 ).
 
     IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = 0.
-      lv_name = get_token_rel( 4 ).
+      IF get_token_rel( 4 ) = 'ENUM' AND get_token_rel( 5 ) IS NOT INITIAL.
+        lv_name = get_token_rel( 5 ).
+      ELSE.
+        lv_name = get_token_rel( 4 ).
+      ENDIF.
       mv_begin = 1.
       IF get_token_rel( 4 ) = 'COMMON' AND get_token_rel( 5 ) = 'PART'.
         RETURN.
@@ -814,7 +822,11 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
     lv_name = get_token_rel( 2 ).
 
     IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = 0.
-      lv_name = get_token_rel( 4 ).
+      IF get_token_rel( 4 ) = 'ENUM' AND get_token_rel( 5 ) IS NOT INITIAL.
+        lv_name = get_token_rel( 5 ).
+      ELSE.
+        lv_name = get_token_rel( 4 ).
+      ENDIF.
       mv_begin = 1.
     ELSEIF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF'.
       mv_begin = mv_begin + 1.
