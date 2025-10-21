@@ -128,10 +128,14 @@ CLASS zcl_aoc_check_01 IMPLEMENTATION.
     ENDIF.
 
     IF lv_if = 1 AND lv_other = 0.
-      lv_include = io_scan->get_include( io_structure->get_statement( )-level ).
+      lv_level = io_structure->get_statement( )-level.
+      lv_include = io_scan->get_include( lv_level ).
 
       lv_row = io_structure->get_statement( )-row.
-      READ TABLE io_scan->statements WITH KEY trow = lv_row TRANSPORTING NO FIELDS.
+      READ TABLE io_scan->statements
+        WITH KEY trow = lv_row
+                 level = lv_level
+        TRANSPORTING NO FIELDS.
       lv_position = sy-tabix.
 
       inform( p_sub_obj_name = lv_include
