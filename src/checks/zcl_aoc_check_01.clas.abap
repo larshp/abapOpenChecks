@@ -92,7 +92,8 @@ CLASS zcl_aoc_check_01 IMPLEMENTATION.
           lv_if        TYPE i,
           lv_other     TYPE i,
           lv_row       TYPE token_row,
-          lv_position  LIKE sy-tabix.
+          lv_position  LIKE sy-tabix,
+          lv_level     TYPE level_levl.
 
 
     IF io_structure->get_type( ) = zcl_aoc_scan=>gc_structure_statement-if
