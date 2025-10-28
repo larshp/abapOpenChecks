@@ -15,6 +15,8 @@ INTERFACE zif_aoc_system
       iv_function_module_name TYPE funcname
       iv_blocklist_package    TYPE devclass
     RETURNING
-      VALUE(rv_result)        TYPE abap_bool.
+      VALUE(rv_result)        TYPE abap_bool
+    RAISING
+      zcx_aoc_rfc_error.
 
 ENDINTERFACE.

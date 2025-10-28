@@ -10,12 +10,13 @@
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
     <UNICODE>X</UNICODE>
+    <WITH_UNIT_TESTS>X</WITH_UNIT_TESTS>
    </VSEOCLASS>
    <TPOOL>
     <item>
      <ID>I</ID>
      <KEY>001</KEY>
-     <ENTRY>Function module &amp;1 is on RFC blocklist</ENTRY>
+     <ENTRY>The called function module &amp;1 is on the RFC blocklist</ENTRY>
      <LENGTH>76</LENGTH>
     </item>
    </TPOOL>
