@@ -45,4 +45,22 @@ CLASS zcl_aoc_system IMPLEMENTATION.
         RAISE EXCEPTION TYPE zcx_aoc_rfc_error.
     ENDCASE.
   ENDMETHOD.
+
+
+  METHOD zif_aoc_system~is_function_module_rfc_blocked.
+    CALL FUNCTION 'ZAOC_IS_FUNCTION_MOD_RFC_BLOCK'
+      DESTINATION mv_rfc_destination
+      EXPORTING
+        iv_function_module_name = iv_function_module_name
+        iv_blocklist_package    = iv_blocklist_package
+      IMPORTING
+        ev_is_on_rfc_blocklist  = rv_result
+      EXCEPTIONS
+        system_failure          = 1
+        communication_failure   = 2.
+
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_aoc_rfc_error.
+    ENDIF.
+  ENDMETHOD.
 ENDCLASS.
