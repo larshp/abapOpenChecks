@@ -8,7 +8,7 @@ CONSTANTS: BEGIN OF gc_function_modules,
 CLASS ltcl_system_mock DEFINITION FOR TESTING.
 
   PUBLIC SECTION.
-    INTERFACES zif_aoc_system.
+    INTERFACES zif_aoc_system PARTIALLY IMPLEMENTED.
 ENDCLASS.
 
 
