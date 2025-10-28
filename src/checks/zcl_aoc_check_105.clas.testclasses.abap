@@ -8,7 +8,7 @@ CONSTANTS gc_rfc_blocklist TYPE devclass VALUE 'BLOCKLIST'.
 CLASS ltcl_system_mock DEFINITION FOR TESTING.
 
   PUBLIC SECTION.
-    INTERFACES zif_aoc_system PARTIALLY IMPLEMENTED.
+    INTERFACES zif_aoc_system.
 ENDCLASS.
 
 
@@ -37,6 +37,11 @@ CLASS ltcl_system_mock IMPLEMENTATION.
       WHEN OTHERS.
         RAISE EXCEPTION TYPE ltcl_x_not_supported.
     ENDCASE.
+  ENDMETHOD.
+
+
+  METHOD zif_aoc_system~is_function_module_rfc_enabled.
+    RAISE EXCEPTION TYPE ltcl_x_not_supported.
   ENDMETHOD.
 ENDCLASS.
 
