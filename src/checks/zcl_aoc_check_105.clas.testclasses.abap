@@ -79,9 +79,9 @@ ENDCLASS.
 
 CLASS ltcl_test IMPLEMENTATION.
   METHOD setup.
-    mo_check = NEW #( NEW ltcl_system_mock( ) ).
-
     DATA lv_attributes TYPE xstring.
+
+    mo_check = NEW #( NEW ltcl_system_mock( ) ).
 
     EXPORT mv_errty                 = 'E'
            mv_rfc_blocklist_package = gc_rfc_blocklist
