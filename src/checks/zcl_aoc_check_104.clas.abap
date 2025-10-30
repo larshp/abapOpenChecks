@@ -38,9 +38,6 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
 
     insert_scimessage( iv_code = gc_code-rfc_not_enabled
                        iv_text = TEXT-002 ).
-
-    insert_scimessage( iv_code = gc_code-rfc_error
-                       iv_text = TEXT-003 ).
   ENDMETHOD.
 
 
@@ -81,8 +78,6 @@ CLASS zcl_aoc_check_104 IMPLEMENTATION.
             ENDIF.
           CATCH zcx_aoc_object_not_found.
             lv_error_code = gc_code-function_module_does_not_exist.
-          CATCH zcx_aoc_rfc_error.
-            lv_error_code = gc_code-rfc_error.
         ENDTRY.
 
         DATA(lv_include) = io_scan->get_include( <ls_statement>-level ).

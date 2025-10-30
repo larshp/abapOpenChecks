@@ -207,12 +207,16 @@ CLASS ltcl_test IMPLEMENTATION.
 
 
   METHOD handle_rfc_error.
-    cl_abap_unit_assert=>skip( 'Implement this when ZCX_AOC_RFC_ERROR was changed to an unchecked exception' ).
-
     " Given: System mock is set up to raise an RFC error for this function module
     INSERT |CALL FUNCTION '{ gc_function_modules-triggers_rfc_error }' DESTINATION 'RFC'.| INTO TABLE mt_code.
 
     " When
-    execute_check( ).
+    TRY.
+        execute_check( ).
+      CATCH zcx_aoc_rfc_error INTO DATA(lo_rfc_exception). "#EC EMPTY_CATCH
+    ENDTRY.
+
+    " Then
+    cl_abap_unit_assert=>assert_bound( lo_rfc_exception ).
   ENDMETHOD.
 ENDCLASS.

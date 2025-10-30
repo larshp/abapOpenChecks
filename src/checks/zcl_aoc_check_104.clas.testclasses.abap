@@ -214,10 +214,13 @@ CLASS ltcl_test IMPLEMENTATION.
     INSERT |CALL FUNCTION '{ gc_function_modules-triggers_rfc_error }' DESTINATION 'RFC'.| INTO TABLE mt_code.
 
     " When
-    execute_check( ).
+    TRY.
+        execute_check( ).
+      CATCH zcx_aoc_rfc_error INTO DATA(lo_rfc_exception). "#EC EMPTY_CATCH
+    ENDTRY.
 
     " Then
-    assert_error_code( gc_code-rfc_error ).
+    cl_abap_unit_assert=>assert_bound( lo_rfc_exception ).
   ENDMETHOD.
 
 ENDCLASS.
