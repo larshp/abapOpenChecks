@@ -111,12 +111,16 @@ CLASS zcl_aoc_super DEFINITION
     METHODS set_uses_checksum
       IMPORTING
         !iv_enable TYPE abap_bool DEFAULT abap_true.
-
+    METHODS is_active_version_by_sap
+      IMPORTING
+        iv_program_name  TYPE progname
+      RETURNING
+        VALUE(rv_result) TYPE abap_bool.
 ENDCLASS.
 
 
 
-CLASS ZCL_AOC_SUPER IMPLEMENTATION.
+CLASS zcl_aoc_super IMPLEMENTATION.
 
 
   METHOD check.
@@ -492,15 +496,9 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
         RETURN. " custom HR infotype includes
       ENDIF.
 
-      IF cl_enh_badi_def_utility=>is_sap_system( ) = abap_false.
-        SELECT SINGLE cnam FROM reposrc INTO lv_cnam
-          WHERE progname = p_sub_obj_name AND r3state = 'A'.
-        IF sy-subrc = 0
-            AND ( lv_cnam = 'SAP'
-            OR lv_cnam = 'SAP*'
-            OR lv_cnam = 'DDIC' ).
-          RETURN.
-        ENDIF.
+      IF cl_enh_badi_def_utility=>is_sap_system( ) = abap_false
+          AND is_active_version_by_sap( p_sub_obj_name ) = abap_true.
+        RETURN.
       ENDIF.
     ENDIF.
 
@@ -739,4 +737,29 @@ CLASS ZCL_AOC_SUPER IMPLEMENTATION.
     ENDIF.
 
   ENDMETHOD.
+
+  METHOD is_active_version_by_sap.
+    DATA lv_author TYPE cnam.
+
+    CALL FUNCTION 'ZAOC_GET_AUTHOR_OF_ACTIVE_VERS'
+      DESTINATION rfc_destination
+      EXPORTING
+        iv_program_name   = iv_program_name
+      IMPORTING
+        ev_author         = lv_author
+      EXCEPTIONS
+        no_active_version = 1
+        OTHERS            = 2.
+
+    IF sy-subrc <> 0.
+      " Ignore for now
+      RETURN.
+    ENDIF.
+
+    CASE lv_author.
+      WHEN 'SAP' OR 'SAP*' OR 'DDIC'.
+        rv_result = abap_true.
+    ENDCASE.
+  ENDMETHOD.
+
 ENDCLASS.
