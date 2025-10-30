@@ -1,7 +1,12 @@
 "! <p class="shorttext synchronized">Raised when RFC error occurs</p>
+"! <p>
+"! This exception inherits from CX_NO_CHECK because we want to cause a runtime error on purpose.
+"! Runtime errors show up as "check failures" in the ATC result to indicate that the check itself was not successful.
+"! It is better to explicitly cause a "check failure" than to mix this with the regular findings.
+"! </p>
 CLASS zcx_aoc_rfc_error DEFINITION
   PUBLIC
-  INHERITING FROM cx_static_check
+  INHERITING FROM cx_no_check
   FINAL
   CREATE PUBLIC.
 
