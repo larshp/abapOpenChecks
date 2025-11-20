@@ -76,8 +76,6 @@ CLASS zcl_aoc_check_105 IMPLEMENTATION.
         DATA(lv_function_module_name_length) = strlen( <ls_token_function_name>-str ) - 2.
         DATA(lv_function_module_name) = <ls_token_function_name>-str+1(lv_function_module_name_length).
 
-        " TODO: Convert ZCX_AOC_RFC_ERROR to an unchecked exception.
-        "       We want the runtime error to cause a check error instead of a regular finding.
         DATA(lv_is_rfc_blocked) = mo_system->is_function_module_rfc_blocked(
                                       iv_function_module_name = CONV #( lv_function_module_name )
                                       iv_blocklist_package    = mv_rfc_blocklist_package ).
