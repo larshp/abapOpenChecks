@@ -55,6 +55,7 @@ CLASS ZCL_AOC_SUPER_ROOT IMPLEMENTATION.
     ENDIF.
 
     category = 'ZCL_AOC_CATEGORY'.
+    has_documentation = abap_true.
     mv_errty = 'E'.
 
   ENDMETHOD.
