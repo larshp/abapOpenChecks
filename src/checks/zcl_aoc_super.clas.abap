@@ -78,6 +78,10 @@ CLASS zcl_aoc_super DEFINITION
 
     METHODS inform
         REDEFINITION .
+
+    METHODS set_uses_checksum
+      IMPORTING
+        !iv_enable TYPE abap_bool DEFAULT abap_true.
   PRIVATE SECTION.
 
     TYPES:
@@ -108,9 +112,6 @@ CLASS zcl_aoc_super DEFINITION
         !iv_position       TYPE int4
       RETURNING
         VALUE(rv_checksum) TYPE int4.
-    METHODS set_uses_checksum
-      IMPORTING
-        !iv_enable TYPE abap_bool DEFAULT abap_true.
 
 ENDCLASS.
 
