@@ -26,6 +26,13 @@
      <TDLINE>MIT License</TDLINE>
     </TLINE>
    </LINES>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>GC_NAME_USES_CHECKSUM</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Name of the attribute USES_CHECKSUM which doesn&apos;t exist on l</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
 </abapGit>

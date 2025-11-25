@@ -38,8 +38,6 @@ CLASS zcl_aoc_check_102 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_checksum( ).
-    set_uses_checksum( ).
-
     enable_rfc( ).
 
     mt_error_code_map = VALUE #( ( usage_kind = zcl_aoc_sy_variable_analyzer=>gc_usage_kind-usage_uncategorized
