@@ -80,9 +80,8 @@ CLASS zcl_aoc_super DEFINITION
         REDEFINITION .
 
 
-  PRIVATE SECTION.
-    "! <p class="shorttext synchronized">Name of attribute USES_CHECKSUM</p>
-    "! <p>This attribute doesn't exist on older releases.</p>
+private section.
+    "! Name of attribute USES_CHECKSUM which doesn't exist on older releases.
     CONSTANTS gc_name_uses_checksum TYPE string VALUE 'USES_CHECKSUM' ##NO_TEXT.
 
     TYPES:
@@ -112,12 +111,11 @@ CLASS zcl_aoc_super DEFINITION
         !iv_position       TYPE int4
       RETURNING
         VALUE(rv_checksum) TYPE int4.
-
 ENDCLASS.
 
 
 
-CLASS zcl_aoc_super IMPLEMENTATION.
+CLASS ZCL_AOC_SUPER IMPLEMENTATION.
 
 
   METHOD check.
@@ -729,6 +727,4 @@ CLASS zcl_aoc_super IMPLEMENTATION.
     INSERT ls_source INTO TABLE mt_source.
 
   ENDMETHOD.
-
-
 ENDCLASS.
