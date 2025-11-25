@@ -80,7 +80,7 @@ CLASS zcl_aoc_super DEFINITION
         REDEFINITION .
 
 
-private section.
+  PRIVATE SECTION.
     "! Name of attribute USES_CHECKSUM which doesn't exist on older releases.
     CONSTANTS gc_name_uses_checksum TYPE string VALUE 'USES_CHECKSUM' ##NO_TEXT.
 
