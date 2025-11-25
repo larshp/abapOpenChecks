@@ -37,6 +37,7 @@ CLASS zcl_aoc_check_102 IMPLEMENTATION.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
+    enable_checksum( ).
     enable_rfc( ).
 
     mt_error_code_map = VALUE #( ( usage_kind = zcl_aoc_sy_variable_analyzer=>gc_usage_kind-usage_uncategorized
@@ -113,7 +114,8 @@ CLASS zcl_aoc_check_102 IMPLEMENTATION.
 
       DATA(lv_include) = io_scan->get_include( <ls_statement>-level ).
 
-      inform( p_sub_obj_name = lv_include
+      inform( p_position     = <ls_variable_usage>-statement_index
+              p_sub_obj_name = lv_include
               p_line         = <ls_token>-row
               p_kind         = mv_errty
               p_test         = myname
