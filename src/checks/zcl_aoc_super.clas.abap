@@ -81,7 +81,8 @@ CLASS zcl_aoc_super DEFINITION
 
 
   PRIVATE SECTION.
-    "! <p class="shorttext synchronized">Name of the attribute USES_CHECKSUM which doesn't exist on lower releases</p>
+    "! <p class="shorttext synchronized">Name of attribute USES_CHECKSUM</p>
+    "! <p>This attribute doesn't exist on older releases.</p>
     CONSTANTS gc_name_uses_checksum TYPE string VALUE 'USES_CHECKSUM' ##NO_TEXT.
 
     TYPES:

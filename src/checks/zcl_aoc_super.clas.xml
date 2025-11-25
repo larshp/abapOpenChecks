@@ -30,7 +30,7 @@
     <SEOCOMPOTX>
      <CMPNAME>GC_NAME_USES_CHECKSUM</CMPNAME>
      <LANGU>E</LANGU>
-     <DESCRIPT>Name of the attribute USES_CHECKSUM which doesn&apos;t exist on l</DESCRIPT>
+     <DESCRIPT>Name of attribute USES_CHECKSUM</DESCRIPT>
     </SEOCOMPOTX>
    </DESCRIPTIONS>
   </asx:values>
