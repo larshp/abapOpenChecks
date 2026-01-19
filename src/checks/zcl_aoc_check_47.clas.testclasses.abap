@@ -163,7 +163,7 @@ CLASS ltcl_test IMPLEMENTATION.
     _code '  DESTINATION iv_rfc'.
     _code '  PARAMETER-TABLE lt_import'.
     _code '  EXCEPTION-TABLE lt_exceptions'.
-    _code 'IF sy-subrc <>'.
+    _code 'IF sy-subrc <> 0.'.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
     cl_abap_unit_assert=>assert_initial( act = ms_result ).
