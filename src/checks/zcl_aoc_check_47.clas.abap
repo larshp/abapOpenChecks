@@ -68,7 +68,7 @@ CLASS ZCL_AOC_CHECK_47 IMPLEMENTATION.
       " but this would require a pretty high SAP_BASIS release.
       IF lv_statement CP 'CALL FUNCTION *'
           AND lv_fourth    = 'DESTINATION'
-          AND lv_statement NP '* EXCEPTIONS * MESSAGE *'
+          AND lv_statement NP '* EXCEPTIONS * MESSAGE *' AND lv_statement NP '* EXCEPTION-TABLE *'
           AND lv_statement NP '* DESTINATION ''NONE'' *'.
         lv_include = io_scan->get_include( <ls_statement>-level ).
         inform( p_sub_obj_name = lv_include
