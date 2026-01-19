@@ -17,7 +17,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
+CLASS zcl_aoc_check_86 IMPLEMENTATION.
 
 
   METHOD consolidate_for_display.
@@ -51,7 +51,6 @@ CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
     version  = '001'.
     position = '086'.
 
-    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
     has_display_consolidation = abap_true.
@@ -66,12 +65,12 @@ CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
     add_obj_type( 'WAPA' ).
 
     insert_scimessage(
-        iv_code = '001'
-        iv_text = 'Uses &1 &2, see note &3'(m01) ).
+      iv_code = '001'
+      iv_text = 'Uses &1 &2, see note &3'(m01) ).
 
     insert_scimessage(
-        iv_code = '002'
-        iv_text = 'Load database via report ZAOC_UPLOAD_SIDB'(m02) ).
+      iv_code = '002'
+      iv_text = 'Load database via report ZAOC_UPLOAD_SIDB'(m02) ).
 
   ENDMETHOD.
 
@@ -91,11 +90,11 @@ CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
 
 
 * check zip is loaded
-    SELECT SINGLE * FROM zaoc_sidb INTO ls_sidb.
+    SELECT SINGLE * FROM zaoc_sidb INTO ls_sidb. "#EC CI_NOORDER
     IF sy-subrc <> 0.
-      inform( p_test    = myname
-              p_kind    = c_note
-              p_code    = '002' ).
+      inform( p_test = myname
+              p_kind = c_note
+              p_code = '002' ).
       RETURN.
     ENDIF.
 
@@ -120,7 +119,8 @@ CLASS ZCL_AOC_CHECK_86 IMPLEMENTATION.
       INTO TABLE lt_result
       FOR ALL ENTRIES IN lt_environment
       WHERE object_type = lt_environment-type(4)
-      AND object_name = lt_environment-object(40).        "#EC CI_SUBRC
+      AND object_name = lt_environment-object(40)
+      ORDER BY PRIMARY KEY.                               "#EC CI_SUBRC
 
     LOOP AT lt_result INTO ls_result.
       lv_note = ls_result-note.

@@ -23,7 +23,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_41 IMPLEMENTATION.
+CLASS zcl_aoc_check_41 IMPLEMENTATION.
 
 
   METHOD check.
@@ -49,6 +49,7 @@ CLASS ZCL_AOC_CHECK_41 IMPLEMENTATION.
         AND type <> io_scan->gc_statement-comment_in_stmnt
         AND type <> io_scan->gc_statement-macro_definition
         AND type <> io_scan->gc_statement-pragma
+        AND type <> io_scan->gc_statement-native_sql
         AND colonrow = 0.
 
       CLEAR lv_prev.

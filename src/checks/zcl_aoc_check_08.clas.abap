@@ -49,6 +49,7 @@ CLASS zcl_aoc_check_08 DEFINITION
       RETURNING
         VALUE(rv_old) TYPE abap_bool .
   PRIVATE SECTION.
+
 ENDCLASS.
 
 
@@ -62,17 +63,18 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_position  TYPE i,
-          lv_include   TYPE sobj_name,
-          lv_code      TYPE sci_errc,
-          lv_token     TYPE string,
-          lv_statement TYPE string.
+    DATA: lv_position   TYPE i,
+          lv_include    TYPE sobj_name,
+          lv_code       TYPE sci_errc,
+          lv_token      TYPE string,
+          lv_statement  TYPE string.
 
     FIELD-SYMBOLS: <ls_token>     LIKE LINE OF io_scan->tokens,
                    <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
+        WHERE type <> io_scan->gc_statement-native_sql.
 
       lv_position = sy-tabix.
       CLEAR lv_statement.
@@ -94,7 +96,7 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
 
       CLEAR lv_code.
 
-      IF mv_001 = abap_true AND lv_statement CP 'REFRESH *'.
+      IF mv_001 = abap_true AND lv_statement CP 'REFRESH *' AND NOT lv_statement CP 'REFRESH CONTROL *'.
         lv_code = '001'.
       ELSEIF mv_002 = abap_true AND lv_statement CP '* IS REQUESTED*'.
         lv_code = '002'.
@@ -414,4 +416,6 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
     ASSERT sy-subrc = 0.
 
   ENDMETHOD.
+
+
 ENDCLASS.

@@ -6,23 +6,23 @@ CLASS zcl_aoc_unit_test DEFINITION
   PUBLIC SECTION.
 
     CLASS-METHODS handler
-          FOR EVENT message OF cl_ci_test_root
+      FOR EVENT message OF cl_ci_test_root
       IMPORTING
-          !p_checksum_1
-          !p_code
-          !p_column
-          !p_errcnt
-          !p_kind
-          !p_line
-          !p_param_1
-          !p_param_2
-          !p_param_3
-          !p_param_4
-          !p_sub_obj_name
-          !p_sub_obj_type
-          !p_suppress
-          !p_test
-          !p_inclspec.
+        !p_checksum_1
+        !p_code
+        !p_column
+        !p_errcnt
+        !p_kind
+        !p_line
+        !p_param_1
+        !p_param_2
+        !p_param_3
+        !p_param_4
+        !p_sub_obj_name
+        !p_sub_obj_type
+        !p_suppress
+        !p_test
+        !p_inclspec.
     CLASS-METHODS check
       IMPORTING
         !it_code         TYPE string_table
@@ -34,9 +34,18 @@ CLASS zcl_aoc_unit_test DEFINITION
     CLASS-METHODS export_import
       IMPORTING
         !io_check TYPE REF TO cl_ci_test_root.
+    CLASS-METHODS set_object_name
+      IMPORTING
+        !iv_object_name TYPE sobj_name.
     CLASS-METHODS set_object_type
       IMPORTING
         !iv_object_type TYPE trobjtype.
+
+    CLASS-METHODS create_scan
+      IMPORTING
+        it_code        TYPE string_table
+      RETURNING
+        VALUE(ro_scan) TYPE REF TO zcl_aoc_scan.
   PROTECTED SECTION.
 
     CLASS-METHODS initialize
@@ -78,6 +87,31 @@ CLASS ZCL_AOC_UNIT_TEST IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD create_scan.
+    DATA: lt_tokens     TYPE stokesx_tab,
+          lt_statements TYPE sstmnt_tab,
+          lt_levels     TYPE slevel_tab,
+          lt_structures TYPE zcl_aoc_super=>ty_structures_tt.
+
+    SCAN ABAP-SOURCE it_code
+         TOKENS INTO lt_tokens
+         STATEMENTS INTO lt_statements
+         LEVELS INTO lt_levels
+         STRUCTURES INTO lt_structures
+         WITH ANALYSIS
+         WITH COMMENTS
+         WITH PRAGMAS abap_true.
+    cl_abap_unit_assert=>assert_subrc( msg = 'Error while parsing'(001) ).
+
+    CREATE OBJECT ro_scan
+      EXPORTING
+        it_tokens     = lt_tokens
+        it_statements = lt_statements
+        it_levels     = lt_levels
+        it_structures = lt_structures.
+  ENDMETHOD.
+
+
   METHOD export_import.
 
     DATA: lv_xstr TYPE xstring.
@@ -108,29 +142,7 @@ CLASS ZCL_AOC_UNIT_TEST IMPLEMENTATION.
 
 
   METHOD initialize.
-
-    DATA: lt_tokens     TYPE stokesx_tab,
-          lt_statements TYPE sstmnt_tab,
-          lt_levels     TYPE slevel_tab,
-          lt_structures TYPE zcl_aoc_super=>ty_structures_tt.
-
-
-    SCAN ABAP-SOURCE it_code
-         TOKENS INTO lt_tokens
-         STATEMENTS INTO lt_statements
-         LEVELS INTO lt_levels
-         STRUCTURES INTO lt_structures
-         WITH ANALYSIS
-         WITH COMMENTS
-         WITH PRAGMAS abap_true.
-    cl_abap_unit_assert=>assert_subrc( msg = 'Error while parsing'(001) ).
-
-    CREATE OBJECT ro_scan
-      EXPORTING
-        it_tokens     = lt_tokens
-        it_statements = lt_statements
-        it_levels     = lt_levels
-        it_structures = lt_structures.
+    ro_scan = create_scan( it_code ).
 
     CLEAR gs_result.
     SET HANDLER handler FOR go_check.
@@ -144,6 +156,13 @@ CLASS ZCL_AOC_UNIT_TEST IMPLEMENTATION.
   METHOD set_check.
 
     go_check = io_check.
+
+  ENDMETHOD.
+
+
+  METHOD set_object_name.
+
+    go_check->object_name = iv_object_name.
 
   ENDMETHOD.
 

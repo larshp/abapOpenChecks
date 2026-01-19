@@ -133,7 +133,7 @@ CLASS lcl_logic IMPLEMENTATION.
     <ls_result>-parent  = iv_parent.
 
     lt_sub = find_subpackages( iv_devclass ).
-    LOOP AT lt_sub INTO ls_sub.
+    LOOP AT lt_sub INTO ls_sub USING KEY package.
       rv_lines = rv_lines + run_package( iv_devclass = ls_sub-package
                                          iv_parent   = iv_devclass ).
     ENDLOOP.

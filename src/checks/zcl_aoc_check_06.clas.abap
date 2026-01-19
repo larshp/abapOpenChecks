@@ -42,6 +42,9 @@ CLASS zcl_aoc_check_06 DEFINITION
         !iv_name       TYPE csequence
       RETURNING
         VALUE(rv_skip) TYPE abap_bool.
+    METHODS get_user_type
+      RETURNING
+        VALUE(rv_user_type) TYPE usr02-ustyp.
 ENDCLASS.
 
 
@@ -80,11 +83,10 @@ CLASS zcl_aoc_check_06 IMPLEMENTATION.
 * MIT License
 
     DATA: lv_option  TYPE c LENGTH 5.
-
-
     lv_option = build_option( ).
 
-    IF ( mv_lower = abap_true AND lv_option <> 'LOWER' )
+    IF get_user_type( ) = 'A'
+        AND ( mv_lower = abap_true AND lv_option <> 'LOWER' )
         OR ( mv_hikey = abap_true AND lv_option <> 'HIKEY' )
         OR ( mv_lokey = abap_true AND lv_option <> 'LOKEY' )
         OR ( mv_upper = abap_true AND lv_option <> 'UPPER' ).
@@ -136,7 +138,8 @@ CLASS zcl_aoc_check_06 IMPLEMENTATION.
     SELECT * FROM d020s
       INTO CORRESPONDING FIELDS OF TABLE lt_d020s
       WHERE prog = object_name
-      AND type <> 'S'.
+      AND type <> 'S'
+      ORDER BY PRIMARY KEY.
     IF sy-subrc <> 0.
       RETURN.
     ENDIF.
@@ -214,6 +217,12 @@ CLASS zcl_aoc_check_06 IMPLEMENTATION.
 
       LOOP AT lt_code ASSIGNING <lv_code>.
         lv_row = sy-tabix.
+
+        IF lv_row = 1 AND <lv_code> CP 'FUNCTION*'.
+          " Ignore Function Module and Function Pool definitions
+          CONTINUE.
+        ENDIF.
+
         READ TABLE lt_pretty INDEX lv_row ASSIGNING <lv_pretty>.
         ASSERT sy-subrc = 0.
 
@@ -255,14 +264,14 @@ CLASS zcl_aoc_check_06 IMPLEMENTATION.
     enable_rfc( ).
 
     insert_scimessage(
-      iv_code  = '001'
-      iv_text  = 'Use pretty printer'(m01) ).
+      iv_code = '001'
+      iv_text = 'Use pretty printer'(m01) ).
     insert_scimessage(
-      iv_code  = '002'
-      iv_text  = 'Pretty printer settings do not match'(m02) ).
+      iv_code = '002'
+      iv_text = 'Pretty printer settings do not match'(m02) ).
     insert_scimessage(
-      iv_code  = '003'
-      iv_text  = 'Use pretty printer, screen &1'(m03) ).
+      iv_code = '003'
+      iv_text = 'Use pretty printer, screen &1'(m03) ).
 
   ENDMETHOD.
 
@@ -354,4 +363,12 @@ CLASS zcl_aoc_check_06 IMPLEMENTATION.
     ASSERT sy-subrc = 0.
 
   ENDMETHOD.
+
+  METHOD get_user_type.
+    SELECT SINGLE ustyp
+      FROM usr02
+      INTO rv_user_type
+      WHERE bname = sy-uname.
+  ENDMETHOD.
+
 ENDCLASS.

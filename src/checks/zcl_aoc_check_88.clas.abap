@@ -15,7 +15,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_88 IMPLEMENTATION.
+CLASS zcl_aoc_check_88 IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -25,7 +25,6 @@ CLASS ZCL_AOC_CHECK_88 IMPLEMENTATION.
     version  = '001'.
     position = '088'.
 
-    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
@@ -33,8 +32,8 @@ CLASS ZCL_AOC_CHECK_88 IMPLEMENTATION.
     add_obj_type( 'CLAS' ).
 
     insert_scimessage(
-        iv_code = '001'
-        iv_text = 'Remove description, &1'(m01) ).
+      iv_code = '001'
+      iv_text = 'Remove description, &1'(m01) ).
 
   ENDMETHOD.
 
@@ -52,7 +51,8 @@ CLASS ZCL_AOC_CHECK_88 IMPLEMENTATION.
     SELECT * FROM seocompotx INTO TABLE lt_texts
       WHERE clsname = object_name
       AND langu = sy-langu
-      AND descript <> ''.
+      AND descript <> ''
+      ORDER BY PRIMARY KEY.
 
     LOOP AT lt_texts INTO ls_text.
       inform( p_test    = myname

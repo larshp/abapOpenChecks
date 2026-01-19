@@ -76,7 +76,7 @@ CLASS ZCL_AOC_CHECK_34 IMPLEMENTATION.
           lv_start = 0.
         WHEN OTHERS.
           IF <ls_statement>-type = io_scan->gc_statement-comment.
-            lv_comment_lines = lv_comment_lines + <ls_statement>-to - <ls_statement>-from.
+            lv_comment_lines = lv_comment_lines + <ls_statement>-to - <ls_statement>-from + 1.
           ENDIF.
       ENDCASE.
 

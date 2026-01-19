@@ -60,7 +60,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
+CLASS zcl_aoc_check_58 IMPLEMENTATION.
 
 
   METHOD check.
@@ -150,7 +150,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       AND type = ''
       AND cmpname <> 'CLASS_CONSTRUCTOR'
       AND cmpname <> 'CONSTRUCTOR'
-      ORDER BY clsname cmpname version.                               "#EC CI_SUBRC
+      ORDER BY clsname cmpname version.                   "#EC CI_SUBRC
 
     LOOP AT lt_methods ASSIGNING <ls_method>.
       CONCATENATE <ls_method>-clsname '\ME:' <ls_method>-cmpname INTO lv_name.
@@ -158,7 +158,8 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       SELECT include FROM wbcrossgt
         INTO TABLE lt_ref_include
         WHERE otype = 'ME'
-        AND name = lv_name.                               "#EC CI_SUBRC
+        AND name = lv_name
+        ORDER BY include ASCENDING.                       "#EC CI_SUBRC
 
       IF mv_skip_ccau = abap_true.
         DELETE lt_ref_include WHERE table_line+30 = 'CCAU'.
@@ -227,7 +228,7 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
       AND version = '1'
       AND ( exposure = c_protected OR exposure = c_public OR exposure = c_private )
       AND type = ''
-      ORDER BY clsname cmpname version.                               "#EC CI_SUBRC
+      ORDER BY clsname cmpname version.                   "#EC CI_SUBRC
 
     LOOP AT lt_types ASSIGNING <ls_type>.
       CONCATENATE <ls_type>-clsname '\TY:' <ls_type>-cmpname INTO lv_name.
@@ -263,32 +264,32 @@ CLASS ZCL_AOC_CHECK_58 IMPLEMENTATION.
     mv_skip_ccau = abap_true.
 
     insert_scimessage(
-        iv_code = '001'
-        iv_text = 'Method not referenced statically'(m01) ).
+      iv_code = '001'
+      iv_text = 'Method not referenced statically'(m01) ).
 
     insert_scimessage(
-        iv_code = '002'
-        iv_text = 'Constant &1 not referenced statically'(m02) ).
+      iv_code = '002'
+      iv_text = 'Constant &1 not referenced statically'(m02) ).
 
     insert_scimessage(
-        iv_code = '003'
-        iv_text = 'Method is only referenced locally. Should be changed to private or protected.'(m03) ).
+      iv_code = '003'
+      iv_text = 'Method is only referenced locally. Should be changed to private or protected.'(m03) ).
 
     insert_scimessage(
-        iv_code = '004'
-        iv_text = 'Method &1 only implemented, not referenced statically'(m04) ).
+      iv_code = '004'
+      iv_text = 'Method &1 only implemented, not referenced statically'(m04) ).
 
     insert_scimessage(
-        iv_code = '005'
-        iv_text = '&1 not referenced statically'(m05) ).
+      iv_code = '005'
+      iv_text = '&1 not referenced statically'(m05) ).
 
     insert_scimessage(
-        iv_code = '006'
-        iv_text = 'Type &1 not referenced statically'(m06) ).
+      iv_code = '006'
+      iv_text = 'Type &1 not referenced statically'(m06) ).
 
     insert_scimessage(
-        iv_code = '007'
-        iv_text = 'Alias not referenced statically'(m07) ).
+      iv_code = '007'
+      iv_text = 'Alias not referenced statically'(m07) ).
 
   ENDMETHOD.
 

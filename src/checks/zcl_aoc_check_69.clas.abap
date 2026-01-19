@@ -359,7 +359,11 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
     ENDIF.
 
     IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = abap_false.
-      lv_name = get_token_rel( 4 ).
+      IF get_token_rel( 4 ) = 'ENUM' AND get_token_rel( 5 ) IS NOT INITIAL.
+        lv_name = get_token_rel( 5 ).
+      ELSE.
+        lv_name = get_token_rel( 4 ).
+      ENDIF.
       mv_begin = 1.
     ELSEIF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF'.
       mv_begin = mv_begin + 1.
@@ -409,7 +413,11 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
     lv_name = get_token_rel( 2 ).
 
     IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = 0.
-      lv_name = get_token_rel( 4 ).
+      IF get_token_rel( 4 ) = 'ENUM' AND get_token_rel( 5 ) IS NOT INITIAL.
+        lv_name = get_token_rel( 5 ).
+      ELSE.
+        lv_name = get_token_rel( 4 ).
+      ENDIF.
       mv_begin = 1.
       IF get_token_rel( 4 ) = 'COMMON' AND get_token_rel( 5 ) = 'PART'.
         RETURN.
@@ -814,7 +822,11 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
     lv_name = get_token_rel( 2 ).
 
     IF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF' AND mv_begin = 0.
-      lv_name = get_token_rel( 4 ).
+      IF get_token_rel( 4 ) = 'ENUM' AND get_token_rel( 5 ) IS NOT INITIAL.
+        lv_name = get_token_rel( 5 ).
+      ELSE.
+        lv_name = get_token_rel( 4 ).
+      ENDIF.
       mv_begin = 1.
     ELSEIF lv_name = 'BEGIN' AND get_token_rel( 3 ) = 'OF'.
       mv_begin = mv_begin + 1.
@@ -1023,7 +1035,10 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 
     CONSTANTS:
       "! cl_abap_comp_type=>type_kind_ddic_dbtab does not exists in 731
-      lc_type_kind_ddic_dbtab TYPE scr_typekind VALUE `7`.
+      lc_type_kind_ddic_dbtab TYPE scr_typekind VALUE `7`,
+      "! cl_abap_comp_type=>type_kind_enum does not exists before 751
+      lc_type_kind_enum TYPE scr_typekind VALUE `8`,
+      lc_type_kind_ddic_entity TYPE scr_typekind VALUE `9`.
 
     DATA: lo_table_symbol      TYPE REF TO cl_abap_comp_table_type,
           lo_symbol_simple     TYPE REF TO cl_abap_comp_data,
@@ -1049,14 +1064,14 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
     ENDWHILE.
 
     CASE lo_type_symbol->type_kind.
-      WHEN cl_abap_comp_type=>type_kind_elementary.
+      WHEN cl_abap_comp_type=>type_kind_elementary OR lc_type_kind_enum.
         CASE lo_type_symbol->full_name.
           WHEN '\PT:ANY' OR '\PT:DATA'.
             rv_prefix = ms_naming-prefix_generi.
           WHEN OTHERS.
             rv_prefix = ms_naming-prefix_elemen.
         ENDCASE.
-      WHEN cl_abap_comp_type=>type_kind_structure OR lc_type_kind_ddic_dbtab.
+      WHEN cl_abap_comp_type=>type_kind_structure OR lc_type_kind_ddic_dbtab OR lc_type_kind_ddic_entity.
         rv_prefix = ms_naming-prefix_struct.
       WHEN cl_abap_comp_type=>type_kind_table.
         lo_table_symbol ?= lo_type_symbol.
@@ -1413,6 +1428,7 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 * idoc processing function module
     IF ms_naming-set_idocfm = abap_true
         AND rv_skip = abap_false.
+      "IDOC Input
       _append import 'INPUT_METHOD'.
       _append import 'MASS_PROCESSING'.
       _append export 'WORKFLOW_RESULT'.
@@ -1427,6 +1443,18 @@ CLASS zcl_aoc_check_69 IMPLEMENTATION.
 
       rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
                                           is_check      = ls_check ).
+      "IDOC Output
+      IF rv_skip = abap_false.
+        CLEAR ls_check.
+        _append import 'OBJECT'.
+        _append import 'CONTROL_RECORD_IN'.
+        _append export 'OBJECT_TYPE'.
+        _append export 'CONTROL_RECORD_OUT'.
+        _append tables 'INT_EDIDD'.
+
+        rv_skip = skip_fm_parameters_check( is_parameters = is_parameters
+                                            is_check      = ls_check ).
+      ENDIF.
     ENDIF.
 
 * conversion exits

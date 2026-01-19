@@ -15,7 +15,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_63 IMPLEMENTATION.
+CLASS zcl_aoc_check_63 IMPLEMENTATION.
 
 
   METHOD constructor.
@@ -25,7 +25,6 @@ CLASS ZCL_AOC_CHECK_63 IMPLEMENTATION.
     version        = '001'.
     position       = '063'.
 
-    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 
@@ -33,8 +32,8 @@ CLASS ZCL_AOC_CHECK_63 IMPLEMENTATION.
     add_obj_type( 'INTF' ).
 
     insert_scimessage(
-        iv_code = '003'
-        iv_text = '&1'(m01) ).
+        iv_code = '001'
+        iv_text = TEXT-m01 ).
 
   ENDMETHOD.
 

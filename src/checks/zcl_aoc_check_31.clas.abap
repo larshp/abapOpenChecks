@@ -15,8 +15,6 @@ CLASS zcl_aoc_check_31 DEFINITION
         REDEFINITION .
     METHODS put_attributes
         REDEFINITION .
-    METHODS get_message_text
-        REDEFINITION .
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -29,6 +27,7 @@ CLASS zcl_aoc_check_31 DEFINITION
     DATA mv_default_error    TYPE flag .
     DATA mv_default_standard TYPE flag .
     DATA mv_default_atc      TYPE flag .
+    DATA mt_mapping_slin_sci_code TYPE tty_mapping_slin_sci_code.
 
     METHODS set_flags
       RETURNING
@@ -50,10 +49,10 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
           lv_text     TYPE string,
           lv_tmp      TYPE string,
           ls_flags    TYPE rslin_test_flags,
-          lv_code     TYPE sci_errc,
           lv_errty    TYPE sci_errty,
           lv_todo     TYPE slin_desc-todo_overlay,
           lt_result   TYPE slin_result.
+    DATA ls_mapping  TYPE ty_mapping_slin_sci_code.
 
     FIELD-SYMBOLS: <ls_result> LIKE LINE OF lt_result,
                    <ls_line>   LIKE LINE OF <ls_result>-lines.
@@ -121,14 +120,16 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
         ENDCASE.
       ENDIF.
 
-      lv_obj_name = <ls_result>-src_incl.
-      lv_code     = <ls_result>-code.
-      inform( p_sub_obj_name = lv_obj_name
-              p_line         = <ls_result>-src_line
-              p_kind         = lv_errty
-              p_test         = myname
-              p_code         = lv_code
-              p_param_1      = lv_text ).
+      READ TABLE mt_mapping_slin_sci_code INTO ls_mapping WITH KEY slin_code = <ls_result>-code.
+      IF sy-subrc = 0.
+        lv_obj_name = <ls_result>-src_incl.
+        inform( p_sub_obj_name = lv_obj_name
+                p_line         = <ls_result>-src_line
+                p_kind         = lv_errty
+                p_test         = myname
+                p_code         = ls_mapping-sci_code
+                p_param_1      = lv_text ).
+      ENDIF.
     ENDLOOP.
 
   ENDMETHOD.
@@ -136,10 +137,10 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
 
   METHOD constructor.
 
-    DATA lt_slin_desc_t     TYPE STANDARD TABLE OF slin_desc_t.
-    DATA ls_slin_desc_t     TYPE slin_desc_t.
-    DATA lv_code            TYPE sci_errc.
-    DATA lv_scimessage_text TYPE ty_scimessage_text.
+    DATA lt_slin_desc_t TYPE STANDARD TABLE OF slin_desc_t.
+    DATA ls_slin_desc_t TYPE slin_desc_t.
+    DATA lv_i            TYPE i.
+    DATA ls_mapping     TYPE ty_mapping_slin_sci_code.
 
     super->constructor( ).
 
@@ -159,11 +160,16 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
     ENDIF.
 
     LOOP AT lt_slin_desc_t INTO ls_slin_desc_t.
-      lv_code            = ls_slin_desc_t-code_nr.
-      lv_scimessage_text = ls_slin_desc_t-description.
+      CLEAR ls_mapping.
+      lv_i = lv_i + 1.
+
+      ls_mapping-slin_code = ls_slin_desc_t-code_nr.
+      ls_mapping-sci_code  = lv_i.
+      INSERT ls_mapping INTO TABLE mt_mapping_slin_sci_code.
+
       insert_scimessage(
-        iv_code = lv_code
-        iv_text = lv_scimessage_text ).
+        iv_code = ls_mapping-sci_code
+        iv_text = |{ ls_slin_desc_t-description } &1| ).
     ENDLOOP.
 
   ENDMETHOD.
@@ -180,13 +186,6 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
       mv_default_standard = mv_default_standard
       mv_default_atc = mv_default_atc
       TO DATA BUFFER p_attributes.
-
-  ENDMETHOD.
-
-
-  METHOD get_message_text.
-
-    p_text = '&1'.                                          "#EC NOTEXT
 
   ENDMETHOD.
 

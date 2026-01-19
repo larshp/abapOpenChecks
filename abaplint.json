@@ -37,6 +37,16 @@
     ]
   },
   "rules": {
+    "select_single_full_key": true,
+    "smim_consistency": true,
+    "cds_comment_style": true,
+    "cds_legacy_view": true,
+    "change_if_to_case": false,
+    "expand_macros": false,
+    "fully_type_itabs": false,
+    "strict_sql": true,
+    "superfluous_value": true,
+    "unnecessary_return": false,
     "align_parameters": false,
     "cds_parser_error": true,
     "classic_exceptions_overlap": true,
@@ -222,7 +232,8 @@
       "checkForms": true,
       "ignoreTestClasses": false,
       "exclude": [
-        "zcl_aoc_check_69"
+        "zcl_aoc_check_69",
+        "zcl_aoc_check_103"
       ]
     },
     "method_parameter_names": {
@@ -268,6 +279,9 @@
       "fieldSymbolStructure": true,
       "callTransformation": true,
       "communication": true,
+      "clientSpecified": true,
+      "formDefinition": true,
+      "formImplementation": true,
       "exitFromSQL": true,
       "freeMemory": true,
       "occurences": true,
