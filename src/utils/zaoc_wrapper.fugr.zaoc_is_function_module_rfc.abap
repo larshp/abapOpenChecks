@@ -24,7 +24,7 @@ FUNCTION zaoc_is_function_module_rfc.
   ENDIF.
 
   IF lv_fmode = lc_fmode_remote
-  OR lv_fmode = lc_fmode_remote_basxml.
+      OR lv_fmode = lc_fmode_remote_basxml.
     ev_is_rfc_enabled = abap_true.
   ENDIF.
 ENDFUNCTION.
