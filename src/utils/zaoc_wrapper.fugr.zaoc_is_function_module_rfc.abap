@@ -8,6 +8,10 @@ FUNCTION zaoc_is_function_module_rfc.
 *"  EXCEPTIONS
 *"      NOT_FOUND
 *"----------------------------------------------------------------------
+  CONSTANTS lc_fmode_remote TYPE fmode VALUE 'R'.
+  "! Remote enabled function module and the flag "BasXML supported" is enabled
+  CONSTANTS lc_fmode_remote_basxml TYPE fmode VALUE 'X'.
+
   DATA lv_fmode TYPE tfdir-fmode.
 
   SELECT SINGLE fmode
@@ -19,7 +23,8 @@ FUNCTION zaoc_is_function_module_rfc.
     RAISE not_found.
   ENDIF.
 
-  IF lv_fmode = 'R'.
+  IF lv_fmode = lc_fmode_remote
+  OR lv_fmode = lc_fmode_remote_basxml.
     ev_is_rfc_enabled = abap_true.
   ENDIF.
 ENDFUNCTION.
