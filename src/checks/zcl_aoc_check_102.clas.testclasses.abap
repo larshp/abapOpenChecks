@@ -54,6 +54,8 @@ CLASS ltcl_test DEFINITION
     METHODS check_condition FOR TESTING.
     METHODS assert_condition FOR TESTING.
     METHODS call_function FOR TESTING.
+    METHODS error_as_base_type FOR TESTING RAISING cx_static_check.
+    METHODS override_error_type FOR TESTING RAISING cx_static_check.
 ENDCLASS.
 
 
@@ -67,22 +69,27 @@ CLASS ltcl_test IMPLEMENTATION.
     zcl_aoc_unit_test=>set_check( mo_check ).
   ENDMETHOD.
 
+
   METHOD execute_check.
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
   ENDMETHOD.
 
+
   METHOD export_import.
     zcl_aoc_unit_test=>export_import( mo_check ).
   ENDMETHOD.
+
 
   METHOD assert_error_code.
     cl_abap_unit_assert=>assert_equals( exp = iv_expected_error_code
                                         act = ms_result-code ).
   ENDMETHOD.
 
+
   METHOD assert_no_error_code.
     cl_abap_unit_assert=>assert_initial( ms_result ).
   ENDMETHOD.
+
 
   METHOD if_condition_01.
     " Given
@@ -96,6 +103,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-in_condition ).
   ENDMETHOD.
 
+
   METHOD first_letter_01.
     " Given
     _code `IF sy-sysid+0(1) = 'P'.`.
@@ -108,6 +116,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-first_letter_used ).
   ENDMETHOD.
 
+
   METHOD first_letter_02.
     " Given
     _code `IF sy-sysid(1) = 'P'.`.
@@ -119,6 +128,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_error_code( gc_code-first_letter_used ).
   ENDMETHOD.
+
 
   METHOD first_letter_03.
     " Given
@@ -137,6 +147,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-first_letter_used ).
   ENDMETHOD.
 
+
   METHOD if_condition_02.
     " Given
     _code `IF 1 = 2 OR sy-sysid = 'PRD'.`.
@@ -148,6 +159,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_error_code( gc_code-in_condition ).
   ENDMETHOD.
+
 
   METHOD case_condition_01.
     " Given
@@ -162,6 +174,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-in_condition ).
   ENDMETHOD.
 
+
   METHOD if_condition_03.
     " Given
     _code `IF 'PRD' = sy-sysid.`.
@@ -173,6 +186,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_error_code( gc_code-in_condition ).
   ENDMETHOD.
+
 
   METHOD case_condition_02.
     " Given
@@ -187,6 +201,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-in_condition ).
   ENDMETHOD.
 
+
   METHOD case_condition_03.
     " Given
     _code `CASE 'PRD'.`.
@@ -199,6 +214,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_error_code( gc_code-in_condition ).
   ENDMETHOD.
+
 
   METHOD elseif_condition.
     " Given
@@ -213,6 +229,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-in_condition ).
   ENDMETHOD.
 
+
   METHOD constructor_expression_cond.
     " Given
     _code `DATA lv_result TYPE abap_bool.`.
@@ -224,6 +241,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_error_code( gc_code-usage_uncategorized ).
   ENDMETHOD.
+
 
   METHOD constructor_expression_switch.
     " Given
@@ -237,6 +255,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-usage_uncategorized ).
   ENDMETHOD.
 
+
   METHOD local_variable_assignment.
     " Given
     _code `DATA lv_result TYPE string.`.
@@ -248,6 +267,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_error_code( gc_code-assigned_to_variable ).
   ENDMETHOD.
+
 
   METHOD within_macro.
     " Given
@@ -263,6 +283,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-within_macro ).
   ENDMETHOD.
 
+
   METHOD method_call.
     " Given
     _code `method( iv_system = sy-sysid ).`.
@@ -273,6 +294,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_error_code( gc_code-usage_uncategorized ).
   ENDMETHOD.
+
 
   METHOD database_select_01.
     " Given
@@ -290,6 +312,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_error_code( gc_code-in_database_select ).
   ENDMETHOD.
+
 
   METHOD database_select_02.
     " Given
@@ -309,6 +332,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-in_database_select ).
   ENDMETHOD.
 
+
   METHOD ignore_type_definition_01.
     " Given
     _code `DATA lv_system TYPE sy-sysid.`.
@@ -319,6 +343,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_no_error_code( ).
   ENDMETHOD.
+
 
   METHOD ignore_type_definition_02.
     " Given
@@ -331,6 +356,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_no_error_code( ).
   ENDMETHOD.
 
+
   METHOD ignore_type_definition_03.
     " Given
     _code `CLASS-DATA gv_system TYPE sy-sysid.`.
@@ -342,6 +368,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_no_error_code( ).
   ENDMETHOD.
 
+
   METHOD ignore_type_definition_04.
     " Given
     _code `CLASS-DATA gv_system LIKE sy-sysid.`.
@@ -352,6 +379,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_no_error_code( ).
   ENDMETHOD.
+
 
   METHOD ignore_type_definition_05.
     " Given
@@ -366,6 +394,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_no_error_code( ).
   ENDMETHOD.
 
+
   METHOD ignore_type_definition_06.
     " Given
     _code `TYPES: BEGIN OF gy_structure,`.
@@ -378,6 +407,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_no_error_code( ).
   ENDMETHOD.
+
 
   METHOD ignore_type_definition_07.
     " Given
@@ -392,6 +422,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_no_error_code( ).
   ENDMETHOD.
 
+
   METHOD ignore_type_definition_08.
     " Given
     _code `CLASS-METHODS example`.
@@ -405,6 +436,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_no_error_code( ).
   ENDMETHOD.
 
+
   METHOD ignore_ranges.
     " Given
     _code `RANGES range FOR sy-sysid.`.
@@ -415,6 +447,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_no_error_code( ).
   ENDMETHOD.
+
 
   METHOD default_value_01.
     " Given
@@ -429,6 +462,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-as_default_value ).
   ENDMETHOD.
 
+
   METHOD default_value_02.
     " Given
     _code `CLASS-METHODS example`.
@@ -442,6 +476,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-as_default_value ).
   ENDMETHOD.
 
+
   METHOD concatenate.
     " Given
     _code `DATA lv_system TYPE string.`.
@@ -454,6 +489,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-in_concatenate ).
   ENDMETHOD.
 
+
   METHOD overridden.
     " Given
     _code `sy-sysid = 'PRD'.`.
@@ -464,6 +500,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_error_code( gc_code-overridden ).
   ENDMETHOD.
+
 
   METHOD write.
     " Given
@@ -476,6 +513,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-in_write ).
   ENDMETHOD.
 
+
   METHOD message.
     " Given
     _code `MESSAGE e000(z) WITH sy-sysid.`.
@@ -486,6 +524,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_error_code( gc_code-in_message ).
   ENDMETHOD.
+
 
   METHOD check_condition.
     " Given
@@ -498,6 +537,7 @@ CLASS ltcl_test IMPLEMENTATION.
     assert_error_code( gc_code-in_condition ).
   ENDMETHOD.
 
+
   METHOD assert_condition.
     " Given
     _code `ASSERT sy-sysid = 'PRD'.`.
@@ -508,6 +548,7 @@ CLASS ltcl_test IMPLEMENTATION.
     " Then
     assert_error_code( gc_code-in_condition ).
   ENDMETHOD.
+
 
   METHOD call_function.
     " Given
@@ -520,5 +561,37 @@ CLASS ltcl_test IMPLEMENTATION.
 
     " Then
     assert_error_code( gc_code-in_function_module_call ).
+  ENDMETHOD.
+
+
+  METHOD error_as_base_type.
+    " Given
+    _code `ASSERT sy-sysid = 'PRD'.`.
+
+    " When
+    execute_check( ).
+
+    " Then
+    cl_abap_unit_assert=>assert_equals( exp = 'E'
+                                        act = ms_result-kind ).
+  ENDMETHOD.
+
+
+  METHOD override_error_type.
+    " Given
+    _code `ASSERT sy-sysid = 'PRD'.`.
+
+    " When: Override error type to 'W'
+    DATA lv_attributes TYPE xstring.
+    EXPORT mv_errty                    = 'E'
+           ms_error_types-in_condition = 'W'
+           TO DATA BUFFER lv_attributes.
+    mo_check->put_attributes( lv_attributes ).
+
+    execute_check( ).
+
+    " Then
+    cl_abap_unit_assert=>assert_equals( exp = 'W'
+                                        act = ms_result-kind ).
   ENDMETHOD.
 ENDCLASS.
