@@ -165,19 +165,6 @@ CLASS zcl_aoc_check_102 IMPLEMENTATION.
 
 
   METHOD if_ci_test~query_attributes.
-*    zzaoc_top.
-*
-*    zzaoc_fill_att mv_errty 'Base Error Type' ''.
-*
-*    LOOP AT scimessages ASSIGNING FIELD-SYMBOL(<ls_scimessage>).
-*      GET REFERENCE OF <ls_scimessage>-kind INTO ls_attribute-ref.
-*      ls_attribute-text = COND #( WHEN strlen( <ls_scimessage>-text ) > 30
-*                                  THEN |{ <ls_scimessage>-text(27) }...|
-*                                  ELSE <ls_scimessage>-text ).
-*      APPEND ls_attribute TO lt_attributes.
-*    ENDLOOP.
-*
-*    zzaoc_popup.
     DATA(lv_text_usage_uncategorized) = get_shortened_text( gc_code-usage_uncategorized ).
     DATA(lv_text_in_condition) = get_shortened_text( gc_code-in_condition ).
     DATA(lv_text_first_letter_used) = get_shortened_text( gc_code-first_letter_used ).
@@ -301,7 +288,6 @@ CLASS zcl_aoc_check_102 IMPLEMENTATION.
 
 
   METHOD get_shortened_text.
-*    ASSERT 1 = 2.
     DATA(lv_text) = scimessages[ code = iv_error_code ]-text.
     ASSERT sy-subrc = 0.
 
