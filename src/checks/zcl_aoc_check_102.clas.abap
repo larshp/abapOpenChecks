@@ -148,10 +148,8 @@ CLASS zcl_aoc_check_102 IMPLEMENTATION.
       inform( p_position     = <ls_variable_usage>-statement_index
               p_sub_obj_name = lv_include
               p_line         = <ls_token>-row
-              p_kind         = mv_errty
               p_test         = myname
               p_code         = lv_error_code ).
-
     ENDLOOP.
   ENDMETHOD.
 
