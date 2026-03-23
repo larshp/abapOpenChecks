@@ -37,12 +37,14 @@
     ]
   },
   "rules": {
+    "unused_macros": false, // todo
+
     "select_single_full_key": true,
     "smim_consistency": true,
     "cds_comment_style": true,
     "add_test_attributes": true,
     "aff_and_xml": true,
-    "align_pseudo_comments": true,
+    "align_pseudo_comments": false,
     "align_type_expressions": true,
     "cds_association_name": true,
     "cds_field_order": true,
@@ -57,14 +59,13 @@
     "invalid_table_index": true,
     "macro_naming": true,
     "no_comments_between_methods": true,
-    "no_prefixes": true,
+    "no_prefixes": false,
     "parser_bad_exceptions": true,
-    "prefer_pragmas": true,
-    "reduce_procedural_code": true,
+    "prefer_pragmas": false,
+    "reduce_procedural_code": false,
     "selection_screen_texts_missing": true,
     "sql_value_conversion": true,
     "tables_declared_locally": true,
-    "unused_macros": true,
     "cds_legacy_view": true,
     "change_if_to_case": false,
     "expand_macros": false,

@@ -41,7 +41,7 @@ CLASS ZCL_AOC_PARSER_NODE IMPLEMENTATION.
     mv_rulename = iv_rulename.
 
     gv_key   = gv_key + 1.
-  ENDMETHOD.                    "constructor
+  ENDMETHOD.
 
 
   METHOD edge.
@@ -49,5 +49,5 @@ CLASS ZCL_AOC_PARSER_NODE IMPLEMENTATION.
     IF sy-subrc <> 0.
       APPEND io_node TO mt_edges.
     ENDIF.
-  ENDMETHOD.                    "edge
+  ENDMETHOD.
 ENDCLASS.
