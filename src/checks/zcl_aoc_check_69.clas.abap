@@ -102,7 +102,7 @@ CLASS zcl_aoc_check_69 DEFINITION
         VALUE(rv_skip) TYPE abap_bool .
     METHODS is_unresolved_exception_class
         IMPORTING
-          !iv_class_fullname TYPE string
+          !iv_class_fullname      TYPE string
         RETURNING
           VALUE(rv_is_an_excpcls) TYPE xfeld .
   PRIVATE SECTION.
