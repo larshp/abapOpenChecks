@@ -16,6 +16,21 @@
      <OKFLAG>X</OKFLAG>
     </USOBX>
    </USOBX>
+   <USOBX_EXT>
+    <item>
+     <OBJECT>S_RFC</OBJECT>
+     <TTEXT>Authorization Check for RFC Access</TTEXT>
+     <OCLSS>AAAB</OCLSS>
+     <OKFLAG>X</OKFLAG>
+     <PS_POSID>BC-MID-RFC</PS_POSID>
+     <CI_TEXT>Check</CI_TEXT>
+     <CH_TEXT>Check</CH_TEXT>
+     <PR_TEXT>No</PR_TEXT>
+     <EXCEP>3</EXCEP>
+     <EXCEP_TX>Okay</EXCEP_TX>
+     <EXCEP_ICON>@08@</EXCEP_ICON>
+    </item>
+   </USOBX_EXT>   
   </asx:values>
  </asx:abap>
 </abapGit>
