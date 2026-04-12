@@ -36,7 +36,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_check_31 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_31 IMPLEMENTATION.
 
 
   METHOD check.
@@ -198,9 +198,9 @@ CLASS zcl_aoc_check_31 IMPLEMENTATION.
     zzaoc_fill_att mt_warn 'Warning' 'S'.                   "#EC NOTEXT
     zzaoc_fill_att mt_info 'Info' 'S'.                      "#EC NOTEXT
     zzaoc_fill_att mt_ignore 'Ignore' 'S'.                  "#EC NOTEXT
-    zzaoc_fill_att_rb mv_default_error 'Default error' 'R' 'RADIO'. "#EC NOTEXT
-    zzaoc_fill_att_rb mv_default_standard 'Default standard' 'R' 'RADIO'. "#EC NOTEXT
-    zzaoc_fill_att_rb mv_default_atc 'Default ATC' 'R' 'RADIO'. "#EC NOTEXT
+    zzaoc_fill_att_rb mv_default_error 'Default error' 'R' 'RADI'. "#EC NOTEXT
+    zzaoc_fill_att_rb mv_default_standard 'Default standard' 'R' 'RADI'. "#EC NOTEXT
+    zzaoc_fill_att_rb mv_default_atc 'Default ATC' 'R' 'RADI'. "#EC NOTEXT
 
     zzaoc_popup.
     attributes_ok = abap_true.
