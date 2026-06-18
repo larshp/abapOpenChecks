@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>ZCL_AOC_CHECK_103</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>103 - Select on Table with Replacement Object</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+    <WITH_UNIT_TESTS>X</WITH_UNIT_TESTS>
+   </VSEOCLASS>
+   <TPOOL>
+    <item>
+     <ID>I</ID>
+     <KEY>M01</KEY>
+     <ENTRY>Table/View &amp;1 has replacement object &amp;2</ENTRY>
+     <LENGTH>132</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>M02</KEY>
+     <ENTRY>Table/View &amp;1 has replacement object &amp;2. Consider using &amp;3 instead. OSS Note &amp;4</ENTRY>
+     <LENGTH>132</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>M03</KEY>
+     <ENTRY>Replace</ENTRY>
+     <LENGTH>30</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>M04</KEY>
+     <ENTRY> with</ENTRY>
+     <LENGTH>10</LENGTH>
+    </item>
+   </TPOOL>
+   <LINES>
+    <TLINE>
+     <TDFORMAT>U1</TDFORMAT>
+     <TDLINE>&amp;FUNCTIONALITY&amp;</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDFORMAT>AS</TDFORMAT>
+     <TDLINE>abapOpenChecks https://github.com/larshp/abapOpenChecks MIT License In</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDLINE>S/4HANA many old DB tables have now replacement objects/proxy</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDLINE>objectswhich in many case decrease the performance of old SELECT</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDLINE>statements when the DB table is used in the OpenSQL.</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDFORMAT>AS</TDFORMAT>
+     <TDLINE>In many cases usage of dictionary views based on that tables is much</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDLINE>faster. But we have to make sure that the selected field is still stored</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDLINE>in the DB level.</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDFORMAT>U1</TDFORMAT>
+     <TDLINE>&amp;RELATIONS&amp;</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDFORMAT>AS</TDFORMAT>
+    </TLINE>
+    <TLINE>
+     <TDFORMAT>U1</TDFORMAT>
+     <TDLINE>&amp;EXAMPLE&amp;</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDFORMAT>AS</TDFORMAT>
+     <TDLINE>MARC table has now replacement object. If we replace it with V_MARC_MD</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDLINE>it will be much faster to select basic plant level information. Check</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDLINE>OSS Note: https://me.sap.com/notes/0002000002</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDFORMAT>U1</TDFORMAT>
+     <TDLINE>&amp;HINTS&amp;</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDFORMAT>AS</TDFORMAT>
+    </TLINE>
+    <TLINE>
+     <TDFORMAT>U1</TDFORMAT>
+     <TDLINE>&amp;FURTHER_SOURCES_OF_INF&amp;</TDLINE>
+    </TLINE>
+    <TLINE>
+     <TDFORMAT>AS</TDFORMAT>
+    </TLINE>
+   </LINES>
+   <LONGTEXTS_CA>
+    <item>
+     <DOKIL>
+      <ID>CA</ID>
+      <OBJECT>ZCL_AOC_CHECK_103             0000</OBJECT>
+      <LANGU>E</LANGU>
+      <TYP>E</TYP>
+      <VERSION>0001</VERSION>
+      <MASTERLANG>X</MASTERLANG>
+      <TXTLINES>00009</TXTLINES>
+      <DOKSTATE>A</DOKSTATE>
+     </DOKIL>
+     <HEAD>
+      <TDOBJECT>DOKU</TDOBJECT>
+      <TDNAME>ZCL_AOC_CHECK_103             0000</TDNAME>
+      <TDID>CA</TDID>
+      <TDSPRAS>E</TDSPRAS>
+      <TDFORM>S_DOCU_SHOW</TDFORM>
+      <TDSTYLE>S_DOCUS1</TDSTYLE>
+      <TDVERSION>00001</TDVERSION>
+      <TDLINESIZE>072</TDLINESIZE>
+     </HEAD>
+     <LINES>
+      <TLINE>
+       <TDFORMAT>U1</TDFORMAT>
+       <TDLINE>&amp;WHAT_FOR&amp;</TDLINE>
+      </TLINE>
+      <TLINE>
+       <TDFORMAT>*</TDFORMAT>
+      </TLINE>
+      <TLINE>
+       <TDFORMAT>*</TDFORMAT>
+       <TDLINE>&lt;ZH&gt;103 - Select on Table with Replacement Object &lt;/&gt;</TDLINE>
+      </TLINE>
+      <TLINE>
+       <TDFORMAT>*</TDFORMAT>
+       <TDLINE>abapOpenChecks</TDLINE>
+      </TLINE>
+      <TLINE>
+       <TDFORMAT>*</TDFORMAT>
+       <TDLINE>https://github.com/larshp/abapOpenChecks</TDLINE>
+      </TLINE>
+      <TLINE>
+       <TDFORMAT>*</TDFORMAT>
+       <TDLINE>MIT License</TDLINE>
+      </TLINE>
+      <TLINE>
+       <TDFORMAT>*</TDFORMAT>
+      </TLINE>
+      <TLINE>
+       <TDFORMAT>*</TDFORMAT>
+       <TDLINE>In S/4HANA many old DB tables have now replacement objects/proxy objects</TDLINE>
+      </TLINE>
+      <TLINE>
+       <TDLINE>which in many case decrease the performance of old SELECT statements</TDLINE>
+      </TLINE>
+      <TLINE>
+       <TDLINE>when the DB table is used in the OpenSQL. In many cases usage of</TDLINE>
+      </TLINE>
+      <TLINE>
+       <TDLINE>dictionary views based on that tables is much faster. But we have to</TDLINE>
+      </TLINE>
+      <TLINE>
+       <TDLINE>make sure that the selected field is still stored in the DB level.</TDLINE>
+      </TLINE>
+     </LINES>
+    </item>
+   </LONGTEXTS_CA>
+  </asx:values>
+ </asx:abap>
+</abapGit>

@@ -37,9 +37,35 @@
     ]
   },
   "rules": {
+    "unused_macros": false, // todo
+
     "select_single_full_key": true,
     "smim_consistency": true,
     "cds_comment_style": true,
+    "add_test_attributes": true,
+    "aff_and_xml": true,
+    "align_pseudo_comments": false,
+    "align_type_expressions": true,
+    "cds_association_name": true,
+    "cds_field_order": true,
+    "cds_naming": true,
+    "dynpro_checks": true,
+    "easy_to_find_messages": true,
+    "empty_event": true,
+    "fm_global_parameters_obsolete": true,
+    "identical_move": true,
+    "implicit_start_of_selection": true,
+    "index_completely_contained": true,
+    "invalid_table_index": true,
+    "macro_naming": true,
+    "no_comments_between_methods": true,
+    "no_prefixes": false,
+    "parser_bad_exceptions": true,
+    "prefer_pragmas": false,
+    "reduce_procedural_code": false,
+    "selection_screen_texts_missing": true,
+    "sql_value_conversion": true,
+    "tables_declared_locally": true,
     "cds_legacy_view": true,
     "change_if_to_case": false,
     "expand_macros": false,
@@ -232,7 +258,8 @@
       "checkForms": true,
       "ignoreTestClasses": false,
       "exclude": [
-        "zcl_aoc_check_69"
+        "zcl_aoc_check_69",
+        "zcl_aoc_check_103"
       ]
     },
     "method_parameter_names": {

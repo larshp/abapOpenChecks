@@ -34,7 +34,8 @@ CLASS zcl_aoc_check_15 IMPLEMENTATION.
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>
         WHERE type <> io_scan->gc_statement-empty
-        AND type <> io_scan->gc_statement-comment.
+        AND type <> io_scan->gc_statement-comment
+        AND type <> io_scan->gc_statement-native_sql.
 
       lv_position = sy-tabix.
       CLEAR lv_statement.
@@ -57,8 +58,7 @@ CLASS zcl_aoc_check_15 IMPLEMENTATION.
           OR lv_statement CP 'CALL SELECTION-SCREEN *'
           OR lv_statement CP 'CALL TRANSACTION *'
           OR lv_statement CP 'CALL TRANSFORMATION *'
-          OR lv_statement CP 'CALL BADI *'
-          OR lv_statement CP 'CALL "*'.         " AMDP method in AMDP method
+          OR lv_statement CP 'CALL BADI *'.
         CONTINUE.
       ELSEIF lv_statement CP 'CALL *'
           OR lv_statement CP 'SYSTEM-CALL *'.

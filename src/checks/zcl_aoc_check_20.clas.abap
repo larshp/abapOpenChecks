@@ -24,7 +24,7 @@ ENDCLASS.
 
 
 
-CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
+CLASS zcl_aoc_check_20 IMPLEMENTATION.
 
 
   METHOD check.
@@ -46,7 +46,8 @@ CLASS ZCL_AOC_CHECK_20 IMPLEMENTATION.
         AND type <> io_scan->gc_statement-comment_in_stmnt
         AND type <> io_scan->gc_statement-empty
         AND type <> io_scan->gc_statement-pragma
-        AND type <> io_scan->gc_statement-macro_definition.
+        AND type <> io_scan->gc_statement-macro_definition
+        AND type <> io_scan->gc_statement-native_sql.
 
       READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       IF sy-subrc = 0.

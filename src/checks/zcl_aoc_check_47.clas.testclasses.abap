@@ -22,7 +22,9 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_02 FOR TESTING,
       test001_03 FOR TESTING,
       test001_04 FOR TESTING,
-      test001_05 FOR TESTING.
+      test001_05 FOR TESTING,
+      test001_06 FOR TESTING,
+      test001_07 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -134,6 +136,37 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
 
+  ENDMETHOD.
+
+  METHOD test001_06.
+
+    _code 'NEW-PAGE PRINT ON'.
+    _code '         DESTINATION             block1ds'.
+    _code '         LIST NAME               TEXT-110'.
+    _code '         COVER TEXT              TEXT-110'.
+    _code '         IMMEDIATELY             block1sf'.
+    _code '         KEEP IN SPOOL           on'.
+    _code '         DATASET EXPIRATION      con_spdays'.
+    _code '         NEW LIST IDENTIFICATION on'.
+    _code '         LINE-COUNT              sy-linct'.
+    _code '         LINE-SIZE               sy-linsz'.
+    _code '         NO DIALOG.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test001_07.
+    _code 'CALL FUNCTION ''ZRFC_RFC'''.
+    _code '  DESTINATION iv_rfc'.
+    _code '  PARAMETER-TABLE lt_import'.
+    _code '  EXCEPTION-TABLE lt_exceptions'.
+    _code 'IF sy-subrc <> 0.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+    cl_abap_unit_assert=>assert_initial( act = ms_result ).
   ENDMETHOD.
 
 ENDCLASS.       "lcl_Test

@@ -97,7 +97,9 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD is_amdp_call_ignored.
 
-    _code 'CALL "ZCL_MY_AMDP_CLASS=>ANOTHER_AMDP_METHOD"( iv_input => :iv_input );'.
+    _code `METHOD my_method BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT USING ZCL_MY_AMDP_CLASS=>AMDP_METHOD.`.
+    _code `CALL "ZCL_MY_AMDP_CLASS=>AMDP_METHOD"( iv_input => :iv_input );`.
+    _code `ENDMETHOD.`.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 

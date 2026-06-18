@@ -79,6 +79,12 @@
      <ENTRY>SY-SYSID found within macro</ENTRY>
      <LENGTH>54</LENGTH>
     </item>
+    <item>
+     <ID>I</ID>
+     <KEY>012</KEY>
+     <ENTRY>SY-SYSID found in a function module call</ENTRY>
+     <LENGTH>86</LENGTH>
+    </item>
    </TPOOL>
   </asx:values>
  </asx:abap>

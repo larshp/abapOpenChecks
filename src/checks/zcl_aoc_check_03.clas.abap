@@ -101,7 +101,7 @@ CLASS zcl_aoc_check_03 IMPLEMENTATION.
 
     ENDLOOP.
 
-  ENDMETHOD.                    "check_nested
+  ENDMETHOD.
 
 
   METHOD check_no_catch.
@@ -159,7 +159,7 @@ CLASS zcl_aoc_check_03 IMPLEMENTATION.
 
     ENDLOOP.
 
-  ENDMETHOD.                    "check_no_catch
+  ENDMETHOD.
 
 
   METHOD constructor.
