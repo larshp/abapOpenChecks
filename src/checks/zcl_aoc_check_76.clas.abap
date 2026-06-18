@@ -43,6 +43,7 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
 * MIT License
 
     DATA: lv_include             TYPE sobj_name,
+          lv_position            LIKE sy-tabix,
           ln_prev_token          TYPE i,
           ln_next_token          TYPE i,
           lf_relevant_join_found TYPE abap_bool,
@@ -62,6 +63,8 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
 
 
     LOOP AT io_scan->statements ASSIGNING <ls_statement>.
+
+      lv_position = sy-tabix.
 
       READ TABLE io_scan->tokens ASSIGNING <ls_token> INDEX <ls_statement>-from.
       IF sy-subrc <> 0.
@@ -136,6 +139,7 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
         lv_include = io_scan->get_include( <ls_statement>-level ).
 
         inform( p_sub_obj_name = lv_include
+                p_position     = lv_position
                 p_line         = ln_line
                 p_column       = ln_column
                 p_kind         = mv_errty
@@ -159,6 +163,7 @@ CLASS ZCL_AOC_CHECK_76 IMPLEMENTATION.
     attributes_ok  = abap_true.
 
     enable_rfc( ).
+    enable_checksum( ).
 
     insert_scimessage(
         iv_code = '001'

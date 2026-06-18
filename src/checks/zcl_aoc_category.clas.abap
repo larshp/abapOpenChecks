@@ -30,7 +30,7 @@ CLASS ZCL_AOC_CATEGORY IMPLEMENTATION.
     category    = 'CL_CI_CATEGORY_TOP'.
     position    = '999'.
 
-  ENDMETHOD.                    "constructor
+  ENDMETHOD.
 
 
   METHOD if_ci_test~display_documentation.
@@ -48,5 +48,5 @@ CLASS ZCL_AOC_CATEGORY IMPLEMENTATION.
         langu      = 'E'
         object     = lv_object.
 
-  ENDMETHOD.                    "if_ci_test~display_documentation
+  ENDMETHOD.
 ENDCLASS.

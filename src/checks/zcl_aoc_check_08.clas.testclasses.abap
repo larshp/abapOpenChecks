@@ -1,3 +1,5 @@
+CLASS ltcl_test DEFINITION DEFERRED.
+CLASS zcl_aoc_check_08 DEFINITION LOCAL FRIENDS ltcl_test.
 CLASS ltcl_test DEFINITION FOR TESTING
   DURATION SHORT
   RISK LEVEL HARMLESS
@@ -26,6 +28,7 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test005_03 FOR TESTING,
       test006_01 FOR TESTING,
       test006_02 FOR TESTING,
+      test006_03 FOR TESTING,
       test007_01 FOR TESTING,
       test007_02 FOR TESTING,
       test007_03 FOR TESTING,
@@ -210,9 +213,24 @@ CLASS ltcl_test IMPLEMENTATION.
 
   METHOD test006_02.
 
+    _code 'METHOD my_method BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT.'.
     _code 'result = SELECT field1'.
     _code 'FROM schema._SYS_BIC.view_name'.
     _code 'PLACEHOLDER.$$parameter$$ => :input;'.
+    _code 'ENDMETHOD.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+
+  ENDMETHOD.
+
+  METHOD test006_03.
+
+    _code `METHOD my_method BY DATABASE PROCEDURE FOR HDB LANGUAGE SQLSCRIPT USING zclass=>method_1 zclass=>method_2.`.
+    _code `CALL "ZCLASS=>METHOD_1" ( param1 => 'A', result => data1 );`.
+    _code `"ZCLASS=>METHOD_2" ( result => data );`.
+    _code `ENDMETHOD.`.
 
     ms_result = zcl_aoc_unit_test=>check( mt_code ).
 

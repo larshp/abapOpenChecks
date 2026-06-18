@@ -25,7 +25,6 @@ CLASS zcl_aoc_check_33 IMPLEMENTATION.
     version  = '001'.
     position = '033'.
 
-    has_documentation = abap_true.
     has_attributes = abap_true.
     attributes_ok  = abap_true.
 

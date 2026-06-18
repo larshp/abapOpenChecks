@@ -77,6 +77,12 @@ CLASS zcl_aoc_scan DEFINITION
                  default           TYPE string VALUE 'DEFAULT',
                  type              TYPE string VALUE 'TYPE',
                  like              TYPE string VALUE 'LIKE',
+                 call              TYPE string VALUE 'CALL',
+                 function          TYPE string VALUE 'FUNCTION',
+                 move              TYPE string VALUE 'MOVE',
+                 to                TYPE string VALUE 'TO',
+                 destination       TYPE string VALUE 'DESTINATION',
+                 starting          TYPE string VALUE 'STARTING',
                END OF gc_keyword.
 
     TYPES:

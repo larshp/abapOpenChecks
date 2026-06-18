@@ -52,6 +52,7 @@ CLASS zcl_aoc_check_08 DEFINITION
         VALUE(rv_old) TYPE abap_bool.
     METHODS _fill_old_options.
   PRIVATE SECTION.
+
 ENDCLASS.
 
 
@@ -65,17 +66,18 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
 * https://github.com/larshp/abapOpenChecks
 * MIT License
 
-    DATA: lv_position  TYPE i,
-          lv_include   TYPE sobj_name,
-          lv_code      TYPE sci_errc,
-          lv_token     TYPE string,
-          lv_statement TYPE string.
+    DATA: lv_position   TYPE i,
+          lv_include    TYPE sobj_name,
+          lv_code       TYPE sci_errc,
+          lv_token      TYPE string,
+          lv_statement  TYPE string.
 
     FIELD-SYMBOLS: <ls_token>     LIKE LINE OF io_scan->tokens,
                    <ls_statement> LIKE LINE OF io_scan->statements.
 
 
-    LOOP AT io_scan->statements ASSIGNING <ls_statement>.
+    LOOP AT io_scan->statements ASSIGNING <ls_statement>
+        WHERE type <> io_scan->gc_statement-native_sql.
 
       lv_position = sy-tabix.
       CLEAR lv_statement.
@@ -112,8 +114,7 @@ CLASS zcl_aoc_check_08 IMPLEMENTATION.
       ELSEIF mv_006 = abap_true
           AND ( lv_statement CP '* >< *'
           OR lv_statement CP '* =< *'
-          OR lv_statement CP '* => *' )
-          AND NOT lv_statement CP '*$$*$$*'. " Allow for SDA HANA query parameters
+          OR lv_statement CP '* => *' ).
         lv_code = '006'.
       ELSEIF mv_007 = abap_true AND is_old( lv_statement ) = abap_true.
         lv_code = '007'.
