@@ -29,6 +29,7 @@ CLASS zcl_aoc_check_105 IMPLEMENTATION.
   METHOD constructor.
     super->constructor( ).
 
+    enable_checksum( ).
     enable_rfc( ).
 
     has_attributes = abap_true.
@@ -51,6 +52,8 @@ CLASS zcl_aoc_check_105 IMPLEMENTATION.
 
   METHOD check.
     LOOP AT io_scan->statements ASSIGNING FIELD-SYMBOL(<ls_statement>).
+      DATA(lv_statement_index) = sy-tabix.
+
       LOOP AT io_scan->tokens
            TRANSPORTING NO FIELDS
            FROM <ls_statement>-from TO <ls_statement>-to
@@ -83,7 +86,8 @@ CLASS zcl_aoc_check_105 IMPLEMENTATION.
         IF lv_is_rfc_blocked = abap_true.
           DATA(lv_include) = io_scan->get_include( <ls_statement>-level ).
 
-          inform( p_sub_obj_name = lv_include
+          inform( p_position     = lv_statement_index
+                  p_sub_obj_name = lv_include
                   p_line         = <ls_token_function_name>-row
                   p_kind         = mv_errty
                   p_test         = myname
