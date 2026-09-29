@@ -33,7 +33,8 @@ CLASS ltcl_test DEFINITION FOR TESTING
       test001_13 FOR TESTING,
       test001_14 FOR TESTING,
       test001_15 FOR TESTING,
-      test001_16 FOR TESTING.
+      test001_16 FOR TESTING,
+      test001_17 FOR TESTING.
 
 ENDCLASS.       "lcl_Test
 
@@ -265,4 +266,19 @@ CLASS ltcl_test IMPLEMENTATION.
 
     cl_abap_unit_assert=>assert_initial( ms_result ).
   ENDMETHOD.                    " test001_16
+
+METHOD test001_17.
+    "  ===========
+
+    zcl_aoc_unit_test=>set_object_type( 'FUGR' ).
+    zcl_aoc_unit_test=>set_object_name( 'V_TEST_FG' ).
+
+    _code 'FORM ABC_001.'.
+    _code 'ENDFORM.'.
+
+    ms_result = zcl_aoc_unit_test=>check( mt_code ).
+
+    cl_abap_unit_assert=>assert_initial( ms_result ).
+  ENDMETHOD.                    " test001_17
+
 ENDCLASS.       "lcl_Test
