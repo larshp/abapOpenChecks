@@ -267,7 +267,7 @@ CLASS ltcl_test IMPLEMENTATION.
     cl_abap_unit_assert=>assert_initial( ms_result ).
   ENDMETHOD.                    " test001_16
 
-METHOD test001_17.
+  METHOD test001_17.
     "  ===========
 
     zcl_aoc_unit_test=>set_object_type( 'FUGR' ).
