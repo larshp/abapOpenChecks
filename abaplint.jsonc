@@ -183,7 +183,7 @@
       "statics": false,
       "break": true
     },
-    "check_syntax": false,
+    "check_syntax": true,
     "class_attribute_names": {
       "exclude": [
         "zcl_aoc_scan\\.clas\\.abap"
