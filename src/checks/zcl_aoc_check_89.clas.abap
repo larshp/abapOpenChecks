@@ -116,13 +116,12 @@ CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
       lv_objtype = 'RE'.
     ENDIF.
 
-    CASE iv_obj_type. " Sebastián Soto
+    CASE iv_obj_type. " Sebastian Soto
       WHEN 'FUGR'.
         lv_objname = |SAPL{ lv_objname }|.
         lv_objtype = 'RE'.
       WHEN 'INTF'.
         lv_objtype = 'IF'.
-      WHEN OTHERS.
     ENDCASE.
 
     "function module already exists in 7.02 -> should work on every satellite system
