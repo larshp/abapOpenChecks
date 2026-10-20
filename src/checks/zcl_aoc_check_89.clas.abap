@@ -35,7 +35,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_aoc_check_89 IMPLEMENTATION.
+CLASS ZCL_AOC_CHECK_89 IMPLEMENTATION.
 
 
   METHOD check.
@@ -48,8 +48,8 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     FIELD-SYMBOLS <ls_level> TYPE slevel.
 
     lv_actual_length = get_lines_of_documentation(
-                      iv_obj_type = object_type
-                      iv_obj_name = object_name ).
+      iv_obj_type = object_type
+      iv_obj_name = object_name ).
 
     IF lv_actual_length < mv_minlength.
 
@@ -62,7 +62,7 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
                 p_kind         = mv_errty
                 p_test         = myname
                 p_code         = '001'
-                p_param_1  = |{ lv_actual_length } < { mv_minlength }| ).
+                p_param_1      = |{ lv_actual_length } < { mv_minlength }| ).
       ENDIF.
 
     ENDIF.
@@ -83,8 +83,8 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     enable_rfc( ).
 
     insert_scimessage(
-        iv_code = '001'
-        iv_text = 'Minimum lines of documentation not reached: &1'(m01) ).
+      iv_code = '001'
+      iv_text = 'Minimum lines of documentation not reached: &1'(m01) ).
 
     mv_minlength = 10.
 
@@ -115,6 +115,15 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     IF lv_objtype = 'PR'.        "PROG -> REPO
       lv_objtype = 'RE'.
     ENDIF.
+
+    CASE iv_obj_type. " Sebastián Soto
+      WHEN 'FUGR'.
+        lv_objname = |SAPL{ lv_objname }|.
+        lv_objtype = 'RE'.
+      WHEN 'INTF'.
+        lv_objtype = 'IF'.
+      WHEN OTHERS.
+    ENDCASE.
 
     "function module already exists in 7.02 -> should work on every satellite system
     CALL FUNCTION 'ZAOC_OBJ_DOKU_GET_XSTRING_RFC'
@@ -167,8 +176,8 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
 
 
     lv_content = get_content(
-        iv_obj_type = iv_obj_type
-        iv_obj_name = iv_obj_name ).
+      iv_obj_type = iv_obj_type
+      iv_obj_name = iv_obj_name ).
 
     IF lv_content IS INITIAL.
       RETURN.
@@ -177,7 +186,7 @@ CLASS zcl_aoc_check_89 IMPLEMENTATION.
     TRY.
 
         lo_conv = cl_abap_conv_in_ce=>create(
-                     input = lv_content ).
+          input = lv_content ).
 
         lo_conv->read(
           IMPORTING
